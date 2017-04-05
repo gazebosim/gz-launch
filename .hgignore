@@ -1,0 +1,9 @@
+syntax: glob
+
+build
+build_*
+build-*
+.DS_Store
+*.swp
+*.gch
+*.pch
