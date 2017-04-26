@@ -187,9 +187,10 @@ bool Manager::Run(const std::map<std::string, std::string> &_args)
   // Wait for a shutdown event.
   // \todo: In the future, we could add execution models that control plugin
   // updates.
-  this->dataPtr->runCondition.wait(lock);
-
-  this->dataPtr->running = false;
+  while (this->dataPtr->running)
+  {
+    this->dataPtr->runCondition.wait(lock);
+  }
 
   // \todo: Shutdown the plugins, when they are used.
 
@@ -228,8 +229,13 @@ bool Manager::Run(const std::map<std::string, std::string> &_args)
 bool Manager::Stop()
 {
   std::lock_guard<std::mutex> lock(this->dataPtr->runMutex);
+
   if (this->dataPtr->running)
+  {
+    this->dataPtr->running = false;
     this->dataPtr->runCondition.notify_all();
+  }
+
   return this->dataPtr->running;
 }
 
