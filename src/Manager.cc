@@ -30,7 +30,7 @@
 #include <ignition/common/SignalHandler.hh>
 
 #include "ignition/launch/config.hh"
-#include "ignition/launch/Manager.hh"
+#include "Manager.hh"
 
 using namespace ignition;
 using namespace launch;

@@ -18,7 +18,7 @@
 #include <chrono>
 #include <gtest/gtest.h>
 #include <ignition/common/Console.hh>
-#include "ignition/launch/Manager.hh"
+#include "Manager.hh"
 
 /////////////////////////////////////////////////
 /// \brief Test running without a config file

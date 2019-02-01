@@ -23,7 +23,7 @@
 
 #include "ign.hh"
 #include "ignition/launch/config.hh"
-#include "ignition/launch/Manager.hh"
+#include "Manager.hh"
 
 //////////////////////////////////////////////////
 extern "C" IGNITION_LAUNCH_VISIBLE char *ignitionVersion()
