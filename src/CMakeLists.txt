@@ -1,4 +1,5 @@
 set (sources
+  ign.cc
   Manager.cc
 )
 
@@ -31,6 +32,9 @@ ign_build_tests(TYPE UNIT
                   ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
                   TINYXML2::TINYXML2
 )
+
+# Command line support.
+add_subdirectory(cmd)
 
 # if (UNIX)
 #   ign_add_library(${PROJECT_NAME_LOWER}${PROJECT_MAJOR_VERSION} ${source})

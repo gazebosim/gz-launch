@@ -1,0 +1,36 @@
+/*
+ * Copyright (C) 2019 Open Source Robotics Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+*/
+#ifndef IGNITION_LAUNCH_IGN_HH_
+#define IGNITION_LAUNCH_IGN_HH_
+
+#include "ignition/launch/Export.hh"
+
+/// \brief External hook to read the library version.
+/// \return C-string representing the version. Ex.: 0.1.2
+extern "C" IGNITION_LAUNCH_VISIBLE char *ignitionVersion();
+
+/// \brief Set verbosity level
+/// \param[in] _verbosity 0 to 4
+extern "C" IGNITION_LAUNCH_VISIBLE void cmdVerbosity(const char *_verbosity);
+
+/// \brief External hook to execute 'ign fuel list -t model' from the command
+/// line.
+/// \param[in] _config Config file to run.
+/// \return 1 if successful, 0 if not.
+extern "C" IGNITION_LAUNCH_VISIBLE int run(const char *_config);
+
+#endif

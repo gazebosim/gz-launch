@@ -36,10 +36,20 @@ ign_find_package(TINYXML2 REQUIRED PRIVATE PRETTY tinyxml2)
 ign_find_package(ignition-common3 REQUIRED PRIVATE)
 set(IGN_COMMON_MAJOR_VER ${ignition-common3_VERSION_MAJOR})
 
+#--------------------------------------
+# Find ignition-tools
+ign_find_package(ignition-tools REQUIRED PRIVATE)
+
 #============================================================================
 # Configure the build
 #============================================================================
-ign_configure_build()
+ign_configure_build(QUIT_IF_BUILD_ERRORS)
+
+#============================================================================
+# ign command line support
+#============================================================================
+add_subdirectory(conf)
+
 
 #============================================================================
 # Create package information

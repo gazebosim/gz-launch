@@ -38,11 +38,7 @@ namespace ignition
       /// \brief Destructor.
       public: virtual ~Manager();
 
-      /// \brief Run programs and plugins.
-      /// This function blocks until stopped by the user.
-      /// \param[in] _args Command line arguments.
-      /// \return True if running terminated successfully.
-      public: bool Run(const std::map<std::string, std::string> &_args = {});
+      public: bool RunConfig(const std::string &_args);
 
       /// \brief Stop running. This can be used to end a Run().
       /// \return True if running, False if the state was not running.

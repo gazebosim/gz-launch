@@ -1,13 +1,13 @@
 <?xml version='1.0'?>
 <ignition version='1.0'>
 
-  <executable name='server'>
-    <command>gzserver</command>
+  <executable name='gazebo-server'>
+    <command>ign-gazebo-server</command>
   </executable>
 
-  <executable name='client'>
-    <command>gzclient</command>
-    <auto_restart>true</auto_restart>
+  <executable name='gazebo-client'>
+    <command>ign-gazebo-gui</command>
+    <auto_restart>false</auto_restart>
   </executable>
 
 </ignition>

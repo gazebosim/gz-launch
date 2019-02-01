@@ -27,6 +27,7 @@
 #include <sys/wait.h>
 
 #include <ignition/common/Console.hh>
+#include <ignition/common/SignalHandler.hh>
 
 #include "ignition/launch/config.hh"
 #include "ignition/launch/Manager.hh"
@@ -73,12 +74,7 @@ class Executable
 class ignition::launch::ManagerPrivate
 {
   /// \brief Constructor.
-  public: ManagerPrivate() {}
-
-  /// \brief Load the system.
-  /// \param[in] _args Command line arguments.
-  /// \return True on success.
-  public: bool Load(const std::map<std::string, std::string> &_args);
+  public: ManagerPrivate();
 
   /// \brief Parse a configuration file.
   /// \param[in] _filename Name of the XML file to parse.
@@ -105,16 +101,23 @@ class ignition::launch::ManagerPrivate
                              const std::vector<std::string> &_cmd,
                              const bool _autoRestart);
 
+  /// \brief Stop all executables
+  public: void ShutdownExecutables();
+
+  /// \brief Stop running. This can be used to end a Run().
+  /// \return True if running, False if the state was not running.
+  public: bool Stop();
+
   /// \brief Print help information to stdout.
   public: void PrintUsage();
 
-  /// \brief Signal interrupt handler.
-  /// \param[in] _v Signint value.
-  public: static void SigInt(int _v);
+  /// \brief Handle SIG_INT and SIG_TERM signals
+  /// \param[in] _sig The signal
+  private: void OnSigIntTerm(int _sig);
 
-  /// \brief Signal child handler.
-  /// \param[in] _v Signchld value.
-  public: static void SigChild(int _v);
+  /// \brief Handle SIG_CHILD
+  /// \param[in] _sig The signal
+  private: static void OnSigChild(int _sig);
 
   /// \brief A list of executables that are running, or have been run.
   public: std::list<Executable> executables;
@@ -133,6 +136,9 @@ class ignition::launch::ManagerPrivate
 
   public: bool master = false;
 
+  /// \brief Our signal handler.
+  public: common::SignalHandler sigHandler;
+
   /// \brief Pointer to myself. This is used in the signal handlers.
   /// A raw pointer is acceptable here since it is used only internally.
   public: static ManagerPrivate *myself;
@@ -142,20 +148,14 @@ ManagerPrivate *ManagerPrivate::myself = nullptr;
 
 /////////////////////////////////////////////////
 Manager::Manager()
-  :dataPtr(new ManagerPrivate)
+  :dataPtr(new ManagerPrivate())
 {
   this->dataPtr->myself = this->dataPtr.get();
 
   // Make sure to initialize logging.
-  ignLogInit("~/.ign-launch", "ignition.log");
-
-  // Register a signal handler to capture CTRL-C events.
-  if (signal(SIGINT, ManagerPrivate::SigInt) == SIG_ERR)
+  ignLogInit("~/.ignition", "launch.log");
+  if (!this->dataPtr->sigHandler.Initialized())
     ignerr << "signal(2) failed while setting up for SIGINT" << std::endl;
-
-  // Register a signal handler to capture child process death events.
-  if (signal(SIGCHLD, ManagerPrivate::SigChild) == SIG_ERR)
-    ignerr << "signal(2) failed while setting up for SIGCHLD" << std::endl;
 }
 
 /////////////////////////////////////////////////
@@ -164,132 +164,59 @@ Manager::~Manager()
 }
 
 /////////////////////////////////////////////////
-bool Manager::Run(const std::map<std::string, std::string> &_args)
+bool Manager::RunConfig(const std::string &_config)
 {
   std::unique_lock<std::mutex> lock(this->dataPtr->runMutex);
-
   this->dataPtr->master = true;
 
-  // Load the system based on command line arguments.
-  // The Load command will fork processes for each executable.
-  if (!this->dataPtr->Load(_args))
-  {
-    ignerr << "Failed to load ignition.\n";
-    return false;
-  }
+  this->dataPtr->ParseConfig(_config);
 
   // Child processes should exit
   if (!this->dataPtr->master)
     return true;
 
-  this->dataPtr->running = true;
+  this->dataPtr->running = !this->dataPtr->executables.empty();
 
   // Wait for a shutdown event.
   // \todo: In the future, we could add execution models that control plugin
   // updates.
   while (this->dataPtr->running)
-  {
     this->dataPtr->runCondition.wait(lock);
-  }
 
-  // \todo: Shutdown the plugins, when they are used.
+  this->dataPtr->ShutdownExecutables();
 
-  // Shutdown executables.
-  {
-    std::lock_guard<std::mutex> mutex(this->dataPtr->executablesMutex);
-
-    // Remove the sigchld signal handler
-    signal(SIGCHLD, nullptr);
-
-    // Create a vector of monitor threads that wait for each process to stop.
-    std::vector<std::thread> monitors;
-    for (auto &exec : this->dataPtr->executables)
-      monitors.push_back(std::thread([&] {waitpid(exec.pid, nullptr, 0);}));
-
-    // Shutdown the processes
-    for (auto &exec : this->dataPtr->executables)
-    {
-      igndbg << "Killing the process[" << exec.name
-             << "] with PID[" << exec.pid << "]\n";
-      kill(exec.pid, SIGINT);
-    }
-
-    igndbg << "Waiting for each process to end\n";
-
-    // Wait for all the monitors to stop
-    for (auto &m : monitors)
-      m.join();
-  }
-
-  // If we got here, then everything was hunky-dorry
   return true;
 }
 
 /////////////////////////////////////////////////
 bool Manager::Stop()
 {
-  std::lock_guard<std::mutex> lock(this->dataPtr->runMutex);
-
-  if (this->dataPtr->running)
-  {
-    this->dataPtr->running = false;
-    this->dataPtr->runCondition.notify_all();
-  }
-
-  return this->dataPtr->running;
+  return this->dataPtr->Stop();
 }
 
 /////////////////////////////////////////////////
-bool ManagerPrivate::Load(const std::map<std::string, std::string> &_args)
+ManagerPrivate::ManagerPrivate()
 {
-  // Set the verbose level first.
-  if (_args.find("verbose") != _args.end())
-  {
-    int v = 1;
-    try
-    {
-      v = std::stoi(_args.at("verbose"));
-    }
-    catch(...)
-    {
-    }
+  this->sigHandler.AddCallback(
+      std::bind(&ManagerPrivate::OnSigIntTerm, this, std::placeholders::_1));
 
-    ignition::common::Console::SetVerbosity(v);
+  // Register a signal handler to capture child process death events.
+  if (signal(SIGCHLD, ManagerPrivate::OnSigChild) == SIG_ERR)
+    ignerr << "signal(2) failed while setting up for SIGCHLD" << std::endl;
+}
+
+/////////////////////////////////////////////////
+bool ManagerPrivate::Stop()
+{
+  std::lock_guard<std::mutex> lock(this->runMutex);
+
+  if (this->running)
+  {
+    this->running = false;
+    this->runCondition.notify_all();
   }
 
-  if (_args.find("run") != _args.end())
-  {
-    // Check for empty
-    if (_args.at("run").empty())
-    {
-      ignerr << "Empty --run argument\n";
-      return false;
-    }
-
-    // Split the provided string, and attempt to run the executable.
-    if (!this->RunExecutable("default",
-          ignition::common::split(_args.at("run"), " "), false))
-    {
-      ignerr << "Unable to run command[" << _args.at("run")
-        << "], as specified "
-        << "with with -run argument. "
-        << "Include a valid executable, with or without arguments, enclosed in "
-        << "double quotes. For example (on linux systems): \n"
-        << "\tignition -run \"echo hello\"\n";
-      return false;
-    }
-    else
-      return true;
-  }
-  else if (_args.find("config") != _args.end())
-  {
-    // Process the configuration file.
-    return this->ParseConfig(_args.at("config"));
-  }
-
-  ignerr << "Missing a valid command to process. Nothing to do.\n";
-
-  return false;
+  return this->running;
 }
 
 /////////////////////////////////////////////////
@@ -301,8 +228,16 @@ void ManagerPrivate::PrintUsage()
 }
 
 /////////////////////////////////////////////////
-void ManagerPrivate::SigChild(int)
+void ManagerPrivate::OnSigIntTerm(int _sig)
 {
+  igndbg << "Received signal[" << _sig  << "]\n";
+  myself->Stop();
+}
+
+/////////////////////////////////////////////////
+void ManagerPrivate::OnSigChild(int _sig)
+{
+  igndbg << "Received signal[" << _sig  << "]\n";
   pid_t p;
   int status;
 
@@ -338,13 +273,6 @@ void ManagerPrivate::SigChild(int)
     igndbg << "Restarting process with name[" << restartExec.name << "]\n";
     myself->RunExecutable(restartExec);
   }
-}
-
-/////////////////////////////////////////////////
-void ManagerPrivate::SigInt(int)
-{
-  std::lock_guard<std::mutex> lock(myself->runMutex);
-  myself->runCondition.notify_all();
 }
 
 /////////////////////////////////////////////////
@@ -399,7 +327,8 @@ bool ManagerPrivate::ParseConfig(const std::string &_filename)
     }
     else
     {
-      auto parts = ignition::common::split(cmdElem->GetText(), " ");
+      std::vector<std::string> parts =
+        ignition::common::split(cmdElem->GetText(), " ");
       std::move(parts.begin(), parts.end(), std::back_inserter(cmdParts));
     }
 
@@ -484,7 +413,7 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
 
     // Create a vector of char* in the child process
     std::vector<char*> cstrings;
-    for (auto const &part : _cmd)
+    for (const std::string &part : _cmd)
     {
       cstrings.push_back(const_cast<char *>(part.c_str()));
     }
@@ -504,4 +433,32 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
   }
 
   return true;
+}
+
+/////////////////////////////////////////////////
+void ManagerPrivate::ShutdownExecutables()
+{
+  std::lock_guard<std::mutex> mutex(this->executablesMutex);
+
+  // Remove the sigchld signal handler
+  signal(SIGCHLD, nullptr);
+
+  // Create a vector of monitor threads that wait for each process to stop.
+  std::vector<std::thread> monitors;
+  for (const Executable &exec : this->executables)
+    monitors.push_back(std::thread([&] {waitpid(exec.pid, nullptr, 0);}));
+
+  // Shutdown the processes
+  for (const Executable &exec : this->executables)
+  {
+    igndbg << "Killing the process[" << exec.name
+      << "] with PID[" << exec.pid << "]\n";
+    kill(exec.pid, SIGINT);
+  }
+
+  igndbg << "Waiting for each process to end\n";
+
+  // Wait for all the monitors to stop
+  for (std::thread &m : monitors)
+    m.join();
 }

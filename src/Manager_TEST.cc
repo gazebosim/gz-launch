@@ -22,12 +22,11 @@
 
 /////////////////////////////////////////////////
 /// \brief Test running without a config file
-TEST(Ignition_TEST, RunNoConfig)
+TEST(Ignition_TEST, StopNoRun)
 {
   ignition::launch::Manager mgr;
 
   // Expect false because no config file was set.
-  EXPECT_FALSE(mgr.Run());
   EXPECT_FALSE(mgr.Stop());
 }
 
@@ -39,10 +38,8 @@ TEST(Ignition_TEST, RunEmptyConfig)
   std::fstream configFile(configFilename.c_str(), std::ios::out);
   configFile.close();
 
-  std::map<std::string, std::string> args = {{"config", configFilename}};
-
   ignition::launch::Manager mgr;
-  EXPECT_FALSE(mgr.Run(args));
+  EXPECT_TRUE(mgr.RunConfig(configFilename));
   EXPECT_FALSE(mgr.Stop());
 }
 
