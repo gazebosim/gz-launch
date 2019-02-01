@@ -25,7 +25,16 @@ ign_configure_project()
 #============================================================================
 # Search for project-specific dependencies
 #============================================================================
-# message(STATUS "\n\n-- ====== Finding Dependencies ======")
+message(STATUS "\n\n-- ====== Finding Dependencies ======")
+
+#--------------------------------------
+# Find Tinyxml2
+ign_find_package(TINYXML2 REQUIRED PRIVATE PRETTY tinyxml2)
+
+#--------------------------------------
+# Find ignition-common
+ign_find_package(ignition-common3 REQUIRED PRIVATE)
+set(IGN_COMMON_MAJOR_VER ${ignition-common3_VERSION_MAJOR})
 
 #============================================================================
 # Configure the build

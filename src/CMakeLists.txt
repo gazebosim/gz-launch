@@ -1,48 +1,61 @@
-include_directories(SYSTEM
-  ${gflags_INCLUDE_DIRS}
-  ${tinyxml2_INCLUDE_DIRS}
-  ${PROJECT_SOURCE_DIR}/include
-  ${PROJECT_BINARY_DIR}/include
-)
-
-link_directories(
-  ${tinyxml2_LIBRARY_DIRS}
-  ${PROJECT_BINARY_DIR}/test
-)
-
-set (source
+set (sources
   Manager.cc
 )
 
 set (gtest_sources
   Manager_TEST.cc
 )
-ign_build_tests(${gtest_sources})
 
-if (UNIX)
-  ign_add_library(${PROJECT_NAME_LOWER}${PROJECT_MAJOR_VERSION} ${source})
-else()
-  add_library(${PROJECT_NAME_LOWER}${PROJECT_MAJOR_VERSION} STATIC ${source})
-endif()
+# if (HAVE_IGN_TOOLS)
+#   set (gtest_sources ${gtest_sources}
+#     ign_TEST.cc
+#   )
+# endif()
 
-target_link_libraries(${PROJECT_NAME_LOWER}${PROJECT_MAJOR_VERSION}
-  ${IGNITION-COMMON_LIBRARIES}
-  ${tinyxml2_LIBRARIES}
-  ${gflags_LIBRARIES}
+# Create the library target.
+ign_create_core_library(SOURCES ${sources} CXX_STANDARD 17)
+
+# Link the libraries that we always need.
+target_link_libraries(${PROJECT_LIBRARY_TARGET_NAME}
+  PRIVATE
+    ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
+    TINYXML2::TINYXML2
 )
 
-ign_add_executable(ignition ${source} ignition.cc)
-target_link_libraries(ignition
-  ${IGNITION-COMMON_LIBRARIES}
-  ${tinyxml2_LIBRARIES}
-  ${gflags_LIBRARIES})
+# ign_target_interface_include_directories(${PROJECT_LIBRARY_TARGET_NAME})
 
-if (UNIX)
-  target_link_libraries(ignition pthread rt)
-endif()
+# Build the unit tests.
+ign_build_tests(TYPE UNIT
+                SOURCES ${gtest_sources}
+                LIB_DEPS
+                  ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
+                  TINYXML2::TINYXML2
+)
 
-if ("${CMAKE_BUILD_TYPE}" STREQUAL "COVERAGE")
-  target_link_libraries(ignition gcov)
-endif()
-
-ign_install_executable(ignition)
+# if (UNIX)
+#   ign_add_library(${PROJECT_NAME_LOWER}${PROJECT_MAJOR_VERSION} ${source})
+# else()
+#   add_library(${PROJECT_NAME_LOWER}${PROJECT_MAJOR_VERSION} STATIC ${source})
+# endif()
+# 
+# target_link_libraries(${PROJECT_NAME_LOWER}${PROJECT_MAJOR_VERSION}
+#   ${IGNITION-COMMON_LIBRARIES}
+#   ${tinyxml2_LIBRARIES}
+#   ${gflags_LIBRARIES}
+# )
+# 
+# ign_add_executable(ignition ${source} ignition.cc)
+# target_link_libraries(ignition
+#   ${IGNITION-COMMON_LIBRARIES}
+#   ${tinyxml2_LIBRARIES}
+#   ${gflags_LIBRARIES})
+# 
+# if (UNIX)
+#   target_link_libraries(ignition pthread rt)
+# endif()
+# 
+# if ("${CMAKE_BUILD_TYPE}" STREQUAL "COVERAGE")
+#   target_link_libraries(ignition gcov)
+# endif()
+# 
+# ign_install_executable(ignition)

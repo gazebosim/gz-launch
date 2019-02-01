@@ -28,7 +28,7 @@
 
 #include <ignition/common/Console.hh>
 
-#include "ignition/launch/Config.hh"
+#include "ignition/launch/config.hh"
 #include "ignition/launch/Manager.hh"
 
 using namespace ignition;

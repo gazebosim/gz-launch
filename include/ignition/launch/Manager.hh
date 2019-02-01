@@ -20,7 +20,7 @@
 #include <memory>
 #include <string>
 #include <map>
-#include <ignition/launch/System.hh>
+#include <ignition/launch/Export.hh>
 
 namespace ignition
 {
