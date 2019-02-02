@@ -24,6 +24,10 @@
     <accumulation_rate>1000</accumulation_rate>
   </plugin>
 
+  <plugin name="ignition::JoyToTwist" filename="libjoytotwist.so">
+    Add in topic remapping
+  </plugin>
+
   <executable name='image display'>
     <command>ign gui -s ImageDisplay</command>
   </executable>

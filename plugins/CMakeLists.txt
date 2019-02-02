@@ -2,6 +2,7 @@ set (plugins
   camera
   image_compress
   joystick
+  joy_to_twist
 )
 
 foreach (plugin ${plugins})
