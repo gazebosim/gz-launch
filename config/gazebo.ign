@@ -1,13 +1,40 @@
 <?xml version='1.0'?>
 <ignition version='1.0'>
-
+  <!--
   <executable name='gazebo-server'>
     <command>ign-gazebo-server</command>
   </executable>
-
   <executable name='gazebo-client'>
     <command>ign-gazebo-gui</command>
     <auto_restart>false</auto_restart>
   </executable>
+-->
+
+  <plugin name="ignition::Camera" filename="libcamera.so">
+    <device>/dev/video0</device>
+    <width>640</width>
+    <height>480</height>
+    <output_topic>/image</output_topic>
+  </plugin>
+
+  <plugin name="ignition::Joystick" filename="libjoystick.so">
+    <sticky_buttons>false</sticky_buttons>
+    <dead_zone>0.05</dead_zone>
+    <rate>60</rate>
+    <accumulation_rate>1000</accumulation_rate>
+  </plugin>
+
+  <executable name='image display'>
+    <command>ign gui -s ImageDisplay</command>
+  </executable>
+
+  <!--
+  <plugin name="ignition::ImageCompress" filename="libimagecompress.so">
+    <input_topic>/image</input_topic>
+    <output_topic>/image/jpeg</output_topic>
+    <save type="jpg">/tmp/images_jpg</save>
+    <save type="pbm">/tmp/images_pbm</save>
+  </plugin>
+-->
 
 </ignition>

@@ -40,6 +40,33 @@ set(IGN_COMMON_MAJOR_VER ${ignition-common3_VERSION_MAJOR})
 # Find ignition-tools
 ign_find_package(ignition-tools REQUIRED PRIVATE)
 
+#--------------------------------------
+# Find ignition-plugin
+ign_find_package(ignition-plugin1 REQUIRED COMPONENTS loader register)
+set(IGN_PLUGIN_VER ${ignition-plugin1_VERSION_MAJOR})
+
+
+#--------------------------------------
+# Find QT
+ign_find_package (Qt5
+  COMPONENTS
+    Core
+    Widgets
+  REQUIRED
+  PKGCONFIG "Qt5Core Ot5Widgets"
+)
+
+#--------------------------------------
+# Find ignition-msgs
+ign_find_package(ignition-msgs3 REQUIRED )
+set(IGN_MSGS_VER ${ignition-msgs3_VERSION_MAJOR})
+
+#--------------------------------------
+# Find ignition-transport
+ign_find_package(ignition-transport6 REQUIRED )
+set(IGN_TRANSPORT_VER ${ignition-transport6_VERSION_MAJOR})
+
+
 #============================================================================
 # Configure the build
 #============================================================================
@@ -49,7 +76,7 @@ ign_configure_build(QUIT_IF_BUILD_ERRORS)
 # ign command line support
 #============================================================================
 add_subdirectory(conf)
-
+add_subdirectory(plugins)
 
 #============================================================================
 # Create package information

@@ -20,6 +20,7 @@ ign_create_core_library(SOURCES ${sources} CXX_STANDARD 17)
 target_link_libraries(${PROJECT_LIBRARY_TARGET_NAME}
   PRIVATE
     ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
+    ignition-plugin${IGN_PLUGIN_VER}::loader
     TINYXML2::TINYXML2
 )
 
