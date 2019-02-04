@@ -37,21 +37,22 @@ ImageCompress::~ImageCompress()
 }
 
 /////////////////////////////////////////////////
-void ImageCompress::Load(std::map<std::string, std::string> _params)
+void ImageCompress::Load(const tinyxml2::XMLElement *_elem)
 {
   std::map<std::string, std::string>::const_iterator iter;
+
   std::string outputTopic = "/image/jpeg";
+  // Get the output topic name
+  const tinyxml2::XMLElement *outTopicElem = _elem->FirstChildElement(
+      "output_topic");
+  if (outTopicElem)
+    outputTopic = outTopicElem->GetText();
+
   std::string inputTopic = "/image";
-
-  // Get the output topic
-  iter = _params.find("output_topic");
-  if (iter != _params.end())
-    outputTopic = iter->second;
-
-  // Get the input topic
-  iter = _params.find("input_topic");
-  if (iter != _params.end())
-    inputTopic = iter->second;
+  const tinyxml2::XMLElement *inTopicElem = _elem->FirstChildElement(
+      "input_topic");
+  if (outTopicElem)
+    inputTopic = inTopicElem->GetText();
 
   // Output some useful information
   ignmsg << "ImageCompress using input topic[" << inputTopic
@@ -59,11 +60,6 @@ void ImageCompress::Load(std::map<std::string, std::string> _params)
 
   this->pub = this->node.Advertise<ignition::msgs::Image>(outputTopic);
   this->node.Subscribe(inputTopic, &ImageCompress::OnImage, this);
-}
-
-/////////////////////////////////////////////////
-void ImageCompress::Shutdown()
-{
 }
 
 /////////////////////////////////////////////////

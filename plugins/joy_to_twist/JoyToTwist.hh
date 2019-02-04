@@ -17,6 +17,7 @@
 #ifndef IGNITION_LAUNCH_JOYTOTWIST_COMPRESS_PLUGIN_HH_
 #define IGNITION_LAUNCH_JOYTOTWIST_COMPRESS_PLUGIN_HH_
 
+#include <mutex>
 #include <thread>
 #include <ignition/plugin/Register.hh>
 #include <ignition/transport/Node.hh>
@@ -39,8 +40,7 @@ namespace ignition
   {
     public: JoyToTwist();
     public: virtual ~JoyToTwist();
-    public: virtual void Load(std::map<std::string, std::string> _params) override final;
-    public: virtual void Shutdown() override final;
+    public: virtual void Load(const tinyxml2::XMLElement *_elem) override final;
     private: void Run();
 
     private: void OnJoy(const ignition::msgs::Joy &_msg);
@@ -55,11 +55,15 @@ namespace ignition
     private: ignition::math::Vector3d scaleAngularTurbo;
     private: bool sentDisableMsg;
 
-    private: bool run = true;
+    private: bool running = false;
     private: std::thread *joyThread = nullptr;
 
     private: ignition::transport::Node node;
     private: ignition::transport::Node::Publisher cmdVelPub;
+
+    private: std::string inputTopic = "/joy";
+    private: std::string outputTopic = "/cmd_vel";
+    private: std::mutex mutex;
   };
 }
 

@@ -31,9 +31,7 @@ namespace ignition
   {
     public: Camera();
     public: virtual ~Camera();
-    public: virtual void Load(
-                std::map<std::string, std::string> _params) override final;
-    public: virtual void Shutdown() override final;
+    public: virtual void Load(const tinyxml2::XMLElement *_elem) override final;
 
     private: void FeedImages();
 

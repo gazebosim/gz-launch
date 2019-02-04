@@ -6,6 +6,7 @@ string (TOLOWER ${plugin} plugin_lower)
 add_library(${plugin_lower} SHARED ${sources})
 target_link_libraries(${plugin_lower}
   PRIVATE
+    ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
     ignition-transport${IGN_TRANSPORT_VER}::core
     ignition-plugin${IGN_PLUGIN_VER}::core
 )

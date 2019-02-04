@@ -17,11 +17,8 @@
 #ifndef IGNITION_LAUNCH_PLUGIN_HH_
 #define IGNITION_LAUNCH_PLUGIN_HH_
 
-#include <map>
-#include <string>
-
+#include <tinyxml2.h>
 #include <ignition/plugin/SpecializedPluginPtr.hh>
-
 
 namespace ignition
 {
@@ -29,9 +26,9 @@ namespace ignition
   {
     class Plugin
     {
-      public: virtual void Load(std::map<std::string, std::string> _params) = 0;
-      public: virtual void Shutdown() = 0;
+      public: virtual void Load(const tinyxml2::XMLElement *_elem) = 0;
     };
+
     using PluginPtr = ignition::plugin::SpecializedPluginPtr<
       ignition::launch::Plugin>;
   }

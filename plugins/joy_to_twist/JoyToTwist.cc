@@ -20,6 +20,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <ignition/math/Helpers.hh>
+#include <ignition/common/Console.hh>
 #include <ignition/transport/Node.hh>
 
 #include "JoyToTwist.hh"
@@ -35,21 +36,28 @@ JoyToTwist::JoyToTwist()
 /////////////////////////////////////////////////
 JoyToTwist::~JoyToTwist()
 {
+  std::unique_lock<std::mutex> lock(this->mutex);
+  this->node.Unsubscribe(this->inputTopic);
+  this->running = false;
 }
 
 /////////////////////////////////////////////////
-void JoyToTwist::Shutdown()
+void JoyToTwist::Load(const tinyxml2::XMLElement *_elem)
 {
-}
+  const tinyxml2::XMLElement *elem;
 
-/////////////////////////////////////////////////
-void JoyToTwist::Load(std::map<std::string, std::string> /*_params*/)
-{
-  std::string twistTopic = "/model/vehicle_blue/cmd_vel";
-  this->cmdVelPub = this->node.Advertise<ignition::msgs::Twist>(twistTopic);
+  elem = _elem->FirstChildElement("output_topic");
+  if (elem)
+    this->outputTopic = elem->GetText();
 
-  std::string joyTopic = "/joy";
-  this->node.Subscribe("/joy", &JoyToTwist::OnJoy, this);
+  elem = _elem->FirstChildElement("input_topic");
+  if (elem)
+    this->inputTopic = elem->GetText();
+
+  this->cmdVelPub = this->node.Advertise<ignition::msgs::Twist>(
+      this->outputTopic);
+
+  this->node.Subscribe(this->inputTopic, &JoyToTwist::OnJoy, this);
 
   this->enableButton = 0;
   this->enableTurboButton = -1;
@@ -62,13 +70,22 @@ void JoyToTwist::Load(std::map<std::string, std::string> /*_params*/)
   this->scaleAngular = ignition::math::Vector3d(0, 0, 2);
   this->scaleAngularTurbo = ignition::math::Vector3d(0, 0, 5);
   this->sentDisableMsg = false;
+
+  igndbg << "Loaded JoyToTwist plugin with the following parameters:\n"
+    << "  input_topic: " << this->inputTopic << std::endl
+    << "  output_topic: " << this->outputTopic << std::endl;
+  std::unique_lock<std::mutex> lock(this->mutex);
+  this->running = true;
 }
 
 //////////////////////////////////////////////////
 void JoyToTwist::OnJoy(const ignition::msgs::Joy &_msg)
 {
-  ignition::msgs::Twist cmdVelMsg;
+  std::unique_lock<std::mutex> lock(this->mutex);
+  if (!this->running)
+    return;
 
+  ignition::msgs::Twist cmdVelMsg;
   // Turbo mode
   if (enableTurboButton >= 0 && _msg.buttons(enableTurboButton))
   {

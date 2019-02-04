@@ -44,25 +44,30 @@ Camera::~Camera()
 }
 
 /////////////////////////////////////////////////
-void Camera::Load(std::map<std::string, std::string> _params)
+void Camera::Load(const tinyxml2::XMLElement *_elem)
 {
   std::string outputTopic = "/image";
 
   // Get the camera device name
-  if (_params.find("device") != _params.end())
-    this->device = _params["device"];
+  const tinyxml2::XMLElement *devElem = _elem->FirstChildElement("device");
+  if (devElem)
+    this->device = devElem->GetText();
 
   // Get the output topic name
-  if (_params.find("output_topic") != _params.end())
-    outputTopic = _params["output_topic"];
+  const tinyxml2::XMLElement *topicElem = _elem->FirstChildElement(
+      "output_topic");
+  if (topicElem)
+    outputTopic = topicElem->GetText();
 
   // Get width value
-  if (_params.find("width") != _params.end())
-    this->width = std::stoi(_params["width"]);
+  const tinyxml2::XMLElement *widthElem = _elem->FirstChildElement("width");
+  if (widthElem)
+    this->width = std::stoi(widthElem->GetText());
 
   // Get height value
-  if (_params.find("height") != _params.end())
-    this->height = std::stoi(_params["height"]);
+  const tinyxml2::XMLElement *heightElem = _elem->FirstChildElement("height");
+  if (heightElem)
+    this->height = std::stoi(heightElem->GetText());
 
   // Create the image publisher
   this->imgPub =
@@ -86,14 +91,6 @@ void Camera::Load(std::map<std::string, std::string> _params)
   // and turn on the streamer
   this->run = true;
   this->imageThread = new std::thread(std::bind(&Camera::FeedImages, this));
-}
-
-/////////////////////////////////////////////////
-void Camera::Shutdown()
-{
-  this->run = false;
-  if (this->imageThread)
-    this->imageThread->join();
 }
 
 /////////////////////////////////////////////////

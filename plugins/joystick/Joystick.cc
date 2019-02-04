@@ -19,6 +19,8 @@
 #include <linux/joystick.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <ignition/common/Console.hh>
+#include <ignition/common/Util.hh>
 #include <ignition/math/Helpers.hh>
 #include <ignition/transport/Node.hh>
 
@@ -35,27 +37,103 @@ Joystick::Joystick()
 /////////////////////////////////////////////////
 Joystick::~Joystick()
 {
+  std::cout << "Joystick shutdown\n";
   if (this->joyThread && this->run)
   {
     this->run = false;
     this->joyThread->join();
   }
   this->joyThread = nullptr;
+  std::cout << "Joystick shutdown done\n";
 }
 
 /////////////////////////////////////////////////
-void Joystick::Shutdown()
-{
-  this->run = false;
-  if (this->joyThread)
-    this->joyThread->join();
-}
-
-/////////////////////////////////////////////////
-void Joystick::Load(std::map<std::string, std::string> /*_params*/)
+void Joystick::Load(const tinyxml2::XMLElement *_elem)
 {
   // Get the name of the joystick device.
   std::string deviceFilename = "/dev/input/js0";
+  const tinyxml2::XMLElement *elem;
+
+  elem = _elem->FirstChildElement("device");
+  if (elem)
+    deviceFilename = elem->GetText();
+
+  elem = _elem->FirstChildElement("sticky_buttons");
+  if (elem)
+  {
+    std::string stickyStr = elem->GetText();
+    this->stickyButtons = stickyStr == "1" ||
+      common::lowercase(stickyStr) == "true";
+  }
+
+  // Read the amount of dead zone for the analog joystick
+  float deadzone = 0.05;
+  elem = _elem->FirstChildElement("dead_zone");
+  if (elem)
+  {
+    try
+    {
+      deadzone = ignition::math::clamp(std::stof(elem->GetText()), 0.0f, 0.9f);
+    }
+    catch(...)
+    {
+      ignerr << "<dead_zone> is not a valid floating point number, "
+        "using 0.05\n";
+    }
+  }
+
+  // Read the rate at which data should be published
+  //float intervalRate = joy->Get<float>("rate", 1.0f).first;
+  float intervalRate = 60.0f;
+  elem = _elem->FirstChildElement("rate");
+  if (elem)
+  {
+    try
+    {
+      intervalRate = std::stof(elem->GetText());
+    }
+    catch(...)
+    {
+      ignerr << "<rate> is not a valid floating point number, using 60Hz\n";
+    }
+  }
+
+  if (intervalRate <= 0)
+    this->interval = 1.0f;
+  else
+    this->interval = 1.0f / intervalRate;
+
+  // Read the rate at which joystick data should be accumulated into
+  // a message.
+  float accumulationRate = 1000;
+  elem = _elem->FirstChildElement("accumulation_rate");
+  if (elem)
+  {
+    try
+    {
+      accumulationRate = std::stof(elem->GetText());
+    }
+    catch(...)
+    {
+      ignerr << "<accumulation_rate> is not a valid floating point number, "
+        << "using 1000Hz\n";
+    }
+  }
+
+  if (accumulationRate <= 0)
+    this->accumulationInterval = 0.0f;
+  else
+    this->accumulationInterval = 1.0f / accumulationRate;
+
+  // Check that we are not publishing faster than accumulating data. This is
+  // not a critical error, but doesn't make a whole lot of sense.
+  if (this->interval < this->accumulationInterval)
+  {
+    std::cout << "The publication rate of [" << 1.0 / this->interval
+      << " Hz] is greater than the accumulation rate of ["
+      << 1.0 / this->accumulationInterval
+      << " Hz]. Timing behavior is ill defined.\n";
+  }
 
   bool opened = false;
 
@@ -88,41 +166,8 @@ void Joystick::Load(std::map<std::string, std::string> /*_params*/)
     return;
   }
 
-  // auto stickyButtons = joy->Get<bool>("sticky_buttons", false).first;
 
-  // Read the amount of dead zone for the analog joystick
-  float deadzone = 0.05;
-  /*float deadzone = ignition::math::clamp(
-      joy->Get<float>("dead_zone", 0.05f).first,
-      0.0f, 0.9f);
-      */
 
-  // Read the rate at which data should be published
-  //float intervalRate = joy->Get<float>("rate", 1.0f).first;
-  float intervalRate = 60.0f;
-  if (intervalRate <= 0)
-    this->interval = 1.0f;
-  else
-    this->interval = 1.0f / intervalRate;
-
-  // Read the rate at which joystick data should be accumulated into
-  // a message.
-  //float accumulationRate = joy->Get<float>("accumulation_rate", 1000).first;
-  float accumulationRate = 1000;
-  if (accumulationRate <= 0)
-    this->accumulationInterval = 0.0f;
-  else
-    this->accumulationInterval = 1.0f / accumulationRate;
-
-  // Check that we are not publishing faster than accumulating data. This is
-  // not a critical error, but doesn't make a whole lot of sense.
-  if (this->interval < this->accumulationInterval)
-  {
-    std::cout << "The publication rate of [" << 1.0 / this->interval
-      << " Hz] is greater than the accumulation rate of ["
-      << 1.0 / this->accumulationInterval
-      << " Hz]. Timing behavior is ill defined.\n";
-  }
 
   this->unscaledDeadzone = 32767.0f * deadzone;
   this->axisScale = -1.0f / (1.0f - deadzone) / 32767.0f;
@@ -134,6 +179,13 @@ void Joystick::Load(std::map<std::string, std::string> /*_params*/)
 
   this->run = true;
   this->joyThread = new std::thread(std::bind(&Joystick::Run, this));
+
+  igndbg << "Loaded Joystick plugin with the following parameters:\n"
+    << "  device: " << deviceFilename << std::endl
+    << "  sticky_buttons: " << this->stickyButtons << std::endl
+    << "  dead_zone: " << deadzone << std::endl
+    << "  rate: " << intervalRate << std::endl
+    << "  accumulation_rate: " << accumulationRate  << std::endl;
 }
 
 //////////////////////////////////////////////////

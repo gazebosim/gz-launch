@@ -115,8 +115,8 @@ class ignition::launch::ManagerPrivate
   /// \brief Print help information to stdout.
   public: void PrintUsage();
 
-  public: void LoadPlugin(const std::string &_file,
-                          const std::string &_name);
+  public: void LoadPlugin(const std::string &_filename,
+              const tinyxml2::XMLElement *_elem);
 
   /// \brief Handle SIG_INT and SIG_TERM signals
   /// \param[in] _sig The signal
@@ -183,7 +183,8 @@ bool Manager::RunConfig(const std::string &_config)
   if (!this->dataPtr->master)
     return true;
 
-  this->dataPtr->running = !this->dataPtr->executables.empty();
+  this->dataPtr->running = !this->dataPtr->executables.empty() ||
+                           !this->dataPtr->plugins.empty();
 
   // Wait for a shutdown event.
   // \todo: In the future, we could add execution models that control plugin
@@ -191,7 +192,13 @@ bool Manager::RunConfig(const std::string &_config)
   while (this->dataPtr->running)
     this->dataPtr->runCondition.wait(lock);
 
+  // Stop executables.
   this->dataPtr->ShutdownExecutables();
+
+  // Stop plugins.
+  std::cout << "1\n";
+  this->dataPtr->plugins.clear();
+  std::cout << "2\n";
 
   return true;
 }
@@ -384,30 +391,9 @@ bool ManagerPrivate::ParseConfig(const std::string &_filename)
 
 
   // This "i" variable is just used for output messages.
-  for (int i = 0; pluginElem; ++i)
+  while (pluginElem)
   {
-    // Get the plugin's name
-    const char *nameStr = pluginElem->Attribute("name");
-    std::string name = nameStr == nullptr ? "" : nameStr;
-    if (name.empty())
-    {
-      ignerr << "Invalid config file[" << _filename << "]. "
-        << "Missing name attribute for plugin(" << i << ")" << std::endl;
-    }
-
-    // Get the plugin's filename
-    const char *fileStr = pluginElem->Attribute("filename");
-    std::string file = fileStr == nullptr ? "" : fileStr;
-    if (file.empty())
-    {
-      ignerr << "Invalid config file[" << _filename << "]. "
-        << "Missing filename attribute for plugin with name[" << name << "]"
-        << std::endl;
-    }
-
-    if (!file.empty() && !name.empty())
-      this->LoadPlugin(file, name);
-
+    this->LoadPlugin(_filename, pluginElem);
     pluginElem = pluginElem->NextSiblingElement("plugin");
   }
 
@@ -504,9 +490,30 @@ void ManagerPrivate::ShutdownExecutables()
 }
 
 //////////////////////////////////////////////////
-void ManagerPrivate::LoadPlugin(const std::string &_file,
-                                const std::string &_name)
+void ManagerPrivate::LoadPlugin(const std::string &_filename,
+    const tinyxml2::XMLElement *_elem)
 {
+  // Get the plugin's name
+  const char *nameStr = _elem->Attribute("name");
+  std::string name = nameStr == nullptr ? "" : nameStr;
+  if (name.empty())
+  {
+    ignerr << "Invalid config file[" << _filename << "], "
+      << "missing a name attribute for a plugin." << std::endl;
+    return;
+  }
+
+  // Get the plugin's filename
+  const char *fileStr = _elem->Attribute("filename");
+  std::string file = fileStr == nullptr ? "" : fileStr;
+  if (file.empty())
+  {
+    ignerr << "Invalid config file[" << _filename << "], "
+      << "missing filename attribute for plugin with name[" << name << "]"
+      << std::endl;
+    return;
+  }
+
   ignition::common::SystemPaths systemPaths;
   systemPaths.SetPluginPathEnv("IGN_LAUNCH_PLUGIN_PATH");
   systemPaths.AddPluginPaths(IGNITION_LAUNCH_PLUGIN_INSTALL_PATH);
@@ -516,10 +523,10 @@ void ManagerPrivate::LoadPlugin(const std::string &_file,
   ignition::common::env(IGN_HOMEDIR, homePath);
   systemPaths.AddPluginPaths(homePath + "/.ignition/gazebo/plugins");
 
-  std::string pathToLib = systemPaths.FindSharedLibrary(_file);
+  std::string pathToLib = systemPaths.FindSharedLibrary(file);
   if (pathToLib.empty())
   {
-    ignerr << "Failed to find the path to library[" << _file << "]. "
+    ignerr << "Failed to find the path to library[" << file << "]. "
       << "Try adding the path to the IGN_LAUNCH_PLUGIN_PATH environment "
       << "variable.\n";
     return;
@@ -536,17 +543,17 @@ void ManagerPrivate::LoadPlugin(const std::string &_file,
 
   std::unordered_set<std::string> validPlugins =
     loader.PluginsImplementing<ignition::launch::Plugin>();
-  if (validPlugins.count(_name) == 0)
+  if (validPlugins.count(name) == 0)
   {
-    ignerr << "Failed to find implementation with name[" << _name << "] in "
-      << _file << std::endl;
+    ignerr << "Failed to find implementation with name[" << name << "] in "
+      << file << std::endl;
     return;
   }
 
-  igndbg << "Loading plugin. Name[" << _name
-      << "] File[" << _file << "]" << std::endl;
+  igndbg << "Loading plugin. Name[" << name
+    << "] File[" << file << "]" << std::endl;
 
-  PluginPtr plugin = loader.Instantiate(_name);
-  plugin->QueryInterface<Plugin>()->Load({});
+  PluginPtr plugin = loader.Instantiate(name);
+  plugin->QueryInterface<Plugin>()->Load(_elem);
   this->plugins.insert(plugin);
 }
