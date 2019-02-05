@@ -202,9 +202,7 @@ bool Manager::RunConfig(const std::string &_config)
   this->dataPtr->ShutdownExecutables();
 
   // Stop plugins.
-  std::cout << "1\n";
   this->dataPtr->plugins.clear();
-  std::cout << "2\n";
 
   return true;
 }
