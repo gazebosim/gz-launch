@@ -57,8 +57,10 @@ class Executable
   /// \param[in] _autoRestart True if the executable should restart when it
   /// is is killed.
   public: Executable(const std::string &_name, const pid_t _pid,
-                     const std::vector<std::string> &_cmd, bool _autoRestart)
-          : name(_name), pid(_pid), command(_cmd), autoRestart(_autoRestart)
+            const std::vector<std::string> &_cmd, bool _autoRestart,
+            const std::list<std::pair<std::string, std::string>> _envs)
+          : name(_name), pid(_pid), command(_cmd), autoRestart(_autoRestart),
+            envs(_envs)
           {}
 
   /// \brief Name of the executable
@@ -72,6 +74,9 @@ class Executable
 
   /// \brief True will cause the command to restart on kill
   public: bool autoRestart = false;
+
+  /// \brief Environment variables.
+  public: std::list<std::pair<std::string, std::string>> envs;
 };
 
 /// \brief Private data variables for the Ignition class.
@@ -102,8 +107,9 @@ class ignition::launch::ManagerPrivate
   /// death.
   /// \return True on success.
   public: bool RunExecutable(const std::string &_name,
-                             const std::vector<std::string> &_cmd,
-                             const bool _autoRestart);
+    const std::vector<std::string> &_cmd,
+    const bool _autoRestart,
+    const std::list<std::pair<std::string, std::string>> _envs);
 
   /// \brief Stop all executables
   public: void ShutdownExecutables();
@@ -357,26 +363,27 @@ bool ManagerPrivate::ParseConfig(const std::string &_filename)
       autoRestart = txt == "true" || txt == "1" || txt == "t";
     }
 
-    // Get the arguments
-    tinyxml2::XMLElement *argElem = execElem->FirstChildElement("arg");
-    while (argElem)
+    std::list<std::pair<std::string, std::string>> envs;
+
+    // Get the environment variables
+    tinyxml2::XMLElement *envElem = execElem->FirstChildElement("env");
+    while (envElem)
     {
-      std::string arg = argElem->GetText();
-      if (arg.empty())
+      tinyxml2::XMLElement *nameElem = envElem->FirstChildElement("name");
+      tinyxml2::XMLElement *valueElem = envElem->FirstChildElement("value");
+      if (nameElem && valueElem)
       {
-        ignwarn << "Configuration file[" << _filename << "] has an empty "
-          << "argument in <element name=\"" << nameStr << "\">\n";
+        std::string name = nameElem->GetText();
+        std::string value = valueElem->GetText();
+        envs.push_back({name, value});
       }
-      else
-      {
-        cmdParts.push_back(argElem->GetText());
-      }
-      argElem = argElem->NextSiblingElement("arg");
+
+      envElem = envElem->NextSiblingElement("env");
     }
 
     if (valid)
     {
-      if (!this->RunExecutable(nameStr, cmdParts, autoRestart))
+      if (!this->RunExecutable(nameStr, cmdParts, autoRestart, envs))
       {
         ignerr << "Unable to run executable named[" << nameStr << "] in "
           << "configuration file[" << _filename << "].\n";
@@ -403,12 +410,14 @@ bool ManagerPrivate::ParseConfig(const std::string &_filename)
 /////////////////////////////////////////////////
 bool ManagerPrivate::RunExecutable(const Executable &_exec)
 {
-  return this->RunExecutable(_exec.name, _exec.command, _exec.autoRestart);
+  return this->RunExecutable(_exec.name, _exec.command, _exec.autoRestart,
+      _exec.envs);
 }
 
 /////////////////////////////////////////////////
 bool ManagerPrivate::RunExecutable(const std::string &_name,
-    const std::vector<std::string> &_cmd, bool _autoRestart)
+    const std::vector<std::string> &_cmd, bool _autoRestart,
+    const std::list<std::pair<std::string, std::string>> _envs)
 {
   // Check for empty
   if (_cmd.empty())
@@ -429,7 +438,8 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
 
     std::lock_guard<std::mutex> mutex(this->executablesMutex);
     // Store the PID in the parent process.
-    this->executables.push_back(Executable(_name, pid, _cmd, _autoRestart));
+    this->executables.push_back(Executable(
+          _name, pid, _cmd, _autoRestart, _envs));
   }
   // Else child process...
   else
@@ -449,6 +459,14 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
 
     // Remove from foreground process group.
     setpgid(0, 0);
+
+    for (const std::pair<std::string, std::string> &env : _envs)
+    {
+      char finalEnv[1024];
+      snprintf(finalEnv, sizeof(finalEnv), "%s=%s", env.first.c_str(),
+          env.second.c_str());
+      putenv(finalEnv);
+    }
 
     // Run the command
     if (execvp(cstrings[0], &cstrings[0]) < 0)
