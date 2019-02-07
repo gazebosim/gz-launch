@@ -45,7 +45,7 @@ COMMANDS = { 'launch' =>
   "                                                                        \n"\
   "                                                                        \n"\
   "Available Options:                                                      \n"\
-  "  -r [ --run ] [arg]       Run a configuration file.                    \n"\
+  "  -f [ --file ] [arg]      Run a configuration file.                    \n"\
   "  -v [ --verbose ] [arg]   Adjust the level of console output (0~4).    \n"\
   "                           The default verbosity is 1, use -v without   \n"\
   "                           arguments for level 3.                       \n" +
@@ -74,8 +74,8 @@ class Cmd
         puts usage
         exit
       end
-      opts.on('-r [config]', '--run', String, 'Run a configuration') do |cfg|
-        options['run'] = cfg
+      opts.on('-f [config]', '--file', String, 'Run a configuration file') do |cfg|
+        options['file'] = cfg
       end
       opts.on('-v [verbose]', '--verbose [verbose]', String,
           'Adjust level of console output') do |v|
@@ -131,9 +131,9 @@ class Cmd
         Importer.cmdVerbosity(options['verbose'])
       end
 
-      if options.key?('run')
+      if options.key?('file')
         Importer.extern 'int run(const char *)'
-        if not Importer.run(options['run'])
+        if not Importer.run(options['file'])
           exit(-1)
         end
       else

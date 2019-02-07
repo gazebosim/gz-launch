@@ -66,6 +66,15 @@ set(IGN_MSGS_VER ${ignition-msgs3_VERSION_MAJOR})
 ign_find_package(ignition-transport6 REQUIRED )
 set(IGN_TRANSPORT_VER ${ignition-transport6_VERSION_MAJOR})
 
+################################################
+# Find Ruby, which is used to produce xml schemas and parse ERB files.
+find_package(Ruby)
+if (RUBY_FOUND)
+  message(STATUS "Looking for ruby - found version ${RUBY_VERSION}")
+else()
+  message(STATUS "Looking for ruby - not found")
+  BUILD_ERROR("Couldn't find Ruby")
+endif()
 
 #============================================================================
 # Configure the build
