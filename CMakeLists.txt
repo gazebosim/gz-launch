@@ -50,16 +50,17 @@ ign_find_package(ignition-tools REQUIRED PRIVATE)
 ign_find_package(ignition-plugin1 REQUIRED COMPONENTS loader register)
 set(IGN_PLUGIN_VER ${ignition-plugin1_VERSION_MAJOR})
 
-
 #--------------------------------------
-# Find QT
+# Find ignition-gui
+ign_find_package(ignition-gui1 REQUIRED)
+set(IGN_GUI_VER ${ignition-gui1_VERSION_MAJOR})
 ign_find_package (Qt5
   COMPONENTS
     Core
-    Widgets
+    Quick
+    QuickControls2
   REQUIRED
-  PKGCONFIG "Qt5Core Ot5Widgets"
-)
+  PKGCONFIG "Qt5Core Qt5Quick Qt5QuickControls2")
 
 #--------------------------------------
 # Find ignition-msgs
@@ -82,6 +83,8 @@ else()
 endif()
 
 ign_find_package(sdformat8 REQUIRED)
+
+
 
 #============================================================================
 # Configure the build

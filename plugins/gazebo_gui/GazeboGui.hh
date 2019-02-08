@@ -14,28 +14,30 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_GAZEBOSERVER_PLUGIN_HH_
-#define IGNITION_LAUNCH_GAZEBOSERVER_PLUGIN_HH_
+#ifndef IGNITION_LAUNCH_GAZEBOGUI_PLUGIN_HH_
+#define IGNITION_LAUNCH_GAZEBOGUI_PLUGIN_HH_
 
 #include <memory>
 #include <ignition/plugin/Register.hh>
-#include <ignition/gazebo/Server.hh>
+
+#include <ignition/gui/Application.hh>
+
 #include "ignition/launch/Plugin.hh"
 
 using namespace ignition::launch;
 
 namespace ignition
 {
-  class GazeboServer : public ignition::launch::Plugin
+  class GazeboGui : public ignition::launch::Plugin
   {
-    public: GazeboServer();
-    public: virtual ~GazeboServer() = default;
+    public: GazeboGui();
+    public: virtual ~GazeboGui();
     public: virtual void Load(const tinyxml2::XMLElement *_elem) override final;
-    private: std::unique_ptr<gazebo::Server> server;
+    private: std::unique_ptr<ignition::gui::Application> app;
   };
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(GazeboServer, ignition::launch::Plugin)
+IGNITION_ADD_PLUGIN(GazeboGui, ignition::launch::Plugin)
 
 #endif

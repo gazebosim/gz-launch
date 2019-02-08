@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Open Source Robotics Foundation
+ * Copyright (C) 2019 Open Source Robotics Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -142,5 +142,5 @@ void GazeboServer::Load(const tinyxml2::XMLElement *_elem)
   this->server.reset(new gazebo::Server(serverConfig));
   this->server->Run(false, 0, !run);
 
-  igndbg << "Loaded GazeboServer plugin with the following parameters:\n";
+  igndbg << "Loaded GazeboServer plugin.\n";
 }
