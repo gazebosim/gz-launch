@@ -37,14 +37,12 @@ Joystick::Joystick()
 /////////////////////////////////////////////////
 Joystick::~Joystick()
 {
-  std::cout << "Joystick shutdown\n";
   if (this->joyThread && this->run)
   {
     this->run = false;
     this->joyThread->join();
   }
   this->joyThread = nullptr;
-  std::cout << "Joystick shutdown done\n";
 }
 
 /////////////////////////////////////////////////
@@ -129,7 +127,7 @@ void Joystick::Load(const tinyxml2::XMLElement *_elem)
   // not a critical error, but doesn't make a whole lot of sense.
   if (this->interval < this->accumulationInterval)
   {
-    std::cout << "The publication rate of [" << 1.0 / this->interval
+    ignwarn << "The publication rate of [" << 1.0 / this->interval
       << " Hz] is greater than the accumulation rate of ["
       << 1.0 / this->accumulationInterval
       << " Hz]. Timing behavior is ill defined.\n";
@@ -151,7 +149,7 @@ void Joystick::Load(const tinyxml2::XMLElement *_elem)
     }
     else
     {
-      std::cout << "Unable to open joystick at [" << deviceFilename
+      ignerr << "Unable to open joystick at [" << deviceFilename
         << "] Attemping again\n";
     }
 
@@ -213,7 +211,6 @@ void Joystick::Run()
       tv.tv_sec = 0;
       tv.tv_usec = 0;
 
-      std::cout << "Joystick might be closed\n";
       if (this->run)
         continue;
       else
@@ -228,7 +225,7 @@ void Joystick::Run()
     {
       if (read(this->joyFd, &event, sizeof(js_event)) == -1 && errno != EAGAIN)
       {
-        std::cout << "Joystick read failed, might be closed\n";
+        ignwarn << "Joystick read failed, might be closed\n";
         return;
       }
 
@@ -283,7 +280,7 @@ void Joystick::Run()
           }
         default:
           {
-            std::cout << "Unknown event type: time[" << event.time << "] "
+            ignwarn << "Unknown event type: time[" << event.time << "] "
               << "value[" << value << "] "
               << "type[" << event.type << "h] "
               << "number["<< event.number << "]" << std::endl;

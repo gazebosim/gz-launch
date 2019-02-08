@@ -30,7 +30,7 @@ namespace ignition
   class GazeboServer : public ignition::launch::Plugin
   {
     public: GazeboServer();
-    public: virtual ~GazeboServer();
+    public: virtual ~GazeboServer() = default;
     public: virtual void Load(const tinyxml2::XMLElement *_elem) override final;
     private: std::unique_ptr<gazebo::Server> server;
   };

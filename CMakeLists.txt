@@ -81,6 +81,8 @@ else()
   BUILD_ERROR("Couldn't find Ruby")
 endif()
 
+ign_find_package(sdformat8 REQUIRED)
+
 #============================================================================
 # Configure the build
 #============================================================================

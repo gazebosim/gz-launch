@@ -10,6 +10,7 @@ target_link_libraries(${plugin_lower}
   ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
   ignition-transport${IGN_TRANSPORT_VER}::core
   ignition-plugin${IGN_PLUGIN_VER}::core
+  sdformat8::sdformat8
 )
 
 install (TARGETS ${plugin_lower} DESTINATION ${CMAKE_INSTALL_PREFIX}/${IGN_LIB_INSTALL_DIR}/ign-${IGN_DESIGNATION}-${PROJECT_VERSION_MAJOR}/plugins/)

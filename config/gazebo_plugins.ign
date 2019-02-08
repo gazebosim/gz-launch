@@ -1,29 +1,72 @@
 <?xml version='1.0'?>
+<!-- Requires ign-gazebo branch support_loading_plugins_programmatically -->
 <ignition version='1.0'>
 
-  <!--
-  <pipeline name='gazebo-server'>
-    <executable>erb</executable>
-    <executable>gazebo-server</executable>
-    <executable>gazebo-client</executable>
-    <env>
-      <name>IGN_GAZEBO_RESOURCE_PATH</name>
-      <value>/data/ignition/ign-gazebo/examples/worlds</value>
-    </env>
-    <command>ign-gazebo-server -f diff_drive.sdf</command>
-  </executable>
--->
+  <!-- Load a joystick plugin that will read from a device and output to a 
+       topic -->
+  <plugin name="ignition::Joystick" filename="libjoystick.so">
+    <device>/dev/input/js0</device>
+    <sticky_buttons>false</sticky_buttons>
+    <dead_zone>0.05</dead_zone>
+    <rate>60</rate>
+    <accumulation_rate>1000</accumulation_rate>
+  </plugin>
 
+  <!-- Load a plugin that transforms a joystick message to a
+       twist message -->
+  <plugin name="ignition::JoyToTwist" filename="libjoytotwist.so">
+    <input_topic>/joy</input_topic>
+    <output_topic>/model/vehicle_green/cmd_vel</output_topic>
+  </plugin>
+
+  <plugin name="ignition::JoyToTwist" filename="libjoytotwist.so">
+    <input_topic>/joy</input_topic>
+    <output_topic>/model/vehicle_blue/cmd_vel</output_topic>
+  </plugin>
+
+  <!-- Run the gazebo server with a set of plugins -->
   <plugin name="ignition::GazeboServer" filename="libgazebolaunch.so">
     <world_file>/home/nkoenig/test.sdf</world_file>
+    <run>true</run>
+    <levels>false</levels>
 
-    <!-- Requires ign-gazebo branch support_loading_plugins_programmatically
-         -->
-    <plugin filename="libignition-gazebo-physics-system.so"
+    <plugin entity_name="diff_drive"
+            entity_type="world"
+            filename="libignition-gazebo-physics-system.so"
             name="ignition::gazebo::systems::v0::Physics">
     </plugin>
-    <plugin filename="libignition-gazebo-systems.so"
+    <plugin entity_name="diff_drive"
+            entity_type="world"
+            filename="libignition-gazebo-systems.so"
             name="ignition::gazebo::systems::v0::SceneBroadcaster">
     </plugin>
+
+    <plugin entity_name="vehicle_green"
+            entity_type="model"
+            filename="libignition-gazebo-systems.so"
+            name="ignition::gazebo::systems::v0::DiffDrive">
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+      <wheel_separation>1.25</wheel_separation>
+      <wheel_radius>0.3</wheel_radius>
+    </plugin>
+
+    <plugin entity_name="vehicle_blue"
+            entity_type="model"
+            filename="libignition-gazebo-systems.so"
+            name="ignition::gazebo::systems::v0::DiffDrive">
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+      <wheel_separation>1.25</wheel_separation>
+      <wheel_radius>0.3</wheel_radius>
+    </plugin>
+
   </plugin>
+
+  <!-- Run the GUI -->
+  <executable name='gazebo-client'>
+    <command>ign-gazebo-gui</command>
+    <auto_restart>false</auto_restart>
+  </executable>
+
 </ignition>

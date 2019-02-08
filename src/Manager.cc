@@ -471,8 +471,7 @@ bool ManagerPrivate::ParseConfig(const std::string &_filename)
   // Process all the plugins.
   tinyxml2::XMLElement *pluginElem = root->FirstChildElement("plugin");
 
-
-  // This "i" variable is just used for output messages.
+  // Load all the plugins.
   while (pluginElem)
   {
     this->LoadPlugin(_filename, pluginElem);
