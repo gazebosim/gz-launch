@@ -1,0 +1,29 @@
+<?xml version='1.0'?>
+<ignition version='1.0'>
+
+  <!--
+  <pipeline name='gazebo-server'>
+    <executable>erb</executable>
+    <executable>gazebo-server</executable>
+    <executable>gazebo-client</executable>
+    <env>
+      <name>IGN_GAZEBO_RESOURCE_PATH</name>
+      <value>/data/ignition/ign-gazebo/examples/worlds</value>
+    </env>
+    <command>ign-gazebo-server -f diff_drive.sdf</command>
+  </executable>
+-->
+
+  <plugin name="ignition::GazeboServer" filename="libgazebolaunch.so">
+    <world_file>/home/nkoenig/test.sdf</world_file>
+
+    <!-- Requires ign-gazebo branch support_loading_plugins_programmatically
+         -->
+    <plugin filename="libignition-gazebo-physics-system.so"
+            name="ignition::gazebo::systems::v0::Physics">
+    </plugin>
+    <plugin filename="libignition-gazebo-systems.so"
+            name="ignition::gazebo::systems::v0::SceneBroadcaster">
+    </plugin>
+  </plugin>
+</ignition>

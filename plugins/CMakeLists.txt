@@ -1,5 +1,6 @@
 set (plugins
   camera
+  gazebo
   image_compress
   joystick
   joy_to_twist

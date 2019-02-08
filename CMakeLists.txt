@@ -32,6 +32,11 @@ message(STATUS "\n\n-- ====== Finding Dependencies ======")
 ign_find_package(TINYXML2 REQUIRED PRIVATE PRETTY tinyxml2)
 
 #--------------------------------------
+# Find ignition-gazebo
+ign_find_package(ignition-gazebo REQUIRED PRIVATE)
+set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo0_VERSION_MAJOR})
+
+#--------------------------------------
 # Find ignition-common
 ign_find_package(ignition-common3 REQUIRED PRIVATE)
 set(IGN_COMMON_MAJOR_VER ${ignition-common3_VERSION_MAJOR})

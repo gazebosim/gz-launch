@@ -373,7 +373,6 @@ bool ManagerPrivate::ParseConfig(const std::string &_filename)
     return false;
   }
 
-  std::cout << erbParsed << std::endl;
   tinyxml2::XMLDocument xmlDoc;
 
   // Load the XML configuration file into TinyXML
