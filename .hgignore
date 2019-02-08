@@ -5,5 +5,6 @@ build_*
 build-*
 .DS_Store
 *.swp
+*.swo
 *.gch
 *.pch
