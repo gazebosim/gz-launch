@@ -21,6 +21,7 @@
 #include <ignition/plugin/Register.hh>
 
 #include <ignition/gui/Application.hh>
+#include <ignition/common/Event.hh>
 
 #include "ignition/launch/Plugin.hh"
 
@@ -33,6 +34,9 @@ namespace ignition
     public: GazeboGui();
     public: virtual ~GazeboGui();
     public: virtual void Load(const tinyxml2::XMLElement *_elem) override final;
+
+    private: void Run();
+    private: ignition::common::ConnectionPtr connection;
     private: std::unique_ptr<ignition::gui::Application> app;
   };
 }

@@ -26,6 +26,7 @@ else
 end
 
 require 'optparse'
+require 'erb'
 
 # Constants.
 LIBRARY_NAME = '@IGN_LIBRARY_NAME@'
@@ -132,8 +133,9 @@ class Cmd
       end
 
       if options.key?('file')
+        parsed = ERB.new(File.read(options['file'])).result()
         Importer.extern 'int run(const char *)'
-        if not Importer.run(options['file'])
+        if not Importer.run(parsed)
           exit(-1)
         end
       else

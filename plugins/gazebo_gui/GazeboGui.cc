@@ -20,6 +20,7 @@
 #include <ignition/gui/MainWindow.hh>
 #include "ignition/gazebo/gui/TmpIface.hh"
 
+#include "ignition/launch/Events.hh"
 #include "GazeboGui.hh"
 
 using namespace ignition;
@@ -33,19 +34,20 @@ GazeboGui::GazeboGui()
 /////////////////////////////////////////////////
 GazeboGui::~GazeboGui()
 {
-  if (this->runThread)
-    this->runThread->join();
 }
 
 /////////////////////////////////////////////////
 void GazeboGui::Load(const tinyxml2::XMLElement *_elem)
 {
+  this->connection = launch::Events::runEvent.Connect(
+      std::bind(&GazeboGui::Run, this));
+
   int argc;
   char **argv = nullptr;
 
   this->app.reset(new ignition::gui::Application(argc, argv));
 
-    // Load configuration file
+  // Load configuration file
   std::string configPath = ignition::common::joinPaths(
       IGNITION_GAZEBO_GUI_CONFIG_PATH, "gui.config");
 
@@ -82,13 +84,13 @@ void GazeboGui::Load(const tinyxml2::XMLElement *_elem)
   else
   {
     ignerr << "Failed to instantiate custom drawer, drawer will be empty"
-           << std::endl;
+      << std::endl;
   }
 
   const tinyxml2::XMLElement *elem = nullptr;
   // Process all the plugins.
   for (elem = _elem->FirstChildElement("plugin"); elem;
-       elem = elem->NextSiblingElement("plugin"))
+      elem = elem->NextSiblingElement("plugin"))
   {
     // Get the plugin's name
     const char *nameStr = elem->Attribute("name");
@@ -113,8 +115,18 @@ void GazeboGui::Load(const tinyxml2::XMLElement *_elem)
     ignition::gui::App()->LoadPlugin(file, elem);
   }
 
-  // Run main window.
   // This blocks until the window is closed or we receive a SIGINT
-  igndbg << "Running the GazeboGui plugin.\n";
   this->app->exec();
+  std::cout << "DONE!\n";
+  this->app.reset();
+  // Run main window.
+  igndbg << "Running the GazeboGui plugin.\n";
+}
+
+//////////////////////////////////////////////////
+void GazeboGui::Run()
+{
+  this->connection.reset();
+
+  std::cout << "DONE event more!\n";
 }

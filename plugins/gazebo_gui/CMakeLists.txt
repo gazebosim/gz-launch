@@ -3,14 +3,19 @@ set (sources GazeboGui.cc)
 
 string (TOLOWER ${plugin} plugin_lower)
 
+# ign_find_package(ignition-launch REQUIRED PRIVATE)
+# set(IGN_LAUNCH_MAJOR_VER ${ignition-launch_VERSION_MAJOR})
+
 add_library(${plugin_lower} SHARED ${sources})
 target_link_libraries(${plugin_lower}
   PRIVATE
   ignition-gazebo${IGN_GAZEBO_MAJOR_VER}::ignition-gazebo${IGN_GAZEBO_MAJOR_VER}
   ignition-gui${IGN_GUI_VER}::ignition-gui${IGN_GUI_VER}
   ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
+  ignition-common${IGN_COMMON_MAJOR_VER}::events
   ignition-transport${IGN_TRANSPORT_VER}::core
   ignition-plugin${IGN_PLUGIN_VER}::core
+  ignition-launch
   sdformat8::sdformat8
   ign-gazebo-gui-lib
 )

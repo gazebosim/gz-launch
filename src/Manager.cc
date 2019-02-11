@@ -33,63 +33,14 @@
 #include <ignition/plugin/Loader.hh>
 
 #include "ignition/launch/config.hh"
+#include "ignition/launch/Events.hh"
 #include "ignition/launch/Plugin.hh"
 #include "Manager.hh"
-
-// The following line prevent Ruby from complaining about std::isfinite
-#define HAVE_ISFINITE 1
-#include "ruby.hh"
 
 using namespace ignition;
 using namespace launch;
 
-// Class to handle Ruby initialization.
-class RubyInitializer
-{
-  /// \brief Constructor
-  public: RubyInitializer()
-  {
-    // Initialize ruby.
-    RUBY_INIT_STACK;
-    ruby_init();
-    ruby_init_loadpath();
-  }
-
-  // \brief Parse a string using ERB.
-  // \param[in] _string String to parse.
-  // \param[out] _result ERB parsed string.
-  // \return True on success.
-  public: bool erbString(const std::string &_string, std::string &_result)
-  {
-    std::string cmd ="begin; require 'erb'; ERB.new(%Q{" +
-      _string + "}).result; rescue; end";
-
-    // Run the ERB parser
-    int rbState = 0;
-    VALUE ret = rb_eval_string_protect(cmd.c_str(), &rbState);
-
-    if (rbState)
-    {
-      ignerr << "Unable to parse string[" << _string << "] using ERB.\n";
-      return false;
-    }
-    else
-    {
-      // Convert ruby string to std::string
-      if (RSTRING(ret)->as.heap.ptr != NULL)
-      {
-        _result.assign(RSTRING(ret)->as.heap.ptr, RSTRING(ret)->as.heap.len);
-      }
-      else
-      {
-        ignerr << "Unable to parse string[" << _string << "] using ERB.\n";
-        return false;
-      }
-    }
-
-    return true;
-  }
-};
+ignition::launch::Events::RunEvent ignition::launch::Events::runEvent;
 
 /// \brief A class to encapsulate an executable (program) to run.
 class Executable
@@ -138,9 +89,9 @@ class ignition::launch::ManagerPrivate
   public: ManagerPrivate();
 
   /// \brief Parse a configuration file.
-  /// \param[in] _filename Name of the XML file to parse.
+  /// \param[in] _string XML configuration string.
   /// \return True on success.
-  public: bool ParseConfig(const std::string &_filename);
+  public: bool ParseConfig(const std::string &_string);
 
   /// \brief Fork a new process for a command specified by _exec. This
   /// function will create a new Executable and add it to the executables
@@ -173,22 +124,10 @@ class ignition::launch::ManagerPrivate
   /// \brief Print help information to stdout.
   public: void PrintUsage();
 
-  public: void LoadPlugin(const std::string &_filename,
-              const tinyxml2::XMLElement *_elem);
-
-  /// \brief Parse an file using ERB. The _result will contain a copy
-  /// of _filename if the file does not contain ERB.
-  /// \param[in] _filename File to parse.
-  /// \param[out] _result ERB parsed file contents.
-  /// \return True on success.
-  public: bool ErbFile(const std::string &_filename, std::string &_result);
-
-  /// \brief Parse a string using ERB. The result will equal the given
-  /// _string if the _string does not contain ERB.
-  /// \param[in] _string String to parse.
-  /// \param[out] _result ERB parsed string.
-  /// \return True on success.
-  public: bool ErbString(const std::string &_string, std::string &_result);
+  /// \brief Load a plugin based on data contained in an XML element.
+  /// \param[in] _elem Pointer to the XML element containing the plugin
+  /// information.
+  public: void LoadPlugin(const tinyxml2::XMLElement *_elem);
 
   /// \brief Handle SIG_INT and SIG_TERM signals
   /// \param[in] _sig The signal
@@ -222,6 +161,9 @@ class ignition::launch::ManagerPrivate
   /// \brief Pointer to myself. This is used in the signal handlers.
   /// A raw pointer is acceptable here since it is used only internally.
   public: static ManagerPrivate *myself;
+
+  // Instance of RubyInitializer.
+  //public: RubyInitializer rubyInit;
 };
 
 ManagerPrivate *ManagerPrivate::myself = nullptr;
@@ -260,6 +202,8 @@ bool Manager::RunConfig(const std::string &_config)
 
   this->dataPtr->running = !this->dataPtr->executables.empty() ||
                            !this->dataPtr->plugins.empty();
+
+  ignition::launch::Events::runEvent();
 
   // Wait for a shutdown event.
   // \todo: In the future, we could add execution models that control plugin
@@ -364,22 +308,14 @@ void ManagerPrivate::OnSigChild(int _sig)
 }
 
 /////////////////////////////////////////////////
-bool ManagerPrivate::ParseConfig(const std::string &_filename)
+bool ManagerPrivate::ParseConfig(const std::string &_config)
 {
-  std::string erbParsed;
-  if (!this->ErbFile(_filename, erbParsed))
-  {
-    ignerr << "Unable to ERB process file[" << _filename << "]\n";
-    return false;
-  }
-
   tinyxml2::XMLDocument xmlDoc;
 
   // Load the XML configuration file into TinyXML
-  if (xmlDoc.Parse(erbParsed.c_str()) != tinyxml2::XML_SUCCESS)
+  if (xmlDoc.Parse(_config.c_str()) != tinyxml2::XML_SUCCESS)
   {
-    ignerr << "Unable to parse config file[" << _filename << "]. "
-      << "Your XML might be invalid.\n";
+    ignerr << "Unable to parse configuration. Your XML might be invalid.\n";
     return false;
   }
 
@@ -387,8 +323,7 @@ bool ManagerPrivate::ParseConfig(const std::string &_filename)
   tinyxml2::XMLElement *root = xmlDoc.FirstChildElement("ignition");
   if (!root)
   {
-    ignerr << "Invalid config file[" << _filename << "]. "
-      << "Missing <ignition> element\n";
+    ignerr << "Invalid config file,m issing <ignition> element\n";
     return false;
   }
 
@@ -407,8 +342,8 @@ bool ManagerPrivate::ParseConfig(const std::string &_filename)
     if (nameStr.empty())
     {
       valid = false;
-      ignerr << "Invalid configuration file[" << _filename << "]. "
-        << "Missing name attribute for the " << i << " <executable> element."
+      ignerr << "Invalid configuration file, "
+        << "missing name attribute for the " << i << " <executable> element."
         << std::endl;
     }
 
@@ -417,8 +352,8 @@ bool ManagerPrivate::ParseConfig(const std::string &_filename)
     if (!cmdElem)
     {
       valid = false;
-      ignerr << "Invalid configuration file[" << _filename << "]. "
-        << " Missing <command> child element "
+      ignerr << "Invalid configuration file, "
+        << "missing <command> child element "
         << " of <executable name=\"" << nameStr << "\">\n";
     }
     else
@@ -461,7 +396,7 @@ bool ManagerPrivate::ParseConfig(const std::string &_filename)
       if (!this->RunExecutable(nameStr, cmdParts, autoRestart, envs))
       {
         ignerr << "Unable to run executable named[" << nameStr << "] in "
-          << "configuration file[" << _filename << "].\n";
+          << "configuration file.\n";
       }
     }
 
@@ -474,49 +409,11 @@ bool ManagerPrivate::ParseConfig(const std::string &_filename)
   // Load all the plugins.
   while (pluginElem)
   {
-    this->LoadPlugin(_filename, pluginElem);
+    this->LoadPlugin(pluginElem);
     pluginElem = pluginElem->NextSiblingElement("plugin");
   }
 
   return true;
-}
-
-//////////////////////////////////////////////////
-bool ManagerPrivate::ErbFile(const std::string &_filename, std::string &_result)
-{
-  if (_filename.empty())
-    return false;
-
-  // Open the file
-  std::ifstream in(_filename.c_str());
-
-  // Make sure the file exists
-  if (!in.good())
-  {
-    ignerr << "Error: File doesn't exist[" << _filename << "]\n";
-    return false;
-  }
-
-  std::string data((std::istreambuf_iterator<char>(in)),
-                    std::istreambuf_iterator<char>());
-
-  return this->ErbString(data, _result);
-}
-
-//////////////////////////////////////////////////
-bool ManagerPrivate::ErbString(const std::string &_string, std::string &_result)
-{
-  // Instance of RubyInitializer.
-  static RubyInitializer rubyInit;
-
-  // Short circuit if there are no ERB tags
-  if (_string.find("<%") == std::string::npos)
-  {
-    _result = _string;
-    return true;
-  }
-
-  return rubyInit.erbString(_string, _result);
 }
 
 /////////////////////////////////////////////////
@@ -620,15 +517,14 @@ void ManagerPrivate::ShutdownExecutables()
 }
 
 //////////////////////////////////////////////////
-void ManagerPrivate::LoadPlugin(const std::string &_filename,
-    const tinyxml2::XMLElement *_elem)
+void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
 {
   // Get the plugin's name
   const char *nameStr = _elem->Attribute("name");
   std::string name = nameStr == nullptr ? "" : nameStr;
   if (name.empty())
   {
-    ignerr << "Invalid config file[" << _filename << "], "
+    ignerr << "Invalid config file, "
       << "missing a name attribute for a plugin." << std::endl;
     return;
   }
@@ -638,7 +534,7 @@ void ManagerPrivate::LoadPlugin(const std::string &_filename,
   std::string file = fileStr == nullptr ? "" : fileStr;
   if (file.empty())
   {
-    ignerr << "Invalid config file[" << _filename << "], "
+    ignerr << "Invalid config file, "
       << "missing filename attribute for plugin with name[" << name << "]"
       << std::endl;
     return;
