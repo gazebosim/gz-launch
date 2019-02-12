@@ -40,16 +40,6 @@ set(IGN_COMMON_MAJOR_VER ${ignition-common3_VERSION_MAJOR})
 # Find ignition-tools
 ign_find_package(ignition-tools QUIET)
 
-################################################
-# Find Ruby, which is used to produce xml schemas and parse ERB files.
-find_package(Ruby)
-if (RUBY_FOUND)
-  message(STATUS "Looking for ruby - found version ${RUBY_VERSION}")
-else()
-  message(STATUS "Looking for ruby - not found")
-  BUILD_ERROR("Couldn't find Ruby")
-endif()
-
 #============================================================================
 # Configure the build
 #============================================================================
