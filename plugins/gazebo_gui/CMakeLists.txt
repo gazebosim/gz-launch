@@ -12,10 +12,8 @@ target_link_libraries(${plugin_lower}
   ignition-gazebo${IGN_GAZEBO_MAJOR_VER}::ignition-gazebo${IGN_GAZEBO_MAJOR_VER}
   ignition-gui${IGN_GUI_VER}::ignition-gui${IGN_GUI_VER}
   ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
-  ignition-common${IGN_COMMON_MAJOR_VER}::events
   ignition-transport${IGN_TRANSPORT_VER}::core
   ignition-plugin${IGN_PLUGIN_VER}::core
-  ignition-launch
   sdformat8::sdformat8
   ign-gazebo-gui-lib
 )

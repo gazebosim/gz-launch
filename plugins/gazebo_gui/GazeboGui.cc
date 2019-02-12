@@ -20,7 +20,6 @@
 #include <ignition/gui/MainWindow.hh>
 #include "ignition/gazebo/gui/TmpIface.hh"
 
-#include "ignition/launch/Events.hh"
 #include "GazeboGui.hh"
 
 using namespace ignition;
@@ -39,9 +38,6 @@ GazeboGui::~GazeboGui()
 /////////////////////////////////////////////////
 void GazeboGui::Load(const tinyxml2::XMLElement *_elem)
 {
-  this->connection = launch::Events::runEvent.Connect(
-      std::bind(&GazeboGui::Run, this));
-
   int argc;
   char **argv = nullptr;
 
@@ -121,12 +117,4 @@ void GazeboGui::Load(const tinyxml2::XMLElement *_elem)
   this->app.reset();
   // Run main window.
   igndbg << "Running the GazeboGui plugin.\n";
-}
-
-//////////////////////////////////////////////////
-void GazeboGui::Run()
-{
-  this->connection.reset();
-
-  std::cout << "DONE event more!\n";
 }

@@ -33,14 +33,11 @@
 #include <ignition/plugin/Loader.hh>
 
 #include "ignition/launch/config.hh"
-#include "ignition/launch/Events.hh"
 #include "ignition/launch/Plugin.hh"
 #include "Manager.hh"
 
 using namespace ignition;
 using namespace launch;
-
-ignition::launch::Events::RunEvent ignition::launch::Events::runEvent;
 
 /// \brief A class to encapsulate an executable (program) to run.
 class Executable
@@ -137,9 +134,13 @@ class ignition::launch::ManagerPrivate
   /// \param[in] _sig The signal
   private: static void OnSigChild(int _sig);
 
+  private: void ParseExecutables(const tinyxml2::XMLElement *_elem);
+  private: void ParseExecutableWrappers(const tinyxml2::XMLElement *_elem);
+
   /// \brief A list of executables that are running, or have been run.
   public: std::list<Executable> executables;
   public: std::unordered_set<launch::PluginPtr> plugins;
+  public: std::list<pid_t> wrappedPlugins;
 
   /// \brief Mutex to protect the executables list.
   public: std::mutex executablesMutex;
@@ -156,7 +157,7 @@ class ignition::launch::ManagerPrivate
   public: bool master = false;
 
   /// \brief Our signal handler.
-  public: common::SignalHandler sigHandler;
+  public: std::unique_ptr<common::SignalHandler> sigHandler = nullptr;
 
   /// \brief Pointer to myself. This is used in the signal handlers.
   /// A raw pointer is acceptable here since it is used only internally.
@@ -179,7 +180,7 @@ Manager::Manager()
 
   // Make sure to initialize logging.
   ignLogInit(homePath + "/.ignition", "launch.log");
-  if (!this->dataPtr->sigHandler.Initialized())
+  if (!this->dataPtr->sigHandler->Initialized())
     ignerr << "signal(2) failed while setting up for SIGINT" << std::endl;
 }
 
@@ -203,19 +204,17 @@ bool Manager::RunConfig(const std::string &_config)
   this->dataPtr->running = !this->dataPtr->executables.empty() ||
                            !this->dataPtr->plugins.empty();
 
-  ignition::launch::Events::runEvent();
-
   // Wait for a shutdown event.
   // \todo: In the future, we could add execution models that control plugin
   // updates.
   while (this->dataPtr->running)
     this->dataPtr->runCondition.wait(lock);
 
-  // Stop executables.
-  this->dataPtr->ShutdownExecutables();
-
   // Stop plugins.
   this->dataPtr->plugins.clear();
+
+  // Stop executables.
+  this->dataPtr->ShutdownExecutables();
 
   return true;
 }
@@ -229,7 +228,8 @@ bool Manager::Stop()
 /////////////////////////////////////////////////
 ManagerPrivate::ManagerPrivate()
 {
-  this->sigHandler.AddCallback(
+  this->sigHandler.reset(new common::SignalHandler());
+  this->sigHandler->AddCallback(
       std::bind(&ManagerPrivate::OnSigIntTerm, this, std::placeholders::_1));
 
   // Register a signal handler to capture child process death events.
@@ -327,90 +327,22 @@ bool ManagerPrivate::ParseConfig(const std::string &_config)
     return false;
   }
 
-  // Process all the executables.
-  tinyxml2::XMLElement *execElem = root->FirstChildElement("executable");
+  // Parse and create all the <executable> elements.
+  this->ParseExecutables(root);
 
-  // This "i" variable is just used for output messages.
-  for (int i = 0; execElem; ++i)
+  if (this->master)
+    this->ParseExecutableWrappers(root);
+
+  // Parse and create all the <executable_wrapper> elements.
+  if (this->master)
   {
-    bool autoRestart = false;
-    bool valid = true;
-    std::vector<std::string> cmdParts;
-
-    // Get the executable's name
-    std::string nameStr = execElem->Attribute("name");
-    if (nameStr.empty())
+    // Process all the plugins.
+    tinyxml2::XMLElement *pluginElem = root->FirstChildElement("plugin");
+    while (pluginElem)
     {
-      valid = false;
-      ignerr << "Invalid configuration file, "
-        << "missing name attribute for the " << i << " <executable> element."
-        << std::endl;
+      this->LoadPlugin(pluginElem);
+      pluginElem = pluginElem->NextSiblingElement("plugin");
     }
-
-    // Get the command
-    tinyxml2::XMLElement *cmdElem = execElem->FirstChildElement("command");
-    if (!cmdElem)
-    {
-      valid = false;
-      ignerr << "Invalid configuration file, "
-        << "missing <command> child element "
-        << " of <executable name=\"" << nameStr << "\">\n";
-    }
-    else
-    {
-      std::vector<std::string> parts =
-        ignition::common::split(cmdElem->GetText(), " ");
-      std::move(parts.begin(), parts.end(), std::back_inserter(cmdParts));
-    }
-
-    // Get the <auto_restart> element. It is okay if the <auto_restart> element
-    // is not present
-    tinyxml2::XMLElement *restartElem = execElem->FirstChildElement(
-        "auto_restart");
-    if (restartElem && restartElem->GetText())
-    {
-      std::string txt = ignition::common::lowercase(restartElem->GetText());
-      autoRestart = txt == "true" || txt == "1" || txt == "t";
-    }
-
-    std::list<std::pair<std::string, std::string>> envs;
-
-    // Get the environment variables
-    tinyxml2::XMLElement *envElem = execElem->FirstChildElement("env");
-    while (envElem)
-    {
-      tinyxml2::XMLElement *nameElem = envElem->FirstChildElement("name");
-      tinyxml2::XMLElement *valueElem = envElem->FirstChildElement("value");
-      if (nameElem && valueElem)
-      {
-        std::string name = nameElem->GetText();
-        std::string value = valueElem->GetText();
-        envs.push_back({name, value});
-      }
-
-      envElem = envElem->NextSiblingElement("env");
-    }
-
-    if (valid)
-    {
-      if (!this->RunExecutable(nameStr, cmdParts, autoRestart, envs))
-      {
-        ignerr << "Unable to run executable named[" << nameStr << "] in "
-          << "configuration file.\n";
-      }
-    }
-
-    execElem = execElem->NextSiblingElement("executable");
-  }
-
-  // Process all the plugins.
-  tinyxml2::XMLElement *pluginElem = root->FirstChildElement("plugin");
-
-  // Load all the plugins.
-  while (pluginElem)
-  {
-    this->LoadPlugin(pluginElem);
-    pluginElem = pluginElem->NextSiblingElement("plugin");
   }
 
   return true;
@@ -446,6 +378,7 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
       << std::flush;
 
     std::lock_guard<std::mutex> mutex(this->executablesMutex);
+    this->master = true;
     // Store the PID in the parent process.
     this->executables.push_back(Executable(
           _name, pid, _cmd, _autoRestart, _envs));
@@ -501,12 +434,22 @@ void ManagerPrivate::ShutdownExecutables()
   for (const Executable &exec : this->executables)
     monitors.push_back(std::thread([&] {waitpid(exec.pid, nullptr, 0);}));
 
+  for (const pid_t &wrapper : this->wrappedPlugins)
+    monitors.push_back(std::thread([&] {waitpid(wrapper, nullptr, 0);}));
+
   // Shutdown the processes
   for (const Executable &exec : this->executables)
   {
     igndbg << "Killing the process[" << exec.name
       << "] with PID[" << exec.pid << "]\n";
     kill(exec.pid, SIGINT);
+  }
+
+  // Shutdown the wrapped plugins
+  for (const pid_t &pid : this->wrappedPlugins)
+  {
+    igndbg << "Killing the wrapped plugin PID[" << pid << "]\n";
+    kill(pid, SIGINT);
   }
 
   igndbg << "Waiting for each process to end\n";
@@ -587,4 +530,131 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
   PluginPtr plugin = loader.Instantiate(name);
   plugin->QueryInterface<Plugin>()->Load(_elem);
   this->plugins.insert(plugin);
+}
+
+//////////////////////////////////////////////////
+void ManagerPrivate::ParseExecutableWrappers(const tinyxml2::XMLElement *_elem)
+{
+  // Process all the executables.
+  const tinyxml2::XMLElement *execElem = _elem->FirstChildElement(
+      "executable_wrapper");
+  std::list<pid_t> pluginPids;
+
+  // This "i" variable is just used for output messages.
+  for (int i = 0; execElem && this->master; ++i)
+  {
+    const tinyxml2::XMLElement *pluginElem =
+      execElem->FirstChildElement("plugin");
+    if (pluginElem)
+    {
+      // Fork a process for the command
+      pid_t pid = fork();
+      // If parent process...
+      if (pid)
+      {
+        this->master = true;
+        pluginPids.push_back(pid);
+      }
+      else
+      {
+        this->master = false;
+
+        // Remove from foreground process group.
+        setpgid(0, 0);
+
+        this->plugins.clear();
+        this->wrappedPlugins.clear();
+        this->sigHandler.reset();
+        this->executables.clear();
+        this->LoadPlugin(pluginElem);
+        return;
+      }
+    }
+    execElem = execElem->NextSiblingElement("executable_wrapper");
+  }
+
+  if (this->master)
+    this->wrappedPlugins = pluginPids;
+}
+
+//////////////////////////////////////////////////
+void ManagerPrivate::ParseExecutables(const tinyxml2::XMLElement *_elem)
+{
+  // Process all the executables.
+  const tinyxml2::XMLElement *execElem = _elem->FirstChildElement("executable");
+
+  // This "i" variable is just used for output messages.
+  for (int i = 0; execElem && this->master; ++i)
+  {
+    bool autoRestart = false;
+    bool valid = true;
+    std::vector<std::string> cmdParts;
+
+    // Get the executable's name
+    std::string nameStr = execElem->Attribute("name");
+    if (nameStr.empty())
+    {
+      valid = false;
+      ignerr << "Invalid configuration file, "
+        << "missing name attribute for the " << i << " <executable> element."
+        << std::endl;
+    }
+
+    // Get the command
+    const tinyxml2::XMLElement *cmdElem =
+      execElem->FirstChildElement("command");
+    if (!cmdElem)
+    {
+      valid = false;
+      ignerr << "Invalid configuration file, "
+        << "missing <command> child element "
+        << " of <executable name=\"" << nameStr << "\">\n";
+    }
+    else
+    {
+      std::vector<std::string> parts =
+        ignition::common::split(cmdElem->GetText(), " ");
+      std::move(parts.begin(), parts.end(), std::back_inserter(cmdParts));
+    }
+
+    // Get the <auto_restart> element. It is okay if the <auto_restart> element
+    // is not present
+    const tinyxml2::XMLElement *restartElem = execElem->FirstChildElement(
+        "auto_restart");
+    if (restartElem && restartElem->GetText())
+    {
+      std::string txt = ignition::common::lowercase(restartElem->GetText());
+      autoRestart = txt == "true" || txt == "1" || txt == "t";
+    }
+
+    std::list<std::pair<std::string, std::string>> envs;
+
+    // Get the environment variables
+    const tinyxml2::XMLElement *envElem = execElem->FirstChildElement("env");
+    while (envElem)
+    {
+      const tinyxml2::XMLElement *nameElem = envElem->FirstChildElement("name");
+      const tinyxml2::XMLElement *valueElem =
+        envElem->FirstChildElement("value");
+      if (nameElem && valueElem)
+      {
+        std::string name = nameElem->GetText();
+        std::string value = valueElem->GetText();
+        envs.push_back({name, value});
+      }
+
+      envElem = envElem->NextSiblingElement("env");
+    }
+
+    if (valid)
+    {
+      if (!this->RunExecutable(nameStr, cmdParts, autoRestart, envs))
+      {
+        ignerr << "Unable to run executable named[" << nameStr << "] in "
+          << "configuration file.\n";
+      }
+    }
+
+    execElem = execElem->NextSiblingElement("executable");
+  }
 }
