@@ -38,7 +38,7 @@ set(IGN_COMMON_MAJOR_VER ${ignition-common3_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-tools
-ign_find_package(ignition-tools REQUIRED PRIVATE)
+ign_find_package(ignition-tools QUIET)
 
 ################################################
 # Find Ruby, which is used to produce xml schemas and parse ERB files.
@@ -58,8 +58,7 @@ ign_configure_build(QUIT_IF_BUILD_ERRORS)
 #============================================================================
 # ign command line support
 #============================================================================
-add_subdirectory(conf)
-add_subdirectory(plugins)
+# \todo(nkoenig) Future PR add_subdirectory(plugins)
 
 #============================================================================
 # Create package information
