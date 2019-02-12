@@ -1,0 +1,17 @@
+<?xml version='1.0'?>
+<ignition version='1.0'>
+  <executable name='gazebo-server'>
+    <env>
+      <name>IGN_GAZEBO_RESOURCE_PATH</name>
+      <value>/data/ignition/ign-gazebo/examples/worlds</value>
+    </env>
+    <command>ign-gazebo-server -f diff_drive.sdf</command>
+    <command>ign-gazebo-server</command>
+  </executable>
+
+  <executable name='gazebo-client'>
+    <command>ign-gazebo-gui</command>
+    <auto_restart>true</auto_restart>
+  </executable>
+
+</ignition>
