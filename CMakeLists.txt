@@ -32,11 +32,6 @@ message(STATUS "\n\n-- ====== Finding Dependencies ======")
 ign_find_package(TINYXML2 REQUIRED PRIVATE PRETTY tinyxml2)
 
 #--------------------------------------
-# Find ignition-gazebo
-ign_find_package(ignition-gazebo REQUIRED PRIVATE)
-set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo0_VERSION_MAJOR})
-
-#--------------------------------------
 # Find ignition-common
 ign_find_package(ignition-common3 REQUIRED PRIVATE)
 set(IGN_COMMON_MAJOR_VER ${ignition-common3_VERSION_MAJOR})
@@ -44,33 +39,6 @@ set(IGN_COMMON_MAJOR_VER ${ignition-common3_VERSION_MAJOR})
 #--------------------------------------
 # Find ignition-tools
 ign_find_package(ignition-tools REQUIRED PRIVATE)
-
-#--------------------------------------
-# Find ignition-plugin
-ign_find_package(ignition-plugin1 REQUIRED COMPONENTS loader register)
-set(IGN_PLUGIN_VER ${ignition-plugin1_VERSION_MAJOR})
-
-#--------------------------------------
-# Find ignition-gui
-ign_find_package(ignition-gui1 REQUIRED)
-set(IGN_GUI_VER ${ignition-gui1_VERSION_MAJOR})
-ign_find_package (Qt5
-  COMPONENTS
-    Core
-    Quick
-    QuickControls2
-  REQUIRED
-  PKGCONFIG "Qt5Core Qt5Quick Qt5QuickControls2")
-
-#--------------------------------------
-# Find ignition-msgs
-ign_find_package(ignition-msgs3 REQUIRED )
-set(IGN_MSGS_VER ${ignition-msgs3_VERSION_MAJOR})
-
-#--------------------------------------
-# Find ignition-transport
-ign_find_package(ignition-transport6 REQUIRED )
-set(IGN_TRANSPORT_VER ${ignition-transport6_VERSION_MAJOR})
 
 ################################################
 # Find Ruby, which is used to produce xml schemas and parse ERB files.
@@ -81,10 +49,6 @@ else()
   message(STATUS "Looking for ruby - not found")
   BUILD_ERROR("Couldn't find Ruby")
 endif()
-
-ign_find_package(sdformat8 REQUIRED)
-
-
 
 #============================================================================
 # Configure the build
