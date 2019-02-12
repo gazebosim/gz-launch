@@ -111,10 +111,8 @@ void GazeboGui::Load(const tinyxml2::XMLElement *_elem)
     ignition::gui::App()->LoadPlugin(file, elem);
   }
 
+  igndbg << "Running the GazeboGui plugin.\n";
   // This blocks until the window is closed or we receive a SIGINT
   this->app->exec();
-  std::cout << "DONE!\n";
   this->app.reset();
-  // Run main window.
-  igndbg << "Running the GazeboGui plugin.\n";
 }
