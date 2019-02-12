@@ -34,7 +34,7 @@ pipelines:
           - mkdir build
           - cd build
           - cmake .. -DCMAKE_BUILD_TYPE=coverage
-          - make -j4 install
+          - make -j4
           - make test ARGS="-VV"
           - make coverage
           # Use a special version of codecov for handling gcc8 output.
