@@ -48,7 +48,8 @@ std::string customExecStr(std::string _cmd)
 /////////////////////////////////////////////////
 TEST(CmdLine, Ls)
 {
-  std::string cmd = "ign launch -f " +
+  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
+    "ign launch -f " +
     std::string(PROJECT_SOURCE_PATH) + "/test/config/ls.ign";
 
   std::cout << "Running command [" << cmd << "]" << std::endl;
