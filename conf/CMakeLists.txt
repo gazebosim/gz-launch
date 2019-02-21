@@ -1,5 +1,3 @@
-set(ign_library_path "${CMAKE_BINARY_DIR}/src/cmd/cmdlaunch${PROJECT_VERSION_MAJOR}")
-
 set(ign_library_path "${CMAKE_INSTALL_PREFIX}/lib/ruby/ignition/cmdlaunch${PROJECT_VERSION_MAJOR}")
 
 # Generate a configuration file.
