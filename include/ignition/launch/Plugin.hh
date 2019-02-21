@@ -13,14 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
-*/
-#ifndef IGNITION_LAUNCH_TEST_CONFIG_HH_
-#define IGNITION_LAUNCH_TEST_CONFIG_HH_
+ */
+#ifndef IGNITION_LAUNCH_PLUGIN_HH_
+#define IGNITION_LAUNCH_PLUGIN_HH_
 
-#define PROJECT_SOURCE_PATH "${PROJECT_SOURCE_DIR}"
-#define PROJECT_BINARY_PATH "${CMAKE_BINARY_DIR}"
-#define TEST_PATH "${PROJECT_SOURCE_DIR}/test"
-#define TEST_INTEGRATION_PATH "${PROJECT_SOURCE_DIR}/test/integration"
-#define TEST_REGRESSION_PATH "${PROJECT_SOURCE_DIR}/test/regression"
-#define IGN_CONFIG_PATH "@CMAKE_BINARY_DIR@/test/conf"
+#include <tinyxml2.h>
+#include <ignition/plugin/SpecializedPluginPtr.hh>
+
+namespace ignition
+{
+  namespace launch
+  {
+    class Plugin
+    {
+      public: virtual void Load(const tinyxml2::XMLElement *_elem) = 0;
+    };
+
+    using PluginPtr = ignition::plugin::SpecializedPluginPtr<
+      ignition::launch::Plugin>;
+  }
+}
 #endif

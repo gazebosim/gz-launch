@@ -1,0 +1,35 @@
+<?xml version='1.0'?>
+<ignition version='1.0'>
+
+  <!-- Load a joystick plugin that will read from a device and output to a 
+       topic -->
+  <plugin name="ignition::plugins::Joystick"
+          filename="libignition-plugins-joystick0.so">
+    <device>/dev/input/js0</device>
+    <sticky_buttons>false</sticky_buttons>
+    <dead_zone>0.05</dead_zone>
+    <rate>60</rate>
+    <accumulation_rate>1000</accumulation_rate>
+  </plugin>
+
+  <!-- Load a plugin that transforms a joystick message to a
+       twist message -->
+  <plugin name="ignition::plugins::JoyToTwist"
+          filename="libignition-plugins-joytotwist0.so">
+    <input_topic>/joy</input_topic>
+    <output_topic>/model/vehicle_green/cmd_vel</output_topic>
+  </plugin>
+
+  <!-- Load a plugin that transforms a joystick message to a
+       twist message -->
+  <plugin name="ignition::plugins::JoyToTwist"
+          filename="libignition-plugins-joytotwist0.so">
+    <input_topic>/joy</input_topic>
+    <output_topic>/model/vehicle_blue/cmd_vel</output_topic>
+  </plugin>
+
+  <executable name='gazebo'>
+    <command>ign-gazebo -f diff_drive.sdf</command>
+  </executable>
+
+</ignition>
