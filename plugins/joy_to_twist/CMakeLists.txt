@@ -1,4 +1,4 @@
-set (plugin ignition-plugins-joytotwist${PROJECT_VERSION_MAJOR})
+set (plugin ignition-launch-joytotwist${PROJECT_VERSION_MAJOR})
 set (sources JoyToTwist.cc)
 
 add_library(${plugin} SHARED ${sources})
