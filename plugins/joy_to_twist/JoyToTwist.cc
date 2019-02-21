@@ -25,7 +25,7 @@
 
 #include "JoyToTwist.hh"
 
-using namespace ignition::plugins;
+using namespace ignition::launch;
 
 /////////////////////////////////////////////////
 JoyToTwist::JoyToTwist()

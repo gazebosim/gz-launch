@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_PLUGINS_JOYSTICK_COMPRESS_HH_
-#define IGNITION_PLUGINS_JOYSTICK_COMPRESS_HH_
+#ifndef IGNITION_LAUNCH_JOYSTICK_COMPRESS_HH_
+#define IGNITION_LAUNCH_JOYSTICK_COMPRESS_HH_
 
 #include <thread>
 #include <ignition/plugin/Register.hh>
@@ -31,7 +31,7 @@
 
 namespace ignition
 {
-  namespace plugins
+  namespace launch
   {
     class Joystick : public ignition::launch::Plugin
     {
@@ -57,6 +57,6 @@ namespace ignition
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(ignition::plugins::Joystick, ignition::launch::Plugin)
+IGNITION_ADD_PLUGIN(ignition::launch::Joystick, ignition::launch::Plugin)
 
 #endif

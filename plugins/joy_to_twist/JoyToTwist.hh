@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_PLUGINS_JOYTOTWIST_COMPRESS_HH_
-#define IGNITION_PLUGINS_JOYTOTWIST_COMPRESS_HH_
+#ifndef IGNITION_LAUNCH_JOYTOTWIST_COMPRESS_HH_
+#define IGNITION_LAUNCH_JOYTOTWIST_COMPRESS_HH_
 
 #include <mutex>
 #include <thread>
@@ -33,7 +33,7 @@
 
 namespace ignition
 {
-  namespace plugins
+  namespace launch
   {
     class JoyToTwist : public ignition::launch::Plugin
     {
@@ -69,6 +69,6 @@ namespace ignition
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(ignition::plugins::JoyToTwist, ignition::launch::Plugin)
+IGNITION_ADD_PLUGIN(ignition::launch::JoyToTwist, ignition::launch::Plugin)
 
 #endif
