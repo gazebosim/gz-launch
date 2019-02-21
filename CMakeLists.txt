@@ -45,6 +45,11 @@ set(IGN_PLUGIN_MAJOR_VER ${ignition-plugin1_VERSION_MAJOR})
 # Find ignition-tools
 ign_find_package(ignition-tools QUIET)
 
+#--------------------------------------
+# Find ignition-transport
+ign_find_package(ignition-transport6 REQUIRED )
+set(IGN_TRANSPORT_MAJOR_VER ${ignition-transport6_VERSION_MAJOR})
+
 #============================================================================
 # Configure the build
 #============================================================================
@@ -53,7 +58,7 @@ ign_configure_build(QUIT_IF_BUILD_ERRORS)
 #============================================================================
 # ign command line support
 #============================================================================
-# \todo(nkoenig) Future PR add_subdirectory(plugins)
+add_subdirectory(plugins)
 
 #============================================================================
 # Create package information
