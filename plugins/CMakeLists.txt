@@ -1,4 +1,6 @@
 set (plugins
+  gazebo_gui
+  gazebo_server
   joystick
   joy_to_twist
 )

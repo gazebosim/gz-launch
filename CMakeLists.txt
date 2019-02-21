@@ -50,6 +50,28 @@ ign_find_package(ignition-tools QUIET)
 ign_find_package(ignition-transport6 REQUIRED )
 set(IGN_TRANSPORT_MAJOR_VER ${ignition-transport6_VERSION_MAJOR})
 
+#--------------------------------------
+# Find ignition-msgs
+ign_find_package(ignition-msgs3 REQUIRED )
+set(IGN_MSGS_MAJOR_VER ${ignition-msgs3_VERSION_MAJOR})
+
+#--------------------------------------
+# Find ignition-gui
+ign_find_package(ignition-gui1 REQUIRED)
+set(IGN_GUI_MAJOR_VER ${ignition-gui1_VERSION_MAJOR})
+ign_find_package (Qt5
+  COMPONENTS
+    Core
+    Quick
+    QuickControls2
+  REQUIRED
+  PKGCONFIG "Qt5Core Qt5Quick Qt5QuickControls2")
+
+#--------------------------------------
+# Find ignition-gazebo
+ign_find_package(ignition-gazebo REQUIRED PRIVATE)
+set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo0_VERSION_MAJOR})
+
 #============================================================================
 # Configure the build
 #============================================================================
