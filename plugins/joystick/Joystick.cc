@@ -31,7 +31,7 @@ using namespace ignition::plugins;
 
 /////////////////////////////////////////////////
 Joystick::Joystick()
-  : ignition::tools::launch::Plugin()
+  : ignition::launch::Plugin()
 {
 }
 

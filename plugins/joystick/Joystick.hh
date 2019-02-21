@@ -19,7 +19,7 @@
 
 #include <thread>
 #include <ignition/plugin/Register.hh>
-#include <ignition/tools/launch/Plugin.hh>
+#include <ignition/launch/Plugin.hh>
 #include <ignition/transport/Node.hh>
 
 #include <fcntl.h>
@@ -33,7 +33,7 @@ namespace ignition
 {
   namespace plugins
   {
-    class Joystick : public ignition::tools::launch::Plugin
+    class Joystick : public ignition::launch::Plugin
     {
       public: Joystick();
       public: virtual ~Joystick();
@@ -57,7 +57,6 @@ namespace ignition
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(ignition::plugins::Joystick,
-                    ignition::tools::launch::Plugin)
+IGNITION_ADD_PLUGIN(ignition::plugins::Joystick, ignition::launch::Plugin)
 
 #endif
