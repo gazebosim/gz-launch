@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_PLUGINS_GAZEBOGUI_HH_
-#define IGNITION_PLUGINS_GAZEBOGUI_HH_
+#ifndef IGNITION_LAUNCH_GAZEBOGUI_HH_
+#define IGNITION_LAUNCH_GAZEBOGUI_HH_
 
 #include <memory>
 #include <ignition/gui/Application.hh>
