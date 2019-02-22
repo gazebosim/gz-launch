@@ -43,7 +43,7 @@ set(IGN_PLUGIN_MAJOR_VER ${ignition-plugin1_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-tools
-ign_find_package(ignition-tools QUIET)
+ign_find_package(ignition-tools REQUIRED)
 
 #--------------------------------------
 # Find ignition-transport
