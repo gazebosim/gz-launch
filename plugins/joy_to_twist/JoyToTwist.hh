@@ -17,17 +17,12 @@
 #ifndef IGNITION_LAUNCH_JOYTOTWIST_HH_
 #define IGNITION_LAUNCH_JOYTOTWIST_HH_
 
+#include <string>
 #include <thread>
+#include <ignition/launch/Plugin.hh>
+#include <ignition/math/Vector3.hh>
 #include <ignition/msgs.hh>
 #include <ignition/plugin/Register.hh>
-#include <ignition/launch/Plugin.hh>
-#include <ignition/transport/Node.hh>
-
-#include <fcntl.h>
-#include <linux/joystick.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <ignition/math/Helpers.hh>
 #include <ignition/transport/Node.hh>
 
 namespace ignition
@@ -68,15 +63,15 @@ namespace ignition
       /// \param[in] _msg Joystick message.
       private: void OnJoy(const ignition::msgs::Joy &_msg);
 
-      private: int enableButton;
-      private: int enableTurboButton;
+      private: int enableButton = 0;
+      private: int enableTurboButton = -1;
       private: ignition::math::Vector3d axisLinear;
       private: ignition::math::Vector3d scaleLinear;
       private: ignition::math::Vector3d scaleLinearTurbo;
       private: ignition::math::Vector3d axisAngular;
       private: ignition::math::Vector3d scaleAngular;
       private: ignition::math::Vector3d scaleAngularTurbo;
-      private: bool sentDisableMsg;
+      private: bool sentDisableMsg = false;
 
       private: bool running = false;
       private: std::thread *joyThread = nullptr;

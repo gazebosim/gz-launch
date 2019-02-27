@@ -56,9 +56,6 @@ void JoyToTwist::Load(const tinyxml2::XMLElement *_elem)
   this->cmdVelPub = this->node.Advertise<ignition::msgs::Twist>(
       this->outputTopic);
 
-  this->enableButton = 0;
-  this->enableTurboButton = -1;
-
   this->axisLinear  = ignition::math::Vector3d::UnitX;
   this->scaleLinear = ignition::math::Vector3d(2.0, 0, 0);
   this->scaleLinearTurbo = ignition::math::Vector3d(5.0, 0, 0);
@@ -66,7 +63,6 @@ void JoyToTwist::Load(const tinyxml2::XMLElement *_elem)
   this->axisAngular = ignition::math::Vector3d::Zero;
   this->scaleAngular = ignition::math::Vector3d(0, 0, 2);
   this->scaleAngularTurbo = ignition::math::Vector3d(0, 0, 5);
-  this->sentDisableMsg = false;
 
   igndbg << "Loaded JoyToTwist plugin with the following parameters:\n"
     << "  input_topic: " << this->inputTopic << std::endl

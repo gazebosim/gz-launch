@@ -14,19 +14,12 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_JOYSTICK_COMPRESS_HH_
-#define IGNITION_LAUNCH_JOYSTICK_COMPRESS_HH_
+#ifndef IGNITION_LAUNCH_JOYSTICK_HH_
+#define IGNITION_LAUNCH_JOYSTICK_HH_
 
 #include <thread>
-#include <ignition/plugin/Register.hh>
 #include <ignition/launch/Plugin.hh>
-#include <ignition/transport/Node.hh>
-
-#include <fcntl.h>
-#include <linux/joystick.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <ignition/math/Helpers.hh>
+#include <ignition/plugin/Register.hh>
 #include <ignition/transport/Node.hh>
 
 namespace ignition
