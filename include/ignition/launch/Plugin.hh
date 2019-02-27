@@ -19,18 +19,26 @@
 
 #include <tinyxml2.h>
 #include <ignition/plugin/SpecializedPluginPtr.hh>
+#include <ignition/launch/Export.hh>
 
 namespace ignition
 {
   namespace launch
   {
+    // Inline bracket to help doxygen filtering.
+    inline namespace IGNITION_LAUNCH_VERSION_NAMESPACE {
+    /// \brief Base class for launch plugins.
     class Plugin
     {
+      /// \brief Load function that each launch plugin must implement.
+      /// \param[in] _elem Pointer to the XML for this plugin.
       public: virtual void Load(const tinyxml2::XMLElement *_elem) = 0;
     };
 
+    /// \brief Pointer to a launch plugin.
     using PluginPtr = ignition::plugin::SpecializedPluginPtr<
       ignition::launch::Plugin>;
+    }
   }
 }
 #endif
