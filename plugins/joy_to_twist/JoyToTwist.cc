@@ -36,7 +36,6 @@ JoyToTwist::JoyToTwist()
 /////////////////////////////////////////////////
 JoyToTwist::~JoyToTwist()
 {
-  std::unique_lock<std::mutex> lock(this->mutex);
   this->node.Unsubscribe(this->inputTopic);
   this->running = false;
 }
@@ -57,8 +56,6 @@ void JoyToTwist::Load(const tinyxml2::XMLElement *_elem)
   this->cmdVelPub = this->node.Advertise<ignition::msgs::Twist>(
       this->outputTopic);
 
-  this->node.Subscribe(this->inputTopic, &JoyToTwist::OnJoy, this);
-
   this->enableButton = 0;
   this->enableTurboButton = -1;
 
@@ -74,14 +71,13 @@ void JoyToTwist::Load(const tinyxml2::XMLElement *_elem)
   igndbg << "Loaded JoyToTwist plugin with the following parameters:\n"
     << "  input_topic: " << this->inputTopic << std::endl
     << "  output_topic: " << this->outputTopic << std::endl;
-  std::unique_lock<std::mutex> lock(this->mutex);
   this->running = true;
+  this->node.Subscribe(this->inputTopic, &JoyToTwist::OnJoy, this);
 }
 
 //////////////////////////////////////////////////
 void JoyToTwist::OnJoy(const ignition::msgs::Joy &_msg)
 {
-  std::unique_lock<std::mutex> lock(this->mutex);
   if (!this->running)
     return;
 

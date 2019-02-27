@@ -17,7 +17,6 @@
 #ifndef IGNITION_LAUNCH_JOYTOTWIST_HH_
 #define IGNITION_LAUNCH_JOYTOTWIST_HH_
 
-#include <mutex>
 #include <thread>
 #include <ignition/msgs.hh>
 #include <ignition/plugin/Register.hh>
@@ -87,7 +86,6 @@ namespace ignition
 
       private: std::string inputTopic = "/joy";
       private: std::string outputTopic = "/cmd_vel";
-      private: std::mutex mutex;
     };
   }
 }
