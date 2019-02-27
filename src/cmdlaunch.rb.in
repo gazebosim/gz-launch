@@ -40,7 +40,7 @@ COMMON_OPTIONS =
                '  --versions                 Show the available versions.'
 
 COMMANDS = { 'launch' =>
-  "Manage simulation resources.                                            \n"\
+  "Manage executables and plugins.                                         \n"\
   "                                                                        \n"\
   "  ign launch [options]                                                  \n"\
   "                                                                        \n"\
