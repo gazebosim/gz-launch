@@ -1,7 +1,7 @@
 <?xml version='1.0'?>
 <ignition version='1.0'>
 
-  <!-- Load a joystick plugin that will read from a device and output to a 
+  <!-- Load a joystick plugin that will read from a device and output to a
        topic -->
   <plugin name="ignition::launch::Joystick"
           filename="libignition-launch-joystick0.so">
