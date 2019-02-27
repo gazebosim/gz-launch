@@ -436,6 +436,7 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
     {
       ignerr << "Unable to run command["
         << std::accumulate(_cmd.begin(), _cmd.end(), std::string("")) << "]\n";
+      return false;
     }
   }
 
