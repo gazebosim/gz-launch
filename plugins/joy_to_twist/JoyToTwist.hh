@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_JOYTOTWIST_COMPRESS_HH_
-#define IGNITION_LAUNCH_JOYTOTWIST_COMPRESS_HH_
+#ifndef IGNITION_LAUNCH_JOYTOTWIST_HH_
+#define IGNITION_LAUNCH_JOYTOTWIST_HH_
 
 #include <mutex>
 #include <thread>
@@ -35,14 +35,38 @@ namespace ignition
 {
   namespace launch
   {
+    /// \brief Converts ignition::msgs::Joystick messages to
+    /// ignition::msgs::Twist.
+    ///
+    /// # Example usage
+    ///
+    /// <!-- Inform ignition::Launch about the JoyToTwist plugin -->
+    ///  <plugin name="ignition::launch::JoyToTwist"
+    ///      filename="libignition-launch-joytotwist0.so">
+    //
+    /// <!-- Incoming topic that publishes ignition::msgs::Joystick messages -->
+    ///   <input_topic>/joy</input_topic>
+    //
+    /// <!-- Outgoing topic that publishes ignition::msgs::Twist messages -->
+    ///   <output_topic>/model/vehicle_green/cmd_vel</output_topic>
+    /// </plugin>
     class JoyToTwist : public ignition::launch::Plugin
     {
+      /// \brief Constructor
       public: JoyToTwist();
+
+      /// \brief Destructor
       public: virtual ~JoyToTwist();
+
+      // Documentation inherited
       public: virtual void Load(
                   const tinyxml2::XMLElement *_elem) override final;
+
+      /// \brief Run the plugin
       private: void Run();
 
+      /// \brief Handle joystick messages.
+      /// \param[in] _msg Joystick message.
       private: void OnJoy(const ignition::msgs::Joy &_msg);
 
       private: int enableButton;
