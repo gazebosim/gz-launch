@@ -7,7 +7,7 @@
 <ignition version='1.0'>
   <!-- Load a joystick plugin that will read from a device and output to a 
        topic -->
-  <plugin name="ignition::Joystick"
+  <plugin name="ignition::launch::Joystick"
           filename="libignition-launch-joystick0.so">
     <device>/dev/input/js0</device>
     <sticky_buttons>false</sticky_buttons>
@@ -18,7 +18,7 @@
 
   <!-- Load a plugin that transforms a joystick message to a
        twist message -->
-  <plugin name="ignition::JoyToTwist"
+  <plugin name="ignition::launch::JoyToTwist"
           filename="libignition-launch-joytotwist0.so">
     <input_topic>/joy</input_topic>
     <output_topic>/model/vehicle_green/cmd_vel</output_topic>
@@ -26,14 +26,14 @@
 
   <!-- Load a plugin that transforms a joystick message to a
        twist message -->
-  <plugin name="ignition::JoyToTwist"
+  <plugin name="ignition::launch::JoyToTwist"
           filename="libignition-launch-joytotwist0.so">
     <input_topic>/joy</input_topic>
     <output_topic>/model/vehicle_blue/cmd_vel</output_topic>
   </plugin>
 
   <!-- Run the gazebo server with a set of plugins -->
-  <plugin name="ignition::GazeboServer"
+  <plugin name="ignition::launch::GazeboServer"
           filename="libignition-launch-gazebo0.so">
     <world_file><%= worldName %>.sdf</world_file>
     <run>true</run>
@@ -73,7 +73,7 @@
   </plugin>
 
   <executable_wrapper>
-    <plugin name="ignition::GazeboGui"
+    <plugin name="ignition::launch::GazeboGui"
           filename="libignition-launch-gazebogui0.so">
       <plugin filename="Scene3D" name="3D View">
         <ignition-gui>
