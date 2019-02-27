@@ -19,8 +19,8 @@
 #include <linux/joystick.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <ignition/math/Helpers.hh>
 #include <ignition/common/Console.hh>
+#include <ignition/math/Helpers.hh>
 #include <ignition/transport/Node.hh>
 
 #include "JoyToTwist.hh"
