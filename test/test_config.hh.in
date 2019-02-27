@@ -22,5 +22,5 @@
 #define TEST_PATH "${PROJECT_SOURCE_DIR}/test"
 #define TEST_INTEGRATION_PATH "${PROJECT_SOURCE_DIR}/test/integration"
 #define TEST_REGRESSION_PATH "${PROJECT_SOURCE_DIR}/test/regression"
-
+#define IGN_CONFIG_PATH "@CMAKE_BINARY_DIR@/test/conf"
 #endif

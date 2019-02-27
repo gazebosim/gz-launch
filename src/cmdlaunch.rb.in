@@ -1,0 +1,171 @@
+#!/usr/bin/ruby
+
+# Copyright (C) 2019 Open Source Robotics Foundation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# We use 'dl' for Ruby <= 1.9.x and 'fiddle' for Ruby >= 2.0.x
+if RUBY_VERSION.split('.')[0] < '2'
+  require 'dl'
+  require 'dl/import'
+  include DL
+else
+  require 'fiddle'
+  require 'fiddle/import'
+  include Fiddle
+end
+
+require 'optparse'
+require 'erb'
+
+# Constants.
+LIBRARY_NAME = '@IGN_LIBRARY_NAME@'
+LIBRARY_VERSION = '@PROJECT_VERSION_FULL@'
+
+COMMON_OPTIONS =
+               "  -h [--help]              Print this help message.\n"\
+               "                                                    \n"        +
+               "  --force-version <VERSION>  Use a specific library version.\n"\
+               "                                                    \n"        +
+               '  --versions                 Show the available versions.'
+
+COMMANDS = { 'launch' =>
+  "Manage executables and plugins.                                         \n"\
+  "                                                                        \n"\
+  "  ign launch [options]                                                  \n"\
+  "                                                                        \n"\
+  "                                                                        \n"\
+  "Available Options:                                                      \n"\
+  "  -f [ --file ] [arg]      Run a configuration file.                    \n"\
+  "  -v [ --verbose ] [arg]   Adjust the level of console output (0~4).    \n"\
+  "                           The default verbosity is 1, use -v without   \n"\
+  "                           arguments for level 3.                       \n" +
+  COMMON_OPTIONS
+}
+
+#
+# Class for the Ignition Fuel command line tools.
+#
+class Cmd
+
+  #
+  # Return a structure describing the options.
+  #
+  def parse(args)
+    options = {
+      'verbose' => '1',
+    }
+
+    usage = COMMANDS[args[0]]
+
+    opt_parser = OptionParser.new do |opts|
+      opts.banner = usage
+
+      opts.on('-h', '--help') do
+        puts usage
+        exit
+      end
+      opts.on('-f [config]', '--file', String, 'Run a configuration file') do |cfg|
+        options['file'] = cfg
+      end
+      opts.on('-v [verbose]', '--verbose [verbose]', String,
+          'Adjust level of console output') do |v|
+        options['verbose'] = v || '3'
+      end
+    end # opt_parser do
+
+    opt_parser.parse!(args)
+
+    options['command'] = args[0]
+
+    options
+  end # parse()
+
+  def execute(args)
+    options = parse(args)
+
+    # Read the plugin that handles the command.
+    plugin = LIBRARY_NAME
+    conf_version = LIBRARY_VERSION
+
+    begin
+      Importer.dlload plugin
+    rescue DLError
+      puts "Library error: [#{plugin}] not found."
+      exit(-1)
+    end
+
+    # Read the library version.
+    Importer.extern 'char* ignitionVersion()'
+    begin
+      plugin_version = Importer.ignitionVersion.to_s
+    rescue DLError
+      puts "Library error: Problem running 'ignitionVersion()' from #{plugin}."
+      exit(-1)
+    end
+
+    # Sanity check: Verify that the version of the yaml file matches the version
+    # of the library that we are using.
+    unless plugin_version.eql? conf_version
+      puts "Error: Version mismatch. Your configuration file version is
+            [#{conf_version}] but #{plugin} version is [#{plugin_version}]."
+      exit(-1)
+    end
+
+    usage = COMMANDS[args[0]]
+
+    begin
+
+      # Global configurations
+      if options.key?('verbose')
+        Importer.extern 'void cmdVerbosity(const char *)'
+        Importer.cmdVerbosity(options['verbose'])
+      end
+
+      if options.key?('file')
+        # Check if the passed in file exists. 
+        if File.exists?(options['file'])
+          path = options['file']
+        # If not, then first check the IGN_LAUNCH_CONFIG_PATH environment
+        # variable, then the configuration path from the launch library.
+        else
+          configPathEnv = ENV['IGN_LAUNCH_CONFIG_PATH']
+          if !configPathEnv.nil? &&
+              File.exists?(File.join(configPathEnv, options['file']))
+            path = File.join(configPathEnv, options['file'])
+          # get the configuration path from the launch library.
+          else
+            Importer.extern 'char *configPath()'
+            path = File.join(Importer.configPath().to_s, options['file'])
+            if !File.exists?(path) 
+              puts "Unable to find file " + options['file']
+              exit(-1)
+            end
+          end
+        end
+
+        # ERB parse the file, and then run the result
+        parsed = ERB.new(File.read(path)).result()
+        Importer.extern 'int run(const char *)'
+        if not Importer.run(parsed)
+          exit(-1)
+        end
+      else
+        puts usage
+      end
+    rescue
+      puts "Library error: Problem running [#{options['command']}]() "\
+           "from @IGN_LIBRARY_NAME@."
+    end # begin
+  end # execute
+end # class
