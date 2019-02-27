@@ -14,31 +14,54 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_JOYSTICK_COMPRESS_HH_
-#define IGNITION_LAUNCH_JOYSTICK_COMPRESS_HH_
+#ifndef IGNITION_LAUNCH_JOYSTICK_HH_
+#define IGNITION_LAUNCH_JOYSTICK_HH_
 
 #include <thread>
-#include <ignition/plugin/Register.hh>
 #include <ignition/launch/Plugin.hh>
-#include <ignition/transport/Node.hh>
-
-#include <fcntl.h>
-#include <linux/joystick.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <ignition/math/Helpers.hh>
+#include <ignition/plugin/Register.hh>
 #include <ignition/transport/Node.hh>
 
 namespace ignition
 {
   namespace launch
   {
+    /// \brief Reads from a USB joystick device and outputs
+    ///  ignition::msgs::Joystick messages.
+    ///
+    /// # Example usage
+    ///
+    /// <!-- Inform ignition::Launch about the JoyToTwist plugin -->
+    ///  <plugin name="ignition::launch::Joystick"
+    ///      filename="libignition-launch-joystick0.so">
+    ///
+    ///    <!-- Joystick device -->
+    ///    <device>/dev/input/js0</device>
+    ///
+    ///    <!-- True enables sticky buttons. -->
+    ///    <sticky_buttons>false</sticky_buttons>
+    ///
+    ///    <!-- Joystick deadzone -->
+    ///    <dead_zone>0.05</dead_zone>
+    ///
+    ///    <!-- Update rate -->
+    ///    <rate>60</rate>
+    ///    <accumulation_rate>1000</accumulation_rate>
+    /// </plugin>
+
     class Joystick : public ignition::launch::Plugin
     {
+      /// \brief Constructor
       public: Joystick();
+
+      /// \brief Destructor
       public: virtual ~Joystick();
+
+      // Documentation inherited
       public: virtual void Load(
                   const tinyxml2::XMLElement *_elem) override final;
+
+      /// \brief Run the plugin
       private: void Run();
 
       private: bool run = true;

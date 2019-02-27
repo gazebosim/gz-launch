@@ -82,7 +82,6 @@ void Joystick::Load(const tinyxml2::XMLElement *_elem)
   }
 
   // Read the rate at which data should be published
-  //float intervalRate = joy->Get<float>("rate", 1.0f).first;
   float intervalRate = 60.0f;
   elem = _elem->FirstChildElement("rate");
   if (elem)
@@ -165,13 +164,8 @@ void Joystick::Load(const tinyxml2::XMLElement *_elem)
     return;
   }
 
-
-
-
   this->unscaledDeadzone = 32767.0f * deadzone;
   this->axisScale = -1.0f / (1.0f - deadzone) / 32767.0f;
-
-  //auto topic = joy->Get<std::string>("topic", "/joy").first;
 
   // Create the publisher of joy messages
   this->pub = this->node.Advertise<ignition::msgs::Joy>("/joy");
@@ -344,7 +338,7 @@ void Joystick::Run()
       tv.tv_usec = (this->interval - tv.tv_sec) * 1e6;
       timeoutSet = true;
     }
-   }
+  }
 
   // Close the joystick
   close(this->joyFd);

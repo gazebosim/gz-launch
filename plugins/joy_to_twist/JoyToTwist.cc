@@ -19,13 +19,30 @@
 #include <linux/joystick.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <ignition/math/Helpers.hh>
 #include <ignition/common/Console.hh>
+#include <ignition/common/Util.hh>
+#include <ignition/math/Helpers.hh>
 #include <ignition/transport/Node.hh>
 
 #include "JoyToTwist.hh"
 
 using namespace ignition::launch;
+
+//////////////////////////////////////////////////
+// String to vector helper function.
+void setVectorFromString(const std::string &_str,
+                         ignition::math::Vector3d &_v)
+{
+  std::string str = ignition::common::trimmed(_str);
+
+  std::vector<std::string> parts = ignition::common::split(str, " ");
+  if (parts.size() == 3)
+  {
+    _v.X(std::stod(parts[0]));
+    _v.Y(std::stod(parts[1]));
+    _v.Z(std::stod(parts[2]));
+  }
+}
 
 /////////////////////////////////////////////////
 JoyToTwist::JoyToTwist()
@@ -36,7 +53,6 @@ JoyToTwist::JoyToTwist()
 /////////////////////////////////////////////////
 JoyToTwist::~JoyToTwist()
 {
-  std::unique_lock<std::mutex> lock(this->mutex);
   this->node.Unsubscribe(this->inputTopic);
   this->running = false;
 }
@@ -54,86 +70,103 @@ void JoyToTwist::Load(const tinyxml2::XMLElement *_elem)
   if (elem)
     this->inputTopic = elem->GetText();
 
+  elem = _elem->FirstChildElement("enable_button");
+  if (elem)
+    this->enableButton = std::atoi(elem->GetText());
+
+  elem = _elem->FirstChildElement("enable_turbo_button");
+  if (elem)
+    this->enableTurboButton = std::atoi(elem->GetText());
+
+  elem = _elem->FirstChildElement("axis_linear");
+  if (elem)
+    setVectorFromString(elem->GetText(), this->axisLinear);
+
+  elem = _elem->FirstChildElement("scale_linear");
+  if (elem)
+    setVectorFromString(elem->GetText(), this->scaleLinear);
+
+  elem = _elem->FirstChildElement("scale_linear_turbo");
+  if (elem)
+    setVectorFromString(elem->GetText(), this->scaleLinearTurbo);
+
+  elem = _elem->FirstChildElement("axis_angular");
+  if (elem)
+    setVectorFromString(elem->GetText(), this->axisAngular);
+
+  elem = _elem->FirstChildElement("scale_angular");
+  if (elem)
+    setVectorFromString(elem->GetText(), this->scaleAngular);
+
+  elem = _elem->FirstChildElement("scale_angular_turbo");
+  if (elem)
+    setVectorFromString(elem->GetText(), this->scaleAngularTurbo);
+
   this->cmdVelPub = this->node.Advertise<ignition::msgs::Twist>(
       this->outputTopic);
-
-  this->node.Subscribe(this->inputTopic, &JoyToTwist::OnJoy, this);
-
-  this->enableButton = 0;
-  this->enableTurboButton = -1;
-
-  this->axisLinear  = ignition::math::Vector3d::UnitX;
-  this->scaleLinear = ignition::math::Vector3d(2.0, 0, 0);
-  this->scaleLinearTurbo = ignition::math::Vector3d(5.0, 0, 0);
-
-  this->axisAngular = ignition::math::Vector3d::Zero;
-  this->scaleAngular = ignition::math::Vector3d(0, 0, 2);
-  this->scaleAngularTurbo = ignition::math::Vector3d(0, 0, 5);
-  this->sentDisableMsg = false;
 
   igndbg << "Loaded JoyToTwist plugin with the following parameters:\n"
     << "  input_topic: " << this->inputTopic << std::endl
     << "  output_topic: " << this->outputTopic << std::endl;
-  std::unique_lock<std::mutex> lock(this->mutex);
   this->running = true;
+  this->node.Subscribe(this->inputTopic, &JoyToTwist::OnJoy, this);
 }
 
 //////////////////////////////////////////////////
 void JoyToTwist::OnJoy(const ignition::msgs::Joy &_msg)
 {
-  std::unique_lock<std::mutex> lock(this->mutex);
   if (!this->running)
     return;
 
   ignition::msgs::Twist cmdVelMsg;
   // Turbo mode
-  if (enableTurboButton >= 0 && _msg.buttons(enableTurboButton))
+  if (this->enableTurboButton >= 0 && _msg.buttons(this->enableTurboButton))
   {
     cmdVelMsg.mutable_linear()->set_x(
-        _msg.axes(axisLinear.X()) * scaleLinearTurbo.X());
+        _msg.axes(this->axisLinear.X()) * this->scaleLinearTurbo.X());
     cmdVelMsg.mutable_linear()->set_y(
-        _msg.axes(axisLinear.Y()) * scaleLinearTurbo.Y());
+        _msg.axes(this->axisLinear.Y()) * this->scaleLinearTurbo.Y());
     cmdVelMsg.mutable_linear()->set_z(
-        _msg.axes(axisLinear.Z()) * scaleLinearTurbo.Z());
+        _msg.axes(this->axisLinear.Z()) * this->scaleLinearTurbo.Z());
 
     cmdVelMsg.mutable_angular()->set_x(
-        _msg.axes(axisAngular.X()) * scaleAngularTurbo.X());
+        _msg.axes(this->axisAngular.X()) * this->scaleAngularTurbo.X());
     cmdVelMsg.mutable_angular()->set_y(
-        _msg.axes(axisAngular.Y()) * scaleAngularTurbo.Y());
+        _msg.axes(this->axisAngular.Y()) * this->scaleAngularTurbo.Y());
     cmdVelMsg.mutable_angular()->set_z(
-        _msg.axes(axisAngular.Z()) * scaleAngularTurbo.Z());
+        _msg.axes(this->axisAngular.Z()) * this->scaleAngularTurbo.Z());
 
     this->cmdVelPub.Publish(cmdVelMsg);
-    sentDisableMsg = false;
+    this->sentDisableMsg = false;
   }
   // Normal mode
-  else if (_msg.buttons(enableButton))
+  else if (_msg.buttons(this->enableButton))
   {
     cmdVelMsg.mutable_linear()->set_x(
-        _msg.axes(axisLinear.X()) * scaleLinear.X());
+        _msg.axes(this->axisLinear.X()) * this->scaleLinear.X());
     cmdVelMsg.mutable_linear()->set_y(
-        _msg.axes(axisLinear.Y()) * scaleLinear.Y());
+        _msg.axes(this->axisLinear.Y()) * this->scaleLinear.Y());
     cmdVelMsg.mutable_linear()->set_z(
-        _msg.axes(axisLinear.Z()) * scaleLinear.Z());
+        _msg.axes(this->axisLinear.Z()) * this->scaleLinear.Z());
 
     cmdVelMsg.mutable_angular()->set_x(
-        _msg.axes(axisAngular.X()) * scaleAngular.X());
+        _msg.axes(this->axisAngular.X()) * this->scaleAngular.X());
     cmdVelMsg.mutable_angular()->set_y(
-        _msg.axes(axisAngular.Y()) * scaleAngular.Y());
+        _msg.axes(this->axisAngular.Y()) * this->scaleAngular.Y());
     cmdVelMsg.mutable_angular()->set_z(
-        _msg.axes(axisAngular.Z()) * scaleAngular.Z());
+        _msg.axes(this->axisAngular.Z()) * this->scaleAngular.Z());
 
     this->cmdVelPub.Publish(cmdVelMsg);
-    sentDisableMsg = false;
+    this->sentDisableMsg = false;
   }
   else
   {
     // When enable button is released, immediately send a single no-motion
     // command in order to stop the robot.
-    if (!sentDisableMsg)
+    if (!this->sentDisableMsg)
     {
       this->cmdVelPub.Publish(cmdVelMsg);
-      sentDisableMsg = true;
+      this->sentDisableMsg = true;
     }
   }
 }

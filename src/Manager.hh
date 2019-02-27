@@ -25,6 +25,8 @@ namespace ignition
 {
   namespace launch
   {
+    // Inline bracket to help doxygen filtering.
+    inline namespace IGNITION_LAUNCH_VERSION_NAMESPACE {
     // Forward declaration of the private data class
     class ManagerPrivate;
 
@@ -49,6 +51,7 @@ namespace ignition
       /// \brief Private data pointer.
       private: std::unique_ptr<ManagerPrivate> dataPtr;
     };
+    }
   }
 }
 #endif

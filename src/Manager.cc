@@ -19,12 +19,14 @@
 #include <tinyxml2.h>
 #include <unistd.h>
 
+#include <condition_variable>
 #include <list>
 #include <mutex>
 #include <numeric>
+#include <string>
 #include <thread>
-#include <condition_variable>
 #include <unordered_set>
+#include <vector>
 
 #include <ignition/common/Console.hh>
 #include <ignition/common/SignalHandler.hh>
@@ -136,11 +138,11 @@ class ignition::launch::ManagerPrivate
   private: void ParseExecutables(const tinyxml2::XMLElement *_elem);
 
   /// \brief Parse <env> elements.
-  /// \return List of envirnoment variable name,value pairs.
+  /// \return List of environment variable name,value pairs.
   private: std::list<std::string> ParseEnvs(const tinyxml2::XMLElement *_elem);
 
   /// \brief Set environment variables.
-  /// \param[in] _envs List of envirnoment variable name,value pairs.
+  /// \param[in] _envs List of environment variable name,value pairs.
   private: void SetEnvs(const std::list<std::string> &_envs);
 
   /// \brief Parse executable wrappers. Executable wrappers allow a plugin
@@ -434,6 +436,7 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
     {
       ignerr << "Unable to run command["
         << std::accumulate(_cmd.begin(), _cmd.end(), std::string("")) << "]\n";
+      return false;
     }
   }
 
