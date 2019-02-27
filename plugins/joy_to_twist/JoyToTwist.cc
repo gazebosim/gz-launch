@@ -87,53 +87,53 @@ void JoyToTwist::OnJoy(const ignition::msgs::Joy &_msg)
 
   ignition::msgs::Twist cmdVelMsg;
   // Turbo mode
-  if (enableTurboButton >= 0 && _msg.buttons(enableTurboButton))
+  if (this->enableTurboButton >= 0 && _msg.buttons(this->enableTurboButton))
   {
     cmdVelMsg.mutable_linear()->set_x(
-        _msg.axes(axisLinear.X()) * scaleLinearTurbo.X());
+        _msg.axes(this->axisLinear.X()) * this->scaleLinearTurbo.X());
     cmdVelMsg.mutable_linear()->set_y(
-        _msg.axes(axisLinear.Y()) * scaleLinearTurbo.Y());
+        _msg.axes(this->axisLinear.Y()) * this->scaleLinearTurbo.Y());
     cmdVelMsg.mutable_linear()->set_z(
-        _msg.axes(axisLinear.Z()) * scaleLinearTurbo.Z());
+        _msg.axes(this->axisLinear.Z()) * this->scaleLinearTurbo.Z());
 
     cmdVelMsg.mutable_angular()->set_x(
-        _msg.axes(axisAngular.X()) * scaleAngularTurbo.X());
+        _msg.axes(this->axisAngular.X()) * this->scaleAngularTurbo.X());
     cmdVelMsg.mutable_angular()->set_y(
-        _msg.axes(axisAngular.Y()) * scaleAngularTurbo.Y());
+        _msg.axes(this->axisAngular.Y()) * this->scaleAngularTurbo.Y());
     cmdVelMsg.mutable_angular()->set_z(
-        _msg.axes(axisAngular.Z()) * scaleAngularTurbo.Z());
+        _msg.axes(this->axisAngular.Z()) * this->scaleAngularTurbo.Z());
 
     this->cmdVelPub.Publish(cmdVelMsg);
-    sentDisableMsg = false;
+    this->sentDisableMsg = false;
   }
   // Normal mode
-  else if (_msg.buttons(enableButton))
+  else if (_msg.buttons(this->enableButton))
   {
     cmdVelMsg.mutable_linear()->set_x(
-        _msg.axes(axisLinear.X()) * scaleLinear.X());
+        _msg.axes(this->axisLinear.X()) * this->scaleLinear.X());
     cmdVelMsg.mutable_linear()->set_y(
-        _msg.axes(axisLinear.Y()) * scaleLinear.Y());
+        _msg.axes(this->axisLinear.Y()) * this->scaleLinear.Y());
     cmdVelMsg.mutable_linear()->set_z(
-        _msg.axes(axisLinear.Z()) * scaleLinear.Z());
+        _msg.axes(this->axisLinear.Z()) * this->scaleLinear.Z());
 
     cmdVelMsg.mutable_angular()->set_x(
-        _msg.axes(axisAngular.X()) * scaleAngular.X());
+        _msg.axes(this->axisAngular.X()) * this->scaleAngular.X());
     cmdVelMsg.mutable_angular()->set_y(
-        _msg.axes(axisAngular.Y()) * scaleAngular.Y());
+        _msg.axes(this->axisAngular.Y()) * this->scaleAngular.Y());
     cmdVelMsg.mutable_angular()->set_z(
-        _msg.axes(axisAngular.Z()) * scaleAngular.Z());
+        _msg.axes(this->axisAngular.Z()) * this->scaleAngular.Z());
 
     this->cmdVelPub.Publish(cmdVelMsg);
-    sentDisableMsg = false;
+    this->sentDisableMsg = false;
   }
   else
   {
     // When enable button is released, immediately send a single no-motion
     // command in order to stop the robot.
-    if (!sentDisableMsg)
+    if (!this->sentDisableMsg)
     {
       this->cmdVelPub.Publish(cmdVelMsg);
-      sentDisableMsg = true;
+      this->sentDisableMsg = true;
     }
   }
 }
