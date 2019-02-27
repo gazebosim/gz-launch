@@ -20,12 +20,29 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <ignition/common/Console.hh>
+#include <ignition/common/Util.hh>
 #include <ignition/math/Helpers.hh>
 #include <ignition/transport/Node.hh>
 
 #include "JoyToTwist.hh"
 
 using namespace ignition::launch;
+
+//////////////////////////////////////////////////
+// String to vector helper function.
+void setVectorFromString(const std::string &_str,
+                         ignition::math::Vector3d &_v)
+{
+  std::string str = ignition::common::trimmed(_str);
+
+  std::vector<std::string> parts = ignition::common::split(str, " ");
+  if (parts.size() == 3)
+  {
+    _v.X(std::stod(parts[0]));
+    _v.Y(std::stod(parts[1]));
+    _v.Z(std::stod(parts[2]));
+  }
+}
 
 /////////////////////////////////////////////////
 JoyToTwist::JoyToTwist()
@@ -53,16 +70,40 @@ void JoyToTwist::Load(const tinyxml2::XMLElement *_elem)
   if (elem)
     this->inputTopic = elem->GetText();
 
+  elem = _elem->FirstChildElement("enable_button");
+  if (elem)
+    this->enableButton = std::atoi(elem->GetText());
+
+  elem = _elem->FirstChildElement("enable_turbo_button");
+  if (elem)
+    this->enableTurboButton = std::atoi(elem->GetText());
+
+  elem = _elem->FirstChildElement("axis_linear");
+  if (elem)
+    setVectorFromString(elem->GetText(), this->axisLinear);
+
+  elem = _elem->FirstChildElement("scale_linear");
+  if (elem)
+    setVectorFromString(elem->GetText(), this->scaleLinear);
+
+  elem = _elem->FirstChildElement("scale_linear_turbo");
+  if (elem)
+    setVectorFromString(elem->GetText(), this->scaleLinearTurbo);
+
+  elem = _elem->FirstChildElement("axis_angular");
+  if (elem)
+    setVectorFromString(elem->GetText(), this->axisAngular);
+
+  elem = _elem->FirstChildElement("scale_angular");
+  if (elem)
+    setVectorFromString(elem->GetText(), this->scaleAngular);
+
+  elem = _elem->FirstChildElement("scale_angular_turbo");
+  if (elem)
+    setVectorFromString(elem->GetText(), this->scaleAngularTurbo);
+
   this->cmdVelPub = this->node.Advertise<ignition::msgs::Twist>(
       this->outputTopic);
-
-  this->axisLinear  = ignition::math::Vector3d::UnitX;
-  this->scaleLinear = ignition::math::Vector3d(2.0, 0, 0);
-  this->scaleLinearTurbo = ignition::math::Vector3d(5.0, 0, 0);
-
-  this->axisAngular = ignition::math::Vector3d::Zero;
-  this->scaleAngular = ignition::math::Vector3d(0, 0, 2);
-  this->scaleAngularTurbo = ignition::math::Vector3d(0, 0, 5);
 
   igndbg << "Loaded JoyToTwist plugin with the following parameters:\n"
     << "  input_topic: " << this->inputTopic << std::endl

@@ -35,14 +35,41 @@ namespace ignition
     /// # Example usage
     ///
     /// <!-- Inform ignition::Launch about the JoyToTwist plugin -->
-    ///  <plugin name="ignition::launch::JoyToTwist"
-    ///      filename="libignition-launch-joytotwist0.so">
-    //
-    /// <!-- Incoming topic that publishes ignition::msgs::Joystick messages -->
+    /// <plugin name="ignition::launch::JoyToTwist"
+    ///         filename="libignition-launch-joytotwist0.so">
+    ///   <!-- Incoming topic that publishes
+    ///         ignition::msgs::Joystick messages -->
     ///   <input_topic>/joy</input_topic>
-    //
-    /// <!-- Outgoing topic that publishes ignition::msgs::Twist messages -->
-    ///   <output_topic>/model/vehicle_green/cmd_vel</output_topic>
+    ///
+    ///   <!-- Outgoing topic that publishes ignition::msgs::Twist messages -->
+    ///   <output_topic>/model/vehicle_blue/cmd_vel</output_topic>
+    ///
+    ///   <!-- Button which must be pressed to enable publishing,
+    ///        defaults to 0 -->
+    ///   <enable_button>0</enable_button>
+    ///
+    ///   <!-- Joystick axis for linear control of XYZ, defaults to [1 0 0]-->
+    ///   <axis_linear>1 0 0</axis_linear>
+    ///
+    ///   <!-- Scale for linear XYZ, defaults to [0.5 0 0] -->
+    ///   <scale_linear>2 0 0</scale_linear>
+    ///
+    ///   <!-- Scale for linear XYZ with turbo mode, defaults [0.5 0 0] -->
+    ///   <scale_linear_turbo>5 0 0</scale_linear_turbo>
+    ///
+    ///   <!-- Joystick axis for angular control, defaults to [0 0 0] -->
+    ///   <axis_angular>0 0 1</axis_angular>
+    ///
+    ///   <!-- Scale for angular control, defaults to [0 0 0.5]-->
+    ///   <scale_angular>0 0 0.5</scale_angular>
+    ///
+    ///   <!-- Scale for angular control with turbo mode,
+    ///        defaults [0 0 0.5] -->
+    ///   <scale_angular_turbo>0 0 0.5</scale_angular_turbo>
+    ///
+    ///   <!-- Button which must be pressed to enable turbo,
+    ///        defaults to invalid (-1) -->
+    ///   <enable_turbo_button>4</enable_turbo_button>
     /// </plugin>
     class JoyToTwist : public ignition::launch::Plugin
     {
@@ -65,12 +92,13 @@ namespace ignition
 
       private: int enableButton = 0;
       private: int enableTurboButton = -1;
-      private: ignition::math::Vector3d axisLinear;
-      private: ignition::math::Vector3d scaleLinear;
-      private: ignition::math::Vector3d scaleLinearTurbo;
-      private: ignition::math::Vector3d axisAngular;
-      private: ignition::math::Vector3d scaleAngular;
-      private: ignition::math::Vector3d scaleAngularTurbo;
+      private: ignition::math::Vector3d axisLinear{1.0, 0.0, 0.0};
+      private: ignition::math::Vector3d scaleLinear{0.5, 0.0, 0.0};
+      private: ignition::math::Vector3d scaleLinearTurbo{0.5, 0.0, 0.0};
+
+      private: ignition::math::Vector3d axisAngular{0.0, 0.0, 0.0};
+      private: ignition::math::Vector3d scaleAngular{0.0, 0.0, 0.5};
+      private: ignition::math::Vector3d scaleAngularTurbo{0.0, 0.0, 0.5};
       private: bool sentDisableMsg = false;
 
       private: bool running = false;

@@ -24,8 +24,36 @@
        twist message -->
   <plugin name="ignition::launch::JoyToTwist"
           filename="libignition-launch-joytotwist0.so">
+    <!-- Incoming topic that publishes ignition::msgs::Joystick messages -->
     <input_topic>/joy</input_topic>
+
+    <!-- Outgoing topic that publishes ignition::msgs::Twist messages -->
     <output_topic>/model/vehicle_blue/cmd_vel</output_topic>
+
+    <!-- Button which must be pressed to enable publishing, defaults to 0 -->
+    <enable_button>0</enable_button>
+
+    <!-- Joystick axis for linear control of XYZ, defaults to [1 0 0]-->
+    <axis_linear>1 0 0</axis_linear>
+
+    <!-- Scale for linear XYZ, defaults to [0.5 0 0] -->
+    <scale_linear>2 0 0</scale_linear>
+
+    <!-- Scale for linear XYZ with turbo mode, defaults [0.5 0 0] -->
+    <scale_linear_turbo>5 0 0</scale_linear_turbo>
+
+    <!-- Joystick axis for angular control, defaults to [0 0 0] -->
+    <axis_angular>0 0 1</axis_angular>
+
+    <!-- Scale for angular control, defaults to [0 0 0.5]-->
+    <scale_angular>0 0 0.5</scale_angular>
+
+    <!-- Scale for angular control with turbo mode, defaults [0 0 0.5] -->
+    <scale_angular_turbo>0 0 0.5</scale_angular_turbo>
+
+    <!-- Button which must be pressed to enable turbo, defaults to invalid
+         (-1) -->
+    <enable_turbo_button>4</enable_turbo_button>
   </plugin>
 
   <executable name='gazebo'>
