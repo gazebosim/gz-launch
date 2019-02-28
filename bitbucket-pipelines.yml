@@ -28,7 +28,6 @@ pipelines:
           - apt-get -y install
             libignition-cmake2-dev
             libignition-common3-dev
-            # libignition-gazebo-dev
             libignition-gui-dev
             libignition-math6-dev
             libignition-msgs3-dev
@@ -36,6 +35,7 @@ pipelines:
             libignition-tools-dev
             libignition-transport6-dev
             libsdformat8-dev
+          # libignition-gazebo-dev
           # Ignition Gazebo from source
           - hg clone https://bitbucket.org/ignitionrobotics/ign-gazebo -b default
           - cd ign-gazebo
