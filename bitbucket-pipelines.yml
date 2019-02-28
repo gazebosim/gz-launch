@@ -33,6 +33,7 @@ pipelines:
             libignition-msgs3-dev
             libignition-plugin-dev
             libignition-tools-dev
+            libignition-fuel-tools3-dev
             libignition-transport6-dev
             libsdformat8-dev
           # libignition-gazebo-dev
