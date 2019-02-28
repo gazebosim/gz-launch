@@ -1,4 +1,4 @@
-set (plugin ignition-launch-gazebo${PROJECT_VERSION_MAJOR})
+set (plugin ignition-launch${PROJECT_VERSION_MAJOR}-gazebo)
 set (sources GazeboServer.cc)
 
 string (TOLOWER ${plugin} plugin_lower)

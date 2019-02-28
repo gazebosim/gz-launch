@@ -1,4 +1,4 @@
-set (plugin ignition-launch-joystick${PROJECT_VERSION_MAJOR})
+set (plugin ignition-launch${PROJECT_VERSION_MAJOR}-joystick)
 set (sources Joystick.cc)
 
 add_library(${plugin} SHARED ${sources})
