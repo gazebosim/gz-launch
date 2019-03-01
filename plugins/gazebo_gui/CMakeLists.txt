@@ -13,7 +13,7 @@ target_link_libraries(${plugin_lower}
   ignition-transport${IGN_TRANSPORT_MAJOR_VER}::core
   ignition-plugin${IGN_PLUGIN_MAJOR_VER}::core
   sdformat8::sdformat8
-  ign-gazebo-gui-lib
+#  ignition-gazebo${IGN_GAZEBO_MAJOR_VER}-gui
 )
 
 install (TARGETS ${plugin} DESTINATION ${IGN_LIB_INSTALL_DIR})
