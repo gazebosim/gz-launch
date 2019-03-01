@@ -625,7 +625,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
   std::unordered_set<std::string> localPlugins = loader.LoadLib(pathToLib);
   if (localPlugins.empty())
   {
-    ignerr << "Failed to load plugin [camera] : cloud load the "
+    ignerr << "Failed to load plugin [camera] : could not load the "
       << "library\n";
     return;
   }
