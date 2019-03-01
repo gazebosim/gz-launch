@@ -150,7 +150,7 @@ void Joystick::Load(const tinyxml2::XMLElement *_elem)
     else
     {
       ignerr << "Unable to open joystick at [" << deviceFilename
-        << "] Attemping again\n";
+        << "] Attempting again\n";
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
