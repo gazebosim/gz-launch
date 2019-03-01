@@ -47,12 +47,12 @@ ign_find_package(ignition-tools REQUIRED)
 
 #--------------------------------------
 # Find ignition-transport
-ign_find_package(ignition-transport6 REQUIRED )
+ign_find_package(ignition-transport6 REQUIRED)
 set(IGN_TRANSPORT_MAJOR_VER ${ignition-transport6_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-msgs
-ign_find_package(ignition-msgs3 REQUIRED )
+ign_find_package(ignition-msgs3 REQUIRED)
 set(IGN_MSGS_MAJOR_VER ${ignition-msgs3_VERSION_MAJOR})
 
 #--------------------------------------
@@ -69,7 +69,7 @@ ign_find_package (Qt5
 
 #--------------------------------------
 # Find ignition-gazebo
-ign_find_package(ignition-gazebo0 REQUIRED PRIVATE)
+ign_find_package(ignition-gazebo0 REQUIRED PRIVATE COMPONENTS gui)
 set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo0_VERSION_MAJOR})
 
 #============================================================================
