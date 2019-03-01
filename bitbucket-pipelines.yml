@@ -31,7 +31,9 @@ pipelines:
             libignition-gui-dev
             libignition-math6-dev
             libignition-msgs3-dev
+            libignition-physics-dev
             libignition-plugin-dev
+            libignition-sensors-dev
             libignition-tools-dev
             libignition-fuel-tools3-dev
             libignition-transport6-dev
