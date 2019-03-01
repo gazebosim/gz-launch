@@ -13,8 +13,8 @@ pipelines:
           - apt-get update
           - apt-get -y install
             cmake build-essential curl git mercurial cppcheck g++-8 libyaml-dev
-            doxygen ruby-ronn libtinyxml2-dev software-properties-common 
-            clang-tidy-6.0 libclang-6.0-dev python-yaml
+            doxygen ruby-ronn libtinyxml2-dev software-properties-common
+            clang-tidy-6.0 libclang-6.0-dev python-yaml libgflags-dev
           - update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
           - gcc -v
           - g++ -v
@@ -28,15 +28,26 @@ pipelines:
           - apt-get -y install
             libignition-cmake2-dev
             libignition-common3-dev
-            libignition-gazebo-dev
             libignition-gui-dev
             libignition-math6-dev
             libignition-msgs3-dev
+            libignition-physics-dev
             libignition-plugin-dev
+            libignition-sensors-dev
             libignition-tools-dev
+            libignition-fuel-tools3-dev
             libignition-transport6-dev
             libsdformat8-dev
-          # Ignition Gazebo
+          # libignition-gazebo-dev
+          # Ignition Gazebo from source
+          - hg clone https://bitbucket.org/ignitionrobotics/ign-gazebo -b default
+          - cd ign-gazebo
+          - mkdir build
+          - cd build
+          - cmake ..
+          - make install
+          - cd ../..
+          # Ignition Launch
           - mkdir build
           - cd build
           - cmake .. -DCMAKE_BUILD_TYPE=coverage
