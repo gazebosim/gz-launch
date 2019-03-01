@@ -46,6 +46,7 @@ pipelines:
           - cd build
           - cmake ..
           - make install
+          - cd ../..
           # Ignition Launch
           - mkdir build
           - cd build
