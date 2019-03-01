@@ -26,14 +26,33 @@ namespace ignition
 {
   namespace launch
   {
+    /// \brief Runs the Ignition Gazebo GUI.
+    ///
+    /// # Example usage
+    ///
+    /// <!-- The GUI wants to be in its own process, so wrap the plugin -->
+    /// <executable_wrapper>
+    ///   <plugin name="ignition::launch::GazeboGui"
+    ///           filename="libignition-launch0-gazebogui.so">
+    ///   <!-- Add Ignition GUI plugins here -->
+    ///   </plugin>
+    /// </executable_wrapper>
     class GazeboGui : public ignition::launch::Plugin
     {
+      /// \brief Constructor.
       public: GazeboGui();
+
+      /// \brief Destructor.
       public: virtual ~GazeboGui();
+
+      // Documentation inherited.
       public: virtual void Load(
                   const tinyxml2::XMLElement *_elem) override final;
 
+      /// \brief Run the GUI
       private: void Run();
+
+      /// \brief Private data pointer
       private: std::unique_ptr<ignition::gui::Application> app;
     };
   }

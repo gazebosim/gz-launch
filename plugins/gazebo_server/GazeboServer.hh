@@ -26,12 +26,37 @@ namespace ignition
 {
   namespace launch
   {
+    /// \brief Runs the Ignition Gazebo server.
+    ///
+    /// # Example usage
+    /// <!-- Run the gazebo server with a set of plugins -->
+    /// <plugin name="ignition::launch::GazeboServer"
+    ///         filename="libignition-launch0-gazebo.so">
+    ///   <!-- The SDF file to run -->
+    ///   <world_file>diff_drive.sdf</world_file>
+    ///
+    ///   <!-- The physics system -->
+    ///   <plugin entity_name="<%= worldName %>"
+    ///           entity_type="world"
+    ///           filename="libignition-gazebo-physics-system.so"
+    ///           name="ignition::gazebo::systems::v0::Physics">
+    ///   </plugin>
+    ///
+    ///   <!-- Specify any other ignition gazebo plugins here. -->
+    /// </plugin>
     class GazeboServer : public ignition::launch::Plugin
     {
+      /// \brief Constructor.
       public: GazeboServer();
+
+      /// \brief Destructor.
       public: virtual ~GazeboServer() = default;
+
+      // Documentation inherited.
       public: virtual void Load(
                   const tinyxml2::XMLElement *_elem) override final;
+
+      /// \brief Private data pointer
       private: std::unique_ptr<gazebo::Server> server;
     };
   }
