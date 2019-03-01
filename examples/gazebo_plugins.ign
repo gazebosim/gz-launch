@@ -38,7 +38,9 @@
     <world_file><%= worldName %>.sdf</world_file>
     <run>true</run>
     <levels>false</levels>
-
+    <!-- The diff_drive SDF world has the following plugins defined.
+         Uncomment this if you are using a world that doesn't include the
+         necessary plugin
     <plugin entity_name="<%= worldName %>"
             entity_type="world"
             filename="libignition-gazebo0-physics-system.so"
@@ -69,6 +71,7 @@
       <wheel_separation>1.25</wheel_separation>
       <wheel_radius>0.3</wheel_radius>
     </plugin>
+-->
 
   </plugin>
 
