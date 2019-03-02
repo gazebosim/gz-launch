@@ -40,7 +40,7 @@ pipelines:
             libsdformat8-dev
           # libignition-gazebo-dev
           # Ignition Gazebo from source
-          - hg clone https://bitbucket.org/ignitionrobotics/ign-gazebo -b default
+          - hg clone https://bitbucket.org/ignitionrobotics/ign-gazebo -b ign-gazebo1
           - cd ign-gazebo
           - mkdir build
           - cd build
