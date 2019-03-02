@@ -69,8 +69,8 @@ ign_find_package (Qt5
 
 #--------------------------------------
 # Find ignition-gazebo
-ign_find_package(ignition-gazebo0 REQUIRED PRIVATE)
-set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo0_VERSION_MAJOR})
+ign_find_package(ignition-gazebo1 REQUIRED PRIVATE)
+set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo1_VERSION_MAJOR})
 
 #============================================================================
 # Configure the build
