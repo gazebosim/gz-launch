@@ -60,7 +60,7 @@ GazeboServer::GazeboServer()
 void GazeboServer::Load(const tinyxml2::XMLElement *_elem)
 {
   gazebo::ServerConfig serverConfig;
-  const tinyxml2::XMLElement *elem = nullptr;
+  const tinyxml2::XMLElement *elem;
 
   // Get the world file
   elem = _elem->FirstChildElement("world_file");
