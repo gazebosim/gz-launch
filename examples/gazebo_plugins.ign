@@ -1,0 +1,147 @@
+<?xml version='1.0'?>
+<%
+  worldName = "diff_drive"
+%>
+
+<!-- Requires ign-gazebo branch support_loading_plugins_programmatically -->
+<ignition version='1.0'>
+  <!-- Load a joystick plugin that will read from a device and output to a
+       topic -->
+  <plugin name="ignition::launch::Joystick"
+          filename="libignition-launch0-joystick.so">
+    <device>/dev/input/js0</device>
+    <sticky_buttons>false</sticky_buttons>
+    <dead_zone>0.05</dead_zone>
+    <rate>60</rate>
+    <accumulation_rate>1000</accumulation_rate>
+  </plugin>
+
+  <!-- Load a plugin that transforms a joystick message to a
+       twist message -->
+  <plugin name="ignition::launch::JoyToTwist"
+          filename="libignition-launch0-joytotwist.so">
+    <input_topic>/joy</input_topic>
+    <output_topic>/model/vehicle_green/cmd_vel</output_topic>
+  </plugin>
+
+  <!-- Load a plugin that transforms a joystick message to a
+       twist message -->
+  <plugin name="ignition::launch::JoyToTwist"
+          filename="libignition-launch0-joytotwist.so">
+    <input_topic>/joy</input_topic>
+    <output_topic>/model/vehicle_blue/cmd_vel</output_topic>
+  </plugin>
+
+  <!-- Run the gazebo server with a set of plugins -->
+  <plugin name="ignition::launch::GazeboServer"
+          filename="libignition-launch0-gazebo.so">
+    <world_file><%= worldName %>.sdf</world_file>
+    <run>true</run>
+    <levels>false</levels>
+    <!-- The diff_drive SDF world has the following plugins defined.
+         Uncomment this if you are using a world that doesn't include the
+         necessary plugin
+    <plugin entity_name="<%= worldName %>"
+            entity_type="world"
+            filename="libignition-gazebo1-physics-system.so"
+            name="ignition::gazebo::systems::Physics">
+    </plugin>
+    <plugin entity_name="<%= worldName %>"
+            entity_type="world"
+            filename="libignition-gazebo1-scene-broadcaster-system.so"
+            name="ignition::gazebo::systems::SceneBroadcaster">
+    </plugin>
+
+    <plugin entity_name="vehicle_green"
+            entity_type="model"
+            filename="libignition-gazebo1-diff-drive-system.so"
+            name="ignition::gazebo::systems::DiffDrive">
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+      <wheel_separation>1.25</wheel_separation>
+      <wheel_radius>0.3</wheel_radius>
+    </plugin>
+
+    <plugin entity_name="vehicle_blue"
+            entity_type="model"
+            filename="libignition-gazebo1-diff-drive-system.so"
+            name="ignition::gazebo::systems::DiffDrive">
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+      <wheel_separation>1.25</wheel_separation>
+      <wheel_radius>0.3</wheel_radius>
+    </plugin>
+-->
+
+  </plugin>
+
+  <executable_wrapper>
+    <plugin name="ignition::launch::GazeboGui"
+          filename="libignition-launch0-gazebogui.so">
+      <plugin filename="Scene3D" name="3D View">
+        <ignition-gui>
+          <title>3D View</title>
+          <property type="bool" key="showTitleBar">false</property>
+          <property type="string" key="state">docked</property>
+        </ignition-gui>
+
+        <engine>ogre2</engine>
+        <scene>scene</scene>
+        <ambient_light>0.4 0.4 0.4</ambient_light>
+        <background_color>0.8 0.8 0.8</background_color>
+        <camera_pose>-6 0 6 0 0.5 0</camera_pose>
+        <service>/world/<%= worldName %>/scene/info</service>
+        <pose_topic>/world/<%= worldName %>/pose/info</pose_topic>
+        <scene_topic>/world/<%= worldName %>/scene/info</scene_topic>
+        <deletion_topic>/world/<%= worldName %>/scene/deletion</deletion_topic>
+      </plugin>
+      <plugin filename="WorldControl" name="World control">
+        <ignition-gui>
+          <title>World control</title>
+          <property type="bool" key="showTitleBar">false</property>
+          <property type="bool" key="resizable">false</property>
+          <property type="double" key="height">72</property>
+          <property type="double" key="width">121</property>
+          <property type="double" key="z">1</property>
+
+          <property type="string" key="state">floating</property>
+          <anchors target="3D View">
+            <line own="left" target="left"/>
+            <line own="bottom" target="bottom"/>
+          </anchors>
+        </ignition-gui>
+
+        <play_pause>true</play_pause>
+        <step>true</step>
+        <start_paused>true</start_paused>
+        <service>/world/<%= worldName %>/control</service>
+        <stats_topic>/world/<%= worldName %>/stats</stats_topic>
+
+      </plugin>
+
+      <plugin filename="WorldStats" name="World stats">
+        <ignition-gui>
+          <title>World stats</title>
+          <property type="bool" key="showTitleBar">false</property>
+          <property type="bool" key="resizable">false</property>
+          <property type="double" key="height">110</property>
+          <property type="double" key="width">290</property>
+          <property type="double" key="z">1</property>
+
+          <property type="string" key="state">floating</property>
+          <anchors target="3D View">
+            <line own="right" target="right"/>
+            <line own="bottom" target="bottom"/>
+          </anchors>
+        </ignition-gui>
+
+        <sim_time>true</sim_time>
+        <real_time>true</real_time>
+        <real_time_factor>true</real_time_factor>
+        <iterations>true</iterations>
+        <topic>/world/<%= worldName %>/stats</topic>
+      </plugin>
+    </plugin>
+  </executable_wrapper>
+
+</ignition>
