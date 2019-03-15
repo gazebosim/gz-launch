@@ -16,4 +16,4 @@ target_link_libraries(${plugin_lower}
   sdformat8::sdformat8
 )
 
-install (TARGETS ${plugin} DESTINATION ${IGN_LIB_INSTALL_DIR})
+install (TARGETS ${plugin} DESTINATION ${IGN_LAUNCH_PLUGIN_INSTALL_PATH})
