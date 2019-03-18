@@ -20,7 +20,7 @@ ign_configure_project()
 # Set project-specific options
 #============================================================================
 
-# No project-specific options yet for ign-plugin
+set(IGN_LAUNCH_PLUGIN_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/${IGN_LIB_INSTALL_DIR}/ign-${IGN_DESIGNATION}-${PROJECT_VERSION_MAJOR}/plugins/")
 
 #============================================================================
 # Search for project-specific dependencies
@@ -47,12 +47,12 @@ ign_find_package(ignition-tools REQUIRED)
 
 #--------------------------------------
 # Find ignition-transport
-ign_find_package(ignition-transport6 REQUIRED )
+ign_find_package(ignition-transport6 REQUIRED)
 set(IGN_TRANSPORT_MAJOR_VER ${ignition-transport6_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-msgs
-ign_find_package(ignition-msgs3 REQUIRED )
+ign_find_package(ignition-msgs3 REQUIRED)
 set(IGN_MSGS_MAJOR_VER ${ignition-msgs3_VERSION_MAJOR})
 
 #--------------------------------------
@@ -69,7 +69,7 @@ ign_find_package (Qt5
 
 #--------------------------------------
 # Find ignition-gazebo
-ign_find_package(ignition-gazebo1 REQUIRED PRIVATE)
+ign_find_package(ignition-gazebo1 REQUIRED PRIVATE COMPONENTS gui)
 set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo1_VERSION_MAJOR})
 
 #============================================================================
