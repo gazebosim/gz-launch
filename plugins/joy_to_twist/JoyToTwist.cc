@@ -16,7 +16,6 @@
 */
 
 #include <fcntl.h>
-#include <linux/joystick.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <ignition/common/Console.hh>
