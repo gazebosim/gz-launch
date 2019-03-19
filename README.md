@@ -32,8 +32,8 @@ directory.
 
 **Example**
 
-1. Run a configuration that launches [Gazebo](http://gazebosim.org).
+1. Run a configuration that launches [Gazebo](https://ignitionrobotics.org/libs/gazebo).
 
     ```
-    ignition -run config/gazebo.ign
+    ign launch -f examples/gazebo.ign
     ```
