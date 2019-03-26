@@ -78,6 +78,11 @@ set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo1_VERSION_MAJOR})
 ign_configure_build(QUIT_IF_BUILD_ERRORS)
 
 #============================================================================
+# install example .ign files
+#============================================================================
+add_subdirectory(examples)
+
+#============================================================================
 # ign command line support
 #============================================================================
 add_subdirectory(plugins)
