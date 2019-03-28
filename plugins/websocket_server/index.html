@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<title>WebSocket Test</title>
+<script src="https://cdn.rawgit.com/dcodeIO/protobuf.js/6.8.8/dist/protobuf.min.js"></script>
+
+<script language="javascript" type="text/javascript">
+
+
+var wsUri = "ws://localhost:9002";
+var output;
+var proto = "syntax = \"proto3\";\
+  package ignition.msgs;\
+  message Time {\
+    int64 sec = 1;\
+    int32 nsec = 2;\
+  }\
+  message Header {\
+    message Map {\
+      string key = 1;\
+      repeated string value = 2;\
+    }\
+    Time stamp         = 1;\
+    repeated Map data  = 2;\
+  }\
+  message WebRequest\
+  {\
+    Header header         = 1;\
+    string operation      = 2;\
+    string topic          = 3;\
+    string msg_type       = 4;\
+    string compression    = 5;\
+    double hz             = 6;\
+  }\
+  message StringMsg_V\
+  {\
+    repeated string data = 2;\
+  }";
+
+var root = protobuf.parse(proto, {keepCase: true}).root;
+
+function init()
+{
+  output = document.getElementById("output");
+  testWebSocket();
+}
+
+function testWebSocket()
+{
+  requestWebsocket = new WebSocket(wsUri, "request");
+  requestWebsocket.onopen = function(evt) { onOpen(evt) };
+  requestWebsocket.onclose = function(evt) { onClose(evt) };
+  requestWebsocket.onmessage = function(evt) { onMessage(evt) };
+  requestWebsocket.onerror = function(evt) { onError(evt) };
+}
+
+function onOpen(evt)
+{
+  writeToScreen("CONNECTED");
+  var msgType = root.lookupType("WebRequest");
+  var webRequestMsg = msgType.encode({
+    operation: "list",
+    compression: "none",
+  }).finish();
+  doSend(webRequestMsg);
+}
+
+function onClose(evt)
+{
+  writeToScreen("DISCONNECTED");
+}
+
+function onMessage(evt)
+{
+
+  var f = new FileReader();
+  f.onloadend = function(event) {
+    var contents = event.target.result;
+    // Decode the message. We are assuming it's a string message....
+    var msgType = root.lookupType("StringMsg_V");
+    var msg = msgType.decode(new Uint8Array(contents));
+    writeToScreen('<span style="color: blue;">RESPONSE: ' + JSON.stringify(msg.toJSON()) +'</span>');
+
+    // Subscribe to the first topic
+    var requestType = root.lookupType("WebRequest");
+    var webRequestMsg = requestType.encode({
+      operation: "subscribe",
+      topic: msg.data[0],
+      compression: "none",
+    }).finish();
+
+    doSend(webRequestMsg);
+  }
+  f.readAsArrayBuffer(evt.data);
+}
+
+function onError(evt)
+{
+  writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+}
+
+function doSend(message)
+{
+  requestWebsocket.send(message);
+}
+
+function writeToScreen(message)
+{
+  var pre = document.createElement("p");
+  pre.style.wordWrap = "break-word";
+  pre.innerHTML = message;
+  output.appendChild(pre);
+}
+
+window.addEventListener("load", init, false);
+
+</script>
+
+<h2>WebSocket Test</h2>
+
+<div id="output"></div>
