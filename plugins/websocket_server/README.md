@@ -6,6 +6,7 @@
    install` so that `ign-tools` find the launch.yaml files.
 
 ```
+sudo apt-get install libwebsockets-dev
 mkdir build
 cd build
 cmake ../
@@ -13,14 +14,20 @@ make
 sudo make install
 ```
 
-3. Run the websocket server. The follow assumes you are in the root of the
+3. Run ign-gazebo.
+
+```
+ign-gazebo -v 4
+```
+
+4. Run the websocket server. The follow assumes you are in the root of the
    source tree.
 
 ```
 ign launch -f examples/websocket.ign -v 4
 ```
 
-4. Open the `plugins/websocket_server/index.html` in a web browser.
+5. Open the `plugins/websocket_server/index.html` in a web browser.
 
 ```
 firefox plugins/websocket_server/index.html

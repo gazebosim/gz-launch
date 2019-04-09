@@ -1,5 +1,6 @@
 set (plugins
   joy_to_twist
+  gazebo_factory
   gazebo_gui
   gazebo_server
   websocket_server

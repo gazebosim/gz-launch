@@ -23,7 +23,11 @@
 
 using namespace ignition::launch;
 
-WebsocketServer *callbackSelf(struct lws *_wsi)
+int rootCallback(struct lws *_wsi,
+                  enum lws_callback_reasons _reason,
+                  void * /*user*/,
+                  void * _in,
+                  size_t /*len*/)
 {
   WebsocketServer *self = nullptr;
 
@@ -35,87 +39,6 @@ WebsocketServer *callbackSelf(struct lws *_wsi)
   if (protocol)
     self = static_cast<WebsocketServer*>(protocol->user);
 
-  return self;
-}
-
-int topicListCallback(struct lws *_wsi,
-                  enum lws_callback_reasons _reason,
-                  void * /*_user*/,
-                  void * _in,
-                  size_t /*_len*/)
-{
-  WebsocketServer *self = callbackSelf(_wsi);
-  // We require the self pointer, and ignore the cases when this function is
-  // called without a self pointer.
-  if (!self)
-    return 0;
-
-  switch (_reason)
-  {
-    // Open connections.
-    case LWS_CALLBACK_ESTABLISHED:
-      self->OnConnect(lws_get_socket_fd(_wsi));
-      // This will generate a LWS_CALLBACK_SERVER_WRITEABLE event when the // connection is writable.
-      lws_callback_on_writable(_wsi);
-      break;
-
-    // Close connections.
-    case LWS_CALLBACK_CLOSED:
-      self->OnDisconnect(lws_get_socket_fd(_wsi));
-      break;
-
-    // Publish outboud messages
-    case LWS_CALLBACK_SERVER_WRITEABLE:
-      {
-        int fd = lws_get_socket_fd(_wsi);
-        std::lock_guard<std::mutex> lock(self->connections[fd]->mutex);
-        while (!self->connections[fd]->buffer.empty())
-        {
-          int msgSize = self->connections[fd]->len.front();
-          int charsSent = lws_write(_wsi,
-              reinterpret_cast<unsigned char *>(
-                self->connections[fd]->buffer.front().get() + LWS_PRE),
-                msgSize,
-              LWS_WRITE_BINARY);
-
-          if (charsSent < msgSize)
-          {
-            ignerr << "Error writing to socket\n";
-          }
-          else
-          {
-            // Only pop the message if it was sent successfully.
-            self->connections[fd]->buffer.pop_front();
-            self->connections[fd]->len.pop_front();
-          }
-        }
-
-        // This will generate a LWS_CALLBACK_SERVER_WRITEABLE event when the
-        // connection is writable.
-        lws_callback_on_writable(_wsi);
-        break;
-      }
-
-    // Handle incoming messages
-    case LWS_CALLBACK_RECEIVE:
-      self->OnRequestMessage(lws_get_socket_fd(_wsi),
-          std::string((const char *)_in));
-      break;
-
-    default:
-      // Do nothing on default.
-      break;
-  }
-  return 0;
-}
-
-int rootCallback(struct lws *_wsi,
-                  enum lws_callback_reasons _reason,
-                  void * /*user*/,
-                  void * _in,
-                  size_t /*len*/)
-{
-  WebsocketServer *self = callbackSelf(_wsi);
   // We require the self pointer, and ignore the cases when this function is
   // called without a self pointer.
   if (!self)
@@ -225,9 +148,6 @@ void WebsocketServer::Load(const tinyxml2::XMLElement * /*_elem*/)
       this
     });
 
-  // See first protocol for description of parameters.
-  this->protocols.push_back({"request", topicListCallback, 0, 0, 0, this});
-
   // The terminator
   this->protocols.push_back({NULL, NULL, 0, 0, 0, 0 });
 
@@ -332,11 +252,12 @@ void WebsocketServer::OnDisconnect(int _socketId)
 }
 
 //////////////////////////////////////////////////
-void WebsocketServer::OnRequestMessage(int _socketId, const std::string &_msg)
+void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
 {
   ignition::msgs::WebRequest requestMsg;
   requestMsg.ParseFromString(_msg);
 
+  std::cout << requestMsg.GetDescriptor()->DebugString() << std::endl;
   if (requestMsg.operation() == "list")
   {
     igndbg << "Topic list request recieved\n";
@@ -357,15 +278,11 @@ void WebsocketServer::OnRequestMessage(int _socketId, const std::string &_msg)
   }
   else if (requestMsg.operation() == "subscribe")
   {
-    std::cout << "SUBSCRIBE. SocketId[" << _socketId << "]\n";
+    igndbg << "Subscribe request to topic[" << requestMsg.topic() << "]\n";
+    /*
     this->node.SubscribeRaw(requestMsg.topic(),
         std::bind(&WebsocketServer::OnClock, this, std::placeholders::_1,
           std::placeholders::_2, std::placeholders::_3));
+          */
   }
-}
-
-//////////////////////////////////////////////////
-void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
-{
-  std::cout << "On Message[" << _msg << "]\n";
 }

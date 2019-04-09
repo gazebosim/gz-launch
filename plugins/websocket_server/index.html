@@ -46,11 +46,11 @@ function init()
 
 function testWebSocket()
 {
-  requestWebsocket = new WebSocket(wsUri, "request");
-  requestWebsocket.onopen = function(evt) { onOpen(evt) };
-  requestWebsocket.onclose = function(evt) { onClose(evt) };
-  requestWebsocket.onmessage = function(evt) { onMessage(evt) };
-  requestWebsocket.onerror = function(evt) { onError(evt) };
+  websocket = new WebSocket(wsUri);
+  websocket.onopen = function(evt) { onOpen(evt) };
+  websocket.onclose = function(evt) { onClose(evt) };
+  websocket.onmessage = function(evt) { onMessage(evt) };
+  websocket.onerror = function(evt) { onError(evt) };
 }
 
 function onOpen(evt)
@@ -100,7 +100,7 @@ function onError(evt)
 
 function doSend(message)
 {
-  requestWebsocket.send(message);
+  websocket.send(message);
 }
 
 function writeToScreen(message)
