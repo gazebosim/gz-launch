@@ -30,13 +30,13 @@ GazeboFactory::GazeboFactory()
 }
 
 /////////////////////////////////////////////////
-void GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
+bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
 {
   const tinyxml2::XMLElement *elem;
 
   msgs::EntityFactory req;
 
-  // Get the world file
+  // Get the uri
   elem = _elem->FirstChildElement("uri");
   if (elem)
   {
@@ -44,6 +44,24 @@ void GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
       "<include><uri>" + elem->GetText() + "</uri></include></sdf>";
     req.set_sdf(sdf);
   }
+
+  // Get the name
+  elem = _elem->FirstChildElement("name");
+  if (elem)
+    req.set_name(elem->GetText());
+
+  // Get the pose
+  elem = _elem->FirstChildElement("pose");
+  if (elem)
+  {
+    ignition::math::Pose3d pose;
+    std::stringstream stream;
+    stream << elem->GetText();
+    stream >> pose;
+    std::cout << "Pose[" << pose << "]\n";
+    msgs::Set(req.mutable_pose(), pose);
+  }
+
 
   unsigned int timeout = 2000;
   msgs::Boolean rep;
@@ -74,4 +92,6 @@ void GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
   }
 
   igndbg << "Loaded GazeboFactory plugin.\n";
+
+  return false;
 }

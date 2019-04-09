@@ -57,7 +57,7 @@ GazeboServer::GazeboServer()
 }
 
 /////////////////////////////////////////////////
-void GazeboServer::Load(const tinyxml2::XMLElement *_elem)
+bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
 {
   gazebo::ServerConfig serverConfig;
   const tinyxml2::XMLElement *elem;
@@ -144,4 +144,5 @@ void GazeboServer::Load(const tinyxml2::XMLElement *_elem)
   this->server->Run(false, 0, !run);
 
   igndbg << "Loaded GazeboServer plugin.\n";
+  return true;
 }

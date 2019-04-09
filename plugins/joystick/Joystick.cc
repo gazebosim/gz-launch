@@ -47,7 +47,7 @@ Joystick::~Joystick()
 }
 
 /////////////////////////////////////////////////
-void Joystick::Load(const tinyxml2::XMLElement *_elem)
+bool Joystick::Load(const tinyxml2::XMLElement *_elem)
 {
   // Get the name of the joystick device.
   std::string deviceFilename = "/dev/input/js0";
@@ -161,7 +161,7 @@ void Joystick::Load(const tinyxml2::XMLElement *_elem)
   {
     std::cerr << "Unable to open joystick at [" << deviceFilename
           << "]. The joystick will not work.\n";
-    return;
+    return false;
   }
 
   this->unscaledDeadzone = 32767.0f * deadzone;
@@ -179,6 +179,8 @@ void Joystick::Load(const tinyxml2::XMLElement *_elem)
     << "  dead_zone: " << deadzone << std::endl
     << "  rate: " << intervalRate << std::endl
     << "  accumulation_rate: " << accumulationRate  << std::endl;
+
+  return true;
 }
 
 //////////////////////////////////////////////////

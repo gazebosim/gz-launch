@@ -38,6 +38,7 @@
 #include "Manager.hh"
 
 using namespace ignition::launch;
+using namespace std::chrono_literals;
 
 /// \brief A class to encapsulate an executable (program) to run.
 class Executable
@@ -233,7 +234,8 @@ bool Manager::RunConfig(const std::string &_config)
   while (this->dataPtr->running && (!this->dataPtr->executables.empty() ||
                                     !this->dataPtr->plugins.empty()))
   {
-    this->dataPtr->runCondition.wait(lock);
+    std::cout << "Plugins[" << this->dataPtr->plugins.size() << "]\n";
+    this->dataPtr->runCondition.wait_for(lock, 1000ms);
   }
   this->dataPtr->running = false;
 
@@ -647,8 +649,8 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
     << "] File[" << file << "]" << std::endl;
 
   PluginPtr plugin = loader.Instantiate(name);
-  plugin->QueryInterface<Plugin>()->Load(_elem);
-  this->plugins.insert(plugin);
+  if (plugin->QueryInterface<Plugin>()->Load(_elem))
+    this->plugins.insert(plugin);
 }
 
 //////////////////////////////////////////////////

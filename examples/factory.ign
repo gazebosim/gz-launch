@@ -1,10 +1,13 @@
 <?xml version="1.0"?>
 <ignition version='1.0'>
   <plugin name="ignition::launch::GazeboFactory"
-          filename="libignition-launch0-gazebo-factory.so">
-    <name>x2</name>
+    filename="libignition-launch0-gazebo-factory.so"
+    keepAlive="false">
+
+    <name>x3</name>
+    <allow_renaming>true</allow_renaming>
     <uri>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/X2 UGV/1</uri>
-    <pose>0 2 0.063494 0 0 0</pose>
+    <pose>5 2 0.063494 0 0 0</pose>
 
     <plugin entity_name="x2"
             entity_type="model"

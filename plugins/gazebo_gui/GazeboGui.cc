@@ -37,7 +37,7 @@ GazeboGui::~GazeboGui()
 }
 
 /////////////////////////////////////////////////
-void GazeboGui::Load(const tinyxml2::XMLElement *_elem)
+bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
 {
   int argc;
   char **argv = nullptr;
@@ -51,7 +51,7 @@ void GazeboGui::Load(const tinyxml2::XMLElement *_elem)
   if (!app->LoadConfig(configPath))
   {
     ignerr << "Unable to load GazeboGui config file[" << configPath << "]\n";
-    return;
+    return false;
   }
 
   // Customize window
@@ -116,4 +116,6 @@ void GazeboGui::Load(const tinyxml2::XMLElement *_elem)
   // This blocks until the window is closed or we receive a SIGINT
   this->app->exec();
   this->app.reset();
+
+  return false;
 }

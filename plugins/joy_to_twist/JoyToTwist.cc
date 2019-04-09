@@ -57,7 +57,7 @@ JoyToTwist::~JoyToTwist()
 }
 
 /////////////////////////////////////////////////
-void JoyToTwist::Load(const tinyxml2::XMLElement *_elem)
+bool JoyToTwist::Load(const tinyxml2::XMLElement *_elem)
 {
   const tinyxml2::XMLElement *elem;
 
@@ -109,6 +109,8 @@ void JoyToTwist::Load(const tinyxml2::XMLElement *_elem)
     << "  output_topic: " << this->outputTopic << std::endl;
   this->running = true;
   this->node.Subscribe(this->inputTopic, &JoyToTwist::OnJoy, this);
+
+  return true;
 }
 
 //////////////////////////////////////////////////
