@@ -234,8 +234,7 @@ bool Manager::RunConfig(const std::string &_config)
   while (this->dataPtr->running && (!this->dataPtr->executables.empty() ||
                                     !this->dataPtr->plugins.empty()))
   {
-    std::cout << "Plugins[" << this->dataPtr->plugins.size() << "]\n";
-    this->dataPtr->runCondition.wait_for(lock, 1000ms);
+    this->dataPtr->runCondition.wait(lock);
   }
   this->dataPtr->running = false;
 

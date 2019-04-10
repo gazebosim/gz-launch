@@ -36,28 +36,27 @@ bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
 
   msgs::EntityFactory req;
 
-  // Get the sdf
+  // Set the sdf field, if an SDF string has been specified.
+  tinyxml2::XMLPrinter printer;
   elem = _elem->FirstChildElement("sdf");
   if (elem)
   {
-    std::string sdf = std::string("<?xml version='1.0'?><sdf version='1.6'>") +
-      "<include> <pose>5 2 0.063494 0 0 0</pose> <uri>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/X2 UGV/1</uri> <plugin entity_name='x2' entity_type='model' filename='libignition-gazebo-state-publisher-system.so' name='ignition::gazebo::systems::StatePublisher'></plugin></include> </sdf>";
-    req.set_sdf(sdf);
+    elem->Accept(&printer);
+    req.set_sdf(printer.CStr());
   }
 
-  // Get the uri
-  /*elem = _elem->FirstChildElement("uri");
-  if (elem)
-  {
-    std::string sdf = std::string("<?xml version='1.0'?><sdf version='1.6'>") +
-      "<include><uri>" + elem->GetText() + "</uri></include></sdf>";
-    req.set_sdf(sdf);
-  }*/
-
-  // Get the name
+  // Get <name>
   elem = _elem->FirstChildElement("name");
   if (elem)
     req.set_name(elem->GetText());
+
+  // Get <allow_renaming>
+  elem = _elem->FirstChildElement("allow_renaming");
+  if (elem)
+  {
+    std::string str = elem->GetText();
+    req.set_allow_renaming(str == "1" || common::lowercase(str) == "true");
+  }
 
   // Get the pose
   elem = _elem->FirstChildElement("pose");
@@ -67,16 +66,63 @@ bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
     std::stringstream stream;
     stream << elem->GetText();
     stream >> pose;
-    std::cout << "Pose[" << pose << "]\n";
     msgs::Set(req.mutable_pose(), pose);
   }
 
+  // Get a user-defined world name
+  elem = _elem->FirstChildElement("world");
+  std::string worldName;
+  if (elem)
+  {
+    worldName = elem->GetText();
+  }
+  // Otherwise get a world name using transport.
+  else
+  {
+    std::vector<std::string> topics;
+    std::set<std::string> worlds;
+
+    // Get all the topics
+    this->node.TopicList(topics);
+
+    // Find the topics that start with "/world/".
+    for (const std::string &topic : topics)
+    {
+      if (topic.find("/world/") == 0)
+      {
+        // Get what we would assume is the world name
+        std::vector<std::string> split = common::split(topic, "/");
+        worlds.insert(split[1]);
+      }
+    }
+
+    // Error if no world was found.
+    if (worlds.empty())
+    {
+      ignerr << "No simulation worlds were found. Unable to run the factory. "
+        << "Is Gazebo running?\n";
+      return false;
+    }
+
+    // Warning if multiple worlds were found.
+    if (worlds.size() > 1)
+    {
+      ignwarn << "Multiple simulation worlds were found. Using the first, "
+        << " which has the name[" << *worlds.begin() << "]\n";
+    }
+
+    worldName = *worlds.begin();
+  }
 
   unsigned int timeout = 2000;
   msgs::Boolean rep;
   bool result;
-  bool executed = this->node.Request("/world/default/create",
-      req, timeout, rep, result);
+
+  std::string topic = "/world/";
+  topic += worldName + "/create";
+
+  // Send the request.
+  bool executed = this->node.Request(topic, req, timeout, rep, result);
 
   if (executed)
   {
@@ -97,10 +143,8 @@ bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
   }
   else
   {
-    ignerr << "Factor service call timed out.\n";
+    ignerr << "Factory service call timed out.\n";
   }
-
-  igndbg << "Loaded GazeboFactory plugin.\n";
 
   return false;
 }
