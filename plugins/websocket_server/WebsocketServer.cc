@@ -125,7 +125,7 @@ WebsocketServer::~WebsocketServer()
 }
 
 /////////////////////////////////////////////////
-void WebsocketServer::Load(const tinyxml2::XMLElement * /*_elem*/)
+bool WebsocketServer::Load(const tinyxml2::XMLElement * /*_elem*/)
 {
   // All of the protocols handled by this websocket server.
   this->protocols.push_back(
@@ -183,10 +183,11 @@ void WebsocketServer::Load(const tinyxml2::XMLElement * /*_elem*/)
       std::bind(&WebsocketServer::OnClock, this, std::placeholders::_1,
         std::placeholders::_2, std::placeholders::_3));
         */
+  return true;
 }
 
 //////////////////////////////////////////////////
-void WebsocketServer::OnClock(const char *_data, const size_t _size,
+void WebsocketServer::OnClock(const char * /*_data*/, const size_t /*_size*/,
     const ignition::transport::MessageInfo &/*_info*/)
 {
   if (!this->connections.empty())

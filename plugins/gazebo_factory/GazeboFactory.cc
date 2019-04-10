@@ -36,14 +36,23 @@ bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
 
   msgs::EntityFactory req;
 
+  // Get the sdf
+  elem = _elem->FirstChildElement("sdf");
+  if (elem)
+  {
+    std::string sdf = std::string("<?xml version='1.0'?><sdf version='1.6'>") +
+      "<include> <pose>5 2 0.063494 0 0 0</pose> <uri>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/X2 UGV/1</uri> <plugin entity_name='x2' entity_type='model' filename='libignition-gazebo-state-publisher-system.so' name='ignition::gazebo::systems::StatePublisher'></plugin></include> </sdf>";
+    req.set_sdf(sdf);
+  }
+
   // Get the uri
-  elem = _elem->FirstChildElement("uri");
+  /*elem = _elem->FirstChildElement("uri");
   if (elem)
   {
     std::string sdf = std::string("<?xml version='1.0'?><sdf version='1.6'>") +
       "<include><uri>" + elem->GetText() + "</uri></include></sdf>";
     req.set_sdf(sdf);
-  }
+  }*/
 
   // Get the name
   elem = _elem->FirstChildElement("name");
