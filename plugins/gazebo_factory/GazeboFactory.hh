@@ -29,20 +29,29 @@ namespace ignition
     /// \brief Spawns entities into simulation.
     ///
     /// # Example usage
-    /// <!-- Run the gazebo server with a set of plugins -->
-    /// <plugin name="ignition::launch::GazeboServer"
-    ///         filename="libignition-launch0-gazebo.so">
-    ///   <!-- The SDF file to run -->
-    ///   <world_file>diff_drive.sdf</world_file>
+    ///  <plugin name="ignition::launch::GazeboFactory"
+    ///          filename="libignition-launch0-gazebo-factory.so">
     ///
-    ///   <!-- The physics system -->
-    ///   <plugin entity_name="<%= worldName %>"
-    ///           entity_type="world"
-    ///           filename="libignition-gazebo-physics-system.so"
-    ///           name="ignition::gazebo::systems::v0::Physics">
-    ///   </plugin>
+    ///   <!-- Name to give the model -->
+    ///   <name>x2</name>
     ///
-    ///   <!-- Specify any other ignition gazebo plugins here. -->
+    ///   <!-- Allow the model to be renamed when the given name is already
+    ///        taken -->
+    ///   <allow_renaming>true</allow_renaming>
+    ///
+    ///   <!-- Pose of the model -->
+    ///   <pose>1 2 0.5 0 0 0</pose>
+    ///
+    ///   <!-- SDF snippet that contains information about what should be
+    ///        spawned -->
+    ///   <sdf version='1.6'>
+    ///     <include>
+    ///       <uri>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/X2 UGV/1</uri>
+    ///       <!-- Publish robot state information -->
+    ///       <plugin filename="libignition-gazebo-state-publisher-system.so"
+    ///               name="ignition::gazebo::systems::StatePublisher"></plugin>
+    ///     </include>
+    ///   </sdf>
     /// </plugin>
     class GazeboFactory : public ignition::launch::Plugin
     {
@@ -56,6 +65,7 @@ namespace ignition
       public: virtual bool Load(
                   const tinyxml2::XMLElement *_elem) override final;
 
+      // Transport node.
       private: transport::Node node;
     };
   }
