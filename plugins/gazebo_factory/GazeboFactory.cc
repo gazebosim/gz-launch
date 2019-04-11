@@ -15,9 +15,12 @@
  *
 */
 
-#include <ignition/common/Console.hh>
 #include <ignition/msgs/entity_factory.pb.h>
 #include <ignition/msgs/boolean.pb.h>
+#include <ignition/msgs/performer.pb.h>
+
+#include <ignition/common/Util.hh>
+#include <ignition/common/Console.hh>
 #include "GazeboFactory.hh"
 
 using namespace ignition;
@@ -49,6 +52,15 @@ bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
   elem = _elem->FirstChildElement("name");
   if (elem)
     req.set_name(elem->GetText());
+
+  // Get <is_performer>, by default we assume a spawned model is a performer
+  bool isPerformer = true;
+  elem = _elem->FirstChildElement("is_performer");
+  if (elem)
+  {
+    std::string str = elem->GetText();
+    isPerformer = str == "1" || common::lowercase(str) == "true";
+  }
 
   // Get <allow_renaming>
   elem = _elem->FirstChildElement("allow_renaming");
@@ -124,26 +136,40 @@ bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
   // Send the request.
   bool executed = this->node.Request(topic, req, timeout, rep, result);
 
-  if (executed)
+  if (executed && result && rep.data())
   {
-    if (result)
+    igndbg << "Factory service call succeeded.\n";
+    if (isPerformer)
     {
-      if (!rep.data())
+      IGN_SLEEP_S(2);
+      topic = std::string("/world/") + worldName + "/level/add_performer";
+      msgs::Performer performerReq;
+      performerReq.set_name(req.name());
+      // \todo(anyon) Setting the size to 2,2,2 is a hack. Gazebo should
+      // calculate the bounding box based on the model information.
+      msgs::Set(performerReq.mutable_geometry()->mutable_box()->mutable_size(),
+          math::Vector3d(2, 2, 2));
+      executed = this->node.Request(topic, performerReq, timeout, rep, result);
+    }
+  }
+  else
+  {
+    if (executed)
+    {
+      if (result && !rep.data())
       {
         ignerr << "Factory service call completed, but returned a false value."
           << "You may have an invalid request. Check the configuration.\n";
       }
       else
-        igndbg << "Factory service call succeeded.\n";
+      {
+        ignerr << "Factory service call failed.\n";
+      }
     }
     else
     {
-      ignerr << "Factory service call failed.\n";
+      ignerr << "Factory service call timed out.\n";
     }
-  }
-  else
-  {
-    ignerr << "Factory service call timed out.\n";
   }
 
   return false;
