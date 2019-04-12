@@ -14,6 +14,13 @@ var proto = "syntax = \"proto3\";\
     int64 sec = 1;\
     int32 nsec = 2;\
   }\
+  message Clock\
+  {\
+    Header header = 1;\
+    Time system = 2;\
+    Time real   = 3;\
+    Time sim    = 4;\
+  }\
   message Header {\
     message Map {\
       string key = 1;\
@@ -34,6 +41,94 @@ var proto = "syntax = \"proto3\";\
   message StringMsg_V\
   {\
     repeated string data = 2;\
+  }\
+  message CmdVel2D\
+  {\
+    Header header    = 1;\
+    double velocity  = 2;\
+    double theta     = 3;\
+  }\
+  enum PixelFormatType\
+  {\
+    UNKNOWN_PIXEL_FORMAT = 0;\
+    L_INT8 = 1;\
+    L_INT16 = 2;\
+    RGB_INT8 = 3;\
+    RGBA_INT8 = 4;\
+    BGRA_INT8 = 5;\
+    RGB_INT16 = 6;\
+    RGB_INT32 = 7;\
+    BGR_INT8 = 8;\
+    BGR_INT16 = 9;\
+    BGR_INT32 = 10;\
+    R_FLOAT16 = 11;\
+    RGB_FLOAT16 = 12;\
+    R_FLOAT32 = 13;\
+    RGB_FLOAT32 = 14;\
+    BAYER_RGGB8 = 15;\
+    BAYER_RGGR8 = 16;\
+    BAYER_GBRG8 = 17;\
+    BAYER_GRBG8 = 18;\
+  }\
+  \
+  message Image\
+  {\
+    Header header        = 1;\
+    uint32 width         = 2;\
+    uint32 height        = 3;\
+    uint32 pixel_format  = 4;\
+    uint32 step          = 5;\
+    bytes data          = 6;\
+  }\
+  message Vector3d\
+  {\
+    Header header = 1;\
+    double x = 2;\
+    double y = 3;\
+    double z = 4;\
+  }\
+  message Pose\
+  {\
+    Header header          = 1;\
+    string name            = 2;\
+    uint32 id              = 3;\
+    Vector3d position      = 4;\
+    Quaternion orientation = 5;\
+  }\
+  message Quaternion\
+  {\
+    Header header = 1;\
+    double x = 2;\
+    double y = 3;\
+    double z = 4;\
+    double w = 5;\
+  }\
+  message Double_V\
+  {\
+    repeated double data = 1;\
+  }\
+  message Pose_V\
+  {\
+    Header header = 1;\
+    repeated Pose pose = 2;\
+  }\
+  message Packet\
+  {\
+    string topic = 1;\
+    string type  = 2;\
+  \
+    oneof content\
+    {\
+      CmdVel2D cmd_vel2d = 3;\
+      Image image = 4;\
+      StringMsg_V string_msg_v = 5;\
+      WebRequest web_request = 6;\
+      Pose pose = 7;\
+      Double_V doublev = 8;\
+      Pose_V pose_v = 9;\
+      Time time = 10;\
+      Clock clock = 11;\
+    }\
   }";
 
 var root = protobuf.parse(proto, {keepCase: true}).root;
@@ -76,19 +171,32 @@ function onMessage(evt)
   f.onloadend = function(event) {
     var contents = event.target.result;
     // Decode the message. We are assuming it's a string message....
-    var msgType = root.lookupType("StringMsg_V");
+    var msgType = root.lookupType("Packet");
     var msg = msgType.decode(new Uint8Array(contents));
-    writeToScreen('<span style="color: blue;">RESPONSE: ' + JSON.stringify(msg.toJSON()) +'</span>');
+    // writeToScreen('<span style="color: blue;">RESPONSE: ' +
+    //  JSON.stringify(msg.toJSON()) +'</span>');
 
-    // Subscribe to the first topic
-    var requestType = root.lookupType("WebRequest");
-    var webRequestMsg = requestType.encode({
-      operation: "subscribe",
-      topic: msg.data[0],
-      compression: "none",
-    }).finish();
+    if (msg.content !== undefined) {
+      if (msg.content === "string_msg_v") {
+        // Subscribe to the first topic
+        var requestType = root.lookupType("WebRequest");
+        var webRequestMsg = requestType.encode({
+          operation: "subscribe",
+          topic: msg.string_msg_v.data[0],
+          compression: "none",
+        }).finish();
 
-    doSend(webRequestMsg);
+        doSend(webRequestMsg);
+      } else if (msg.content === "clock") {
+
+        msg_output = document.getElementById("msg_output");
+        msg_output.innerHTML = JSON.stringify(msg.clock.toJSON());
+        /*
+        writeToScreen('<span style="color: blue;"> ' +
+        +'</span>');
+        */
+      }
+    }
   }
   f.readAsArrayBuffer(evt.data);
 }
@@ -117,4 +225,7 @@ window.addEventListener("load", init, false);
 
 <h2>WebSocket Test</h2>
 
-<div id="output"></div>
+<div id="output">
+</div>
+
+<div id='msg_output'></div>
