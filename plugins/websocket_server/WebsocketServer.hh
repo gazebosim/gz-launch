@@ -69,8 +69,8 @@ namespace ignition
 
       public: void Run();
 
-      //private: void OnClock(const ignition::msgs::Clock &_msg);
-      private: void OnClock(const char *_data, const size_t _size,
+      private: void OnWebsocketSubscribedMessage(const char *_data,
+                   const size_t _size,
                    const ignition::transport::MessageInfo &_info);
 
       public: void OnConnect(int _socketId);
@@ -98,6 +98,7 @@ namespace ignition
       private: void QueueMessage(Connection *_connection,
                    const char *_data, const size_t _size);
 
+      public: std::mutex mutex;
       public: std::map<int, std::unique_ptr<Connection>> connections;
     };
   }

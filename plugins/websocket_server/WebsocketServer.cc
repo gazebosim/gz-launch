@@ -24,10 +24,10 @@
 using namespace ignition::launch;
 
 int rootCallback(struct lws *_wsi,
-                  enum lws_callback_reasons _reason,
-                  void * /*user*/,
-                  void * _in,
-                  size_t /*len*/)
+                 enum lws_callback_reasons _reason,
+                 void * /*user*/,
+                 void * _in,
+                 size_t /*len*/)
 {
   WebsocketServer *self = nullptr;
 
@@ -44,11 +44,15 @@ int rootCallback(struct lws *_wsi,
   if (!self)
     return 0;
 
+  int fd = lws_get_socket_fd(_wsi);
+
+  // std::lock_guard<std::mutex> mainLock(self->mutex);
   switch (_reason)
   {
     // Open connections.
     case LWS_CALLBACK_ESTABLISHED:
-      self->OnConnect(lws_get_socket_fd(_wsi));
+      igndbg << "LWS_CALLBACK_ESTABLISHED\n";
+      self->OnConnect(fd);
       // This will generate a LWS_CALLBACK_SERVER_WRITEABLE event when the
       // connection is writable.
       lws_callback_on_writable(_wsi);
@@ -56,13 +60,13 @@ int rootCallback(struct lws *_wsi,
 
     // Close connections.
     case LWS_CALLBACK_CLOSED:
-      self->OnDisconnect(lws_get_socket_fd(_wsi));
+      igndbg << "LWS_CALLBACK_CLOSED\n";
+      self->OnDisconnect(fd);
       break;
 
     // Publish outboud messages
     case LWS_CALLBACK_SERVER_WRITEABLE:
       {
-        int fd = lws_get_socket_fd(_wsi);
         std::lock_guard<std::mutex> lock(self->connections[fd]->mutex);
         while (!self->connections[fd]->buffer.empty())
         {
@@ -93,15 +97,16 @@ int rootCallback(struct lws *_wsi,
 
     // Handle incoming messages
     case LWS_CALLBACK_RECEIVE:
-      self->OnMessage(lws_get_socket_fd(_wsi), std::string((const char *)_in));
+      igndbg << "LWS_CALLBACK_RECEIVE\n";
+      self->OnMessage(fd, std::string((const char *)_in));
       break;
 
     default:
       // Do nothing on default.
       break;
   }
-  return 0;
 
+  return 0;
 }
 
 /////////////////////////////////////////////////
@@ -178,34 +183,6 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement * /*_elem*/)
 
   this->run = true;
   this->thread = new std::thread(std::bind(&WebsocketServer::Run, this));
-/*
-  this->node.SubscribeRaw("/world/default/clock",
-      std::bind(&WebsocketServer::OnClock, this, std::placeholders::_1,
-        std::placeholders::_2, std::placeholders::_3));
-        */
-  return true;
-}
-
-//////////////////////////////////////////////////
-void WebsocketServer::OnClock(const char * /*_data*/, const size_t /*_size*/,
-    const ignition::transport::MessageInfo &/*_info*/)
-{
-  if (!this->connections.empty())
-  {
-    std::cout << "On Clock\n";
-    // this->QueueMessage(this->connections.begin()->second.get(), _data, _size);
-
-    /* Old but working.
-    std::unique_ptr<char> buf(new char[LWS_PRE + _size]);
-
-    // Copy the message.
-    memcpy(buf.get() + LWS_PRE, _data, _size);
-
-    std::lock_guard<std::mutex> lock(this->connections.begin()->second->mutex);
-    this->connections.begin()->second->buffer.push_back(std::move(buf));
-    this->connections.begin()->second->len.push_back(_size);
-    */
-  }
 }
 
 //////////////////////////////////////////////////
@@ -229,7 +206,6 @@ void WebsocketServer::QueueMessage(Connection *_connection,
   }
 }
 
-
 //////////////////////////////////////////////////
 void WebsocketServer::Run()
 {
@@ -249,7 +225,7 @@ void WebsocketServer::OnConnect(int _socketId)
 //////////////////////////////////////////////////
 void WebsocketServer::OnDisconnect(int _socketId)
 {
-  this->connections[_socketId].reset();
+  this->connections.erase(_socketId);
 }
 
 //////////////////////////////////////////////////
@@ -258,11 +234,11 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   ignition::msgs::WebRequest requestMsg;
   requestMsg.ParseFromString(_msg);
 
-  std::cout << requestMsg.GetDescriptor()->DebugString() << std::endl;
   if (requestMsg.operation() == "list")
   {
     igndbg << "Topic list request recieved\n";
-    ignition::msgs::StringMsg_V msg;
+    ignition::msgs::Packet msg;
+
     std::vector<std::string> topics;
 
     // Get the list of topics
@@ -270,7 +246,8 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
 
     // Store the topics in a message and serialize the message.
     for (const std::string &topic : topics)
-      msg.add_data(topic);
+      msg.mutable_string_msg_v()->add_data(topic);
+
     std::string data = msg.SerializeAsString();
 
     // Queue the message for delivery.
@@ -280,10 +257,46 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   else if (requestMsg.operation() == "subscribe")
   {
     igndbg << "Subscribe request to topic[" << requestMsg.topic() << "]\n";
-    /*
     this->node.SubscribeRaw(requestMsg.topic(),
-        std::bind(&WebsocketServer::OnClock, this, std::placeholders::_1,
+        std::bind(&WebsocketServer::OnWebsocketSubscribedMessage,
+          this, std::placeholders::_1,
           std::placeholders::_2, std::placeholders::_3));
-          */
+  }
+}
+
+//////////////////////////////////////////////////
+void WebsocketServer::OnWebsocketSubscribedMessage(
+    const char *_data, const size_t /*_size*/,
+    const ignition::transport::MessageInfo &_info)
+{
+  if (!this->connections.empty())
+  {
+    ignition::msgs::Packet msg;
+    msg.set_topic(_info.Topic());
+    msg.set_type(_info.Type());
+
+    if (_info.Type() == "ignition.msgs.CmdVel2D")
+      msg.mutable_cmd_vel2d()->ParseFromString(_data);
+    else if (_info.Type() == "ignition.msgs.Image")
+      msg.mutable_image()->ParseFromString(_data);
+    else if (_info.Type() == "ignition.msgs.StringMsg_V")
+      msg.mutable_string_msg_v()->ParseFromString(_data);
+    else if (_info.Type() == "ignition.msgs.WebRequest")
+      msg.mutable_web_request()->ParseFromString(_data);
+    else if (_info.Type() == "ignition.msgs.Pose")
+      msg.mutable_pose()->ParseFromString(_data);
+    else if (_info.Type() == "ignition.msgs.Pose_V")
+      msg.mutable_pose_v()->ParseFromString(_data);
+    else if (_info.Type() == "ignition.msgs.Time")
+      msg.mutable_time()->ParseFromString(_data);
+    else if (_info.Type() == "ignition.msgs.Clock")
+      msg.mutable_clock()->ParseFromString(_data);
+
+    std::string data = msg.SerializeAsString();
+    if (this->connections.begin()->second)
+    {
+      this->QueueMessage(this->connections.begin()->second.get(),
+          data.c_str(), data.length());
+    }
   }
 }
