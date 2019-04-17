@@ -182,15 +182,15 @@ function onMessage(evt)
         var requestType = root.lookupType("WebRequest");
         var webRequestMsg = requestType.encode({
           operation: "subscribe",
-          topic: msg.string_msg_v.data[0],
+          topic: "/world/shapes/pose/info",//msg.string_msg_v.data[0],
           compression: "none",
         }).finish();
 
         doSend(webRequestMsg);
-      } else if (msg.content === "clock") {
+      } else if (msg.content === "pose_v") {
 
         msg_output = document.getElementById("msg_output");
-        msg_output.innerHTML = JSON.stringify(msg.clock.toJSON());
+        msg_output.innerHTML = JSON.stringify(msg.pose_v.toJSON());
         /*
         writeToScreen('<span style="color: blue;"> ' +
         +'</span>');
