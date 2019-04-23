@@ -133,19 +133,43 @@ var proto = "syntax = \"proto3\";\
 
 var root = protobuf.parse(proto, {keepCase: true}).root;
 
+var websocket;
+
 function init()
 {
   output = document.getElementById("output");
-  testWebSocket();
+
+  wsConnect();
 }
 
-function testWebSocket()
+function wsConnect()
 {
+  const disconnect = document.getElementById('disconnect').checked;
+  if (websocket !== undefined && disconnect) {
+    console.log('closing!\n');
+    websocket.close();
+  }
   websocket = new WebSocket(wsUri);
   websocket.onopen = function(evt) { onOpen(evt) };
   websocket.onclose = function(evt) { onClose(evt) };
   websocket.onmessage = function(evt) { onMessage(evt) };
   websocket.onerror = function(evt) { onError(evt) };
+}
+
+function wsDisconnect() {
+  if (websocket !== undefined) {
+    websocket.close();
+  }
+}
+
+function wsSubscribe(topic = "/world/shapes/pose/info") {
+  var requestType = root.lookupType("WebRequest");
+  var webRequestMsg = requestType.encode({
+    operation: "subscribe",
+    topic,
+    compression: "none",
+  }).finish();
+  doSend(webRequestMsg);
 }
 
 function onOpen(evt)
@@ -178,15 +202,10 @@ function onMessage(evt)
 
     if (msg.content !== undefined) {
       if (msg.content === "string_msg_v") {
-        // Subscribe to the first topic
-        var requestType = root.lookupType("WebRequest");
-        var webRequestMsg = requestType.encode({
-          operation: "subscribe",
-          topic: "/world/shapes/pose/info",//msg.string_msg_v.data[0],
-          compression: "none",
-        }).finish();
-
-        doSend(webRequestMsg);
+        // Subscribe to the first topic.
+        // The topics arrive here.
+        // Uncomment to subscribe to one as a response to the connection.
+        // wsSubscribe();
       } else if (msg.content === "pose_v") {
 
         msg_output = document.getElementById("msg_output");
@@ -224,6 +243,24 @@ window.addEventListener("load", init, false);
 </script>
 
 <h2>WebSocket Test</h2>
+
+<div>
+  <button onclick="wsConnect()">Connect</button>
+  <button onclick="wsDisconnect()">Disconnect</button>
+  <button onclick="wsSubscribe()">Subscribe</button>
+<div>
+
+<ul>
+  <li>By default, the Client will always have just <em>one</em> websocket connection. The Connect button closes the previous websocket.</li>
+  <li>The Server keeps track of the connections. If we open a new websocket without closing the old one, they will pile up on the Server.</li>
+</ul>
+
+<input type="checkbox" id="disconnect" name="disconnect" checked>
+<label for="disconnect">Uncheck if you don't want to disconnect on new connections (for testing purposes)</label>
+
+<p>
+  When you click the Subscribe button, you'll receive messages from the Server.
+</p>
 
 <div id="output">
 </div>
