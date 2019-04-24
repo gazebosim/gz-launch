@@ -143,13 +143,18 @@ bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
     {
       IGN_SLEEP_S(2);
       topic = std::string("/world/") + worldName + "/level/add_performer";
-      msgs::Performer performerReq;
-      performerReq.set_name(req.name());
-      // \todo(anyon) Setting the size to 2,2,2 is a hack. Gazebo should
+      msgs::StringMsg performerReq;
+      performerReq.set_data(req.name());
+      // \todo(anyone) Setting the size to 2,2,2 is a hack. Gazebo should
       // calculate the bounding box based on the model information.
-      msgs::Set(performerReq.mutable_geometry()->mutable_box()->mutable_size(),
-          math::Vector3d(2, 2, 2));
       executed = this->node.Request(topic, performerReq, timeout, rep, result);
+
+      // msgs::Performer performerReq;
+      // performerReq.set_name(req.name());
+      // // \todo(anyone) Setting the size to 2,2,2 is a hack. Gazebo should
+      // // calculate the bounding box based on the model information.
+      //  msgs::Set(performerReq.mutable_geometry()->mutable_box()->mutable_size(), math::Vector3d(2, 2, 2));
+      // executed = this->node.Request(topic, performerReq, timeout, rep, result);
     }
   }
   else
