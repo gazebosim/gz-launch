@@ -184,6 +184,8 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement * /*_elem*/)
 
   this->run = true;
   this->thread = new std::thread(std::bind(&WebsocketServer::Run, this));
+
+  return true;
 }
 
 //////////////////////////////////////////////////
