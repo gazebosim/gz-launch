@@ -100,6 +100,7 @@ namespace ignition
 
       public: std::mutex mutex;
       public: std::map<int, std::unique_ptr<Connection>> connections;
+      public: std::map<std::string, std::set<int>> topicConnections;
     };
   }
 }
