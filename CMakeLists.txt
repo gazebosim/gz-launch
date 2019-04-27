@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5.1 FATAL_ERROR)
 #============================================================================
 # Initialize the project
 #============================================================================
-project(ignition-launch0 VERSION 0.2.0)
+project(ignition-launch VERSION 1.0.0)
 
 #============================================================================
 # Find ignition-cmake
@@ -14,7 +14,7 @@ set(IGN_CMAKE_VER ${ignition-cmake2_VERSION_MAJOR})
 #============================================================================
 # Configure the project
 #============================================================================
-ign_configure_project()
+ign_configure_project(VERSION_SUFFIX pre1)
 
 #============================================================================
 # Set project-specific options
@@ -47,18 +47,18 @@ ign_find_package(ignition-tools REQUIRED)
 
 #--------------------------------------
 # Find ignition-transport
-ign_find_package(ignition-transport6 REQUIRED)
-set(IGN_TRANSPORT_MAJOR_VER ${ignition-transport6_VERSION_MAJOR})
+ign_find_package(ignition-transport7 REQUIRED)
+set(IGN_TRANSPORT_MAJOR_VER ${ignition-transport7_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-msgs
-ign_find_package(ignition-msgs3 REQUIRED)
-set(IGN_MSGS_MAJOR_VER ${ignition-msgs3_VERSION_MAJOR})
+ign_find_package(ignition-msgs4 REQUIRED)
+set(IGN_MSGS_MAJOR_VER ${ignition-msgs4_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-gui
-ign_find_package(ignition-gui1 REQUIRED)
-set(IGN_GUI_MAJOR_VER ${ignition-gui1_VERSION_MAJOR})
+ign_find_package(ignition-gui2 REQUIRED)
+set(IGN_GUI_MAJOR_VER ${ignition-gui2_VERSION_MAJOR})
 ign_find_package (Qt5
   COMPONENTS
     Core
@@ -69,8 +69,8 @@ ign_find_package (Qt5
 
 #--------------------------------------
 # Find ignition-gazebo
-ign_find_package(ignition-gazebo1 REQUIRED PRIVATE COMPONENTS gui)
-set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo1_VERSION_MAJOR})
+ign_find_package(ignition-gazebo2 REQUIRED PRIVATE COMPONENTS gui)
+set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo2_VERSION_MAJOR})
 
 #============================================================================
 # Configure the build
