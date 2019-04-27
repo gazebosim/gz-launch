@@ -56,6 +56,11 @@ ign_find_package(ignition-msgs4 REQUIRED)
 set(IGN_MSGS_MAJOR_VER ${ignition-msgs4_VERSION_MAJOR})
 
 #--------------------------------------
+# Find ignition-math
+ign_find_package(ignition-math6 REQUIRED)
+set(IGN_MATH_MAJOR_VER ${ignition-math6_VERSION_MAJOR})
+
+#--------------------------------------
 # Find ignition-gui
 ign_find_package(ignition-gui2 REQUIRED)
 set(IGN_GUI_MAJOR_VER ${ignition-gui2_VERSION_MAJOR})

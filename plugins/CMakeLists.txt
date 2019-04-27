@@ -2,6 +2,7 @@ set (plugins
   joy_to_twist
   gazebo_gui
   gazebo_server
+  websocket_server
 )
 
 if (UNIX AND NOT APPLE)
