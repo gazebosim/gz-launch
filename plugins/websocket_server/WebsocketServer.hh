@@ -64,7 +64,7 @@ namespace ignition
       public: virtual ~WebsocketServer();
 
       // Documentation inherited
-      public: virtual void Load(
+      public: virtual bool Load(
                   const tinyxml2::XMLElement *_elem) override final;
 
       public: void Run();

@@ -53,7 +53,7 @@ namespace ignition
       public: virtual ~GazeboServer() = default;
 
       // Documentation inherited.
-      public: virtual void Load(
+      public: virtual bool Load(
                   const tinyxml2::XMLElement *_elem) override final;
 
       /// \brief Private data pointer

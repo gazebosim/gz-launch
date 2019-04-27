@@ -131,7 +131,7 @@ WebsocketServer::~WebsocketServer()
 }
 
 /////////////////////////////////////////////////
-void WebsocketServer::Load(const tinyxml2::XMLElement * /*_elem*/)
+bool WebsocketServer::Load(const tinyxml2::XMLElement * /*_elem*/)
 {
   // All of the protocols handled by this websocket server.
   this->protocols.push_back(
@@ -184,6 +184,8 @@ void WebsocketServer::Load(const tinyxml2::XMLElement * /*_elem*/)
 
   this->run = true;
   this->thread = new std::thread(std::bind(&WebsocketServer::Run, this));
+
+  return true;
 }
 
 //////////////////////////////////////////////////
