@@ -33,7 +33,7 @@ namespace ignition
     /// <!-- The GUI wants to be in its own process, so wrap the plugin -->
     /// <executable_wrapper>
     ///   <plugin name="ignition::launch::GazeboGui"
-    ///           filename="libignition-launch0-gazebogui.so">
+    ///           filename="libignition-launch-gazebogui.so">
     ///   <!-- Add Ignition GUI plugins here -->
     ///   </plugin>
     /// </executable_wrapper>
