@@ -33,7 +33,7 @@ pipelines:
             libignition-msgs4-dev
             libignition-physics-dev
             libignition-plugin-dev
-            libignition-sensors-dev
+            libignition-sensors2-dev
             libignition-tools-dev
             libignition-fuel-tools3-dev
             libignition-transport7-dev
