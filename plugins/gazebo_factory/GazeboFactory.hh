@@ -30,7 +30,7 @@ namespace ignition
     ///
     /// # Example usage
     ///  <plugin name="ignition::launch::GazeboFactory"
-    ///          filename="libignition-launch0-gazebo-factory.so">
+    ///          filename="libignition-launch-gazebo-factory.so">
     ///
     ///   <!-- Name to give the model -->
     ///   <name>x2</name>

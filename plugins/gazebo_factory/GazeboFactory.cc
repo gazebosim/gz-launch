@@ -17,7 +17,6 @@
 
 #include <ignition/msgs/entity_factory.pb.h>
 #include <ignition/msgs/boolean.pb.h>
-#include <ignition/msgs/performer.pb.h>
 
 #include <ignition/common/Util.hh>
 #include <ignition/common/Console.hh>

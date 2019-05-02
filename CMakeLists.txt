@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5.1 FATAL_ERROR)
 #============================================================================
 # Initialize the project
 #============================================================================
-project(ignition-launch VERSION 1.0.0)
+project(ignition-launch1 VERSION 1.0.0)
 
 #============================================================================
 # Find ignition-cmake
@@ -77,8 +77,13 @@ ign_find_package (Qt5
 ign_find_package(ignition-gazebo2 REQUIRED PRIVATE COMPONENTS gui)
 set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo2_VERSION_MAJOR})
 
+ign_pkg_check_modules(websockets libwebsockets)
+if (NOT websockets_FOUND)
+  ign_build_warning("Unable to find libwebsockets. The websocket_server plugin will not be built.")
+endif()
+
 #============================================================================
-# Add plugins 
+# Add plugins
 #============================================================================
 add_subdirectory(plugins)
 
