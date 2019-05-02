@@ -42,11 +42,10 @@ COMMON_OPTIONS =
 COMMANDS = { 'launch' =>
   "Manage executables and plugins.                                         \n"\
   "                                                                        \n"\
-  "  ign launch [options]                                                  \n"\
+  "  ign launch [options] [launch_file]                                    \n"\
   "                                                                        \n"\
   "                                                                        \n"\
   "Available Options:                                                      \n"\
-  "  -f [ --file ] [arg]      Run a configuration file.                    \n"\
   "  -v [ --verbose ] [arg]   Adjust the level of console output (0~4).    \n"\
   "                           The default verbosity is 1, use -v without   \n"\
   "                           arguments for level 3.                       \n" +
@@ -75,12 +74,15 @@ class Cmd
         puts usage
         exit
       end
-      opts.on('-f [config]', '--file', String, 'Run a configuration file') do |cfg|
-        options['file'] = cfg
-      end
       opts.on('-v [verbose]', '--verbose [verbose]', String,
           'Adjust level of console output') do |v|
         options['verbose'] = v || '3'
+      end
+
+      # Launch file as positional argument
+      filename = args.pop
+      if filename and filename != 'launch' and not options.key?('file')
+        options['file'] = filename
       end
     end # opt_parser do
 

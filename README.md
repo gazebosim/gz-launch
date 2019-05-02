@@ -35,5 +35,5 @@ directory.
 1. Run a configuration that launches [Gazebo](https://ignitionrobotics.org/libs/gazebo).
 
     ```
-    ign launch -f gazebo.ign
+    ign launch gazebo.ign
     ```
