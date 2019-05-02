@@ -308,6 +308,8 @@ void WebsocketServer::OnWebsocketSubscribedMessage(
       msg.mutable_time()->ParseFromString(_data);
     else if (_info.Type() == "ignition.msgs.Clock")
       msg.mutable_clock()->ParseFromString(_data);
+    else if (_info.Type() == "ignition.msgs.WorldStatistics")
+      msg.mutable_world_stats()->ParseFromString(_data);
 
     std::string data = msg.SerializeAsString();
     for (const int &socketId : iter->second)
