@@ -78,15 +78,15 @@ class Cmd
           'Adjust level of console output') do |v|
         options['verbose'] = v || '3'
       end
-
-      # Launch file as positional argument
-      filename = args.pop
-      if filename and filename != 'launch' and not options.key?('file')
-        options['file'] = filename
-      end
     end # opt_parser do
 
     opt_parser.parse!(args)
+
+    # Launch file as positional argument
+    filename = args.pop
+    if filename and filename != 'launch' and not options.key?('file')
+      options['file'] = filename
+    end
 
     options['command'] = args[0]
 
