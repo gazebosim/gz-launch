@@ -17,6 +17,7 @@
 
 #include <ignition/common/Console.hh>
 #include <ignition/gazebo/config.hh>
+#include <ignition/gazebo/gui/GuiRunner.hh>
 #include <ignition/gui/MainWindow.hh>
 #include "ignition/gazebo/gui/TmpIface.hh"
 
@@ -43,6 +44,7 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
   char **argv = nullptr;
 
   this->app.reset(new ignition::gui::Application(argc, argv));
+  this->app->AddPluginPath(IGN_GAZEBO_GUI_PLUGIN_INSTALL_DIR);
 
   // Load configuration file
   std::string configPath = ignition::common::joinPaths(
@@ -111,6 +113,19 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
 
     ignition::gui::App()->LoadPlugin(file, elem);
   }
+
+  std::string worldName = "default";
+
+  // Get the world name
+  elem = _elem->FirstChildElement("world_name");
+  if (elem)
+    worldName = elem->GetText();
+
+  // GUI runner
+  auto runner = new ignition::gazebo::GuiRunner(worldName);
+  runner->connect(this->app.get(),
+      &ignition::gui::Application::PluginAdded, runner,
+      &ignition::gazebo::GuiRunner::OnPluginAdded);
 
   igndbg << "Running the GazeboGui plugin.\n";
   // This blocks until the window is closed or we receive a SIGINT
