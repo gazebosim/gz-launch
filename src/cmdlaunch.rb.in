@@ -86,7 +86,12 @@ class Cmd
       end
     end # opt_parser do
 
-    opt_parser.parse!(args)
+    begin
+      opt_parser.parse!(args)
+    rescue
+      puts usage
+      exit(-1)
+    end
 
     options['command'] = args[0]
 
