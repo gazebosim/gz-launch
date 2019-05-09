@@ -141,6 +141,18 @@
         <iterations>true</iterations>
         <topic>/world/<%= worldName %>/stats</topic>
       </plugin>
+
+      <!-- Entity tree -->
+      <plugin filename="EntityTree" name="Entity tree">
+        <ignition-gui>
+          <title>Entity tree</title>
+        </ignition-gui>
+      </plugin>
+
+      <!-- Transform Control -->
+      <plugin filename="TransformControl" name="Transform Control">
+        <service>/world/<%= worldName %>/gui/transform_mode</service>
+      </plugin>
     </plugin>
   </executable_wrapper>
 
