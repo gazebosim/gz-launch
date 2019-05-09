@@ -1,5 +1,5 @@
 if (websockets_FOUND)
-  set (plugin ignition-launch${PROJECT_VERSION_MAJOR}-websocket-server)
+  set (plugin ignition-launch-websocket-server)
   set (sources WebsocketServer.cc)
 
   add_library(${plugin} SHARED ${sources})
