@@ -76,6 +76,26 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
         common::lowercase(str) == "true");
   }
 
+  elem = _elem->FirstChildElement("record");
+  if (elem)
+  {
+    const tinyxml2::XMLElement *enabled = elem->FirstChildElement("enabled");
+    if (enabled)
+    {
+      std::string str = enabled->GetText();
+      serverConfig.SetUseLogRecord(str == "1" ||
+          common::lowercase(str) == "true");
+    }
+
+    const tinyxml2::XMLElement *path = elem->FirstChildElement("path");
+    if (path)
+    {
+      std::string str = path->GetText();
+      serverConfig.SetLogRecordPath(str);
+    }
+    ignmsg << "Recording to [" << serverConfig.LogRecordPath() << "]\n";
+  }
+
   // Get whether simulation should start paused.
   bool run = false;
   elem = _elem->FirstChildElement("run");

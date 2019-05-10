@@ -38,6 +38,13 @@
     <world_file><%= worldName %>.sdf</world_file>
     <run>true</run>
     <levels>false</levels>
+    <record>
+      <enabled>true</enabled>
+      <!-- Use the <path> element to specify where to create the log file on
+           disk. Leaving this empty will cause Gazebo to log into the default 
+           location of ~/.ignition/gazebo/log -->
+      <!-- <path></path> -->
+    </record>
     <!-- The diff_drive SDF world has the following plugins defined.
          Uncomment this if you are using a world that doesn't include the
          necessary plugin
@@ -78,7 +85,7 @@
   <executable_wrapper>
     <plugin name="ignition::launch::GazeboGui"
           filename="libignition-launch-gazebogui.so">
-      <plugin filename="Scene3D" name="3D View">
+      <plugin filename="GzScene3D" name="3D View">
         <ignition-gui>
           <title>3D View</title>
           <property type="bool" key="showTitleBar">false</property>
