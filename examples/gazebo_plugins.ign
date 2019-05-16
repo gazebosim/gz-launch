@@ -85,6 +85,7 @@
   <executable_wrapper>
     <plugin name="ignition::launch::GazeboGui"
           filename="libignition-launch-gazebogui.so">
+      <world_name><%= worldName %></world_name>
       <plugin filename="GzScene3D" name="3D View">
         <ignition-gui>
           <title>3D View</title>
@@ -97,10 +98,6 @@
         <ambient_light>0.4 0.4 0.4</ambient_light>
         <background_color>0.8 0.8 0.8</background_color>
         <camera_pose>-6 0 6 0 0.5 0</camera_pose>
-        <service>/world/<%= worldName %>/scene/info</service>
-        <pose_topic>/world/<%= worldName %>/pose/info</pose_topic>
-        <scene_topic>/world/<%= worldName %>/scene/info</scene_topic>
-        <deletion_topic>/world/<%= worldName %>/scene/deletion</deletion_topic>
       </plugin>
       <plugin filename="WorldControl" name="World control">
         <ignition-gui>
