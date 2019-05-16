@@ -269,12 +269,14 @@ ManagerPrivate::ManagerPrivate()
 /////////////////////////////////////////////////
 bool ManagerPrivate::Stop()
 {
-  std::lock_guard<std::mutex> lock(this->runMutex);
-
-  if (this->running)
+  if (this->runMutex.try_lock())
   {
-    this->running = false;
-    this->runCondition.notify_all();
+    if (this->running)
+    {
+      this->running = false;
+      this->runCondition.notify_all();
+    }
+    this->runMutex.unlock();
   }
 
   return this->running;
