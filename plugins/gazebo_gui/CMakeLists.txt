@@ -8,7 +8,6 @@ target_link_libraries(${plugin_lower}
   PRIVATE
   ${PROJECT_LIBRARY_TARGET_NAME}
   ignition-gazebo${IGN_GAZEBO_MAJOR_VER}
-  ignition-gazebo${IGN_GAZEBO_MAJOR_VER}-gui
   ignition-gazebo${IGN_GAZEBO_MAJOR_VER}::gui
   ignition-gazebo${IGN_GAZEBO_MAJOR_VER}::ignition-gazebo${IGN_GAZEBO_MAJOR_VER}
   ignition-gui${IGN_GUI_MAJOR_VER}::ignition-gui${IGN_GUI_MAJOR_VER}
