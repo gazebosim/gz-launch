@@ -3,7 +3,7 @@
 ### Ignition Launch 1.x.x
 
 1. Fix GazeboFactory set performer topic
-    * [Pull Request ](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/)
+    * [Pull Request 26](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/26)
 
 ### Ignition Launch 1.0.0
 
