@@ -2,6 +2,9 @@
 
 ### Ignition Launch 1.x.x
 
+1. Fix GazeboFactory set performer topic
+    * [Pull Request ](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/)
+
 ### Ignition Launch 1.0.0
 
 1. Enable logging with `<record>` tag in ign launch file.
