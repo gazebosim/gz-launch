@@ -82,13 +82,21 @@ class Cmd
 
     opt_parser.parse!(args)
 
-    # Launch file as positional argument
-    filename = args.pop
-    if filename and filename != 'launch' and not options.key?('file')
-      options['file'] = filename
+    while !args.empty?
+      arg = args.shift
+      if arg.include?(":=")
+        name, value = arg.split(/:=/)
+        instance_variable_set("@#{name}", value)
+      # Launch file as positional argument
+      elsif arg and arg != 'launch' and not options.key?('file')
+        options['file'] = arg
+      # Store the command
+      elsif not options.key?('command')
+        options['command'] = arg
+      else
+        puts "Error processing command line argument: #{arg}"
+      end
     end
-
-    options['command'] = args[0]
 
     options
   end # parse()
@@ -157,8 +165,12 @@ class Cmd
         end
 
         # ERB parse the file, and then run the result
-        parsed = ERB.new(File.read(path)).result()
+        b = binding
+        b.local_variable_set(worldName, "diff_drive.sdf")
+        # @worldName="diff_drive.sdf"
+        parsed = ERB.new(File.read(path)).result(b)
         Importer.extern 'int run(const char *)'
+        puts parsed
         if not Importer.run(parsed)
           exit(-1)
         end
