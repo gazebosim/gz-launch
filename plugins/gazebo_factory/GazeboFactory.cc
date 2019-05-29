@@ -141,7 +141,7 @@ bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
     if (isPerformer)
     {
       IGN_SLEEP_S(2);
-      topic = std::string("/world/") + worldName + "/level/add_performer";
+      topic = std::string("/world/") + worldName + "/level/set_performer";
       msgs::StringMsg performerReq;
       performerReq.set_data(req.name());
       // \todo(anyone) Setting the size to 2,2,2 is a hack. Gazebo should
