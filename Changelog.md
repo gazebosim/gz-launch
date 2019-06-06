@@ -2,6 +2,9 @@
 
 ### Ignition Launch 1.x.x
 
+1. Added command line parameters of the form <name>:=<value>. These parameters are passed to ERB.
+    * [Pull Request 27](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/27)
+
 ### Ignition Launch 1.0.1 (2019-05-22)
 
 1. Fix GazeboFactory set performer topic
