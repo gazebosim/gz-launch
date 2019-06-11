@@ -1,6 +1,18 @@
 <?xml version='1.0'?>
+<!-- Usage: ign launch gazebo_plugins.ign [worldName:=<worldName>]
+
+     The [worldName] command line argument is optional. If left blank, or not
+     specified, then "diff_drive" is used for the world name.
+
+    Example that loads the shapes.sdf world instead of diff_drive:
+
+      ign launch gazebo_plugins.ign worldName:=shapes
+-->
 <%
-  worldName = "diff_drive"
+  # Check if worldName is not defined or is empty/nil
+  if !defined?(worldName) || worldName == nil || worldName.empty?
+    worldName = "diff_drive"
+  end
 %>
 
 <!-- Requires ign-gazebo branch support_loading_plugins_programmatically -->
