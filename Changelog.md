@@ -2,6 +2,8 @@
 
 ### Ignition Launch 1.x.x
 
+### Ignition Launch 1.1.0 (2019-06-11)
+
 1. Added command line parameters of the form <name>:=<value>. These parameters are passed to ERB.
     * [Pull Request 27](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/27)
 
