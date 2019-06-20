@@ -2,6 +2,9 @@
 
 ### Ignition Launch 1.x.x
 
+1. Allow specifying a custom window title
+    * [Pull Request 32](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/32)
+
 ### Ignition Launch 1.1.0 (2019-06-11)
 
 1. Added command line parameters of the form <name>:=<value>. These parameters are passed to ERB.

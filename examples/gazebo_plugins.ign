@@ -53,7 +53,7 @@
     <record>
       <enabled>true</enabled>
       <!-- Use the <path> element to specify where to create the log file on
-           disk. Leaving this empty will cause Gazebo to log into the default 
+           disk. Leaving this empty will cause Gazebo to log into the default
            location of ~/.ignition/gazebo/log -->
       <!-- <path></path> -->
     </record>
@@ -98,6 +98,7 @@
     <plugin name="ignition::launch::GazeboGui"
           filename="libignition-launch-gazebogui.so">
       <world_name><%= worldName %></world_name>
+      <window_title>Ignition Launch</window_title>
       <plugin filename="GzScene3D" name="3D View">
         <ignition-gui>
           <title>3D View</title>
