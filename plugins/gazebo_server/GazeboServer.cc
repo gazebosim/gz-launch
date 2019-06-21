@@ -100,8 +100,18 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
   elem = _elem->FirstChildElement("seed");
   if (elem)
   {
-    unsigned seed = elem->UnsignedText();
-    serverConfig.SetSeed(seed);
+    unsigned seed;
+    auto result = elem->QueryUnsignedText(&seed);
+    if (result == tinyxml2::XML_SUCCESS)
+    {
+      serverConfig.SetSeed(seed);
+      ignmsg << "Using seed [" << seed << "]" << std::endl;
+    }
+    else
+    {
+      ignerr << "Unable to parse [" << elem->GetText() << "] as a seed."
+             << " Make sure it's an unsigned int" << std::endl;
+    }
   }
 
   // Get whether simulation should start paused.
