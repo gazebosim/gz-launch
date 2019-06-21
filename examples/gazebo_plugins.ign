@@ -57,6 +57,7 @@
            location of ~/.ignition/gazebo/log -->
       <!-- <path></path> -->
     </record>
+    <seed>1234</seed>
     <!-- The diff_drive SDF world has the following plugins defined.
          Uncomment this if you are using a world that doesn't include the
          necessary plugin
