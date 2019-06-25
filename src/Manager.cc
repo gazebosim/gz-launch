@@ -566,6 +566,13 @@ std::list<std::string> ManagerPrivate::ParseEnvs(
     {
       std::string name = nameElem->GetText();
       std::string value = valueElem->GetText();
+
+      // Expand env var contents, such as $LD_LIBRARY_PATH
+      if (!value.empty() && value.at(0) == '$')
+      {
+        ignition::common::env(value.substr(1), value);
+      }
+
       result.push_back(name + "=" + value);
     }
 
