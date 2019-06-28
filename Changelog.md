@@ -1,6 +1,9 @@
 ## Ignition Launch 1.x
 
-### Ignition Launch 1.x.x
+### Ignition Launch 1.2.x
+
+1. Support for custom random seed in the GazeboServer plugin.
+    * [Pull Request 33](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/33)
 
 1. Allow specifying a custom window title
     * [Pull Request 32](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/32)
