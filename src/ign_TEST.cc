@@ -59,3 +59,20 @@ TEST(CmdLine, Ls)
   EXPECT_TRUE(output.find("CMakeFiles") != std::string::npos) << output;
   EXPECT_TRUE(output.find("Makefile") != std::string::npos) << output;
 }
+
+/////////////////////////////////////////////////
+TEST(CmdLine, Env)
+{
+  // the launch file sets IGN_LAUNCH_ENV env var to $IGN_LAUNCH_ENV_TEST
+  // and print out all env var values
+  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH + " " +
+    std::string("IGN_LAUNCH_ENV_TEST=ign_launch_env_test") +
+    " ign launch " +
+    std::string(PROJECT_SOURCE_PATH) + "/test/config/env.ign";
+
+  std::cout << "Running command [" << cmd << "]" << std::endl;
+
+  std::string output = customExecStr(cmd);
+  std::cout << output << std::endl;
+  EXPECT_TRUE(output.find("ign_launch_env_test") != std::string::npos) << output;
+}

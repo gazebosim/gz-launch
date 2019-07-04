@@ -566,6 +566,18 @@ std::list<std::string> ManagerPrivate::ParseEnvs(
     {
       std::string name = nameElem->GetText();
       std::string value = valueElem->GetText();
+      if (!value.empty())
+      {
+        // eval env variables
+        size_t idx = value.find("$");
+        if (idx != std::string::npos)
+        {
+          std::string str = value.substr(idx+1);
+          std::string newValue;
+          if (common::env(str, newValue))
+            value = newValue;
+        }
+      }
       result.push_back(name + "=" + value);
     }
 
