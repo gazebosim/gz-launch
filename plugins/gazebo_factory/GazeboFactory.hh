@@ -59,7 +59,7 @@ namespace ignition
       public: GazeboFactory();
 
       /// \brief Destructor.
-      public: virtual ~GazeboFactory() = default;
+      public: virtual ~GazeboFactory();
 
       // Documentation inherited.
       public: virtual bool Load(

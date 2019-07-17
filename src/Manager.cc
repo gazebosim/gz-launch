@@ -37,6 +37,9 @@
 #include "ignition/launch/Plugin.hh"
 #include "Manager.hh"
 
+#define BACKWARD_HAS_BFD 1
+#include "backward.hpp"
+
 using namespace ignition::launch;
 using namespace std::chrono_literals;
 
@@ -155,7 +158,7 @@ class ignition::launch::ManagerPrivate
   public: std::list<Executable> executables;
 
   /// \brief All the plugins
-  public: std::unordered_set<launch::PluginPtr> plugins;
+  public: std::map<std::string, launch::PluginPtr> plugins;
 
   /// \brief All the wrapped plugins
   public: std::list<pid_t> wrappedPlugins;
@@ -177,6 +180,9 @@ class ignition::launch::ManagerPrivate
 
   /// \brief Our signal handler.
   public: std::unique_ptr<common::SignalHandler> sigHandler = nullptr;
+
+  /// \brief Backward signal handler
+  public: std::unique_ptr<backward::SignalHandling> backward = nullptr;
 
   /// \brief Top level environment variables.
   public: std::list<std::string> envs;
@@ -236,13 +242,24 @@ bool Manager::RunConfig(const std::string &_config)
   {
     this->dataPtr->runCondition.wait(lock);
   }
+  igndbg << "Manager::RunConfig stopping" << std::endl;
   this->dataPtr->running = false;
 
   // Stop plugins.
-  this->dataPtr->plugins.clear();
+  igndbg << "Clearing plugins: " << this->dataPtr->plugins.size() << std::endl;
+  int i = 0;
+  for(auto it = this->dataPtr->plugins.begin();
+           it != this->dataPtr->plugins.end();)
+  {
+    igndbg << "Stopping plugin: " << i++ << " " << it->first << std::endl;
+    it = this->dataPtr->plugins.erase(it);
+  }
+  igndbg << "Plugins clear" << std::endl;
 
   // Stop executables.
   this->dataPtr->ShutdownExecutables();
+
+  igndbg << "after shutdownexecutables" << std::endl;
 
   return true;
 }
@@ -250,7 +267,10 @@ bool Manager::RunConfig(const std::string &_config)
 /////////////////////////////////////////////////
 bool Manager::Stop()
 {
-  return this->dataPtr->Stop();
+  igndbg << "Stopping Manager" << std::endl;
+  auto running = this->dataPtr->Stop();
+  igndbg << "Manager Stopped with running status: " << running << std::endl;
+  return running;
 }
 
 /////////////////////////////////////////////////
@@ -264,35 +284,63 @@ ManagerPrivate::ManagerPrivate()
   // Register a signal handler to capture child process death events.
   if (signal(SIGCHLD, ManagerPrivate::OnSigChild) == SIG_ERR)
     ignerr << "signal(2) failed while setting up for SIGCHLD" << std::endl;
+
+  // Register backward signal handler for other signals
+  std::vector<int> signals = {
+    SIGABRT,    // Abort signal from abort(3)
+		SIGBUS,     // Bus error (bad memory access)
+		SIGFPE,     // Floating point exception
+		SIGILL,     // Illegal Instruction
+		SIGIOT,     // IOT trap. A synonym for SIGABRT
+		//SIGQUIT,    // Quit from keyboard
+		SIGSEGV,    // Invalid memory reference
+		SIGSYS,     // Bad argument to routine (SVr4)
+		SIGTRAP,    // Trace/breakpoint trap
+		SIGXCPU,    // CPU time limit exceeded (4.2BSD)
+		SIGXFSZ,    // File size limit exceeded (4.2BSD)
+  };
+
+  this->backward = std::make_unique<backward::SignalHandling>(signals);
 }
 
 /////////////////////////////////////////////////
 bool ManagerPrivate::Stop()
 {
+  igndbg << "Stopping ManagerPrivate" << std::endl;
   if (this->runMutex.try_lock())
   {
     if (this->running)
     {
+      igndbg << "Locked mutex - running" << std::endl;
       this->running = false;
+      igndbg << "Notify all" << std::endl;
       this->runCondition.notify_all();
+    } else
+    {
+      igndbg << "Locked Mutex - not running" << std::endl;
     }
     this->runMutex.unlock();
   }
+  else
+  {
+    ignwarn << "Could not lock mutex" << std::endl;
+  }
 
+  igndbg << "Stopped ManagerPrivate with run status: " << this->running << std::endl;
   return this->running;
 }
 
 /////////////////////////////////////////////////
 void ManagerPrivate::OnSigIntTerm(int _sig)
 {
-  igndbg << "Received signal[" << _sig  << "]\n";
-  this->Stop();
+  igndbg << "OnSigIntTerm Received signal[" << _sig  << "]\n";
+  igndbg << "Stopped: " << this->Stop() << std::endl;
 }
 
 /////////////////////////////////////////////////
 void ManagerPrivate::OnSigChild(int _sig)
 {
-  igndbg << "Received signal[" << _sig  << "]\n";
+  igndbg << "OnSigChild Received signal[" << _sig  << "]\n";
   pid_t p;
   int status;
 
@@ -457,10 +505,29 @@ void ManagerPrivate::ShutdownExecutables()
   // Create a vector of monitor threads that wait for each process to stop.
   std::vector<std::thread> monitors;
   for (const Executable &exec : this->executables)
-    monitors.push_back(std::thread([&] {waitpid(exec.pid, nullptr, 0);}));
+  {
+    monitors.push_back(std::thread([&] {
+          int status = 0;
+          waitpid(exec.pid, &status, 0);
+
+          if (WIFSIGNALED(status)) {
+            igndbg << "Exec: " << exec.name << "\n"
+                      << "WIFEXITED: " << WIFEXITED(status) << "\n"
+                      << "WIFSIGNALED: " << WIFSIGNALED(status) << "\n"
+                      << "WTERMSIG: " << WTERMSIG(status) << "\n"
+                      << "WCOREDUMP: " << WCOREDUMP(status) << std::endl;
+          } else {
+            igndbg << "Exec: " << exec.name << "\n"
+                      << "WIFEXITED: " << WIFEXITED(status) << "\n"
+                      << "WIFSIGNALED: " << WIFSIGNALED(status) << std::endl;
+          }
+    }));
+  }
 
   for (const pid_t &wrapper : this->wrappedPlugins)
+  {
     monitors.push_back(std::thread([&] {waitpid(wrapper, nullptr, 0);}));
+  }
 
   // Shutdown the processes
   for (const Executable &exec : this->executables)
@@ -658,7 +725,9 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
 
   PluginPtr plugin = loader.Instantiate(name);
   if (plugin->QueryInterface<Plugin>()->Load(_elem))
-    this->plugins.insert(plugin);
+  {
+    this->plugins[name] = plugin;
+  }
 }
 
 //////////////////////////////////////////////////

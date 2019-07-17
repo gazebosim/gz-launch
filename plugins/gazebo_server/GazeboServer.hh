@@ -50,7 +50,7 @@ namespace ignition
       public: GazeboServer();
 
       /// \brief Destructor.
-      public: virtual ~GazeboServer() = default;
+      public: virtual ~GazeboServer();
 
       // Documentation inherited.
       public: virtual bool Load(

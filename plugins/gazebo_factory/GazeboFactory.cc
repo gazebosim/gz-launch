@@ -32,6 +32,13 @@ GazeboFactory::GazeboFactory()
 }
 
 /////////////////////////////////////////////////
+GazeboFactory::~GazeboFactory()
+{
+  igndbg << "Stopping GazeboFactory" << std::endl;
+  igndbg << "GazeboFactory Stopped" << std::endl;
+}
+
+/////////////////////////////////////////////////
 bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
 {
   const tinyxml2::XMLElement *elem;

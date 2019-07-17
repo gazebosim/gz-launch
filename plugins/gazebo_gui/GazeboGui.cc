@@ -35,6 +35,9 @@ GazeboGui::GazeboGui()
 /////////////////////////////////////////////////
 GazeboGui::~GazeboGui()
 {
+  igndbg << "Stopping GazeboGui" << std::endl;
+  this->app.reset();
+  igndbg << "GazeboGui stopped" << std::endl;
 }
 
 /////////////////////////////////////////////////

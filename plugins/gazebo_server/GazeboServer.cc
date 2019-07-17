@@ -57,6 +57,14 @@ GazeboServer::GazeboServer()
 }
 
 /////////////////////////////////////////////////
+GazeboServer::~GazeboServer()
+{
+  igndbg << "Stopping GazeboServer" << std::endl;
+  this->server.reset();
+  igndbg << "GazeboServer stopped" << std::endl;
+}
+
+/////////////////////////////////////////////////
 bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
 {
   gazebo::ServerConfig serverConfig;
