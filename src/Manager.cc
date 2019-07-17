@@ -247,6 +247,9 @@ bool Manager::RunConfig(const std::string &_config)
   this->dataPtr->running = !this->dataPtr->executables.empty() ||
                            !this->dataPtr->plugins.empty();
 
+  // Start thread to service child signals.
+  this->dataPtr->StartWorkerThread();
+
   // Wait for a shutdown event, or for all the executables to quit.
   while (this->dataPtr->running && (!this->dataPtr->executables.empty() ||
                                     !this->dataPtr->plugins.empty()))
