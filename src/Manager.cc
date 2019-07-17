@@ -14,8 +14,11 @@
  * limitations under the License.
  *
 */
+
+#include <fcntl.h>
 #include <semaphore.h>
 #include <signal.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 #include <tinyxml2.h>
 #include <unistd.h>
@@ -41,6 +44,8 @@
 
 using namespace ignition::launch;
 using namespace std::chrono_literals;
+
+static constexpr const char* kSemaphoreName = "/child_semaphore";
 
 /// \brief A class to encapsulate an executable (program) to run.
 class Executable
@@ -88,6 +93,9 @@ class ignition::launch::ManagerPrivate
 {
   /// \brief Constructor.
   public: ManagerPrivate();
+
+  /// \brief Destructor.
+  public: ~ManagerPrivate();
 
   /// \brief Parse a configuration string.
   /// \param[in] _string XML configuration string.
@@ -166,7 +174,7 @@ class ignition::launch::ManagerPrivate
   public: std::queue<pid_t> stoppedChildren;
 
   /// \brief Semaphore to prevent restartThread from being a spinlock
-  private: sem_t stoppedChildSem;
+  private: sem_t *stoppedChildSem;
 
   /// \brief Thread containing the restart loop
   private: std::thread restartThread;
@@ -282,14 +290,28 @@ ManagerPrivate::ManagerPrivate()
       std::bind(&ManagerPrivate::OnSigIntTerm, this, std::placeholders::_1));
 
   // Initialize semaphore
-  if (sem_init(&this->stoppedChildSem, 0, 0) == -1)
-  {
+  this->stoppedChildSem = sem_open(kSemaphoreName, O_CREAT, 0644, 1);
+  if (this->stoppedChildSem == SEM_FAILED) {
     ignerr << "Error initializing semaphore: " << strerror(errno) << std::endl;
   }
 
   // Register a signal handler to capture child process death events.
   if (signal(SIGCHLD, ManagerPrivate::OnSigChild) == SIG_ERR)
     ignerr << "signal(2) failed while setting up for SIGCHLD" << std::endl;
+}
+
+/////////////////////////////////////////////////
+ManagerPrivate::~ManagerPrivate()
+{
+  if (sem_close(this->stoppedChildSem) == -1)
+  {
+    ignerr << "Failed to close semaphore: " << strerror(errno) << std::endl;
+  }
+
+  if (sem_unlink(kSemaphoreName) == -1)
+  {
+    ignerr << "Failed to unlink semaphore: " << strerror(errno) << std::endl;
+  }
 }
 
 /////////////////////////////////////////////////
@@ -305,7 +327,7 @@ bool ManagerPrivate::Stop()
     this->runCondition.notify_all();
 
     // Signal the restart thread to stop
-    sem_post(&this->stoppedChildSem);
+    sem_post(this->stoppedChildSem);
     if (this->restartThread.joinable())
       this->restartThread.join();
   }
@@ -333,7 +355,7 @@ void ManagerPrivate::OnSigChild(int _sig)
   if ((p = waitpid(-1, &status, WNOHANG)) != -1)
   {
     myself->stoppedChildren.push(p);
-    sem_post(&myself->stoppedChildSem);
+    sem_post(myself->stoppedChildSem);
   }
 }
 
@@ -359,7 +381,7 @@ void ManagerPrivate::RestartLoop()
   while (this->running)
   {
     // Wait for the signal handler to signal that a child has exited.
-    int s = sem_wait(&this->stoppedChildSem);
+    int s = sem_wait(this->stoppedChildSem);
     if (s == -1)
     {
       if (errno != EINTR)
