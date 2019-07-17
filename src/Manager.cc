@@ -14,6 +14,7 @@
  * limitations under the License.
  *
 */
+#include <semaphore.h>
 #include <signal.h>
 #include <sys/wait.h>
 #include <tinyxml2.h>
@@ -23,6 +24,7 @@
 #include <list>
 #include <mutex>
 #include <numeric>
+#include <queue>
 #include <string>
 #include <thread>
 #include <unordered_set>
@@ -134,6 +136,12 @@ class ignition::launch::ManagerPrivate
   /// \param[in] _sig The signal
   private: static void OnSigChild(int _sig);
 
+  /// \brief Start the worker thread to service stopped children.
+  public: void StartWorkerThread();
+
+  /// \brief Thread to handle restarting stopped children.
+  private: void RestartLoop();
+
   /// \brief Parse executable configurations.
   /// \param[in] _elem XML element that contains an <executable>
   private: void ParseExecutables(const tinyxml2::XMLElement *_elem);
@@ -154,6 +162,15 @@ class ignition::launch::ManagerPrivate
   /// \brief A list of executables that are running, or have been run.
   public: std::list<Executable> executables;
 
+  /// \brief A list of children that were stopped to attempt restarts
+  public: std::queue<pid_t> stoppedChildren;
+
+  /// \brief Semaphore to prevent restartThread from being a spinlock
+  private: sem_t stoppedChildSem;
+
+  /// \brief Thread containing the restart loop
+  private: std::thread restartThread;
+
   /// \brief All the plugins
   public: std::unordered_set<launch::PluginPtr> plugins;
 
@@ -170,7 +187,7 @@ class ignition::launch::ManagerPrivate
   public: std::mutex runMutex;
 
   /// \brief True if running.
-  public: bool running = false;
+  public: std::atomic<bool> running = false;
 
   /// \brief True indicates that this process is the master (main) process.
   public: bool master = false;
@@ -261,6 +278,12 @@ ManagerPrivate::ManagerPrivate()
   this->sigHandler->AddCallback(
       std::bind(&ManagerPrivate::OnSigIntTerm, this, std::placeholders::_1));
 
+  // Initialize semaphore
+  if (sem_init(&this->stoppedChildSem, 0, 0) == -1)
+  {
+    ignerr << "Error initializing semaphore: " << strerror(errno) << std::endl;
+  }
+
   // Register a signal handler to capture child process death events.
   if (signal(SIGCHLD, ManagerPrivate::OnSigChild) == SIG_ERR)
     ignerr << "signal(2) failed while setting up for SIGCHLD" << std::endl;
@@ -274,63 +297,129 @@ bool ManagerPrivate::Stop()
     if (this->running)
     {
       this->running = false;
-      this->runCondition.notify_all();
     }
     this->runMutex.unlock();
-  }
+    this->runCondition.notify_all();
 
+    // Signal the restart thread to stop
+    sem_post(&this->stoppedChildSem);
+    if (this->restartThread.joinable())
+      this->restartThread.join();
+  }
   return this->running;
 }
 
 /////////////////////////////////////////////////
 void ManagerPrivate::OnSigIntTerm(int _sig)
 {
-  igndbg << "Received signal[" << _sig  << "]\n";
+  igndbg << "OnSigIntTerm Received signal[" << _sig  << "]\n";
   this->Stop();
 }
 
 /////////////////////////////////////////////////
 void ManagerPrivate::OnSigChild(int _sig)
 {
-  igndbg << "Received signal[" << _sig  << "]\n";
+  // This is a signal handler, so be careful not to do any operations
+  // that you are not allowed to do.
+  // Ref: http://man7.org/linux/man-pages/man7/signal-safety.7.html
+  (void) _sig;  // Commenting _sig above confuses codecheck
   pid_t p;
   int status;
 
-  // Executable to restart
-  Executable restartExec;
-
+  // Retreive the stopped child's PID, append, and signal the consumer.
   if ((p = waitpid(-1, &status, WNOHANG)) != -1)
   {
-    std::lock_guard<std::mutex> mutex(myself->executablesMutex);
+    myself->stoppedChildren.push(p);
+    sem_post(&myself->stoppedChildSem);
+  }
+}
 
-    // Find the executable
-    for (std::list<Executable>::iterator iter = myself->executables.begin();
-         iter != myself->executables.end(); ++iter)
+/////////////////////////////////////////////////
+void ManagerPrivate::StartWorkerThread()
+{
+  // Spawn thread to monitor restarting children.
+  this->restartThread = std::thread(&ManagerPrivate::RestartLoop, this);
+}
+
+/////////////////////////////////////////////////
+void ManagerPrivate::RestartLoop()
+{
+  sigset_t chldmask;
+
+  if ((sigemptyset(&chldmask) == -1) || (sigaddset(&chldmask, SIGCHLD) == -1))
+  {
+    ignerr << "Failed to initialize signal mask: "
+      << strerror(errno) << std::endl;
+    return;
+  }
+
+  while (this->running)
+  {
+    // Wait for the signal handler to signal that a child has exited.
+    int s = sem_wait(&this->stoppedChildSem);
+    if (s == -1)
     {
-      if (iter->pid == p)
+      if (errno != EINTR)
+        ignwarn << "sem_wait error: "
+          << strerror(errno) << std::endl;
+      continue;
+    }
+
+    // Block SIGCHLD while consuming queue.
+    if (sigprocmask(SIG_BLOCK, &chldmask, NULL) == -1)
+    {
+      ignerr << "Failed to setup block for SIGCHLD: "
+        << strerror(errno) << std::endl;
+      continue;
+    }
+
+    // Consume stopped children from the queue.
+    while (!this->stoppedChildren.empty())
+    {
+      std::lock_guard<std::mutex> mutex(this->executablesMutex);
+
+      // Executable to restart
+      Executable restartExec;
+
+      pid_t p = this->stoppedChildren.front();
+      this->stoppedChildren.pop();
+
+      // Find the executable
+      for (std::list<Executable>::iterator iter = this->executables.begin();
+           iter != this->executables.end(); ++iter)
       {
-        igndbg << "Death of process[" << p << "] with name["
-               << iter->name << "].\n";
+        if (iter->pid == p)
+        {
+          igndbg << "Death of process[" << p << "] with name["
+                 << iter->name << "].\n";
 
+          // Restart if autoRestart is enabled
+          if (iter->autoRestart)
+            restartExec = *iter;
 
-        // Restart if autoRestart is enabled
-        if (iter->autoRestart)
-          restartExec = *iter;
-
-        myself->executables.erase(iter);
-        break;
+          this->executables.erase(iter);
+          break;
+        }
       }
+
+      if (!restartExec.name.empty() && !restartExec.command.empty())
+      {
+        igndbg << "Restarting process with name[" << restartExec.name << "]\n";
+        this->RunExecutable(restartExec);
+      }
+
+      this->runCondition.notify_all();
+    }
+
+    // Unblock SIGCHLD
+    if (sigprocmask(SIG_UNBLOCK, &chldmask, NULL) == -1)
+    {
+      ignerr << "Failed to unblock SIGCHLD: " << strerror(errno) << std::endl;
+      continue;
     }
   }
-
-  if (!restartExec.name.empty() && !restartExec.command.empty())
-  {
-    igndbg << "Restarting process with name[" << restartExec.name << "]\n";
-    myself->RunExecutable(restartExec);
-  }
-
-  myself->runCondition.notify_all();
 }
+
 
 /////////////////////////////////////////////////
 bool ManagerPrivate::ParseConfig(const std::string &_config)
