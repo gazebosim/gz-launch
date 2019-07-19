@@ -303,14 +303,17 @@ ManagerPrivate::ManagerPrivate()
 /////////////////////////////////////////////////
 ManagerPrivate::~ManagerPrivate()
 {
-  if (sem_close(this->stoppedChildSem) == -1)
+  if (this->master)
   {
-    ignerr << "Failed to close semaphore: " << strerror(errno) << std::endl;
-  }
+    if (sem_close(this->stoppedChildSem) == -1)
+    {
+      ignerr << "Failed to close semaphore: " << strerror(errno) << std::endl;
+    }
 
-  if (sem_unlink(kSemaphoreName) == -1)
-  {
-    ignerr << "Failed to unlink semaphore: " << strerror(errno) << std::endl;
+    if (sem_unlink(kSemaphoreName) == -1)
+    {
+      ignerr << "Failed to unlink semaphore: " << strerror(errno) << std::endl;
+    }
   }
 }
 
