@@ -37,8 +37,7 @@
 #include "ignition/launch/Plugin.hh"
 #include "Manager.hh"
 
-#define BACKWARD_HAS_BFD 1
-#include "backward.hpp"
+#include "vendor/backward.hpp"
 
 using namespace ignition::launch;
 using namespace std::chrono_literals;
@@ -242,24 +241,22 @@ bool Manager::RunConfig(const std::string &_config)
   {
     this->dataPtr->runCondition.wait(lock);
   }
-  igndbg << "Manager::RunConfig stopping" << std::endl;
   this->dataPtr->running = false;
 
   // Stop plugins.
-  igndbg << "Clearing plugins: " << this->dataPtr->plugins.size() << std::endl;
+  igndbg << "Stopping " << this->dataPtr->plugins.size() << " plugins" <<  std::endl;
   int i = 0;
   for(auto it = this->dataPtr->plugins.begin();
            it != this->dataPtr->plugins.end();)
   {
-    igndbg << "Stopping plugin: " << i++ << " " << it->first << std::endl;
+    igndbg << "Stopping plugin (" << i++ << "): " << it->first << std::endl;
     it = this->dataPtr->plugins.erase(it);
   }
-  igndbg << "Plugins clear" << std::endl;
 
   // Stop executables.
+  igndbg << "Stopping " << this->dataPtr->executables.size()
+    << " executables" << std::endl;
   this->dataPtr->ShutdownExecutables();
-
-  igndbg << "after shutdownexecutables" << std::endl;
 
   return true;
 }
@@ -306,27 +303,15 @@ ManagerPrivate::ManagerPrivate()
 /////////////////////////////////////////////////
 bool ManagerPrivate::Stop()
 {
-  igndbg << "Stopping ManagerPrivate" << std::endl;
   if (this->runMutex.try_lock())
   {
     if (this->running)
     {
-      igndbg << "Locked mutex - running" << std::endl;
       this->running = false;
-      igndbg << "Notify all" << std::endl;
-      this->runCondition.notify_all();
-    } else
-    {
-      igndbg << "Locked Mutex - not running" << std::endl;
     }
     this->runMutex.unlock();
+    this->runCondition.notify_all();
   }
-  else
-  {
-    ignwarn << "Could not lock mutex" << std::endl;
-  }
-
-  igndbg << "Stopped ManagerPrivate with run status: " << this->running << std::endl;
   return this->running;
 }
 
@@ -504,21 +489,23 @@ void ManagerPrivate::ShutdownExecutables()
 
   // Create a vector of monitor threads that wait for each process to stop.
   std::vector<std::thread> monitors;
+  std::mutex console_mutex;
   for (const Executable &exec : this->executables)
   {
     monitors.push_back(std::thread([&] {
           int status = 0;
           waitpid(exec.pid, &status, 0);
 
+          std::lock_guard<std::mutex> lock(console_mutex);
           if (WIFSIGNALED(status)) {
-            igndbg << "Exec: " << exec.name << "\n"
-                      << "WIFEXITED: " << WIFEXITED(status) << "\n"
-                      << "WIFSIGNALED: " << WIFSIGNALED(status) << "\n"
-                      << "WTERMSIG: " << WTERMSIG(status) << "\n"
+            igndbg << "Executable stopped: " << exec.name << " "
+                      << "WIFEXITED: " << WIFEXITED(status) << " "
+                      << "WIFSIGNALED: " << WIFSIGNALED(status) << " "
+                      << "WTERMSIG: " << WTERMSIG(status) << " "
                       << "WCOREDUMP: " << WCOREDUMP(status) << std::endl;
           } else {
-            igndbg << "Exec: " << exec.name << "\n"
-                      << "WIFEXITED: " << WIFEXITED(status) << "\n"
+            igndbg << "Executable stopped: " << exec.name << " "
+                      << "WIFEXITED: " << WIFEXITED(status) << " "
                       << "WIFSIGNALED: " << WIFSIGNALED(status) << std::endl;
           }
     }));
