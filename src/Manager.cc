@@ -723,6 +723,15 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
     return;
   }
 
+  if (name == "ignition::launch::GazeboServer")
+  {
+    setenv("RMT_PORT", "1500", 1);
+  }
+  else if(name == "ignition::launch::GazeboGui")
+  {
+    setenv("RMT_PORT", "1501", 1);
+  }
+
   ignition::common::SystemPaths systemPaths;
   systemPaths.SetPluginPathEnv("IGN_LAUNCH_PLUGIN_PATH");
   systemPaths.AddPluginPaths(IGNITION_LAUNCH_PLUGIN_INSTALL_PATH);
