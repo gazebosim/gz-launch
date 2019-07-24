@@ -49,6 +49,8 @@
           filename="libignition-launch-gazebo.so">
     <world_file><%= worldName %>.sdf</world_file>
     <run>true</run>
+    <!-- 3000 Hz == 300% RTF == 3x real time -->
+    <update_rate>3000</update_rate>
     <levels>false</levels>
     <record>
       <enabled>true</enabled>
