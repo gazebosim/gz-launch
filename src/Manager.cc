@@ -727,7 +727,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
   {
     setenv("RMT_PORT", "1500", 1);
   }
-  else if(name == "ignition::launch::GazeboGui")
+  else if (name == "ignition::launch::GazeboGui")
   {
     setenv("RMT_PORT", "1501", 1);
   }
