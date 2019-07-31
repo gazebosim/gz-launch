@@ -114,6 +114,24 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     }
   }
 
+  // Set update rate
+  elem = _elem->FirstChildElement("update_rate");
+  if (elem)
+  {
+    unsigned updateRate;
+    auto result = elem->QueryUnsignedText(&updateRate);
+    if (result == tinyxml2::XML_SUCCESS)
+    {
+      serverConfig.SetUpdateRate(updateRate);
+      ignmsg << "Using update rate [" << updateRate << "]" << std::endl;
+    }
+    else
+    {
+      ignerr << "Unable to parse [" << elem->GetText() << "] as an update rate."
+             << " Make sure it's an unsigned int" << std::endl;
+    }
+  }
+
   // Get whether simulation should start paused.
   bool run = false;
   elem = _elem->FirstChildElement("run");
