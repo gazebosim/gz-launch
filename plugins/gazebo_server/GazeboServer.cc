@@ -93,8 +93,11 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
       std::string str = path->GetText();
       serverConfig.SetLogRecordPath(str);
     }
-    ignmsg << "Recording to [" << serverConfig.LogRecordPath() << "]\n";
+    ignLogInit(serverConfig.LogRecordPath(), "server_console.log");
   }
+
+  if (serverConfig.UseLogRecord())
+    ignmsg << "Recording to [" << serverConfig.LogRecordPath() << "]\n";
 
   // Set whether to use a custom random seed
   elem = _elem->FirstChildElement("seed");
