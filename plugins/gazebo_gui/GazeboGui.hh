@@ -34,7 +34,22 @@ namespace ignition
     /// <executable_wrapper>
     ///   <plugin name="ignition::launch::GazeboGui"
     ///           filename="libignition-launch-gazebogui.so">
+    ///
+    ///   <!-- Elements parsed by ign-launch -->
+    ///
+    ///   <world_name>name_of_world_being_launched.sdf</world_name>
+    ///
+    ///   <!-- Set window title. Defaults to "Gazebo" -->
+    ///   <window_title>Custom window title</window_title>
+    ///
+    ///   <!-- Set window icon.
+    ///        This can be a full path to a local file, or a path to a resource
+    ///        file prefixed by ":".
+    ///        Defaults to the Ignition logo. -->
+    ///   <window_icon>full/path/to/window/icon.png</window_icon>
+    ///
     ///   <!-- Add Ignition GUI plugins here -->
+    ///
     ///   </plugin>
     /// </executable_wrapper>
     class GazeboGui : public ignition::launch::Plugin

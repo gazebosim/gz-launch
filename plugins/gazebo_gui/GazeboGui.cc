@@ -59,14 +59,20 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
     return false;
   }
 
+  auto win = this->app->findChild<ignition::gui::MainWindow *>()->QuickWindow();
+
   // Customize window
   std::string windowTitle{"Gazebo"};
   auto elem = _elem->FirstChildElement("window_title");
   if (elem)
     windowTitle = elem->GetText();
-
-  auto win = this->app->findChild<ignition::gui::MainWindow *>()->QuickWindow();
   win->setProperty("title", QString::fromStdString(windowTitle));
+
+  auto iconElem = _elem->FirstChildElement("window_icon");
+  if (iconElem)
+  {
+    win->setIcon(QIcon(iconElem->GetText()));
+  }
 
   // Let QML files use TmpIface' functions and properties
   auto context = new QQmlContext(this->app->Engine()->rootContext());
