@@ -1,5 +1,13 @@
 ## Ignition Launch 1.x
 
+### Ignition Launch 1.2.2
+
+1. Add support for console logging.
+    * [Pull Request 40](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/40)
+
+1. Support setting custom window icons.
+    * [Pull Request 39](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/39)
+
 ### Ignition Launch 1.2.1
 
 1. Eliminate potential deadlock from SIGCHLD signal handler
