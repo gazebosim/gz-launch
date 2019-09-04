@@ -23,6 +23,24 @@ target_link_libraries(${PROJECT_LIBRARY_TARGET_NAME}
     ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
 )
 
+find_library(DL_LIBRARY NAMES dl)
+find_library(BFD_LIBRARY NAMES bfd)
+
+if(DL_LIBRARY AND BFD_LIBRARY)
+  message(STATUS "Found bfd: ${BFD_LIBRARY}")
+endif()
+
+if(UNIX AND NOT APPLE)
+  if (DL_LIBRARY)
+    target_link_libraries(${PROJECT_LIBRARY_TARGET_NAME} PRIVATE ${DL_LIBRARY})
+  endif()
+
+  if (BFD_LIBRARY)
+    target_link_libraries(${PROJECT_LIBRARY_TARGET_NAME} PRIVATE ${BFD_LIBRARY})
+    target_compile_definitions(${PROJECT_LIBRARY_TARGET_NAME} PRIVATE BACKWARD_HAS_BFD=1)
+  endif()
+endif()
+
 # Build the unit tests.
 ign_build_tests(TYPE UNIT SOURCES ${gtest_sources}
                 EXCLUDE_PROJECT_LIB

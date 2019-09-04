@@ -14,7 +14,7 @@ pipelines:
             cmake build-essential curl git mercurial cppcheck g++-8 libyaml-dev
             libwebsockets-dev
             doxygen ruby-ronn libtinyxml2-dev software-properties-common
-            clang-tidy-6.0 libclang-6.0-dev python-yaml libgflags-dev
+            clang-tidy-6.0 libclang-6.0-dev python-yaml libgflags-dev binutils-dev
           - update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
           - gcc -v
           - g++ -v
