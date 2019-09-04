@@ -311,7 +311,7 @@ ManagerPrivate::ManagerPrivate()
     SIGFPE,     // Floating point exception
     SIGILL,     // Illegal Instruction
     SIGIOT,     // IOT trap. A synonym for SIGABRT
-    //SIGQUIT,    // Quit from keyboard
+    // SIGQUIT, // Quit from keyboard
     SIGSEGV,    // Invalid memory reference
     SIGSYS,     // Bad argument to routine (SVr4)
     SIGTRAP,    // Trace/breakpoint trap

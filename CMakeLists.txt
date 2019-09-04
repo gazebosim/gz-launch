@@ -16,6 +16,9 @@ set(IGN_CMAKE_VER ${ignition-cmake2_VERSION_MAJOR})
 #============================================================================
 ign_configure_project()
 
+# Create cppcheck suppression list file.
+configure_file(tools/cppcheck.suppress.in ${CMAKE_BINARY_DIR}/cppcheck.suppress)
+
 #============================================================================
 # Set project-specific options
 #============================================================================
