@@ -843,6 +843,7 @@ void ManagerPrivate::ParseExecutableWrappers(
         this->plugins.clear();
         this->wrappedPlugins.clear();
         this->sigHandler.reset();
+        this->backward.reset();
         this->executables.clear();
         this->LoadPlugin(pluginElem);
         return;
