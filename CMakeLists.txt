@@ -85,6 +85,10 @@ if (NOT websockets_FOUND)
   ign_build_warning("Unable to find libwebsockets. The websocket_server plugin will not be built.")
 endif()
 
+#--------------------------------------
+# Find prerequistes for backward
+include(src/vendor/BackwardConfig.cmake)
+
 #============================================================================
 # Add plugins
 #============================================================================
