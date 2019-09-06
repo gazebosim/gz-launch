@@ -25,6 +25,7 @@ SegfaultOnLoad::SegfaultOnLoad(): ignition::launch::Plugin() {}
 bool SegfaultOnLoad::Load(const tinyxml2::XMLElement * /*_elem*/)
 {
   char* a = 0;
+  // cppcheck-suppress nullPointer
   char b = a[42];
   std::cout << "result: " << b << std::endl;
   return true;
