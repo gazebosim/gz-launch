@@ -770,7 +770,12 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
   ignition::common::env(IGN_HOMEDIR, homePath);
   systemPaths.AddPluginPaths(homePath + "/.ignition/gazebo/plugins");
 
-  std::string pathToLib = systemPaths.FindSharedLibrary(file);
+  std::string pathToLib;
+  if (common::exists(file))
+    pathToLib = file;
+  else
+    pathToLib = systemPaths.FindSharedLibrary(file);
+
   if (pathToLib.empty())
   {
     ignerr << "Failed to find the path to library[" << file << "]. "
