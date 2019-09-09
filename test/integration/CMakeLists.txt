@@ -1,20 +1,16 @@
 set(TEST_TYPE "INTEGRATION")
 
+message(STATUS "Skipping integration test in with BUILD_TYPE=Coverage")
+add_subdirectory(plugins)
 
-if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
-  message(STATUS "Skipping integration test in with BUILD_TYPE=Coverage")
-else()
-  add_subdirectory(plugins)
+link_directories(${PROJECT_BINARY_DIR}/test)
+include_directories(${PROJECT_SOURCE_DIR}/test)
+include_directories(${PROJECT_SOURCE_DIR}/src)
 
-  link_directories(${PROJECT_BINARY_DIR}/test)
-  include_directories(${PROJECT_SOURCE_DIR}/test)
-  include_directories(${PROJECT_SOURCE_DIR}/src)
+set(tests faulty_plugins.cc)
 
-  set(tests faulty_plugins.cc)
-
-  ign_build_tests(TYPE INTEGRATION SOURCES ${tests} TEST_LIST test_targets)
-  foreach(test ${test_targets})
-    target_compile_definitions(${test} PRIVATE
-        "bad_plugins_LIB=\"$<TARGET_FILE:bad_plugins>\"")
-  endforeach()
-endif()
+ign_build_tests(TYPE INTEGRATION SOURCES ${tests} TEST_LIST test_targets)
+foreach(test ${test_targets})
+  target_compile_definitions(${test} PRIVATE
+      "bad_plugins_LIB=\"$<TARGET_FILE:bad_plugins>\"")
+endforeach()

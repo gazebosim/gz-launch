@@ -16,35 +16,29 @@
  */
 
 #include <gtest/gtest.h>
+#include <gtest/gtest-death-test.h>
 
 #include "Manager.hh"
 
-class LaunchPluginDeathTest: public ::testing::Test
+std::string getConfig(const std::string &_pluginName)
 {
-  protected: void SetUp()
-  {
-    ::testing::FLAGS_gtest_death_test_style = "threadsafe";
-  }
-
-  protected: std::string getConfig(const std::string &_pluginName)
-  {
-    return
-      "<ignition version='1.0'>"
-      "  <plugin name='"  + _pluginName + "'"
-      "          filename='" + std::string(bad_plugins_LIB) + "'>"
-      "  </plugin>"
-      "</ignition>";
-  }
-
-  protected: ignition::launch::Manager mgr;
-};
+  return
+    "<ignition version='1.0'>"
+    "  <plugin name='"  + _pluginName + "'"
+    "          filename='" + std::string(bad_plugins_LIB) + "'>"
+    "  </plugin>"
+    "</ignition>";
+}
 
 
-TEST_F(LaunchPluginDeathTest, SegfaultOnLoad)
+TEST(PluginDeathTest, SegfaultOnLoad)
 {
   auto config = getConfig("SegfaultOnLoad");
 
-  ASSERT_EXIT(mgr.RunConfig(config),
+  ASSERT_EXIT({
+        ignition::launch::Manager mgr;
+        mgr.RunConfig(config);
+      },
       ::testing::KilledBySignal(SIGSEGV),
       "\nSegmentation fault.*");
 }
