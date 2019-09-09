@@ -46,6 +46,6 @@ TEST_F(LaunchPluginDeathTest, SegfaultOnLoad)
 
   ASSERT_EXIT(mgr.RunConfig(config),
       ::testing::KilledBySignal(SIGSEGV),
-      ".*Segmentation Fault.*");
+      "");
 }
 
