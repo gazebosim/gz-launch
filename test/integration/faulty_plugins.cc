@@ -39,7 +39,7 @@ bool runConfig(const std::string &_config)
 TEST(PluginDeathTest, SegfaultOnLoad)
 {
   auto config = getConfig("SegfaultOnLoad");
-  EXPECT_FAIL(runConfig(config),
+  EXPECT_EXIT(runConfig(config),
       ::testing::KilledBySignal(SIGSEGV),
       "\nSegmentation fault.*");
 }
