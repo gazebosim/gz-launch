@@ -30,15 +30,16 @@ std::string getConfig(const std::string &_pluginName)
     "</ignition>";
 }
 
+bool runConfig(const std::string &_config)
+{
+  ignition::launch::Manager mgr;
+  return mgr.RunConfig(_config);
+}
 
 TEST(PluginDeathTest, SegfaultOnLoad)
 {
   auto config = getConfig("SegfaultOnLoad");
-
-  ASSERT_EXIT({
-        ignition::launch::Manager mgr;
-        mgr.RunConfig(config);
-      },
+  EXPECT_FAIL(runConfig(config),
       ::testing::KilledBySignal(SIGSEGV),
       "\nSegmentation fault.*");
 }
