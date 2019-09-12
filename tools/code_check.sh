@@ -63,6 +63,7 @@ if [ $CPPCHECK_LT_157 -eq 0 ]; then
   CPPCHECK_BASE="$CPPCHECK_BASE --language=c++"
 fi
 CPPCHECK_INCLUDES="-I ./include -I $builddir -I test -I ./include/ignition/launch"
+CPPCHECK_SUPPRESS="--force --suppress=*:src/vendor/*"
 CPPCHECK_RULES="-UM_PI"\
 " --rule-file=./tools/cppcheck_rules/header_guard.rule"\
 " --rule-file=./tools/cppcheck_rules/namespace_AZ.rule"
@@ -78,10 +79,10 @@ CPPCHECK_CMD3="-j 4 --enable=missingInclude $CPPCHECK_FILES $CPPCHECK_INCLUDES"
 
 if [ $xmlout -eq 1 ]; then
   # Performance, style, portability, and information
-  ($CPPCHECK_BASE --xml --xml-version=2 $CPPCHECK_CMD1) 2> $xmldir/cppcheck.xml
+  ($CPPCHECK_BASE --xml --xml-version=2 $CPPCHECK_SUPPRESS $CPPCHECK_CMD1) 2> $xmldir/cppcheck.xml
 
   # Check the configuration
-  ($CPPCHECK_BASE --xml --xml-version=2 $CPPCHECK_CMD3) 2> $xmldir/cppcheck-configuration.xml
+  ($CPPCHECK_BASE --xml --xml-version=2 $CPPCHECK_SUPPRESS $CPPCHECK_CMD3) 2> $xmldir/cppcheck-configuration.xml
 elif [ $QUICK_CHECK -eq 1 ]; then
   for f in $CHECK_FILES; do
     prefix=`basename $f | sed -e 's@\..*$@@'`
@@ -99,7 +100,7 @@ elif [ $QUICK_CHECK -eq 1 ]; then
     fi
 
     if [ $DO_CPPCHECK -eq 1 ]; then
-      $CPPCHECK_BASE $CPPCHECK_CMD1A $CPPCHECK_RULES $tmp2 2>&1 \
+      $CPPCHECK_BASE $CPPCHECK_SUPPRESS $CPPCHECK_CMD1A $CPPCHECK_RULES $tmp2 2>&1 \
         | sed -e "s@$tmp2@$f@g" \
         | grep -v 'use --check-config for details' \
         | grep -v 'Include file: .*not found'
@@ -114,10 +115,10 @@ elif [ $QUICK_CHECK -eq 1 ]; then
   rm $QUICK_TMP
 else
   # Performance, style, portability, and information
-  $CPPCHECK_BASE $CPPCHECK_INCLUDES $CPPCHECK_CMD1 2>&1
+  $CPPCHECK_BASE $CPPCHECK_INCLUDES $CPPCHECK_SUPPRESS $CPPCHECK_CMD1 2>&1
 
   # Check the configuration
-  $CPPCHECK_BASE $CPPCHECK_CMD3 2>&1
+  $CPPCHECK_BASE $CPPCHECK_CMD3 $CPPCHECK_SUPPRESS 2>&1
 fi
 
 # cpplint

@@ -16,6 +16,9 @@ set(IGN_CMAKE_VER ${ignition-cmake2_VERSION_MAJOR})
 #============================================================================
 ign_configure_project()
 
+# Create cppcheck suppression list file.
+configure_file(tools/cppcheck.suppress.in ${CMAKE_BINARY_DIR}/cppcheck.suppress)
+
 #============================================================================
 # Set project-specific options
 #============================================================================
@@ -81,6 +84,10 @@ ign_pkg_check_modules(websockets libwebsockets)
 if (NOT websockets_FOUND)
   ign_build_warning("Unable to find libwebsockets. The websocket_server plugin will not be built.")
 endif()
+
+#--------------------------------------
+# Find prerequistes for backward
+include(src/vendor/BackwardConfig.cmake)
 
 #============================================================================
 # Add plugins

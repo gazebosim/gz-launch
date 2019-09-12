@@ -40,7 +40,9 @@
 
 #include "ignition/launch/config.hh"
 #include "ignition/launch/Plugin.hh"
+
 #include "Manager.hh"
+#include "vendor/backward.hpp"
 
 using namespace ignition::launch;
 using namespace std::chrono_literals;
@@ -203,6 +205,9 @@ class ignition::launch::ManagerPrivate
   /// \brief Our signal handler.
   public: std::unique_ptr<common::SignalHandler> sigHandler = nullptr;
 
+  /// \brief Backward signal handler
+  public: std::unique_ptr<backward::SignalHandling> backward = nullptr;
+
   /// \brief Top level environment variables.
   public: std::list<std::string> envs;
 
@@ -298,6 +303,23 @@ ManagerPrivate::ManagerPrivate()
   // Register a signal handler to capture child process death events.
   if (signal(SIGCHLD, ManagerPrivate::OnSigChild) == SIG_ERR)
     ignerr << "signal(2) failed while setting up for SIGCHLD" << std::endl;
+
+  // Register backward signal handler for other signals
+  std::vector<int> signals = {
+    SIGABRT,    // Abort signal from abort(3)
+    SIGBUS,     // Bus error (bad memory access)
+    SIGFPE,     // Floating point exception
+    SIGILL,     // Illegal Instruction
+    SIGIOT,     // IOT trap. A synonym for SIGABRT
+    // SIGQUIT, // Quit from keyboard
+    SIGSEGV,    // Invalid memory reference
+    SIGSYS,     // Bad argument to routine (SVr4)
+    SIGTRAP,    // Trace/breakpoint trap
+    SIGXCPU,    // CPU time limit exceeded (4.2BSD)
+    SIGXFSZ,    // File size limit exceeded (4.2BSD)
+  };
+
+  this->backward = std::make_unique<backward::SignalHandling>(signals);
 }
 
 /////////////////////////////////////////////////
@@ -748,7 +770,12 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
   ignition::common::env(IGN_HOMEDIR, homePath);
   systemPaths.AddPluginPaths(homePath + "/.ignition/gazebo/plugins");
 
-  std::string pathToLib = systemPaths.FindSharedLibrary(file);
+  std::string pathToLib;
+  if (common::exists(file))
+    pathToLib = file;
+  else
+    pathToLib = systemPaths.FindSharedLibrary(file);
+
   if (pathToLib.empty())
   {
     ignerr << "Failed to find the path to library[" << file << "]. "
@@ -821,6 +848,7 @@ void ManagerPrivate::ParseExecutableWrappers(
         this->plugins.clear();
         this->wrappedPlugins.clear();
         this->sigHandler.reset();
+        this->backward.reset();
         this->executables.clear();
         this->LoadPlugin(pluginElem);
         return;
