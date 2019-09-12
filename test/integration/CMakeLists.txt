@@ -1,6 +1,5 @@
 set(TEST_TYPE "INTEGRATION")
 
-message(STATUS "Skipping integration test in with BUILD_TYPE=Coverage")
 add_subdirectory(plugins)
 
 link_directories(${PROJECT_BINARY_DIR}/test)
