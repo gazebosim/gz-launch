@@ -90,7 +90,7 @@ necessary prerequisites followed by building from source.
 1. Install third-party libraries:
 
     ```
-    sudo apt-get -y install cmake build-essential curl cppcheck g++-8 libbenchmark-dev libgflags-dev doxygen ruby-ronn libtinyxml2-dev libtinyxml-dev software-properties-common libeigen3-dev
+    sudo apt-get -y install cmake build-essential curl cppcheck g++-8 doxygen ruby-ronn libtinyxml2-dev software-properties-common
     ```
 
 1. Install required Ignition libraries
@@ -137,7 +137,7 @@ necessary prerequisites followed by building from source.
 
 # Usage
 
-Sample launch configuration files are in the [examples directory](https://bitbucket.org/ignitionrobotics/ign-launch/raw/default/examples/?at=default).
+Sample launch configuration files are in the [examples directory](https://bitbucket.org/ignitionrobotics/ign-launch/src/default/examples/).
 
 **Example**
 
