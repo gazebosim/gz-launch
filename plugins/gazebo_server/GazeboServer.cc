@@ -87,13 +87,71 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
           common::lowercase(str) == "true");
     }
 
-    const tinyxml2::XMLElement *path = elem->FirstChildElement("path");
-    if (path)
+    const auto *resources = elem->FirstChildElement("resources");
+    if (resources)
     {
-      std::string str = path->GetText();
-      serverConfig.SetLogRecordPath(str);
+      std::string str = resources->GetText();
+      serverConfig.SetLogRecordResources(str == "1" ||
+          common::lowercase(str) == "true");
     }
+
+    std::string path = serverConfig.LogRecordPath();
+    const auto *pathElem = elem->FirstChildElement("path");
+    if (pathElem)
+    {
+      path = pathElem->GetText();
+    }
+
+    bool overwrite{false};
+    const auto *overwriteElem = elem->FirstChildElement("overwrite");
+    if (overwriteElem)
+    {
+      std::string str = overwriteElem->GetText();
+      overwrite = (str == "1" || common::lowercase(str) == "true");
+    }
+
+    bool compress{false};
+    std::string compressPath;
+    const auto *compressElem = elem->FirstChildElement("compress");
+    if (compressElem)
+    {
+      std::string str = compressElem->GetText();
+      compress = (str == "1" || common::lowercase(str) == "true");
+
+      serverConfig.SetLogRecordCompress(compress);
+      serverConfig.SetLogRecordCompressPath(compressPath);
+
+      compressPath = std::string(path);
+
+      // Remove the separator at end of path
+      size_t sepIdx = compressPath.find(common::separator(""));
+      if (sepIdx == compressPath.length() - 1)
+      {
+        compressPath = compressPath.substr(0, compressPath.length() - 1);
+      }
+      compressPath += ".zip";
+    }
+
+    if (common::exists(path) || (compress && common::exists(compressPath)))
+    {
+      if (overwrite)
+      {
+        ignmsg << "Overwriting existing files in [" << path << "]" << std::endl;
+        if (common::exists(path))
+          common::removeAll(path);
+
+        if (compress && common::exists(compressPath))
+          common::removeFile(compressPath);
+      }
+      else
+      {
+        path = common::uniqueDirectoryPath(path);
+      }
+    }
+
+    serverConfig.SetLogRecordPath(path);
     ignLogInit(serverConfig.LogRecordPath(), "server_console.log");
+    ignmsg << "Logging to [" << path << "]" << std::endl;
   }
 
   if (serverConfig.UseLogRecord())
