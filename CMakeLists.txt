@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5.1 FATAL_ERROR)
 #============================================================================
 # Initialize the project
 #============================================================================
-project(ignition-launch1 VERSION 1.1.0)
+project(ignition-launch1 VERSION 1.2.3)
 
 #============================================================================
 # Find ignition-cmake
@@ -15,6 +15,9 @@ set(IGN_CMAKE_VER ${ignition-cmake2_VERSION_MAJOR})
 # Configure the project
 #============================================================================
 ign_configure_project()
+
+# Create cppcheck suppression list file.
+configure_file(tools/cppcheck.suppress.in ${CMAKE_BINARY_DIR}/cppcheck.suppress)
 
 #============================================================================
 # Set project-specific options
@@ -81,6 +84,10 @@ ign_pkg_check_modules(websockets libwebsockets)
 if (NOT websockets_FOUND)
   ign_build_warning("Unable to find libwebsockets. The websocket_server plugin will not be built.")
 endif()
+
+#--------------------------------------
+# Find prerequistes for backward
+include(src/vendor/BackwardConfig.cmake)
 
 #============================================================================
 # Add plugins

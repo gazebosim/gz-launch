@@ -21,7 +21,10 @@ target_link_libraries(${PROJECT_LIBRARY_TARGET_NAME}
     TINYXML2::TINYXML2
   PRIVATE
     ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
+    ${BACKWARD_LIBRARIES}
 )
+
+target_compile_definitions(${PROJECT_LIBRARY_TARGET_NAME} PRIVATE ${BACKWARD_DEFINITIONS})
 
 # Build the unit tests.
 ign_build_tests(TYPE UNIT SOURCES ${gtest_sources}
