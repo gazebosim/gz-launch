@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5.1 FATAL_ERROR)
 #============================================================================
 # Initialize the project
 #============================================================================
-project(ignition-launch1 VERSION 1.2.3)
+project(ignition-launch2 VERSION 2.0.0)
 
 #============================================================================
 # Find ignition-cmake
@@ -14,7 +14,7 @@ set(IGN_CMAKE_VER ${ignition-cmake2_VERSION_MAJOR})
 #============================================================================
 # Configure the project
 #============================================================================
-ign_configure_project()
+ign_configure_project(VERSION_SUFFIX pre1)
 
 # Create cppcheck suppression list file.
 configure_file(tools/cppcheck.suppress.in ${CMAKE_BINARY_DIR}/cppcheck.suppress)
@@ -65,8 +65,8 @@ set(IGN_MATH_MAJOR_VER ${ignition-math6_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-gui
-ign_find_package(ignition-gui2 REQUIRED)
-set(IGN_GUI_MAJOR_VER ${ignition-gui2_VERSION_MAJOR})
+ign_find_package(ignition-gui3 REQUIRED)
+set(IGN_GUI_MAJOR_VER ${ignition-gui3_VERSION_MAJOR})
 ign_find_package (Qt5
   COMPONENTS
     Core
@@ -77,8 +77,8 @@ ign_find_package (Qt5
 
 #--------------------------------------
 # Find ignition-gazebo
-ign_find_package(ignition-gazebo2 REQUIRED PRIVATE COMPONENTS gui)
-set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo2_VERSION_MAJOR})
+ign_find_package(ignition-gazebo3 REQUIRED PRIVATE COMPONENTS gui)
+set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo3_VERSION_MAJOR})
 
 ign_pkg_check_modules(websockets libwebsockets)
 if (NOT websockets_FOUND)
