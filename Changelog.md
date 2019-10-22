@@ -1,6 +1,32 @@
 ## Ignition Launch 1.x
 
-### Ignition Launch 1.x.x
+### Ignition Launch 1.X.X
+
+### Ignition Launch 1.2.3 (2019-09-09)
+
+1. Add QML import path to IgnGazebo modules
+    * [Pull Request 42](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/42)
+
+### Ignition Launch 1.2.2
+
+1. Add support for console logging.
+    * [Pull Request 40](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/40)
+
+1. Support setting custom window icons.
+    * [Pull Request 39](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/39)
+
+### Ignition Launch 1.2.1
+
+1. Eliminate potential deadlock from SIGCHLD signal handler
+    * [Pull Request 36](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/36)
+
+### Ignition Launch 1.2.0
+
+1. Support for custom random seed in the GazeboServer plugin.
+    * [Pull Request 33](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/33)
+
+1. Allow specifying a custom window title
+    * [Pull Request 32](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/32)
 
 ### Ignition Launch 1.1.0 (2019-06-11)
 
