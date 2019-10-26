@@ -59,3 +59,16 @@ TEST(CmdLine, Ls)
   EXPECT_TRUE(output.find("CMakeFiles") != std::string::npos) << output;
   EXPECT_TRUE(output.find("Makefile") != std::string::npos) << output;
 }
+
+/////////////////////////////////////////////////
+TEST(CmdLine, EchoSelf)
+{
+  std::string filePath =
+      std::string(PROJECT_SOURCE_PATH) + "/test/config/echo.ign";
+
+  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
+    " ign launch " + filePath;
+
+  std::string output = customExecStr(cmd);
+  EXPECT_EQ(filePath, output) << output;
+}

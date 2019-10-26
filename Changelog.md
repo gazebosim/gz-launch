@@ -2,6 +2,12 @@
 
 ### Ignition Launch 1.X.X
 
+1. Add filepath to ERB so that constants like `__FILE__` in `.ign` files work as expected
+    * [Pull Request 48](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/48)
+
+1.  Add backward support to ign-launch to capture backtraces.
+    * [Pull Request 41](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/41)
+
 ### Ignition Launch 1.2.3 (2019-09-09)
 
 1. Add QML import path to IgnGazebo modules
