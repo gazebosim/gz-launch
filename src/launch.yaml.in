@@ -1,6 +1,6 @@
 --- # Subcommands available inside ignition launch
 format: 1.0.0
-library_name: ignition-launch1
+library_name: ignition-launch2
 library_version: @PROJECT_VERSION_FULL@
 library_path: @ign_library_path@
 commands:

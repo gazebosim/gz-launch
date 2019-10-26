@@ -1,10 +1,19 @@
+## Ignition Launch 2.x
+
+### Ignition Launch 2.X.X
+
+### Ignition Launch 2.0.0
+
+1. Use Ignition Citadel dependencies.
+    * [Pull Request 47](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/47)
+
 ## Ignition Launch 1.x
 
 ### Ignition Launch 1.X.X
 
 ### Ignition Launch 1.2.3 (2019-09-09)
 
-1. Add QML import path to IgnGazebo modules
+1. Add QML import path to IgnGazebo modules.
     * [Pull Request 42](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/42)
 
 ### Ignition Launch 1.2.2

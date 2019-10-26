@@ -28,17 +28,62 @@ pipelines:
           - apt-get -y install
             libignition-cmake2-dev
             libignition-common3-dev
-            libignition-gui2-dev
             libignition-math6-dev
             libignition-msgs4-dev
             libignition-physics-dev
             libignition-plugin-dev
-            libignition-sensors2-dev
             libignition-tools-dev
             libignition-fuel-tools3-dev
             libignition-transport7-dev
             libsdformat8-dev
-            libignition-gazebo2-dev
+          # Ignition Rendering from source
+          - apt install -y
+            libogre-1.9-dev libogre-2.1-dev libglew-dev libfreeimage-dev freeglut3-dev libxmu-dev libxi-dev uuid-dev xvfb
+          - hg clone https://bitbucket.org/ignitionrobotics/ign-rendering -b default
+          - cd ign-rendering
+          - mkdir build
+          - cd build
+          - cmake ..
+          - make install
+          - cd ../..
+          # Ignition GUI from source
+          - apt install -y
+            qtbase5-dev libtinyxml2-dev
+            libprotoc-dev
+            libprotobuf-dev
+            qtdeclarative5-dev
+            qtquickcontrols2-5-dev
+            qml-module-qtquick2
+            qml-module-qtquick-controls
+            qml-module-qtquick-controls2
+            qml-module-qtquick-dialogs
+            qml-module-qtquick-layouts
+            qml-module-qt-labs-folderlistmodel
+            qml-module-qt-labs-settings
+            qml-module-qtgraphicaleffects
+          - hg clone https://bitbucket.org/ignitionrobotics/ign-gui -b default
+          - cd ign-gui
+          - mkdir build
+          - cd build
+          - cmake ..
+          - make install
+          - cd ../..
+          # Ignition Sensors from source
+          - hg clone https://bitbucket.org/ignitionrobotics/ign-sensors -b default
+          - cd ign-sensors
+          - mkdir build
+          - cd build
+          - cmake ..
+          - make install
+          - cd ../..
+          # Ignition Gazebo from source
+          - hg clone https://bitbucket.org/ignitionrobotics/ign-gazebo -b default
+          - cd ign-gazebo
+          - mkdir build
+          - cd build
+          - cmake ..
+          - make install
+          - cd ../..
           # Ignition Launch
           - mkdir build
           - cd build
