@@ -42,11 +42,10 @@ COMMON_OPTIONS =
 COMMANDS = { 'launch' =>
   "Manage executables and plugins.                                         \n"\
   "                                                                        \n"\
-  "  ign launch [options]                                                  \n"\
+  "  ign launch [options] [launch_file]                                    \n"\
   "                                                                        \n"\
   "                                                                        \n"\
   "Available Options:                                                      \n"\
-  "  -f [ --file ] [arg]      Run a configuration file.                    \n"\
   "  -v [ --verbose ] [arg]   Adjust the level of console output (0~4).    \n"\
   "                           The default verbosity is 1, use -v without   \n"\
   "                           arguments for level 3.                       \n" +
@@ -57,6 +56,13 @@ COMMANDS = { 'launch' =>
 # Class for the Ignition Fuel command line tools.
 #
 class Cmd
+  # Command-line variable bindings.
+  @variableBinding
+
+  # Initialize the class
+  def initialize()
+    @variableBinding = binding
+  end
 
   #
   # Return a structure describing the options.
@@ -75,9 +81,6 @@ class Cmd
         puts usage
         exit
       end
-      opts.on('-f [config]', '--file', String, 'Run a configuration file') do |cfg|
-        options['file'] = cfg
-      end
       opts.on('-v [verbose]', '--verbose [verbose]', String,
           'Adjust level of console output') do |v|
         options['verbose'] = v || '3'
@@ -86,7 +89,30 @@ class Cmd
 
     opt_parser.parse!(args)
 
-    options['command'] = args[0]
+    while !args.empty?
+      arg = args.shift
+      # Store variables if the := is present
+      if arg.include?(":=")
+        name, value = arg.split(/:=/)
+
+        # Make sure the name is present. It's okay if the value is empty or
+        # nil, in case the user wants to explicity clear a variable.
+        if name != nil && !name.empty?
+          @variableBinding.local_variable_set("#{name}", value)
+        else
+          puts "Missing varialbe name in argument: #{arg}"
+        end
+
+      # Launch file as positional argument
+      elsif arg and arg != 'launch' and not options.key?('file')
+        options['file'] = arg
+      # Store the command
+      elsif not options.key?('command')
+        options['command'] = arg
+      else
+        puts "Error processing command line argument: #{arg}"
+      end
+    end
 
     options
   end # parse()
@@ -154,8 +180,24 @@ class Cmd
           end
         end
 
-        # ERB parse the file, and then run the result
-        parsed = ERB.new(File.read(path)).result()
+        # ERB parse the file with the variable bindings
+        begin
+          parsed = ERB.new(File.read(path)).result(@variableBinding)
+
+          # todo(nkoenig) Also ERB parse <world_file> elements inside
+          # a launch configuration. This will allow use to pass variables
+          # all the way down through the world and (eventually) model files.
+          # An approach would be to find the <world_file> tags using a Ruby XML
+          # parser, and ERB each file. The <world_file> tag would be
+          # changed to something like <world_string>. We would probably need
+          # a helper function to find the location on disk of the
+          # <world_file>.
+        rescue Exception => e
+          puts "Failed to parse #{path} because of #{e}"
+          exit(-1)
+        end
+
+        # Run the parsed file.
         Importer.extern 'int run(const char *)'
         if not Importer.run(parsed)
           exit(-1)

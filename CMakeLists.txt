@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5.1 FATAL_ERROR)
 #============================================================================
 # Initialize the project
 #============================================================================
-project(ignition-launch0 VERSION 0.2.0)
+project(ignition-launch1 VERSION 1.2.3)
 
 #============================================================================
 # Find ignition-cmake
@@ -15,6 +15,9 @@ set(IGN_CMAKE_VER ${ignition-cmake2_VERSION_MAJOR})
 # Configure the project
 #============================================================================
 ign_configure_project()
+
+# Create cppcheck suppression list file.
+configure_file(tools/cppcheck.suppress.in ${CMAKE_BINARY_DIR}/cppcheck.suppress)
 
 #============================================================================
 # Set project-specific options
@@ -77,6 +80,20 @@ ign_find_package (Qt5
 ign_find_package(ignition-gazebo2 REQUIRED PRIVATE COMPONENTS gui)
 set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo2_VERSION_MAJOR})
 
+ign_pkg_check_modules(websockets libwebsockets)
+if (NOT websockets_FOUND)
+  ign_build_warning("Unable to find libwebsockets. The websocket_server plugin will not be built.")
+endif()
+
+#--------------------------------------
+# Find prerequistes for backward
+include(src/vendor/BackwardConfig.cmake)
+
+#============================================================================
+# Add plugins
+#============================================================================
+add_subdirectory(plugins)
+
 #============================================================================
 # Configure the build
 #============================================================================
@@ -86,11 +103,6 @@ ign_configure_build(QUIT_IF_BUILD_ERRORS)
 # install example .ign files
 #============================================================================
 add_subdirectory(examples)
-
-#============================================================================
-# ign command line support
-#============================================================================
-add_subdirectory(plugins)
 
 #============================================================================
 # Create package information

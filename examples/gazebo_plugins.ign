@@ -1,6 +1,18 @@
 <?xml version='1.0'?>
+<!-- Usage: ign launch gazebo_plugins.ign [worldName:=<worldName>]
+
+     The [worldName] command line argument is optional. If left blank, or not
+     specified, then "diff_drive" is used for the world name.
+
+    Example that loads the shapes.sdf world instead of diff_drive:
+
+      ign launch gazebo_plugins.ign worldName:=shapes
+-->
 <%
-  worldName = "diff_drive"
+  # Check if worldName is not defined or is empty/nil
+  if !defined?(worldName) || worldName == nil || worldName.empty?
+    worldName = "diff_drive"
+  end
 %>
 
 <!-- Requires ign-gazebo branch support_loading_plugins_programmatically -->
@@ -8,7 +20,7 @@
   <!-- Load a joystick plugin that will read from a device and output to a
        topic -->
   <plugin name="ignition::launch::Joystick"
-          filename="libignition-launch0-joystick.so">
+          filename="libignition-launch-joystick.so">
     <device>/dev/input/js0</device>
     <sticky_buttons>false</sticky_buttons>
     <dead_zone>0.05</dead_zone>
@@ -19,7 +31,7 @@
   <!-- Load a plugin that transforms a joystick message to a
        twist message -->
   <plugin name="ignition::launch::JoyToTwist"
-          filename="libignition-launch0-joytotwist.so">
+          filename="libignition-launch-joytotwist.so">
     <input_topic>/joy</input_topic>
     <output_topic>/model/vehicle_green/cmd_vel</output_topic>
   </plugin>
@@ -27,17 +39,27 @@
   <!-- Load a plugin that transforms a joystick message to a
        twist message -->
   <plugin name="ignition::launch::JoyToTwist"
-          filename="libignition-launch0-joytotwist.so">
+          filename="libignition-launch-joytotwist.so">
     <input_topic>/joy</input_topic>
     <output_topic>/model/vehicle_blue/cmd_vel</output_topic>
   </plugin>
 
   <!-- Run the gazebo server with a set of plugins -->
   <plugin name="ignition::launch::GazeboServer"
-          filename="libignition-launch0-gazebo.so">
+          filename="libignition-launch-gazebo.so">
     <world_file><%= worldName %>.sdf</world_file>
     <run>true</run>
+    <!-- 3000 Hz == 300% RTF == 3x real time -->
+    <update_rate>3000</update_rate>
     <levels>false</levels>
+    <record>
+      <enabled>true</enabled>
+      <!-- Use the <path> element to specify where to create the log file on
+           disk. Leaving this empty will cause Gazebo to log into the default
+           location of ~/.ignition/gazebo/log -->
+      <!-- <path></path> -->
+    </record>
+    <seed>123</seed>
     <!-- The diff_drive SDF world has the following plugins defined.
          Uncomment this if you are using a world that doesn't include the
          necessary plugin
@@ -77,8 +99,16 @@
 
   <executable_wrapper>
     <plugin name="ignition::launch::GazeboGui"
-          filename="libignition-launch0-gazebogui.so">
-      <plugin filename="Scene3D" name="3D View">
+          filename="libignition-launch-gazebogui.so">
+      <world_name><%= worldName %></world_name>
+
+      <!-- Override default window title (Gazebo) -->
+      <window_title>Ignition Launch</window_title>
+
+      <!-- Override default icon.
+           In this example, setting to a resource file shipped with Ignition GUI -->
+      <window_icon>:/qml/images/drawer.png</window_icon>
+      <plugin filename="GzScene3D" name="3D View">
         <ignition-gui>
           <title>3D View</title>
           <property type="bool" key="showTitleBar">false</property>
@@ -90,10 +120,6 @@
         <ambient_light>0.4 0.4 0.4</ambient_light>
         <background_color>0.8 0.8 0.8</background_color>
         <camera_pose>-6 0 6 0 0.5 0</camera_pose>
-        <service>/world/<%= worldName %>/scene/info</service>
-        <pose_topic>/world/<%= worldName %>/pose/info</pose_topic>
-        <scene_topic>/world/<%= worldName %>/scene/info</scene_topic>
-        <deletion_topic>/world/<%= worldName %>/scene/deletion</deletion_topic>
       </plugin>
       <plugin filename="WorldControl" name="World control">
         <ignition-gui>
@@ -140,6 +166,18 @@
         <real_time_factor>true</real_time_factor>
         <iterations>true</iterations>
         <topic>/world/<%= worldName %>/stats</topic>
+      </plugin>
+
+      <!-- Entity tree -->
+      <plugin filename="EntityTree" name="Entity tree">
+        <ignition-gui>
+          <title>Entity tree</title>
+        </ignition-gui>
+      </plugin>
+
+      <!-- Transform Control -->
+      <plugin filename="TransformControl" name="Transform Control">
+        <service>/world/<%= worldName %>/gui/transform_mode</service>
       </plugin>
     </plugin>
   </executable_wrapper>

@@ -57,7 +57,7 @@ GazeboServer::GazeboServer()
 }
 
 /////////////////////////////////////////////////
-void GazeboServer::Load(const tinyxml2::XMLElement *_elem)
+bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
 {
   gazebo::ServerConfig serverConfig;
   const tinyxml2::XMLElement *elem;
@@ -74,6 +74,65 @@ void GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     std::string str = elem->GetText();
     serverConfig.SetUseLevels(str == "1" ||
         common::lowercase(str) == "true");
+  }
+
+  elem = _elem->FirstChildElement("record");
+  if (elem)
+  {
+    const tinyxml2::XMLElement *enabled = elem->FirstChildElement("enabled");
+    if (enabled)
+    {
+      std::string str = enabled->GetText();
+      serverConfig.SetUseLogRecord(str == "1" ||
+          common::lowercase(str) == "true");
+    }
+
+    const tinyxml2::XMLElement *path = elem->FirstChildElement("path");
+    if (path)
+    {
+      std::string str = path->GetText();
+      serverConfig.SetLogRecordPath(str);
+    }
+    ignLogInit(serverConfig.LogRecordPath(), "server_console.log");
+  }
+
+  if (serverConfig.UseLogRecord())
+    ignmsg << "Recording to [" << serverConfig.LogRecordPath() << "]\n";
+
+  // Set whether to use a custom random seed
+  elem = _elem->FirstChildElement("seed");
+  if (elem)
+  {
+    unsigned seed;
+    auto result = elem->QueryUnsignedText(&seed);
+    if (result == tinyxml2::XML_SUCCESS)
+    {
+      serverConfig.SetSeed(seed);
+      ignmsg << "Using seed [" << seed << "]" << std::endl;
+    }
+    else
+    {
+      ignerr << "Unable to parse [" << elem->GetText() << "] as a seed."
+             << " Make sure it's an unsigned int" << std::endl;
+    }
+  }
+
+  // Set update rate
+  elem = _elem->FirstChildElement("update_rate");
+  if (elem)
+  {
+    unsigned updateRate;
+    auto result = elem->QueryUnsignedText(&updateRate);
+    if (result == tinyxml2::XML_SUCCESS)
+    {
+      serverConfig.SetUpdateRate(updateRate);
+      ignmsg << "Using update rate [" << updateRate << "]" << std::endl;
+    }
+    else
+    {
+      ignerr << "Unable to parse [" << elem->GetText() << "] as an update rate."
+             << " Make sure it's an unsigned int" << std::endl;
+    }
   }
 
   // Get whether simulation should start paused.
@@ -144,4 +203,5 @@ void GazeboServer::Load(const tinyxml2::XMLElement *_elem)
   this->server->Run(false, 0, !run);
 
   igndbg << "Loaded GazeboServer plugin.\n";
+  return true;
 }

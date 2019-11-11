@@ -68,7 +68,8 @@ int rootCallback(struct lws *_wsi,
     case LWS_CALLBACK_SERVER_WRITEABLE:
       {
         std::lock_guard<std::mutex> lock(self->connections[fd]->mutex);
-        while (!self->connections[fd]->buffer.empty())
+        //while (!self->connections[fd]->buffer.empty())
+        if (!self->connections[fd]->buffer.empty())
         {
           int msgSize = self->connections[fd]->len.front();
           int charsSent = lws_write(_wsi,
@@ -130,7 +131,7 @@ WebsocketServer::~WebsocketServer()
 }
 
 /////////////////////////////////////////////////
-void WebsocketServer::Load(const tinyxml2::XMLElement * /*_elem*/)
+bool WebsocketServer::Load(const tinyxml2::XMLElement * /*_elem*/)
 {
   // All of the protocols handled by this websocket server.
   this->protocols.push_back(
@@ -183,6 +184,8 @@ void WebsocketServer::Load(const tinyxml2::XMLElement * /*_elem*/)
 
   this->run = true;
   this->thread = new std::thread(std::bind(&WebsocketServer::Run, this));
+
+  return true;
 }
 
 //////////////////////////////////////////////////
@@ -226,6 +229,14 @@ void WebsocketServer::OnConnect(int _socketId)
 void WebsocketServer::OnDisconnect(int _socketId)
 {
   this->connections.erase(_socketId);
+
+  // Somewhat slow operation.
+  for (std::map<std::string, std::set<int>>::iterator iter =
+       this->topicConnections.begin(); iter != this->topicConnections.end();
+       ++iter)
+  {
+    iter->second.erase(_socketId);
+  }
 }
 
 //////////////////////////////////////////////////
@@ -256,6 +267,9 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   }
   else if (requestMsg.operation() == "subscribe")
   {
+    // Store the relation of socketId to subscribed topic.
+    this->topicConnections[requestMsg.topic()].insert(_socketId);
+
     igndbg << "Subscribe request to topic[" << requestMsg.topic() << "]\n";
     this->node.SubscribeRaw(requestMsg.topic(),
         std::bind(&WebsocketServer::OnWebsocketSubscribedMessage,
@@ -269,7 +283,10 @@ void WebsocketServer::OnWebsocketSubscribedMessage(
     const char *_data, const size_t /*_size*/,
     const ignition::transport::MessageInfo &_info)
 {
-  if (!this->connections.empty())
+  std::map<std::string, std::set<int>>::const_iterator iter =
+    this->topicConnections.find(_info.Topic());
+
+  if (iter != this->topicConnections.end())
   {
     ignition::msgs::Packet msg;
     msg.set_topic(_info.Topic());
@@ -291,11 +308,13 @@ void WebsocketServer::OnWebsocketSubscribedMessage(
       msg.mutable_time()->ParseFromString(_data);
     else if (_info.Type() == "ignition.msgs.Clock")
       msg.mutable_clock()->ParseFromString(_data);
+    else if (_info.Type() == "ignition.msgs.WorldStatistics")
+      msg.mutable_world_stats()->ParseFromString(_data);
 
     std::string data = msg.SerializeAsString();
-    if (this->connections.begin()->second)
+    for (const int &socketId : iter->second)
     {
-      this->QueueMessage(this->connections.begin()->second.get(),
+      this->QueueMessage(this->connections[socketId].get(),
           data.c_str(), data.length());
     }
   }

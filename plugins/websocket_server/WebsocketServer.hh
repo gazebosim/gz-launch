@@ -64,7 +64,7 @@ namespace ignition
       public: virtual ~WebsocketServer();
 
       // Documentation inherited
-      public: virtual void Load(
+      public: virtual bool Load(
                   const tinyxml2::XMLElement *_elem) override final;
 
       public: void Run();
@@ -100,6 +100,7 @@ namespace ignition
 
       public: std::mutex mutex;
       public: std::map<int, std::unique_ptr<Connection>> connections;
+      public: std::map<std::string, std::set<int>> topicConnections;
     };
   }
 }

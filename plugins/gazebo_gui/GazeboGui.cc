@@ -17,6 +17,7 @@
 
 #include <ignition/common/Console.hh>
 #include <ignition/gazebo/config.hh>
+#include <ignition/gazebo/gui/GuiRunner.hh>
 #include <ignition/gui/MainWindow.hh>
 #include "ignition/gazebo/gui/TmpIface.hh"
 
@@ -37,12 +38,19 @@ GazeboGui::~GazeboGui()
 }
 
 /////////////////////////////////////////////////
-void GazeboGui::Load(const tinyxml2::XMLElement *_elem)
+bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
 {
   int argc;
   char **argv = nullptr;
 
+  // Temporary transport interface
+  auto tmp = std::make_unique<ignition::gazebo::TmpIface>();
+
   this->app.reset(new ignition::gui::Application(argc, argv));
+  this->app->AddPluginPath(IGN_GAZEBO_GUI_PLUGIN_INSTALL_DIR);
+
+  // add import path so we can load custom modules
+  this->app->Engine()->addImportPath(IGN_GAZEBO_GUI_PLUGIN_INSTALL_DIR);
 
   // Load configuration file
   std::string configPath = ignition::common::joinPaths(
@@ -51,15 +59,23 @@ void GazeboGui::Load(const tinyxml2::XMLElement *_elem)
   if (!app->LoadConfig(configPath))
   {
     ignerr << "Unable to load GazeboGui config file[" << configPath << "]\n";
-    return;
+    return false;
   }
 
-  // Customize window
   auto win = this->app->findChild<ignition::gui::MainWindow *>()->QuickWindow();
-  win->setProperty("title", "Gazebo");
 
-  // Temporary transport interface
-  auto tmp = std::make_unique<ignition::gazebo::TmpIface>();
+  // Customize window
+  std::string windowTitle{"Gazebo"};
+  auto elem = _elem->FirstChildElement("window_title");
+  if (elem)
+    windowTitle = elem->GetText();
+  win->setProperty("title", QString::fromStdString(windowTitle));
+
+  auto iconElem = _elem->FirstChildElement("window_icon");
+  if (iconElem)
+  {
+    win->setIcon(QIcon(iconElem->GetText()));
+  }
 
   // Let QML files use TmpIface' functions and properties
   auto context = new QQmlContext(this->app->Engine()->rootContext());
@@ -84,7 +100,6 @@ void GazeboGui::Load(const tinyxml2::XMLElement *_elem)
       << std::endl;
   }
 
-  const tinyxml2::XMLElement *elem = nullptr;
   // Process all the plugins.
   for (elem = _elem->FirstChildElement("plugin"); elem;
       elem = elem->NextSiblingElement("plugin"))
@@ -94,7 +109,7 @@ void GazeboGui::Load(const tinyxml2::XMLElement *_elem)
     std::string name = nameStr == nullptr ? "" : nameStr;
     if (name.empty())
     {
-      ignerr << "A GazeboServer plugin is missing the name attribute. "
+      ignerr << "A GazeboGui plugin is missing the name attribute. "
         << "Skipping this plugin.\n";
       continue;
     }
@@ -112,8 +127,23 @@ void GazeboGui::Load(const tinyxml2::XMLElement *_elem)
     ignition::gui::App()->LoadPlugin(file, elem);
   }
 
+  std::string worldName = "default";
+
+  // Get the world name
+  elem = _elem->FirstChildElement("world_name");
+  if (elem)
+    worldName = elem->GetText();
+
+  // GUI runner
+  auto runner = new ignition::gazebo::GuiRunner(worldName);
+  runner->connect(this->app.get(),
+      &ignition::gui::Application::PluginAdded, runner,
+      &ignition::gazebo::GuiRunner::OnPluginAdded);
+
   igndbg << "Running the GazeboGui plugin.\n";
   // This blocks until the window is closed or we receive a SIGINT
   this->app->exec();
   this->app.reset();
+
+  return false;
 }

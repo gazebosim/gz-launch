@@ -31,7 +31,7 @@ namespace ignition
     /// # Example usage
     /// <!-- Run the gazebo server with a set of plugins -->
     /// <plugin name="ignition::launch::GazeboServer"
-    ///         filename="libignition-launch0-gazebo.so">
+    ///         filename="libignition-launch-gazebo.so">
     ///   <!-- The SDF file to run -->
     ///   <world_file>diff_drive.sdf</world_file>
     ///
@@ -53,7 +53,7 @@ namespace ignition
       public: virtual ~GazeboServer() = default;
 
       // Documentation inherited.
-      public: virtual void Load(
+      public: virtual bool Load(
                   const tinyxml2::XMLElement *_elem) override final;
 
       /// \brief Private data pointer

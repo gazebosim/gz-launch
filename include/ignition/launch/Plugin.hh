@@ -32,7 +32,9 @@ namespace ignition
     {
       /// \brief Load function that each launch plugin must implement.
       /// \param[in] _elem Pointer to the XML for this plugin.
-      public: virtual void Load(const tinyxml2::XMLElement *_elem) = 0;
+      /// \return True to keep the plugin alive. Return false to have the
+      /// plugin unloaded immediately.
+      public: virtual bool Load(const tinyxml2::XMLElement *_elem) = 0;
     };
 
     /// \brief Pointer to a launch plugin.
