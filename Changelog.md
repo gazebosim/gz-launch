@@ -2,6 +2,8 @@
 
 ### Ignition Launch 1.X.X
 
+### Ignition Launch 1.3.0 (2019-11-13)
+
 1. Add filepath to ERB so that constants like `__FILE__` in `.ign` files work as expected
     * [Pull Request 48](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/48)
 
