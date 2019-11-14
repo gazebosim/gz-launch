@@ -6,6 +6,7 @@
 
 1. Use Ignition Citadel dependencies.
     * [Pull Request 47](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/47)
+    * [Pull Request 50](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/50)
 
 ## Ignition Launch 1.x
 
