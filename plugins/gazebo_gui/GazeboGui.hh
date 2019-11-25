@@ -28,6 +28,12 @@ namespace ignition
   {
     /// \brief Runs the Ignition Gazebo GUI.
     ///
+    /// The plugin ignores GUI configuration coming from the SDF
+    /// world file or saved in ~/.ignition/gazebo/gui.config. Instead,
+    /// it loads a GUI config from ~/.ignition/launch/gui.config.
+    /// If that file doesn't exist, it will be created and populated
+    /// with default values. Delete that file to restore default values.
+    ///
     /// # Example usage
     ///
     /// <!-- The GUI wants to be in its own process, so wrap the plugin -->
@@ -63,12 +69,6 @@ namespace ignition
       // Documentation inherited.
       public: virtual bool Load(
                   const tinyxml2::XMLElement *_elem) override final;
-
-      /// \brief Run the GUI
-      private: void Run();
-
-      /// \brief Private data pointer
-      private: std::unique_ptr<ignition::gui::Application> app;
     };
   }
 }
