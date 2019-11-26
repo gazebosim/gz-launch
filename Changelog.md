@@ -2,6 +2,11 @@
 
 ### Ignition Launch 1.X.X
 
+### Ignition Launch 1.4.0 (2019-11-26)
+
+1. Default GUI config for Launch
+    * [Pull Request 51](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/51)
+
 ### Ignition Launch 1.3.0 (2019-11-13)
 
 1. Add filepath to ERB so that constants like `__FILE__` in `.ign` files work as expected
