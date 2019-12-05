@@ -2,6 +2,11 @@
 
 ### Ignition Launch 1.X.X
 
+### Ignition Launch 1.4.1 (2019-12-05)
+
+1. Unversioned lib name for cmds
+    * [Pull Request 56](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/56)
+
 ### Ignition Launch 1.4.0 (2019-11-26)
 
 1. Default GUI config for Launch
