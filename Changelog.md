@@ -12,6 +12,9 @@
 1. Allow specifying a custom window title instead of "Gazebo"
     * [Pull Request 31](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/31)
 
+1. Unversioned lib name for cmds
+    * [Pull Request 55](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/55)
+
 ## Ignition Launch 1.x
 
 ### Ignition Launch 1.X.X
