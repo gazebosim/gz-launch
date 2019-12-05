@@ -14,7 +14,6 @@ target_link_libraries(${plugin_lower}
   ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
   ignition-transport${IGN_TRANSPORT_MAJOR_VER}::core
   ignition-plugin${IGN_PLUGIN_MAJOR_VER}::core
-  sdformat8::sdformat8
 )
 
 install (TARGETS ${plugin} DESTINATION ${IGN_LAUNCH_PLUGIN_INSTALL_PATH})
