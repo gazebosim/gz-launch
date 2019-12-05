@@ -7,6 +7,10 @@
 1. Use Ignition Citadel dependencies.
     * [Pull Request 47](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/47)
     * [Pull Request 50](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/50)
+    * [Pull Request 53](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/53)
+
+1. Allow specifying a custom window title instead of "Gazebo"
+    * [Pull Request 31](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/31)
 
 ## Ignition Launch 1.x
 
@@ -78,4 +82,3 @@
     * [Pull Request 14](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/14)
 
 ### Ignition Launch 0.2.0
-
