@@ -182,7 +182,9 @@ class Cmd
 
         # ERB parse the file with the variable bindings
         begin
-          parsed = ERB.new(File.read(path)).result(@variableBinding)
+          erb = ERB.new(File.read(path))
+          erb.filename = path
+          parsed = erb.result(@variableBinding)
 
           # todo(nkoenig) Also ERB parse <world_file> elements inside
           # a launch configuration. This will allow use to pass variables
