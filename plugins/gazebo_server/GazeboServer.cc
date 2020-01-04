@@ -209,7 +209,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
       //   In Blueprint and Citadel, LogRecord will record to <path> if no
       //   --record-path is specified on command line.
       serverConfig.SetLogRecordPath(recordPathMod);
-      serverConfig.SetLogRecordPathFromCmdLine(true);
+      serverConfig.SetLogIgnoreSdfPath(true);
     }
     else
     {
