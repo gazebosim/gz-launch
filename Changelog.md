@@ -1,3 +1,9 @@
+## Ignition Launch 3.x
+
+### Ignition Launch 3.X.X
+
+### Ignition Launch 3.0.0 (20XX-XX-XX)
+
 ## Ignition Launch 2.x
 
 ### Ignition Launch 2.X.X

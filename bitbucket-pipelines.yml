@@ -127,7 +127,7 @@ pipelines:
           - make install
           - cd ../..
           # Ignition Gazebo from source
-          - hg clone https://bitbucket.org/ignitionrobotics/ign-gazebo -b citadel_deps
+          - hg clone https://bitbucket.org/ignitionrobotics/ign-gazebo -b default
           - cd ign-gazebo
           - mkdir build
           - cd build
