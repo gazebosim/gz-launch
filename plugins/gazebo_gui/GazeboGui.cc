@@ -15,7 +15,10 @@
  *
 */
 
+#include <fstream>
+
 #include <ignition/common/Console.hh>
+#include <ignition/common/Filesystem.hh>
 #include <ignition/gazebo/config.hh>
 #include <ignition/gazebo/gui/GuiRunner.hh>
 #include <ignition/gui/MainWindow.hh>
@@ -46,23 +49,72 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
   // Temporary transport interface
   auto tmp = std::make_unique<ignition::gazebo::TmpIface>();
 
-  this->app.reset(new ignition::gui::Application(argc, argv));
-  this->app->AddPluginPath(IGN_GAZEBO_GUI_PLUGIN_INSTALL_DIR);
+  ignition::gui::Application app(argc, argv);
+  app.AddPluginPath(IGN_GAZEBO_GUI_PLUGIN_INSTALL_DIR);
 
   // add import path so we can load custom modules
-  this->app->Engine()->addImportPath(IGN_GAZEBO_GUI_PLUGIN_INSTALL_DIR);
+  app.Engine()->addImportPath(IGN_GAZEBO_GUI_PLUGIN_INSTALL_DIR);
+
+  // Set default config file for Launch
+  std::string defaultConfigPath;
+  ignition::common::env(IGN_HOMEDIR, defaultConfigPath);
+  defaultConfigPath = ignition::common::joinPaths(defaultConfigPath,
+      ".ignition", "launch");
+
+  auto defaultConfigFile = ignition::common::joinPaths(defaultConfigPath,
+      "gui.config");
+  app.SetDefaultConfigPath(defaultConfigFile);
+
+  // Check if there's a default config file under
+  // ~/.ignition/launch and use that. If there isn't, create it
+  if (!ignition::common::exists(defaultConfigFile))
+  {
+    ignition::common::createDirectories(defaultConfigPath);
+
+    std::ofstream configFile(defaultConfigFile);
+    if (configFile.is_open())
+    {
+      configFile <<
+        "<window>\n" <<
+        "  <width>1000</width>\n" <<
+        "  <height>845</height>\n" <<
+        "  <style\n" <<
+        "    material_theme='Light'\n" <<
+        "    material_primary='DeepOrange'\n" <<
+        "    material_accent='LightBlue'\n" <<
+        "    toolbar_color_light='#f3f3f3'\n" <<
+        "    toolbar_text_color_light='#111111'\n" <<
+        "    toolbar_color_dark='#414141'\n" <<
+        "    toolbar_text_color_dark='#f3f3f3'\n" <<
+        "    plugin_toolbar_color_light='#bbdefb'\n" <<
+        "    plugin_toolbar_text_color_light='#111111'\n" <<
+        "    plugin_toolbar_color_dark='#607d8b'\n" <<
+        "    plugin_toolbar_text_color_dark='#eeeeee'\n" <<
+        "  />\n" <<
+        "  <menus>\n" <<
+        "    <drawer default='false'>\n" <<
+        "    </drawer>\n" <<
+        "  </menus>\n" <<
+        "</window>\n";
+      configFile.close();
+      ignmsg << "Saved file [" << defaultConfigFile << "]" << std::endl;
+    }
+    else
+    {
+      ignerr << "Unable to open file [" << defaultConfigFile << "]"
+             << std::endl;
+    }
+  }
 
   // Load configuration file
-  std::string configPath = ignition::common::joinPaths(
-      IGNITION_GAZEBO_GUI_CONFIG_PATH, "gui.config");
-
-  if (!app->LoadConfig(configPath))
+  if (!app.LoadConfig(defaultConfigFile))
   {
-    ignerr << "Unable to load GazeboGui config file[" << configPath << "]\n";
+    ignerr << "Unable to load GazeboGui config file[" << defaultConfigFile
+           << "]" << std::endl;
     return false;
   }
 
-  auto win = this->app->findChild<ignition::gui::MainWindow *>()->QuickWindow();
+  auto win = app.findChild<ignition::gui::MainWindow *>()->QuickWindow();
 
   // Customize window
   std::string windowTitle{"Gazebo"};
@@ -78,11 +130,11 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
   }
 
   // Let QML files use TmpIface' functions and properties
-  auto context = new QQmlContext(this->app->Engine()->rootContext());
+  auto context = new QQmlContext(app.Engine()->rootContext());
   context->setContextProperty("TmpIface", tmp.get());
 
   // Instantiate GazeboDrawer.qml file into a component
-  QQmlComponent component(this->app->Engine(), ":/Gazebo/GazeboDrawer.qml");
+  QQmlComponent component(app.Engine(), ":/Gazebo/GazeboDrawer.qml");
   auto gzDrawerItem = qobject_cast<QQuickItem *>(component.create(context));
   if (gzDrawerItem)
   {
@@ -92,7 +144,7 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
     // Add to main window
     auto parentDrawerItem = win->findChild<QQuickItem *>("sideDrawer");
     gzDrawerItem->setParentItem(parentDrawerItem);
-    gzDrawerItem->setParent(this->app->Engine());
+    gzDrawerItem->setParent(app.Engine());
   }
   else
   {
@@ -136,14 +188,13 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
 
   // GUI runner
   auto runner = new ignition::gazebo::GuiRunner(worldName);
-  runner->connect(this->app.get(),
+  runner->connect(&app,
       &ignition::gui::Application::PluginAdded, runner,
       &ignition::gazebo::GuiRunner::OnPluginAdded);
 
   igndbg << "Running the GazeboGui plugin.\n";
   // This blocks until the window is closed or we receive a SIGINT
-  this->app->exec();
-  this->app.reset();
+  app.exec();
 
   return false;
 }
