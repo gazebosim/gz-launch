@@ -29,18 +29,18 @@ pipelines:
             libignition-cmake2-dev
             libignition-common3-dev
             libignition-fuel-tools4-dev
+            libignition-gazebo3-dev
             libignition-gui3-dev
             libignition-math6-dev
             libignition-math6-eigen3-dev
             libignition-msgs5-dev
+            libignition-physics2-dev
             libignition-plugin-dev
+            libignition-sensors3-dev
             libignition-tools-dev
             libignition-rendering3-dev
             libignition-transport8-dev
             libsdformat9-dev
-          # libignition-sensors3-dev
-          # libignition-gazebo3-dev
-          # libignition-physics2-dev
           # # Ignition msgs (uncomment if a specific branch is needed)
           # - apt install -y
           #   libprotobuf-dev protobuf-compiler libprotoc-dev
@@ -104,36 +104,36 @@ pipelines:
           # - cmake .. -DBUILD_TESTING=false
           # - make install
           # - cd ../..
-          # Ignition Physics from source
-          - apt install -y
-            dart6-data
-            libdart6-collision-ode-dev
-            libdart6-dev
-            libdart6-utils-urdf-dev
-            libbenchmark-dev
-          - hg clone https://bitbucket.org/ignitionrobotics/ign-physics -b default
-          - cd ign-physics
-          - mkdir build
-          - cd build
-          - cmake .. -DBUILD_TESTING=false
-          - make install
-          - cd ../..
-          # Ignition Sensors from source
-          - hg clone https://bitbucket.org/ignitionrobotics/ign-sensors -b default
-          - cd ign-sensors
-          - mkdir build
-          - cd build
-          - cmake .. -DBUILD_TESTING=false
-          - make install
-          - cd ../..
-          # Ignition Gazebo from source
-          - hg clone https://bitbucket.org/ignitionrobotics/ign-gazebo -b default
-          - cd ign-gazebo
-          - mkdir build
-          - cd build
-          - cmake .. -DBUILD_TESTING=false
-          - make install
-          - cd ../..
+          # # Ignition Physics from source
+          # - apt install -y
+          #   dart6-data
+          #   libdart6-collision-ode-dev
+          #   libdart6-dev
+          #   libdart6-utils-urdf-dev
+          #   libbenchmark-dev
+          # - hg clone https://bitbucket.org/ignitionrobotics/ign-physics -b default
+          # - cd ign-physics
+          # - mkdir build
+          # - cd build
+          # - cmake .. -DBUILD_TESTING=false
+          # - make install
+          # - cd ../..
+          # # Ignition Sensors from source
+          # - hg clone https://bitbucket.org/ignitionrobotics/ign-sensors -b default
+          # - cd ign-sensors
+          # - mkdir build
+          # - cd build
+          # - cmake .. -DBUILD_TESTING=false
+          # - make install
+          # - cd ../..
+          # # Ignition Gazebo from source
+          # - hg clone https://bitbucket.org/ignitionrobotics/ign-gazebo -b default
+          # - cd ign-gazebo
+          # - mkdir build
+          # - cd build
+          # - cmake .. -DBUILD_TESTING=false
+          # - make install
+          # - cd ../..
           # Ignition Launch
           - mkdir build
           - cd build
