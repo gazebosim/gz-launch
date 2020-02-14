@@ -119,7 +119,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     }
 
     // Initialize console log
-    if (! recordPathMod.empty())
+    if (!recordPathMod.empty())
     {
       // Update compressed file path to name of recording directory path
       cmpPath = std::string(recordPathMod);
@@ -151,7 +151,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
      
           // Create log file before printing any messages so they can be logged
           ignLogInit(recordPathMod, "server_console.log");
-     
+
           if (recordMsg)
           {
             ignmsg << "Log path already exists on disk! Existing files will be "
