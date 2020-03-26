@@ -77,7 +77,10 @@ ign_find_package (Qt5
 
 #--------------------------------------
 # Find ignition-gazebo
-ign_find_package(ignition-gazebo2 REQUIRED PRIVATE COMPONENTS gui)
+ign_find_package(ignition-gazebo2 REQUIRED VERSION 2.16
+  PRIVATE
+    COMPONENTS gui
+)
 set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo2_VERSION_MAJOR})
 
 ign_pkg_check_modules(websockets libwebsockets)

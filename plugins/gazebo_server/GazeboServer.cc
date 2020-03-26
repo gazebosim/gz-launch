@@ -148,7 +148,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
             cmpMsg = true;
             ignition::common::removeFile(cmpPath);
           }
-     
+
           // Create log file before printing any messages so they can be logged
           ignLogInit(recordPathMod, "server_console.log");
 
@@ -158,7 +158,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
               << "overwritten." << std::endl;
             ignmsg << "Removing existing path [" << recordPathMod << "]\n";
           }
-     
+
           if (cmpMsg)
           {
             ignwarn << "Compressed log path already exists on disk! Existing "
@@ -174,23 +174,23 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
             ignition::common::separator("")))
             recordPathMod = recordPathMod.substr(0, recordPathMod.length() - 1);
           recordPathMod = ignition::common::uniqueDirectoryPath(recordPathMod);
-     
+
           cmpPath = std::string(recordPathMod);
           // Remove the separator at end of path
           if (!std::string(1, cmpPath.back()).compare(
             ignition::common::separator("")))
             cmpPath = cmpPath.substr(0, cmpPath.length() - 1);
           cmpPath += ".zip";
-     
+
           // If compressed file exists, rename again
           if (ignition::common::exists(cmpPath))
           {
             cmpPath = ignition::common::uniqueFilePath(recordPathMod, "zip");
-     
+
             size_t extIdx = cmpPath.find_last_of(".");
             recordPathMod = cmpPath.substr(0, extIdx);
           }
-     
+
           ignLogInit(recordPathMod, "server_console.log");
           ignwarn << "Log path already exists on disk! "
             << "Recording instead to [" << recordPathMod << "]" << std::endl;
@@ -222,11 +222,11 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     {
       std::string str = compressElem->GetText();
       compress = (str == "1" || common::lowercase(str) == "true");
-    
-      serverConfig.SetLogRecordCompress(compress);
-      serverConfig.SetLogRecordCompressPath(cmpPath);
+
+      if (compress)
+        serverConfig.SetLogRecordCompressPath(cmpPath);
     }
-    
+
     ignmsg << "Logging to [" << recordPathMod << "]" << std::endl;
   }
 
