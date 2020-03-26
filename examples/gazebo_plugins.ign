@@ -63,6 +63,10 @@
            exists. Otherwise, logs will be recorded to a new path that has a
            number appended. -->
       <overwrite>true</overwrite>
+
+      <!-- Use the <compress> element to zip recorded files in the end of the
+           run. -->
+      <compress>true</compress>
     </record>
     <seed>123</seed>
     <!-- The diff_drive SDF world has the following plugins defined.
