@@ -77,6 +77,8 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
   }
 
   elem = _elem->FirstChildElement("record");
+  // Path for logs
+  std::string recordPathMod = serverConfig.LogRecordPath();
   if (elem)
   {
     const tinyxml2::XMLElement *enabled = elem->FirstChildElement("enabled");
@@ -87,17 +89,84 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
           common::lowercase(str) == "true");
     }
 
-    const tinyxml2::XMLElement *path = elem->FirstChildElement("path");
-    if (path)
+    bool overwrite{false};
+    const auto *overwriteElem = elem->FirstChildElement("overwrite");
+    if (overwriteElem)
     {
-      std::string str = path->GetText();
-      serverConfig.SetLogRecordPath(str);
+      std::string str = overwriteElem->GetText();
+      overwrite = (str == "1" || common::lowercase(str) == "true");
     }
-    ignLogInit(serverConfig.LogRecordPath(), "server_console.log");
+
+    const auto *pathElem = elem->FirstChildElement("path");
+    if (pathElem)
+    {
+      recordPathMod = pathElem->GetText();
+    }
+
+    // Initialize console log
+    if (!recordPathMod.empty())
+    {
+      // Check if path with same prefix exists
+      if (ignition::common::exists(recordPathMod))
+      {
+        // Overwrite if flag specified
+        if (overwrite)
+        {
+          bool recordMsg = false;
+          // Remove files before initializing console log files on top of them
+          if (ignition::common::exists(recordPathMod))
+          {
+            recordMsg = true;
+            ignition::common::removeAll(recordPathMod);
+          }
+
+          // Create log file before printing any messages so they can be logged
+          ignLogInit(recordPathMod, "server_console.log");
+
+          if (recordMsg)
+          {
+            ignmsg << "Log path already exists on disk! Existing files will be "
+              << "overwritten." << std::endl;
+            ignmsg << "Removing existing path [" << recordPathMod << "]\n";
+          }
+        }
+        // Otherwise rename to unique path
+        else
+        {
+          // Remove the separator at end of path
+          if (!std::string(1, recordPathMod.back()).compare(
+            ignition::common::separator("")))
+            recordPathMod = recordPathMod.substr(0, recordPathMod.length() - 1);
+          recordPathMod = ignition::common::uniqueDirectoryPath(recordPathMod);
+
+          ignLogInit(recordPathMod, "server_console.log");
+          ignwarn << "Log path already exists on disk! "
+            << "Recording instead to [" << recordPathMod << "]" << std::endl;
+        }
+      }
+      else
+      {
+        ignLogInit(recordPathMod, "server_console.log");
+      }
+      // TODO(anyone) In Ignition-D, to be moved to outside and after this
+      //   if-else statement, after all ignLogInit() calls have been finalized,
+      //   so that <path> in SDF will always be ignored in favor of logging both
+      //   console logs and LogRecord recordings to common::ignLogDirectory().
+      //   In Blueprint and Citadel, LogRecord will record to <path> if no
+      //   --record-path is specified on command line.
+      serverConfig.SetLogRecordPath(recordPathMod);
+      serverConfig.SetLogIgnoreSdfPath(true);
+    }
+    else
+    {
+      ignLogInit(recordPathMod, "server_console.log");
+    }
+
+    ignmsg << "Logging to [" << recordPathMod << "]" << std::endl;
   }
 
   if (serverConfig.UseLogRecord())
-    ignmsg << "Recording to [" << serverConfig.LogRecordPath() << "]\n";
+    ignmsg << "Recording to [" << recordPathMod << "]\n";
 
   // Set whether to use a custom random seed
   elem = _elem->FirstChildElement("seed");
