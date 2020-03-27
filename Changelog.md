@@ -4,6 +4,9 @@
 
 ### Ignition Launch 3.0.0 (20XX-XX-XX)
 
+1. Depend on ign-gazebo4, ign-gui4
+    * [Pull Request 64](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/64)
+
 ## Ignition Launch 2.x
 
 ### Ignition Launch 2.X.X
