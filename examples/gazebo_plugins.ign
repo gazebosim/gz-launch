@@ -67,6 +67,10 @@
       <!-- Use the <compress> element to zip recorded files in the end of the
            run. -->
       <compress>true</compress>
+
+      <!-- Use the <resources> element to store all model resources used during
+           simulation. -->
+      <resources>true</resources>
     </record>
     <seed>123</seed>
     <!-- The diff_drive SDF world has the following plugins defined.

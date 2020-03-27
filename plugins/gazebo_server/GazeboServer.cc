@@ -89,6 +89,14 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
           common::lowercase(str) == "true");
     }
 
+    const auto *resources = elem->FirstChildElement("resources");
+    if (resources)
+    {
+      std::string str = resources->GetText();
+      serverConfig.SetLogRecordResources(str == "1" ||
+          common::lowercase(str) == "true");
+    }
+
     bool overwrite{false};
     const auto *overwriteElem = elem->FirstChildElement("overwrite");
     if (overwriteElem)
