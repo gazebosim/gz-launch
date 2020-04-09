@@ -280,7 +280,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
 
 //////////////////////////////////////////////////
 void WebsocketServer::OnWebsocketSubscribedMessage(
-    const char *_data, const size_t /*_size*/,
+    const char *_data, const size_t _size,
     const ignition::transport::MessageInfo &_info)
 {
   std::map<std::string, std::set<int>>::const_iterator iter =
@@ -293,23 +293,23 @@ void WebsocketServer::OnWebsocketSubscribedMessage(
     msg.set_type(_info.Type());
 
     if (_info.Type() == "ignition.msgs.CmdVel2D")
-      msg.mutable_cmd_vel2d()->ParseFromString(_data);
+      msg.mutable_cmd_vel2d()->ParseFromArray(_data, _size);
     else if (_info.Type() == "ignition.msgs.Image")
-      msg.mutable_image()->ParseFromString(_data);
+      msg.mutable_image()->ParseFromArray(_data, _size);
     else if (_info.Type() == "ignition.msgs.StringMsg_V")
-      msg.mutable_string_msg_v()->ParseFromString(_data);
+      msg.mutable_string_msg_v()->ParseFromArray(_data, _size);
     else if (_info.Type() == "ignition.msgs.WebRequest")
-      msg.mutable_web_request()->ParseFromString(_data);
+      msg.mutable_web_request()->ParseFromArray(_data, _size);
     else if (_info.Type() == "ignition.msgs.Pose")
-      msg.mutable_pose()->ParseFromString(_data);
+      msg.mutable_pose()->ParseFromArray(_data, _size);
     else if (_info.Type() == "ignition.msgs.Pose_V")
-      msg.mutable_pose_v()->ParseFromString(_data);
+      msg.mutable_pose_v()->ParseFromArray(_data, _size);
     else if (_info.Type() == "ignition.msgs.Time")
-      msg.mutable_time()->ParseFromString(_data);
+      msg.mutable_time()->ParseFromArray(_data, _size);
     else if (_info.Type() == "ignition.msgs.Clock")
-      msg.mutable_clock()->ParseFromString(_data);
+      msg.mutable_clock()->ParseFromArray(_data, _size);
     else if (_info.Type() == "ignition.msgs.WorldStatistics")
-      msg.mutable_world_stats()->ParseFromString(_data);
+      msg.mutable_world_stats()->ParseFromArray(_data, _size);
 
     std::string data = msg.SerializeAsString();
     for (const int &socketId : iter->second)
