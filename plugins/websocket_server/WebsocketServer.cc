@@ -245,7 +245,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   ignition::msgs::WebRequest requestMsg;
   requestMsg.ParseFromString(_msg);
 
-  if (requestMsg.operation() == "list")
+  if (requestMsg.operation() == "topic_list")
   {
     igndbg << "Topic list request recieved\n";
     ignition::msgs::Packet msg;
@@ -259,6 +259,8 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
     for (const std::string &topic : topics)
       msg.mutable_string_msg_v()->add_data(topic);
 
+    msg.set_topic("/topic_list");
+    msg.set_type("ignition.msgs.StringMsg_V");
     std::string data = msg.SerializeAsString();
 
     // Queue the message for delivery.
