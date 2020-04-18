@@ -1,0 +1,8 @@
+<?xml version='1.0'?>
+<ignition version='1.0'>
+
+  <plugin name="ignition::launch::Realsense"
+          filename="libignition-launch-realsense.so">
+  </plugin>
+
+</ignition>
