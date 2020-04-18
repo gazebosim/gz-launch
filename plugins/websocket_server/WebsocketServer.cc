@@ -296,7 +296,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
     // Store the relation of socketId to subscribed topic.
     this->topicConnections[requestMsg.topic()].insert(_socketId);
     this->topicTimestamps[requestMsg.topic()] =
-      std::chrono::steady_clock::now();
+      std::chrono::steady_clock::now() - this->publishPeriod;
 
     igndbg << "Subscribe request to topic[" << requestMsg.topic() << "]\n";
     this->node.SubscribeRaw(requestMsg.topic(),
