@@ -3,6 +3,7 @@ set (plugins
   gazebo_gui
   gazebo_factory
   gazebo_server
+  realsense
   websocket_server
 )
 

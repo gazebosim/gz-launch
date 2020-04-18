@@ -88,6 +88,11 @@ if (NOT websockets_FOUND)
   ign_build_warning("Unable to find libwebsockets. The websocket_server plugin will not be built.")
 endif()
 
+find_package(realsense2 2.32.1)
+if(NOT realsense2_FOUND)
+  ign_build_warning("Unable to find Intel RealSense SDK 2.0.")
+endif()
+
 #--------------------------------------
 # Find prerequistes for backward
 include(src/vendor/BackwardConfig.cmake)
