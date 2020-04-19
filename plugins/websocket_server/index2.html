@@ -8,23 +8,25 @@
   <script src="ign.js"></script>
 
   <script>
+    // Create the Connection to Ignition
     var ign = new Transport({
       url: "ws://localhost:9002"
     });
 
-    ign.once('connection', function() {
-      console.log('Connection made');
-    });
-
+    // Create the clock subscriber to the clock
     var clockSub = new Topic({
       ign: ign,
       name: '/clock',
-      messageType : 'ignition.msgs.Clock'
+      messageType : 'ignition.msgs.Clock',
+      callback: function(msg) {
+        console.log("Clock: ", msg.sim.sec, msg.sim.nsec);
+      }
     });
-
-    clockSub.subscribe(function(message) {
-      console.log("Clock message");
-    });
+  // Todo:
+  // 1. Get scene information from the server.
+  // 2. load the gz3d module.
+  // 3. Show simple shapes.
+  // 4. Get the meshes and other resource from the server.
 
   </script>
   </head>

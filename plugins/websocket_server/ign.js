@@ -275,11 +275,10 @@ function Topic(options) {
     this.throttle_rate = 0;
   }
 
-  var that = this;
-  // this.sendMessage = this.ign.sendMsg;
-  /*this.messageCallback = function(_msg) {
-    that.emit('message', _msg);
-  }*/
+  // Subscribe immediately if the callback is specified.
+  if (options.callback) {
+    this.subscribe(options.callback);
+  }
 }
 Topic.prototype.__proto__ = EventEmitter2.prototype
 
@@ -289,10 +288,6 @@ Topic.prototype.__proto__ = EventEmitter2.prototype
 //   * message - the published message
 Topic.prototype.subscribe = function(callback) {
   var that = this;
-
-  /*if (typeof callback == 'function') {
-    this.on('message', callback);
-  }*/
 
   //this.ign.on(this.name, this.messageCallback);
   this.ign.on(this.name, callback);
