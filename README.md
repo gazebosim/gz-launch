@@ -20,33 +20,33 @@ to run and manager application and plugins.
 
 # Table of Contents
 
-[Features](#markdown-header-features)
+[Features](#features)
 
-[Install](#markdown-header-install)
+[Install](#install)
 
-* [Binary Install](#markdown-header-binary-install)
+* [Binary Install](#binary-install)
 
-* [Source Install](#markdown-header-source-install)
+* [Source Install](#source-install)
 
-    * [Prerequisites](#markdown-header-prerequisites)
+    * [Prerequisites](#prerequisites)
 
-    * [Building from Source](#markdown-header-building-from-source)
+    * [Building from Source](#building-from-source)
 
-[Usage](#markdown-header-usage)
+[Usage](#usage)
 
-[Documentation](#markdown-header-documentation)
+[Documentation](#documentation)
 
-[Testing](#markdown-header-testing)
+[Testing](#testing)
 
-[Folder Structure](#markdown-header-folder-structure)
+[Folder Structure](#folder-structure)
 
-[Code of Conduct](#markdown-header-code-of-conduct)
+[Contributing](#contributing)
 
-[Contributing](#markdown-header-code-of-contributing)
+[Code of Conduct](#code-of-conduct)
 
-[Versioning](#markdown-header-versioning)
+[Versioning](#versioning)
 
-[License](#markdown-header-license)
+[License](#license)
 
 # Features
 
@@ -63,13 +63,13 @@ directory.
 
 # Install
 
-We recommend following the [Binary Install](#markdown-header-binary-install) instructions to get up and running as quickly and painlessly as possible.
+We recommend following the [Binary Install](#binary-install) instructions to get up and running as quickly and painlessly as possible.
 
-The [Source Install](#markdown-header-source-install) instructions should be used if you need the very latest software improvements, you need to modify the code, or you plan to make a contribution.
+The [Source Install](#source-install) instructions should be used if you need the very latest software improvements, you need to modify the code, or you plan to make a contribution.
 
 ## Binary Install
 
-On Ubuntu systems, `apt-get` can be used to install `ignition-launch`:
+On Ubuntu systems, `apt` can be used to install `ignition-launch`:
 
 ```
 sudo apt install libignition-launch<#>
@@ -210,7 +210,7 @@ You can also generate the documentation from a clone of this repository by follo
 
 Follow these steps to run tests and static code analysis in your clone of this repository.
 
-1. Follow the [source install instruction](#markdown-header-source-install).
+1. Follow the [source install instruction](#source-install).
 
 2. Run tests.
 
