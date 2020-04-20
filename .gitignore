@@ -1,0 +1,13 @@
+# CMake folders
+build
+build_*
+build-*
+
+# OS generated files
+.DS_Store
+*.swp
+*.swo
+
+# C++ compiler generated files
+*.gch
+*.pch
