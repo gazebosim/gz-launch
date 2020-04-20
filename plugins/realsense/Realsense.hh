@@ -48,10 +48,15 @@ namespace ignition
       public: virtual bool Load(
                   const tinyxml2::XMLElement *_elem) override final;
 
+      private: std::string ParseUsbPort(const std::string &line) const;
+      private: bool LoadDevice(const rs2::device_list &_list);
+      private: void ChangeDeviceCallback(const rs2::event_information &_info);
+
       private: ignition::transport::Node node;
 
       private: rs2::context rs2Context;
       private: rs2::device rs2Device;
+      private: std::string rs2SerialNumber;
     };
   }
 }
