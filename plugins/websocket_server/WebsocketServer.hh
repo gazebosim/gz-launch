@@ -42,7 +42,7 @@ namespace ignition
     ///      filename="libignition-launch-joystick0.so">
     ///
     ///    <!-- Publication Hz -->
-    ///    <publication_hz>60</publication_hz>
+    ///    <publication_hz>30</publication_hz>
     /// </plugin>
     class WebsocketServer : public ignition::launch::Plugin
     {
