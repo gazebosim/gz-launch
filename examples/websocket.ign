@@ -5,7 +5,7 @@
        topic -->
   <plugin name="ignition::launch::WebsocketServer"
           filename="libignition-launch-websocket-server.so">
-    <publication_hz>60</publication_hz>
+    <publication_hz>30</publication_hz>
   </plugin>
 
 </ignition>

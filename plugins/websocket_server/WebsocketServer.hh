@@ -35,15 +35,31 @@ namespace ignition
     /// \brief Reads from a USB joystick device and outputs
     ///  ignition::msgs::WebsocketServer messages.
     ///
+    /// # Websocket Server Interface
+    ///
+    /// \todo: Describe the websocket API.
+    ///
     /// # Example usage
+    ///
+    /// ## Websocket Server
+    ///
+    /// 1. Define a launch file by copying the following contents to a file
+    ///    called `websocket.ign`.
     ///
     /// <!-- Inform ignition::Launch about the JoyToTwist plugin -->
     ///  <plugin name="ignition::launch::WebsocketServer"
     ///      filename="libignition-launch-joystick0.so">
     ///
     ///    <!-- Publication Hz -->
-    ///    <publication_hz>60</publication_hz>
+    ///    <publication_hz>30</publication_hz>
     /// </plugin>
+    ///
+    /// 2. Run the launch file
+    ///
+    /// `ign launch -v 4 websocket.ign`
+    ///
+    /// 3. Open the [index.html](https://github.com/ignitionrobotics/ign-launch/blob/master/plugins/websocket_server/index.html) webpage.
+    ///
     class WebsocketServer : public ignition::launch::Plugin
     {
       /// \brief Constructor

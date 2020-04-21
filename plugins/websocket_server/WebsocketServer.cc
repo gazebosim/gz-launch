@@ -19,6 +19,7 @@
 #include <ignition/common/Util.hh>
 #include <ignition/msgs.hh>
 
+#include "MessageDefinitions.hh"
 #include "WebsocketServer.hh"
 
 using namespace ignition::launch;
@@ -268,6 +269,15 @@ void WebsocketServer::OnDisconnect(int _socketId)
 //////////////////////////////////////////////////
 void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
 {
+  // Handle the case where the client requests the message definitions.
+  if (_msg == "message_definitions")
+  {
+    igndbg << "Message definitions request recieved\n";
+    this->QueueMessage(this->connections[_socketId].get(),
+        kMessageDefinitions.c_str(), kMessageDefinitions.length());
+    return;
+  }
+
   ignition::msgs::WebRequest requestMsg;
   requestMsg.ParseFromString(_msg);
 
