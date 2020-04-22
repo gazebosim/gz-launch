@@ -15,6 +15,16 @@
  *
  */
 
+/// \brief Construct a complete websocket message.
+/// \param[in] _frameParts This must be an array of four strings:
+///   1. operation,
+///   2. topic name,
+///   3. message type, and
+///   4. payload
+function buildMsg(_frameParts) {
+  return _frameParts.join(',');
+}
+
 /// \brief The main interface to the Ignition websocket server and 
 /// data on Ignition Transport.
 function Ignition(options) {
@@ -42,8 +52,7 @@ Ignition.prototype.connect = function(url) {
   /// \brief Emits a 'connection' event on WebSocket connection.
   /// \param event - the argument to emit with the event.
   function onOpen(event) {
-    that.socket.send("message_definitions");
-
+    that.socket.send(buildMsg(["protos",'','','']));
   }
 
   /// \brief Emits a 'close' event on WebSocket disconnection.
@@ -64,7 +73,6 @@ Ignition.prototype.connect = function(url) {
   // \param message - the JSON message from the Ignition
   // httpserver.
   function onMessage(_message) {
-
     if (that.root === undefined || that.root === null) {
       // Read the Blob as an array buffer
       var f = new FileReader();
@@ -77,12 +85,7 @@ Ignition.prototype.connect = function(url) {
         that.emit('connection', event);
 
         // Request the list of topics on start.
-        // \todo: Check that the "WebRequest message exists.
-        var msgType = that.root.lookupType("WebRequest");
-        var webRequestMsg = msgType.encode({
-          operation: "topic_list",
-        }).finish();
-        that.socket.send(webRequestMsg);
+        that.socket.send(buildMsg(['topics','','','']));
       };
 
       // Read the blob data as an array buffer.
@@ -90,39 +93,26 @@ Ignition.prototype.connect = function(url) {
       return;
     }
 
-    // \todo: Check that packetMsgType is valid
-    var packetMsgType = that.root.lookup("ignition.msgs.Packet");
-
-    // Read the Blob as an array buffer
     var f = new FileReader();
     f.onloadend = function(event) {
-      // This is the proto message data
-      var contents = event.target.result;
+      // Decode as UTF-8 to get the header
+      var str = new TextDecoder("utf-8").decode(event.target.result);
+      const frameParts = str.split(',');
+      var msgType = that.root.lookup(frameParts[2]);
+      var buf = new Uint8Array(event.target.result);
 
-      // \todo: Check for error
-      var error = event.target.error;
+      // Decode the message. The "+3" in the slice accounts for the commas
+      // in the frame.
+      var msg = msgType.decode(
+        buf.slice(frameParts[0].length + frameParts[1].length +
+          frameParts[2].length+3));
 
-      // Get the decoded packet
-      var packetMsg = packetMsgType.decode(new Uint8Array(contents));
-
-      // Get the "oneof" message
-      var which = packetMsg.content;
-      var oneOfMsg = which !== null ? packetMsg[which] : null;
-
-      // console.log("Actual topic: ", packetMsg.topic);
-      // console.log("Actual type: ", packetMsg.type);
-      // console.log("Actual Which: ", which);
-      // console.log("Actual Msg: ", oneOfMsg);
-
-      if (packetMsg.topic === "/topic_list") {
-      // The "/topic_list" topic is a special case
-        that.topics = oneOfMsg.data;
-      }
-      // Otherwise emit the message.
-      else
-      {
+      // Handle the topic list special case.
+      if (frameParts[1] == 'topics') {
+        that.topics = msg.data;
+      } else {
         // This will pass along the message on the appropriate topic.
-        that.emit(packetMsg.topic, oneOfMsg);
+        that.emit(frameParts[1], msg);
       }
     }
     // Read the blob data as an array buffer.
@@ -181,17 +171,8 @@ Topic.prototype.subscribe = function(_callback) {
     // Register the callback with the topic name
     that.ign.on(that.name, _cb);
 
-    // \todo: Check that requesttMsgType is valid
-    var requestMsgType = that.ign.root.lookup("ignition.msgs.WebRequest");
-
-    // Create the subscription request message
-    var webRequestMsg = requestMsgType.encode({
-      operation: "subscribe",
-      topic: that.name,
-    }).finish();
-
     // Send the subscription message over the websocket.
-    that.ign.sendMsg(webRequestMsg);
+    that.ign.sendMsg(buildMsg(['sub', that.name, '', '']));
   }
 
   if (!this.ign.isConnected) {
