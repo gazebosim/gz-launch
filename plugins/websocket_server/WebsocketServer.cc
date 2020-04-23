@@ -25,7 +25,19 @@
 
 using namespace ignition::launch;
 
+/// \brief Construct a websocket frame header.
+/// \param[in] _op The operation string.
+/// \param[in] _topic The topic name string.
+/// \param[in] _type The message type string.
+/// \return A string that is the frame header.
 #define BUILD_HEADER(_op, _topic, _type) ((_op)+","+(_topic)+","+(_type)+",")
+
+/// \brief Construction a complete websocket frame.
+/// \param[in] _op The operation string.
+/// \param[in] _topic The topic name string.
+/// \param[in] _type The message type string.
+/// \param[in] _payload The complete payload string.
+/// \return A string that is the frame header.
 #define BUILD_MSG(_op, _topic, _type, _payload) (BUILD_HEADER(_op, _topic, _type) + _payload)
 
 int rootCallback(struct lws *_wsi,
@@ -269,15 +281,6 @@ void WebsocketServer::OnDisconnect(int _socketId)
       this->node.Unsubscribe(iter->first);
   }
 }
-
-// Option 1: Encode everything in a Packet.
-//     Pros: Works, and has serialization.
-//     Cons: Server need to de-serialize and re-serialize messages.
-//
-// Option 2: Send header along with payload. Don't encode the header, and
-// only copy the serialized payload.
-//
-// Option 3: Encode the header and payload into a Packet.
 
 //////////////////////////////////////////////////
 void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
