@@ -15,6 +15,12 @@
  *
  */
 
+/// \brief Construct a complete websocket message.
+/// \param[in] _frameParts This must be an array of four strings:
+///   1. operation,
+///   2. topic name,
+///   3. message type, and
+///   4. payload
 function buildMsg(_frameParts) {
   return _frameParts.join(',');
 }

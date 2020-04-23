@@ -142,8 +142,17 @@ namespace ignition
                    const char *_data, const size_t _size);
 
       public: std::mutex mutex;
+
+      /// \brief A mutex used in the OnWebsocketSubscribedMessage
+      /// function.
       public: std::mutex subscriptionMutex;
+
+      /// \brief All of the websocket connections.
       public: std::map<int, std::unique_ptr<Connection>> connections;
+
+      /// \brief All of the subscribed Ignition topics.
+      /// The key is the topic name, and the value is the set of websocket
+      /// connections that have subscribed to the topic.
       public: std::map<std::string, std::set<int>> topicConnections;
 
       /// \brief Time of last publication for each subscribed topic. The key
