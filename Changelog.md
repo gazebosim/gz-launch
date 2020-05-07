@@ -6,8 +6,11 @@
    protobuf messages.
     * [Pull Request 22](https://github.com/ignitionrobotics/ign-launch/pull/22)
 
+1. Added ability to get protobuf definitions from the websocket server
+    * [Pull Request 21](https://github.com/ignitionrobotics/ign-launch/pull/21)
+
 1. Added ability to set the publication rate of the websocket server.
-    * [Pull Request 17](https://bitbucket.org/ignitionrobotics/ign-launch/pull-requests/17)
+    * [Pull Request 17](https://github.com/ignitionrobotics/ign-launch/pull/17)
 
 ### Ignition Launch 1.4.1 (2019-12-05)
 
