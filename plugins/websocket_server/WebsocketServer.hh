@@ -41,20 +41,9 @@ namespace ignition
     ///  <plugin name="ignition::launch::WebsocketServer"
     ///      filename="libignition-launch-joystick0.so">
     ///
-    ///    <!-- WebsocketServer device -->
-    ///    <device>/dev/input/js0</device>
-    ///
-    ///    <!-- True enables sticky buttons. -->
-    ///    <sticky_buttons>false</sticky_buttons>
-    ///
-    ///    <!-- WebsocketServer deadzone -->
-    ///    <dead_zone>0.05</dead_zone>
-    ///
-    ///    <!-- Update rate -->
-    ///    <rate>60</rate>
-    ///    <accumulation_rate>1000</accumulation_rate>
+    ///    <!-- Publication Hz -->
+    ///    <publication_hz>30</publication_hz>
     /// </plugin>
-
     class WebsocketServer : public ignition::launch::Plugin
     {
       /// \brief Constructor
@@ -101,6 +90,18 @@ namespace ignition
       public: std::mutex mutex;
       public: std::map<int, std::unique_ptr<Connection>> connections;
       public: std::map<std::string, std::set<int>> topicConnections;
+
+      /// \brief Time of last publication for each subscribed topic. The key
+      /// is the topic name and the value the time of last publication.
+      /// \sa publishPeriod.
+      private: std::map<std::string,
+               std::chrono::time_point<std::chrono::steady_clock>>
+                 topicTimestamps;
+
+      /// \brief Period at which messages will be published on the websocket
+      /// for each subscribed topic.
+      /// \sa topicTimestamps.
+      private: std::chrono::nanoseconds publishPeriod;
     };
   }
 }

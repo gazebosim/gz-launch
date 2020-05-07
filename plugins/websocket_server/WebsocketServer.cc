@@ -131,8 +131,29 @@ WebsocketServer::~WebsocketServer()
 }
 
 /////////////////////////////////////////////////
-bool WebsocketServer::Load(const tinyxml2::XMLElement * /*_elem*/)
+bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
 {
+  const tinyxml2::XMLElement *elem;
+
+  // Read the publication hertz.
+  elem = _elem->FirstChildElement("publication_hz");
+  double hz = 60;
+  if (elem)
+  {
+    try
+    {
+      hz = std::stod(elem->GetText());
+    }
+    catch (...)
+    {
+      ignerr << "Unable to convert <publication_hz>" << elem->GetText()
+        << "</publication_hz> to a double. Default hz of "
+        << hz << " will be used.\n";
+    }
+  }
+  this->publishPeriod = std::chrono::duration_cast<std::chrono::nanoseconds>(
+      std::chrono::duration<double>(1.0 / hz));
+
   // All of the protocols handled by this websocket server.
   this->protocols.push_back(
     {
@@ -236,6 +257,11 @@ void WebsocketServer::OnDisconnect(int _socketId)
        ++iter)
   {
     iter->second.erase(_socketId);
+
+    // Unsubscribe from the Ignition Transport topic if there are no more
+    // websocket connections.
+    if (iter->second.empty())
+      this->node.Unsubscribe(iter->first);
   }
 }
 
@@ -269,6 +295,8 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   {
     // Store the relation of socketId to subscribed topic.
     this->topicConnections[requestMsg.topic()].insert(_socketId);
+    this->topicTimestamps[requestMsg.topic()] =
+      std::chrono::steady_clock::now() - this->publishPeriod;
 
     igndbg << "Subscribe request to topic[" << requestMsg.topic() << "]\n";
     this->node.SubscribeRaw(requestMsg.topic(),
@@ -280,7 +308,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
 
 //////////////////////////////////////////////////
 void WebsocketServer::OnWebsocketSubscribedMessage(
-    const char *_data, const size_t /*_size*/,
+    const char *_data, const size_t _size,
     const ignition::transport::MessageInfo &_info)
 {
   std::map<std::string, std::set<int>>::const_iterator iter =
@@ -288,34 +316,45 @@ void WebsocketServer::OnWebsocketSubscribedMessage(
 
   if (iter != this->topicConnections.end())
   {
+    std::chrono::time_point<std::chrono::steady_clock> systemTime =
+      std::chrono::steady_clock::now();
+
     ignition::msgs::Packet msg;
     msg.set_topic(_info.Topic());
     msg.set_type(_info.Type());
 
-    if (_info.Type() == "ignition.msgs.CmdVel2D")
-      msg.mutable_cmd_vel2d()->ParseFromString(_data);
-    else if (_info.Type() == "ignition.msgs.Image")
-      msg.mutable_image()->ParseFromString(_data);
-    else if (_info.Type() == "ignition.msgs.StringMsg_V")
-      msg.mutable_string_msg_v()->ParseFromString(_data);
-    else if (_info.Type() == "ignition.msgs.WebRequest")
-      msg.mutable_web_request()->ParseFromString(_data);
-    else if (_info.Type() == "ignition.msgs.Pose")
-      msg.mutable_pose()->ParseFromString(_data);
-    else if (_info.Type() == "ignition.msgs.Pose_V")
-      msg.mutable_pose_v()->ParseFromString(_data);
-    else if (_info.Type() == "ignition.msgs.Time")
-      msg.mutable_time()->ParseFromString(_data);
-    else if (_info.Type() == "ignition.msgs.Clock")
-      msg.mutable_clock()->ParseFromString(_data);
-    else if (_info.Type() == "ignition.msgs.WorldStatistics")
-      msg.mutable_world_stats()->ParseFromString(_data);
+    std::chrono::nanoseconds timeDelta =
+      systemTime - this->topicTimestamps[_info.Topic()];
 
-    std::string data = msg.SerializeAsString();
-    for (const int &socketId : iter->second)
+    if (timeDelta > this->publishPeriod)
     {
-      this->QueueMessage(this->connections[socketId].get(),
-          data.c_str(), data.length());
+      if (_info.Type() == "ignition.msgs.CmdVel2D")
+        msg.mutable_cmd_vel2d()->ParseFromArray(_data, _size);
+      else if (_info.Type() == "ignition.msgs.Image")
+        msg.mutable_image()->ParseFromArray(_data, _size);
+      else if (_info.Type() == "ignition.msgs.StringMsg_V")
+        msg.mutable_string_msg_v()->ParseFromArray(_data, _size);
+      else if (_info.Type() == "ignition.msgs.WebRequest")
+        msg.mutable_web_request()->ParseFromArray(_data, _size);
+      else if (_info.Type() == "ignition.msgs.Pose")
+        msg.mutable_pose()->ParseFromArray(_data, _size);
+      else if (_info.Type() == "ignition.msgs.Pose_V")
+        msg.mutable_pose_v()->ParseFromArray(_data, _size);
+      else if (_info.Type() == "ignition.msgs.Time")
+        msg.mutable_time()->ParseFromArray(_data, _size);
+      else if (_info.Type() == "ignition.msgs.Clock")
+        msg.mutable_clock()->ParseFromArray(_data, _size);
+      else if (_info.Type() == "ignition.msgs.WorldStatistics")
+        msg.mutable_world_stats()->ParseFromArray(_data, _size);
+
+      this->topicTimestamps[_info.Topic()] = systemTime;
+
+      std::string data = msg.SerializeAsString();
+      for (const int &socketId : iter->second)
+      {
+        this->QueueMessage(this->connections[socketId].get(),
+            data.c_str(), data.length());
+      }
     }
   }
 }

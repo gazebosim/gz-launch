@@ -2,6 +2,9 @@
 
 ### Ignition Launch 1.X.X
 
+1. Added ability to set the publication rate of the websocket server.
+    * [Pull Request 17](https://github.com/ignitionrobotics/ign-launch/pull/17)
+
 ### Ignition Launch 1.4.1 (2019-12-05)
 
 1. Unversioned lib name for cmds
