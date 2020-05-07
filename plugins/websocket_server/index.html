@@ -6,6 +6,7 @@
   <script src='https://cdn.rawgit.com/dcodeIO/protobuf.js/6.8.8/dist/protobuf.min.js'></script>
   <script src='eventemitter2.min.js'></script>
   <script src='ign.js'></script>
+  <script src='gz3d.js'></script>
 
   <script>
     // Create the Connection to the Ignition websocket server
@@ -30,15 +31,85 @@
       }
     });
 
+    var camera, renderer;
+
+    // Initialize GZ3D objects.
+    const shaders = new GZ3D.Shaders();
+    var scene = new GZ3D.Scene(shaders);
+    var sdfParser = new GZ3D.SdfParser(scene);
+    const ogre2json = new GZ3D.Ogre2Json();
+
+    function init() {
+      scene.grid.visible = true;
+      // The domElement the renderer will be appended to.
+      var sceneElement = window.document.getElementById('container');
+      if (sceneElement === undefined || sceneElement === null) {
+        console.log("Invalid scene element");
+      }
+
+      sceneElement.appendChild(scene.renderer.domElement);
+      scene.setSize(sceneElement.clientWidth, sceneElement.clientHeight);
+
+      /*
+      // Hide sun visual
+      const sunHelper = scene.scene.getObjectByName('sun_lightHelper');
+      if (sunHelper) {
+        sunHelper.visible = false;
+      }
+
+      // Delete ground plane
+      const ground = scene.scene.getObjectByName('ground_plane');
+      if (ground) {
+        scene.remove(ground);
+      }
+      */
+
+      resetCameraPose();
+
+      // And sun orientation
+      /*const sunLight = scene.scene.getObjectByName('sun').children[0];
+      const sunDir = new THREE.Vector3(-0.4, 0.4, -0.4);
+      console.log("2");
+
+      sunLight.direction = new THREE.Vector3();
+      sunLight.direction.copy(sunDir);
+      sunLight.target.position.copy(sunDir);
+      */
+
+      // Start rendering.
+      animate();
+
+      var obj = scene.createSphere(1.0);
+      obj.updateMatrix();
+      scene.add(obj);
+    }
+
+    function resetCameraPose() {
+      const cam = scene.camera;
+      cam.position.x = 1.1;
+      cam.position.y = -1.4;
+      cam.position.z = 0.6;
+      cam.rotation.x = 67 * Math.PI / 180;
+      cam.rotation.y = 33 * Math.PI / 180;
+      cam.rotation.z = 12 * Math.PI / 180;
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      scene.render();
+    }
+
     // Todo:
-    // 1. load the gz3d module.
     // 2. Show simple shapes.
     // 3. Get the meshes and other resource from the server.
   </script>
   </head>
 
-  <body>
+  <body onload="init()">
     <div id='status'>Status: disconnected</div>
     <div id='output'></div>
+
+    <div id="container">
+    </div>
   </body>
 </html>
