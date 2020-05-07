@@ -32,6 +32,7 @@ function Ignition(options) {
 
   this.socket = null;
   this.topics = [];
+  this.worlds = [];
   this.isConnected = false;
 
   // Start with a null root protobuf object. This object will be 
@@ -86,6 +87,9 @@ Ignition.prototype.connect = function(url) {
 
         // Request the list of topics on start.
         that.socket.send(buildMsg(['topics','','','']));
+
+        // Request the list of worlds on start.
+        that.socket.send(buildMsg(['worlds','','','']));
       };
 
       // Read the blob data as an array buffer.
@@ -110,6 +114,8 @@ Ignition.prototype.connect = function(url) {
       // Handle the topic list special case.
       if (frameParts[1] == 'topics') {
         that.topics = msg.data;
+      } else if (frameParts[1] == 'worlds') {
+        that.worlds = msg.data;
       } else {
         // This will pass along the message on the appropriate topic.
         that.emit(frameParts[1], msg);

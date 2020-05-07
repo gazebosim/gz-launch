@@ -327,6 +327,47 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
     this->QueueMessage(this->connections[_socketId].get(),
         data.c_str(), data.length());
   }
+  else if (frameParts[0] == "worlds")
+  {
+    igndbg << "World info request recieved\n";
+    ignition::msgs::Empty req;
+    req.set_unused(true);
+
+    ignition::msgs::StringMsg_V rep;
+    bool result;
+    unsigned int timeout = 2000;
+
+    bool executed = this->node.Request("/gazebo/worlds",
+        req, timeout, rep, result);
+
+    std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
+        std::string("ignition.msgs.StringMsg_V"), rep.SerializeAsString());
+
+    // Queue the message for delivery.
+    this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
+  }
+  else if (frameParts[0] == "scene")
+  {
+    igndbg << "Scene info request recieved for world["
+      << frameParts[1] << "]\n";
+    ignition::msgs::Empty req;
+    req.set_unused(true);
+
+    ignition::msgs::Scene rep;
+    bool result;
+    unsigned int timeout = 2000;
+
+    bool executed = this->node.Request("/gazebo/worlds",
+        req, timeout, rep, result);
+
+    std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
+        std::string("ignition.msgs.Scene"), rep.SerializeAsString());
+
+    // Queue the message for delivery.
+    this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
+  }
   else if (frameParts[0] == "sub")
   {
     // Store the relation of socketId to subscribed topic.
