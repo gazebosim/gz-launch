@@ -9,10 +9,10 @@
 
 Build | Status
 -- | --
-Test coverage | [![codecov](https://codecov.io/bb/ignitionrobotics/ign-launch/branch/default/graph/badge.svg)](https://codecov.io/bb/ignitionrobotics/ign-launch)
-Ubuntu Bionic | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-default-bionic-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-default-bionic-amd64)
-Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-default-homebrew-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-default-homebrew-amd64)
-Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-default-windows7-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-default-windows7-amd64)
+Test coverage | [![codecov](https://codecov.io/gh/ignitionrobotics/ign-launch/branch/master/graph/badge.svg)](https://codecov.io/gh/ignitionrobotics/ign-launch)
+Ubuntu Bionic | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-master-bionic-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-master-bionic-amd64)
+Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-master-homebrew-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-master-homebrew-amd64)
+Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-master-windows7-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-master-windows7-amd64)
 
 Ignition Launch, a component of [Ignition
 Robotics](https://ignitionrobotics.org), provides a command line interface
