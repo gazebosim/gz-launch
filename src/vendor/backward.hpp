@@ -1234,13 +1234,27 @@ private:
 			bfd_fileobject& fobj, asection* section, find_sym_result& result)
 	{
 		if (result.found) return;
+		flagword flags;
+		#ifdef bfd_get_section_flags
+			flags = bfd_get_section_flags(fobj.handle.get(), section);
+		#else
+			flags = bfd_section_flags(section);
+		#endif
 
-		if ((bfd_get_section_flags(fobj.handle.get(), section)
-					& SEC_ALLOC) == 0)
+		if ((flags & SEC_ALLOC) == 0)
 			return; // a debug section is never loaded automatically.
 
-		bfd_vma sec_addr = bfd_get_section_vma(fobj.handle.get(), section);
-		bfd_size_type size = bfd_get_section_size(section);
+		#ifdef bfd_get_section_vma
+			bfd_vma sec_addr = bfd_get_section_vma(fobj.handle.get(), section);
+		#else
+			bfd_vma sec_addr = bfd_section_vma(section);
+		#endif
+
+		#ifdef bfd_get_section_size
+			bfd_size_type size = bfd_get_section_size(section);
+		#else
+			bfd_size_type size = bfd_section_size(section);
+		#endif
 
 		// are we in the boundaries of the section?
 		if (addr < sec_addr || addr >= sec_addr + size) {
