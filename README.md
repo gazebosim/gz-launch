@@ -9,14 +9,14 @@
 
 Build | Status
 -- | --
-Test coverage | [![codecov](https://codecov.io/gh/ignitionrobotics/ign-launch/branch/ign-launch1/graph/badge.svg)](https://codecov.io/gh/ignitionrobotics/ign-launch)
-Ubuntu Bionic | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-ign-launch1-bionic-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-ign-launch1-bionic-amd64)
-Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-ign-launch1-homebrew-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-ign-launch1-homebrew-amd64)
-Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-ign-launch1-windows7-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-ign-launch1-windows7-amd64)
+Test coverage | [![codecov](https://codecov.io/bb/ignitionrobotics/ign-launch/branch/default/graph/badge.svg)](https://codecov.io/bb/ignitionrobotics/ign-launch)
+Ubuntu Bionic | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-default-bionic-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-default-bionic-amd64)
+Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-default-homebrew-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-default-homebrew-amd64)
+Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-default-windows7-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-default-windows7-amd64)
 
 Ignition Launch, a component of [Ignition
 Robotics](https://ignitionrobotics.org), provides a command line interface
-to run and manager application and plugins.
+to run and manager application and plugins. 
 
 # Table of Contents
 
@@ -112,7 +112,7 @@ necessary prerequisites followed by building from source.
     ```
 
     ```
-    sudo apt-get -y install libignition-cmake2-dev libignition-gazebo2-dev
+    sudo apt-get -y install libignition-cmake2-dev libignition-gazebo2-dev 
     ```
 
 ### Building from source
@@ -137,7 +137,7 @@ necessary prerequisites followed by building from source.
 
 # Usage
 
-Sample launch configuration files are in the [examples directory](https://github.com/ignitionrobotics/ign-launch/blob/ign-launch1/examples/).
+Sample launch configuration files are in the [examples directory](https://github.com/ignitionrobotics/ign-launch/blob/master/examples/).
 
 **Example**
 
