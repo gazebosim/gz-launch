@@ -41,7 +41,6 @@ jobs:
             uuid-dev
             xvfb
             qtbase5-dev
-            libtinyxml2-dev
             libprotoc-dev
             libprotobuf-dev
             qtdeclarative5-dev
