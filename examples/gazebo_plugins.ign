@@ -113,7 +113,6 @@
   <executable_wrapper>
     <plugin name="ignition::launch::GazeboGui"
           filename="libignition-launch-gazebogui.so">
-      <world_name><%= worldName %></world_name>
 
       <!-- Override default window title (Gazebo) -->
       <window_title>Ignition Launch</window_title>
