@@ -1,6 +1,6 @@
 ## Ignition Launch 1.x
 
-### Ignition Launch 1.X.X
+### Ignition Launch 1.4.2 (2020-05-18)
 
 1.  Use the new GUI API of ign-gazebo. This adds support for saving worlds to SDFormat from the GUI.
     * [Pull Request 19](https://github.com/ignitionrobotics/ign-launch/pull/19)
