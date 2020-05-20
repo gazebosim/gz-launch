@@ -77,7 +77,7 @@ ign_find_package (Qt5
 
 #--------------------------------------
 # Find ignition-gazebo
-ign_find_package(ignition-gazebo2 REQUIRED VERSION 2.17
+ign_find_package(ignition-gazebo2 REQUIRED VERSION 2.18
   PRIVATE
     COMPONENTS gui
 )
