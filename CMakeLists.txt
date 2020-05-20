@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5.1 FATAL_ERROR)
 #============================================================================
 # Initialize the project
 #============================================================================
-project(ignition-launch1 VERSION 1.4.2)
+project(ignition-launch1 VERSION 1.5.0)
 
 #============================================================================
 # Find ignition-cmake
@@ -77,7 +77,7 @@ ign_find_package (Qt5
 
 #--------------------------------------
 # Find ignition-gazebo
-ign_find_package(ignition-gazebo2 REQUIRED VERSION 2.17
+ign_find_package(ignition-gazebo2 REQUIRED VERSION 2.18
   PRIVATE
     COMPONENTS gui
 )
