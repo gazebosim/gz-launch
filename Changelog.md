@@ -1,6 +1,9 @@
 ## Ignition Launch 2.x
 
-### Ignition Launch 2.X.X
+### Ignition Launch 2.1.0 (2020-05-21)
+
+1. Merged ign-launch1 forward.
+    * [Pull request 41](https://github.com/ignitionrobotics/ign-launch/pull/31)
 
 ### Ignition Launch 2.0.0
 
