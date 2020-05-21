@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5.1 FATAL_ERROR)
 #============================================================================
 # Initialize the project
 #============================================================================
-project(ignition-launch2 VERSION 2.0.1)
+project(ignition-launch2 VERSION 2.1.0)
 
 #============================================================================
 # Find ignition-cmake
@@ -77,7 +77,7 @@ ign_find_package (Qt5
 
 #--------------------------------------
 # Find ignition-gazebo
-ign_find_package(ignition-gazebo3 REQUIRED PRIVATE COMPONENTS gui)
+ign_find_package(ignition-gazebo3 REQUIRED VERSION 3.2 PRIVATE COMPONENTS gui)
 set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo3_VERSION_MAJOR})
 
 ign_pkg_check_modules(websockets libwebsockets)
@@ -112,4 +112,20 @@ ign_create_packages()
 #============================================================================
 # Configure documentation
 #============================================================================
-ign_create_docs()
+configure_file(${CMAKE_SOURCE_DIR}/api.md.in ${CMAKE_BINARY_DIR}/api.md)
+configure_file(${CMAKE_SOURCE_DIR}/tutorials.md.in ${CMAKE_BINARY_DIR}/tutorials.md)
+
+ign_create_docs(
+  API_MAINPAGE_MD "${CMAKE_BINARY_DIR}/api.md"
+  TUTORIALS_MAINPAGE_MD "${CMAKE_BINARY_DIR}/tutorials.md"
+  TAGFILES
+   "${IGNITION-MATH_DOXYGEN_TAGFILE} = ${IGNITION-MATH_API_URL}"
+   "${IGNITION-MSGS_DOXYGEN_TAGFILE} = ${IGNITION-MSGS_API_URL}"
+   "${IGNITION-PHYSICS_DOXYGEN_TAGFILE} = ${IGNITION-PHYSICS_API_URL}"
+   "${IGNITION-PLUGIN_DOXYGEN_TAGFILE} = ${IGNITION-PLUGIN_API_URL}"
+   "${IGNITION-TRANSPORT_DOXYGEN_TAGFILE} = ${IGNITION-TRANSPORT_API_URL}"
+   "${IGNITION-SENSORS_DOXYGEN_TAGFILE} = ${IGNITION-SENSORS_API_URL}"
+   "${IGNITION-COMMON_DOXYGEN_TAGFILE} = ${IGNITION-COMMON_API_URL}"
+   "${IGNITION-GAZEBO_DOXYGEN_TAGFILE} = ${IGNITION-GAZEBO_API_URL}"
+   "${IGNITION-GUI_DOXYGEN_TAGFILE} = ${IGNITION-GUI_API_URL}"
+)

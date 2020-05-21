@@ -32,52 +32,16 @@ GazeboFactory::GazeboFactory()
 }
 
 /////////////////////////////////////////////////
-bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
+void GazeboFactory::ProcessSpawn(const tinyxml2::XMLElement *_elem)
 {
   const tinyxml2::XMLElement *elem;
 
-  msgs::EntityFactory req;
-
-  // Set the sdf field, if an SDF string has been specified.
-  tinyxml2::XMLPrinter printer;
-  elem = _elem->FirstChildElement("sdf");
-  if (elem)
+  // Get the sdf field, otherwise return.
+  const tinyxml2::XMLElement *sdfElem = _elem->FirstChildElement("sdf");
+  if (!sdfElem)
   {
-    elem->Accept(&printer);
-    req.set_sdf(printer.CStr());
-  }
-
-  // Get <name>
-  elem = _elem->FirstChildElement("name");
-  if (elem)
-    req.set_name(elem->GetText());
-
-  // Get <is_performer>, by default we assume a spawned model is a performer
-  bool isPerformer = true;
-  elem = _elem->FirstChildElement("is_performer");
-  if (elem)
-  {
-    std::string str = elem->GetText();
-    isPerformer = str == "1" || common::lowercase(str) == "true";
-  }
-
-  // Get <allow_renaming>
-  elem = _elem->FirstChildElement("allow_renaming");
-  if (elem)
-  {
-    std::string str = elem->GetText();
-    req.set_allow_renaming(str == "1" || common::lowercase(str) == "true");
-  }
-
-  // Get the pose
-  elem = _elem->FirstChildElement("pose");
-  if (elem)
-  {
-    ignition::math::Pose3d pose;
-    std::stringstream stream;
-    stream << elem->GetText();
-    stream >> pose;
-    msgs::Set(req.mutable_pose(), pose);
+    // Return early if there is no <sdf> element.
+    return;
   }
 
   // Get a user-defined world name
@@ -112,7 +76,7 @@ bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
     {
       ignerr << "No simulation worlds were found. Unable to run the factory. "
         << "Is Gazebo running?\n";
-      return false;
+      return;
     }
 
     // Warning if multiple worlds were found.
@@ -125,56 +89,125 @@ bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
     worldName = *worlds.begin();
   }
 
-  unsigned int timeout = 2000;
-  msgs::Boolean rep;
-  bool result;
+  msgs::EntityFactory *req = this->worldFactoryMsgs[worldName].add_data();
 
-  std::string topic = "/world/";
-  topic += worldName + "/create";
+  tinyxml2::XMLPrinter printer;
+  sdfElem->Accept(&printer);
+  req->set_sdf(printer.CStr());
 
-  // Send the request.
-  bool executed = this->node.Request(topic, req, timeout, rep, result);
+  // Get <name>
+  elem = _elem->FirstChildElement("name");
+  if (elem)
+    req->set_name(elem->GetText());
 
-  if (executed && result && rep.data())
+  // Get <is_performer>, by default we assume a spawned model is a performer
+  bool isPerformer = true;
+  elem = _elem->FirstChildElement("is_performer");
+  if (elem)
   {
-    igndbg << "Factory service call succeeded.\n";
-    if (isPerformer)
-    {
-      IGN_SLEEP_S(2);
-      topic = std::string("/world/") + worldName + "/level/set_performer";
-      msgs::StringMsg performerReq;
-      performerReq.set_data(req.name());
-      // \todo(anyone) Setting the size to 2,2,2 is a hack. Gazebo should
-      // calculate the bounding box based on the model information.
-      executed = this->node.Request(topic, performerReq, timeout, rep, result);
-
-      // msgs::Performer performerReq;
-      // performerReq.set_name(req.name());
-      // // \todo(anyone) Setting the size to 2,2,2 is a hack. Gazebo should
-      // // calculate the bounding box based on the model information.
-      //  msgs::Set(performerReq.mutable_geometry()->mutable_box()->mutable_size(), math::Vector3d(2, 2, 2));
-      // executed = this->node.Request(topic, performerReq, timeout, rep, result);
-    }
+    std::string str = elem->GetText();
+    isPerformer = str == "1" || common::lowercase(str) == "true";
   }
-  else
+  if (isPerformer)
+    this->worldPerformers[worldName].push_back(req->name());
+
+  // Get <allow_renaming>
+  elem = _elem->FirstChildElement("allow_renaming");
+  if (elem)
   {
-    if (executed)
+    std::string str = elem->GetText();
+    req->set_allow_renaming(str == "1" || common::lowercase(str) == "true");
+  }
+
+  // Get the pose
+  elem = _elem->FirstChildElement("pose");
+  if (elem)
+  {
+    ignition::math::Pose3d pose;
+    std::stringstream stream;
+    stream << elem->GetText();
+    stream >> pose;
+    msgs::Set(req->mutable_pose(), pose);
+  }
+}
+
+/////////////////////////////////////////////////
+bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
+{
+  const tinyxml2::XMLElement *elem;
+
+  // Process each <spawn> ... </spawn> element.
+  elem = _elem->FirstChildElement("spawn");
+  while (elem)
+  {
+    this->ProcessSpawn(elem);
+    elem = elem->NextSiblingElement("spawn");
+  }
+
+  // Process the case where there is no <spawn> .. </spawn> entity, and only
+  // one "spawn" request is embedded in the plugin.
+  this->ProcessSpawn(_elem);
+
+  for (const auto &msg : this->worldFactoryMsgs)
+  {
+    unsigned int timeout = 2000;
+    msgs::Boolean rep;
+    bool result;
+
+    std::string topic = "/world/";
+    topic += msg.first + "/create_multiple";
+
+    // Send the request.
+    bool executed = this->node.Request(topic, msg.second, timeout, rep, result);
+
+    if (executed && result && rep.data())
     {
-      if (result && !rep.data())
+      igndbg << "Factory service call succeeded.\n";
+      if (!this->worldPerformers[msg.first].empty())
       {
-        ignerr << "Factory service call completed, but returned a false value."
-          << "You may have an invalid request. Check the configuration.\n";
-      }
-      else
-      {
-        ignerr << "Factory service call failed.\n";
+        IGN_SLEEP_S(2);
+        topic = std::string("/world/") + msg.first + "/level/set_performer";
+
+        for (const auto &perf : this->worldPerformers[msg.first])
+        {
+          msgs::StringMsg performerReq;
+          performerReq.set_data(perf);
+          // \todo(anyone) Setting the size to 2,2,2 is a hack. Gazebo should
+          // calculate the bounding box based on the model information.
+          executed = this->node.Request(
+              topic, performerReq, timeout, rep, result);
+
+          // msgs::Performer performerReq;
+          // performerReq.set_name(req.name());
+          // // \todo(anyone) Setting the size to 2,2,2 is a hack. Gazebo should
+          // // calculate the bounding box based on the model information.
+          //  msgs::Set(performerReq.mutable_geometry()->mutable_box()->mutable_size(), math::Vector3d(2, 2, 2));
+          // executed = this->node.Request(topic, performerReq, timeout, rep, result);
+        }
       }
     }
     else
     {
-      ignerr << "Factory service call timed out.\n";
+      if (executed)
+      {
+        if (result && !rep.data())
+        {
+          ignerr << "Factory service call completed, but returned a false value."
+            << "You may have an invalid request. Check the configuration.\n";
+        }
+        else
+        {
+          ignerr << "Factory service call failed.\n";
+        }
+      }
+      else
+      {
+        ignerr << "Factory service call timed out.\n";
+      }
     }
   }
+
+
 
   return false;
 }

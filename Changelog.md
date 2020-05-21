@@ -1,6 +1,9 @@
 ## Ignition Launch 2.x
 
-### Ignition Launch 2.X.X
+### Ignition Launch 2.1.0 (2020-05-21)
+
+1. Merged ign-launch1 forward.
+    * [Pull request 41](https://github.com/ignitionrobotics/ign-launch/pull/31)
 
 ### Ignition Launch 2.0.0
 
@@ -17,7 +20,15 @@
 
 ## Ignition Launch 1.x
 
-### Ignition Launch 1.X.X
+### Ignition Launch 1.5.0 (2020-05-20)
+
+1. Added support for spawning multiple entities in the same simulation step.
+    * [Pull Request 30](https://github.com/ignitionrobotics/ign-launch/pull/30)
+
+### Ignition Launch 1.4.2 (2020-05-18)
+
+1.  Use the new GUI API of ign-gazebo. This adds support for saving worlds to SDFormat from the GUI.
+    * [Pull Request 19](https://github.com/ignitionrobotics/ign-launch/pull/19)
 
 ### Ignition Launch 1.4.1 (2019-12-05)
 
