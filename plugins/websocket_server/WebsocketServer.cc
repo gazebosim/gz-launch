@@ -15,6 +15,7 @@
  *
 */
 
+#include <algorithm>
 #include <ignition/common/Console.hh>
 #include <ignition/common/Util.hh>
 #include <ignition/msgs.hh>
@@ -23,6 +24,21 @@
 #include "WebsocketServer.hh"
 
 using namespace ignition::launch;
+
+/// \brief Construct a websocket frame header.
+/// \param[in] _op The operation string.
+/// \param[in] _topic The topic name string.
+/// \param[in] _type The message type string.
+/// \return A string that is the frame header.
+#define BUILD_HEADER(_op, _topic, _type) ((_op)+","+(_topic)+","+(_type)+",")
+
+/// \brief Construction a complete websocket frame.
+/// \param[in] _op The operation string.
+/// \param[in] _topic The topic name string.
+/// \param[in] _type The message type string.
+/// \param[in] _payload The complete payload string.
+/// \return A string that is the frame header.
+#define BUILD_MSG(_op, _topic, _type, _payload) (BUILD_HEADER(_op, _topic, _type) + _payload)
 
 int rootCallback(struct lws *_wsi,
                  enum lws_callback_reasons _reason,
@@ -269,22 +285,31 @@ void WebsocketServer::OnDisconnect(int _socketId)
 //////////////////////////////////////////////////
 void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
 {
-  // Handle the case where the client requests the message definitions.
-  if (_msg == "message_definitions")
+  // Frame: operation,topic,type,payload
+  std::vector<std::string> frameParts = common::split(_msg, ",");
+
+  // Check for a valid frame.
+  if (frameParts.size() != 4 &&
+      // Count the number of commas to handle a frame like "sub,,,"
+      std::count(_msg.begin(), _msg.end(), ',') != 3)
   {
-    igndbg << "Message definitions request recieved\n";
-    this->QueueMessage(this->connections[_socketId].get(),
-        kMessageDefinitions.c_str(), kMessageDefinitions.length());
+    ignerr << "Received an invalid frame with " << frameParts.size()
+      << "components when 4 is expected.\n";
     return;
   }
 
-  ignition::msgs::WebRequest requestMsg;
-  requestMsg.ParseFromString(_msg);
-
-  if (requestMsg.operation() == "topic_list")
+  // Handle the case where the client requests the message definitions.
+  if (frameParts[0] == "protos")
+  {
+    igndbg << "Protos request received\n";
+    this->QueueMessage(this->connections[_socketId].get(),
+        kWebSocketServerMessageDefinitions.c_str(),
+        kWebSocketServerMessageDefinitions.length());
+  }
+  else if (frameParts[0] == "topics")
   {
     igndbg << "Topic list request recieved\n";
-    ignition::msgs::Packet msg;
+    ignition::msgs::StringMsg_V msg;
 
     std::vector<std::string> topics;
 
@@ -293,25 +318,24 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
 
     // Store the topics in a message and serialize the message.
     for (const std::string &topic : topics)
-      msg.mutable_string_msg_v()->add_data(topic);
+      msg.add_data(topic);
 
-    msg.set_topic("/topic_list");
-    msg.set_type("ignition.msgs.StringMsg_V");
-    std::string data = msg.SerializeAsString();
+    std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
+        std::string("ignition.msgs.StringMsg_V"), msg.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
         data.c_str(), data.length());
   }
-  else if (requestMsg.operation() == "subscribe")
+  else if (frameParts[0] == "sub")
   {
     // Store the relation of socketId to subscribed topic.
-    this->topicConnections[requestMsg.topic()].insert(_socketId);
-    this->topicTimestamps[requestMsg.topic()] =
+    this->topicConnections[frameParts[1]].insert(_socketId);
+    this->topicTimestamps[frameParts[1]] =
       std::chrono::steady_clock::now() - this->publishPeriod;
 
-    igndbg << "Subscribe request to topic[" << requestMsg.topic() << "]\n";
-    this->node.SubscribeRaw(requestMsg.topic(),
+    igndbg << "Subscribe request to topic[" << frameParts[1] << "]\n";
+    this->node.SubscribeRaw(frameParts[1],
         std::bind(&WebsocketServer::OnWebsocketSubscribedMessage,
           this, std::placeholders::_1,
           std::placeholders::_2, std::placeholders::_3));
@@ -328,44 +352,35 @@ void WebsocketServer::OnWebsocketSubscribedMessage(
 
   if (iter != this->topicConnections.end())
   {
+    std::lock_guard<std::mutex> mainLock(this->subscriptionMutex);
     std::chrono::time_point<std::chrono::steady_clock> systemTime =
       std::chrono::steady_clock::now();
-
-    ignition::msgs::Packet msg;
-    msg.set_topic(_info.Topic());
-    msg.set_type(_info.Type());
 
     std::chrono::nanoseconds timeDelta =
       systemTime - this->topicTimestamps[_info.Topic()];
 
     if (timeDelta > this->publishPeriod)
     {
-      if (_info.Type() == "ignition.msgs.CmdVel2D")
-        msg.mutable_cmd_vel2d()->ParseFromArray(_data, _size);
-      else if (_info.Type() == "ignition.msgs.Image")
-        msg.mutable_image()->ParseFromArray(_data, _size);
-      else if (_info.Type() == "ignition.msgs.StringMsg_V")
-        msg.mutable_string_msg_v()->ParseFromArray(_data, _size);
-      else if (_info.Type() == "ignition.msgs.WebRequest")
-        msg.mutable_web_request()->ParseFromArray(_data, _size);
-      else if (_info.Type() == "ignition.msgs.Pose")
-        msg.mutable_pose()->ParseFromArray(_data, _size);
-      else if (_info.Type() == "ignition.msgs.Pose_V")
-        msg.mutable_pose_v()->ParseFromArray(_data, _size);
-      else if (_info.Type() == "ignition.msgs.Time")
-        msg.mutable_time()->ParseFromArray(_data, _size);
-      else if (_info.Type() == "ignition.msgs.Clock")
-        msg.mutable_clock()->ParseFromArray(_data, _size);
-      else if (_info.Type() == "ignition.msgs.WorldStatistics")
-        msg.mutable_world_stats()->ParseFromArray(_data, _size);
+      // Get the header, or build a new header if it doesn't exist.
+      auto header = this->publishHeaders.find(_info.Topic());
+      if (header == this->publishHeaders.end())
+      {
+        this->publishHeaders[_info.Topic()] = BUILD_HEADER(
+          this->operations[PUBLISH], _info.Topic(), _info.Type());
+        header = this->publishHeaders.find(_info.Topic());
+      }
 
+      // Store the last time this topic was published.
       this->topicTimestamps[_info.Topic()] = systemTime;
 
-      std::string data = msg.SerializeAsString();
+      // Construct the final message.
+      std::string msg = header->second + std::string(_data, _size);
+
+      // Send the message
       for (const int &socketId : iter->second)
       {
         this->QueueMessage(this->connections[socketId].get(),
-            data.c_str(), data.length());
+            msg.c_str(), msg.length());
       }
     }
   }

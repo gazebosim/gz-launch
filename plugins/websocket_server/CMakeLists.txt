@@ -4,7 +4,7 @@ if (websockets_FOUND)
 
   add_library(${plugin} SHARED ${sources})
 
-  file (READ combined.proto MESSAGE_DEFINITIONS)
+  file (READ combined.proto WEBSOCKETSERVER_MESSAGE_DEFINITIONS)
   configure_file("MessageDefinitions.hh.in"
     "${CMAKE_CURRENT_BINARY_DIR}/MessageDefinitions.hh" @ONLY)
   # Add a dependency on binary source dir so that you can change the

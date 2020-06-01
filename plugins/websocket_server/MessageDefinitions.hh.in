@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Open Source Robotics Foundation
+ * Copyright (C) 2020 Open Source Robotics Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_WEBSOCKETSERVER_MESSAGE_DEFINITIONS_HH_
-#define IGNITION_LAUNCH_WEBSOCKETSERVER_MESSAGE_DEFINITIONS_HH_
+#ifndef IGNITION_LAUNCH_WEBSOCKETSERVER_MESSAGEDEFINITIONS_HH_
+#define IGNITION_LAUNCH_WEBSOCKETSERVER_MESSAGEDEFINITIONS_HH_
 
 namespace ignition
 {
@@ -23,10 +23,11 @@ namespace ignition
   {
     /// \brief All of the protobuf messages provided by the websocket
     /// server.
+    ///
     /// \todo Get this information from a running simulation. The problem
     /// right now is that Ignition Transport does not show subscribers.
-    static const std::string kMessageDefinitions =
-      R"protos(@MESSAGE_DEFINITIONS@)protos";
+    static const std::string kWebSocketServerMessageDefinitions =
+      R"protos(@WEBSOCKETSERVER_MESSAGE_DEFINITIONS@)protos";
   }
 }
 #endif
