@@ -1,0 +1,125 @@
+syntax = "proto3";
+
+package ignition.msgs;
+
+message Time {
+  int64 sec = 1;
+  int32 nsec = 2;
+}
+
+message Clock
+{
+  Header header = 1;
+  Time system = 2;
+  Time real   = 3;
+  Time sim    = 4;
+}
+message Header {
+  message Map {
+    string key = 1;
+    repeated string value = 2;
+  }
+  Time stamp         = 1;
+  repeated Map data  = 2;
+}
+message WebRequest
+{
+  Header header         = 1;
+  string operation      = 2;
+  string topic          = 3;
+  string msg_type       = 4;
+  string compression    = 5;
+  double hz             = 6;
+}
+message StringMsg_V
+{
+  repeated string data = 2;
+}
+message CmdVel2D
+{
+  Header header    = 1;
+  double velocity  = 2;
+  double theta     = 3;
+}
+enum PixelFormatType
+{
+  UNKNOWN_PIXEL_FORMAT = 0;
+  L_INT8 = 1;
+  L_INT16 = 2;
+  RGB_INT8 = 3;
+  RGBA_INT8 = 4;
+  BGRA_INT8 = 5;
+  RGB_INT16 = 6;
+  RGB_INT32 = 7;
+  BGR_INT8 = 8;
+  BGR_INT16 = 9;
+  BGR_INT32 = 10;
+  R_FLOAT16 = 11;
+  RGB_FLOAT16 = 12;
+  R_FLOAT32 = 13;
+  RGB_FLOAT32 = 14;
+  BAYER_RGGB8 = 15;
+  BAYER_RGGR8 = 16;
+  BAYER_GBRG8 = 17;
+  BAYER_GRBG8 = 18;
+}
+
+message Image
+{
+  Header header        = 1;
+  uint32 width         = 2;
+  uint32 height        = 3;
+  uint32 pixel_format  = 4;
+  uint32 step          = 5;
+  bytes data          = 6;
+}
+message Vector3d
+{
+  Header header = 1;
+  double x = 2;
+  double y = 3;
+  double z = 4;
+}
+message Pose
+{
+  Header header          = 1;
+  string name            = 2;
+  uint32 id              = 3;
+  Vector3d position      = 4;
+  Quaternion orientation = 5;
+}
+message Quaternion
+{
+  Header header = 1;
+  double x = 2;
+  double y = 3;
+  double z = 4;
+  double w = 5;
+}
+message Double_V
+{
+  repeated double data = 1;
+}
+message Pose_V
+{
+  Header header = 1;
+  repeated Pose pose = 2;
+}
+message Packet
+{
+  string topic = 1;
+  string type  = 2;
+
+  oneof content
+  {
+    CmdVel2D cmd_vel2d = 3;
+    Image image = 4;
+    StringMsg_V string_msg_v = 5;
+    WebRequest web_request = 6;
+    Pose pose = 7;
+    Double_V doublev = 8;
+    Pose_V pose_v = 9;
+    Time time = 10;
+    Clock clock = 11;
+  }
+}
