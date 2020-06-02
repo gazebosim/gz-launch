@@ -238,23 +238,24 @@ void SyncedImuPublisher::PublishPendingMessages()
 }
 */
 
-void BaseRealSenseNode::toggleSensors(bool enabled)
+/////////////////////////////////////////////////
+void BaseRealSenseNode::ToggleSensors(bool _enabled)
 {
-    for (auto it=this->sensors.begin(); it != this->sensors.end(); it++)
+  for (auto it = this->sensors.begin(); it != this->sensors.end(); ++it)
+  {
+    auto& sens = this->sensors[it->first];
+    try
     {
-        auto& sens = this->sensors[it->first];
-        try
-        {
-            if (enabled)
-                sens.start(_syncer);
-            else
-                sens.stop();
-        }
-        catch(const rs2::wrong_api_call_sequence_error& ex)
-        {
-            ROS_DEBUG_STREAM("toggleSensors: " << ex.what());
-        }
+      if (_enabled)
+        sens.start(_syncer);
+      else
+        sens.stop();
     }
+    catch(const rs2::wrong_api_call_sequence_error& ex)
+    {
+      igndbg << "toggleSensors[" << ex.what() << "]\n";
+    }
+  }
 }
 
 //////////////////////////////////////////////////
@@ -263,31 +264,32 @@ void BaseRealSenseNode::SetupErrorCallback()
   for (auto &&s : this->rs2Dev.query_sensors())
   {
     s.set_notifications_callback([&](const rs2::notification &_notification)
+    {
+      std::vector<std::string> errorStrings(
+        {"RT IC2 Config error",
+           "Left IC2 Config error"
+        });
+
+      if (n.get_severity() >= RS2_LOG_SEVERITY_ERROR)
       {
-        std::vector<std::string> errorStrings(
-            {"RT IC2 Config error", "Left IC2 Config error"});
+        ignwarn << "Hardware Notification:"
+          << _notification.get_description()
+          << "," << _notification.get_timestamp()
+          << "," <<  _notification.get_severity()
+          << "," << _notification.get_category()
+          << std::endl;
+      }
 
-        if (n.get_severity() >= RS2_LOG_SEVERITY_ERROR)
-        {
-
-          ignwarn << "Hardware Notification:"
-                  << _notification.get_description()
-                  << "," << _notification.get_timestamp()
-                  << "," <<  _notification.get_severity()
-                  << "," << _notification.get_category()
-                  << std::endl;
-        }
-
-        if (errorStrings.end() !=
-            std::find_if(errorStrings.begin(), errorStrings.end(),
-              [&n] (std::string err) {
-              return (n.get_description().find(err) != std::string::npos);
-              }))
-        {
-          ignerr << "Performing Hardware Reset.\n";
-          this->rs2Dev.hardware_reset();
-        }
-      });
+      if (errorStrings.end() !=
+          std::find_if(errorStrings.begin(), errorStrings.end(),
+            [&n] (std::string err) {
+            return (n.get_description().find(err) != std::string::npos);
+            }))
+      {
+        ignerr << "Performing Hardware Reset.\n";
+        this->rs2Dev.hardware_reset();
+      }
+    });
   }
 }
 
@@ -306,12 +308,12 @@ void BaseRealSenseNode::PublishTopics()
 
 
     /*
-    setupPublishers();
-    setupStreams();
-    SetBaseStream();
-    registerAutoExposureROIOptions(_node_handle);
-    publishStaticTransforms();
-    publishIntrinsics();
+    this->SetupPublishers();
+    this->SetupStreams();
+    this->SetBaseStream();
+    this->RegisterAutoExposureROIOptions(_node_handle);
+    this->PublishStaticTransforms();
+    this->PublishIntrinsics();
     // this->StartMonitoring();
     ROS_INFO_STREAM("RealSense Node Is Up!");
     */
@@ -339,21 +341,16 @@ void BaseRealSenseNode::PublishTopics()
     }
 }*/
 
-
-
-/**
- * Same as ros::names::isValidCharInName, but re-implemented here because it's not exposed.
- */
-bool isValidCharInName(char c)
+//////////////////////////////////////////////////
+//Same as ros::names::isValidCharInName, but re-implemented here because it's not exposed.
+/*bool isValidCharInName(char c)
 {
     return std::isalnum(c) || c == '/' || c == '_';
-}
+}*/
 
-/**
- * ROS Graph Resource names don't allow spaces and hyphens (see http://wiki.ros.org/Names),
- * so we replace them here with underscores.
- */
-std::string create_graph_resource_name(const std::string &original_name)
+//////////////////////////////////////////////////
+// ROS Graph Resource names don't allow spaces and hyphens (see http://wiki.ros.org/Names), so we replace them here with underscores.
+/*std::string createGraphResourceName(const std::string &original_name)
 {
   std::string fixed_name = original_name;
   std::transform(fixed_name.begin(), fixed_name.end(), fixed_name.begin(),
@@ -361,28 +358,30 @@ std::string create_graph_resource_name(const std::string &original_name)
   std::replace_if(fixed_name.begin(), fixed_name.end(), [](const char c) { return !isValidCharInName(c); },
                   '_');
   return fixed_name;
-}
+}*/
 
-void BaseRealSenseNode::set_auto_exposure_roi(const std::string option_name, rs2::sensor sensor, int new_value)
+/////////////////////////////////////////////////
+/*void BaseRealSenseNode::SetAutoExposureRoi(const std::string option_name, rs2::sensor sensor, int new_value)
 {
-    rs2::region_of_interest& auto_exposure_roi(_auto_exposure_roi[sensor.get_info(RS2_CAMERA_INFO_NAME)]);
-    if (option_name == "left")
-        auto_exposure_roi.min_x = new_value;
-    else if (option_name == "right")
-        auto_exposure_roi.max_x = new_value;
-    else if (option_name == "top")
-        auto_exposure_roi.min_y = new_value;
-    else if (option_name == "bottom")
-        auto_exposure_roi.max_y = new_value;
-    else
-    {
-        ROS_WARN_STREAM("Invalid option_name: " << option_name << " while setting auto exposure ROI.");
-        return;
-    }
-    set_sensor_auto_exposure_roi(sensor);
-}
+  rs2::region_of_interest& auto_exposure_roi(_auto_exposure_roi[sensor.get_info(RS2_CAMERA_INFO_NAME)]);
+  if (option_name == "left")
+    auto_exposure_roi.min_x = new_value;
+  else if (option_name == "right")
+    auto_exposure_roi.max_x = new_value;
+  else if (option_name == "top")
+    auto_exposure_roi.min_y = new_value;
+  else if (option_name == "bottom")
+    auto_exposure_roi.max_y = new_value;
+  else
+  {
+    ROS_WARN_STREAM("Invalid option_name: " << option_name << " while setting auto exposure ROI.");
+    return;
+  }
+  this->SetSensorAutoExposureRoi(sensor);
+}*/
 
-void BaseRealSenseNode::set_sensor_auto_exposure_roi(rs2::sensor sensor)
+/////////////////////////////////////////////////
+/*void BaseRealSenseNode::SetSensorAutoExposureRoi(rs2::sensor sensor)
 {
     const rs2::region_of_interest& auto_exposure_roi(_auto_exposure_roi[sensor.get_info(RS2_CAMERA_INFO_NAME)]);
     try
@@ -393,158 +392,164 @@ void BaseRealSenseNode::set_sensor_auto_exposure_roi(rs2::sensor sensor)
     {
         ROS_ERROR_STREAM(e.what());
     }
-}
+}*/
 
-void BaseRealSenseNode::readAndSetDynamicParam(ros::NodeHandle& nh1, std::shared_ptr<ddynamic_reconfigure::DDynamicReconfigure> ddynrec,
-                                               const std::string option_name, const int min_val, const int max_val, rs2::sensor sensor,
-                                               int* option_value)
+/////////////////////////////////////////////////
+/*void BaseRealSenseNode::ReadAndSetDynamicParam(
+    ros::NodeHandle& nh1,
+    std::shared_ptr<ddynamic_reconfigure::DDynamicReconfigure> ddynrec,
+    const std::string option_name, const int min_val,
+    const int max_val, rs2::sensor sensor,
+    int* option_value)
 {
-    nh1.param(option_name, *option_value, *option_value); //param (const std::string &param_name, T &param_val, const T &default_val) const
-    if (*option_value < min_val) *option_value = min_val;
-    if (*option_value > max_val) *option_value = max_val;
+  nh1.param(option_name, *option_value, *option_value); //param (const std::string &param_name, T &param_val, const T &default_val) const
+  if (*option_value < min_val) *option_value = min_val;
+  if (*option_value > max_val) *option_value = max_val;
 
-    ddynrec->registerVariable<int>(
-        option_name, *option_value, [this, sensor, option_name](int new_value){set_auto_exposure_roi(option_name, sensor, new_value);},
-        "auto-exposure " + option_name + " coordinate", min_val, max_val);
-}
+  ddynrec->registerVariable<int>(
+      option_name, *option_value, [this, sensor, option_name](int new_value){this->SetAutoExposureRoi(option_name, sensor, new_value);},
+      "auto-exposure " + option_name + " coordinate", min_val, max_val);
+}*/
 
-void BaseRealSenseNode::registerAutoExposureROIOptions(ros::NodeHandle& nh)
+/*void BaseRealSenseNode::RegisterAutoExposureROIOptions(ros::NodeHandle& nh)
 {
-    for (const std::pair<stream_index_pair, std::vector<rs2::stream_profile>>& profile : this->enabledProfiles)
+  for (const std::pair<stream_index_pair, std::vector<rs2::stream_profile>>& profile : this->enabledProfiles)
+  {
+    rs2::sensor sensor = this->sensors[profile.first];
+    std::string module_base_name(sensor.get_info(RS2_CAMERA_INFO_NAME));
+    if (sensor.is<rs2::roi_sensor>() && _auto_exposure_roi.find(module_base_name) == _auto_exposure_roi.end())
     {
-        rs2::sensor sensor = this->sensors[profile.first];
-        std::string module_base_name(sensor.get_info(RS2_CAMERA_INFO_NAME));
-        if (sensor.is<rs2::roi_sensor>() && _auto_exposure_roi.find(module_base_name) == _auto_exposure_roi.end())
-        {
-            int max_x(_width[profile.first]-1);
-            int max_y(_height[profile.first]-1);
+      int max_x(_width[profile.first]-1);
+      int max_y(_height[profile.first]-1);
 
-            std::string module_name = create_graph_resource_name(module_base_name) +"/auto_exposure_roi";
-            ros::NodeHandle nh1(nh, module_name);
-            std::shared_ptr<ddynamic_reconfigure::DDynamicReconfigure> ddynrec = std::make_shared<ddynamic_reconfigure::DDynamicReconfigure>(nh1);
+      std::string module_name = createGraphResourceName(module_base_name) +"/auto_exposure_roi";
+      ros::NodeHandle nh1(nh, module_name);
+      std::shared_ptr<ddynamic_reconfigure::DDynamicReconfigure> ddynrec = std::make_shared<ddynamic_reconfigure::DDynamicReconfigure>(nh1);
 
-            _auto_exposure_roi[module_base_name] = {0, 0, max_x, max_y};
-            rs2::region_of_interest& auto_exposure_roi(_auto_exposure_roi[module_base_name]);
-            readAndSetDynamicParam(nh1, ddynrec, "left", 0, max_x, sensor, &(auto_exposure_roi.min_x));
-            readAndSetDynamicParam(nh1, ddynrec, "right", 0, max_x, sensor, &(auto_exposure_roi.max_x));
-            readAndSetDynamicParam(nh1, ddynrec, "top", 0, max_y, sensor, &(auto_exposure_roi.min_y));
-            readAndSetDynamicParam(nh1, ddynrec, "bottom", 0, max_y, sensor, &(auto_exposure_roi.max_y));
+      _auto_exposure_roi[module_base_name] = {0, 0, max_x, max_y};
+      rs2::region_of_interest& auto_exposure_roi(_auto_exposure_roi[module_base_name]);
+      this->ReadAndSetDynamicParam(nh1, ddynrec, "left", 0, max_x, sensor, &(auto_exposure_roi.min_x));
+      this->ReadAndSetDynamicParam(nh1, ddynrec, "right", 0, max_x, sensor, &(auto_exposure_roi.max_x));
+      this->ReadAndSetDynamicParam(nh1, ddynrec, "top", 0, max_y, sensor, &(auto_exposure_roi.min_y));
+      this->ReadAndSetDynamicParam(nh1, ddynrec, "bottom", 0, max_y, sensor, &(auto_exposure_roi.max_y));
 
-            ddynrec->publishServicesTopics();
-            _ddynrec.push_back(ddynrec);
+      ddynrec->publishServicesTopics();
+      _ddynrec.push_back(ddynrec);
 
-            // Initiate the call to set_sensor_auto_exposure_roi, after the first frame arrive.
-            rs2_stream stream_type = profile.first.first;
-            _video_functions_stack[stream_type].push_back([this, sensor](){set_sensor_auto_exposure_roi(sensor);});
-            _is_first_frame[stream_type] = true;
-        }
+      // Initiate the call to this->SetSensorAutoExposureRoi, after the first frame arrive.
+      rs2_stream stream_type = profile.first.first;
+      _video_functions_stack[stream_type].push_back([this, sensor](){this->SetSensorAutoExposureRoi(sensor);});
+      _is_first_frame[stream_type] = true;
     }
-}
+  }
+}*/
 
-void BaseRealSenseNode::registerDynamicOption(ros::NodeHandle& nh, rs2::options sensor, std::string& module_name)
+/////////////////////////////////////////////////
+/*void BaseRealSenseNode::RegisterDynamicOption(
+    ros::NodeHandle& nh, rs2::options sensor, std::string& module_name)
 {
-    ros::NodeHandle nh1(nh, module_name);
-    std::shared_ptr<ddynamic_reconfigure::DDynamicReconfigure> ddynrec = std::make_shared<ddynamic_reconfigure::DDynamicReconfigure>(nh1);
-    for (auto i = 0; i < RS2_OPTION_COUNT; i++)
+  ros::NodeHandle nh1(nh, module_name);
+  std::shared_ptr<ddynamic_reconfigure::DDynamicReconfigure> ddynrec = std::make_shared<ddynamic_reconfigure::DDynamicReconfigure>(nh1);
+  for (auto i = 0; i < RS2_OPTION_COUNT; i++)
+  {
+    rs2_option option = static_cast<rs2_option>(i);
+    const std::string option_name(createGraphResourceName(rs2_option_to_string(option)));
+    if (!sensor.supports(option) || sensor.is_option_read_only(option))
     {
-        rs2_option option = static_cast<rs2_option>(i);
-        const std::string option_name(create_graph_resource_name(rs2_option_to_string(option)));
-        if (!sensor.supports(option) || sensor.is_option_read_only(option))
+      continue;
+    }
+    if (kIsCheckbox(sensor, option))
+    {
+      auto option_value = bool(sensor.get_option(option));
+      if (nh1.param(option_name, option_value, option_value))
+      {
+        sensor.set_option(option, option_value);
+      }
+      ddynrec->registerVariable<bool>(
+          option_name, option_value,
+          [option, sensor](bool new_value) { sensor.set_option(option, new_value); },
+          sensor.get_option_description(option));
+      continue;
+    }
+    const auto enum_dict = kGetEnumMethod(sensor, option);
+    if (enum_dict.empty())
+    {
+      rs2::option_range op_range = sensor.get_option_range(option);
+      const auto sensor_option_value = sensor.get_option(option);
+      auto option_value = sensor_option_value;
+      if (nh1.param(option_name, option_value, option_value))
+      {
+        if (option_value < op_range.min || op_range.max < option_value)
         {
-            continue;
-        }
-        if (kIsCheckbox(sensor, option))
-        {
-            auto option_value = bool(sensor.get_option(option));
-            if (nh1.param(option_name, option_value, option_value))
-            {
-                sensor.set_option(option, option_value);
-            }
-            ddynrec->registerVariable<bool>(
-              option_name, option_value,
-              [option, sensor](bool new_value) { sensor.set_option(option, new_value); },
-              sensor.get_option_description(option));
-            continue;
-        }
-        const auto enum_dict = kGetEnumMethod(sensor, option);
-        if (enum_dict.empty())
-        {
-            rs2::option_range op_range = sensor.get_option_range(option);
-            const auto sensor_option_value = sensor.get_option(option);
-            auto option_value = sensor_option_value;
-            if (nh1.param(option_name, option_value, option_value))
-            {
-                if (option_value < op_range.min || op_range.max < option_value)
-                {
-                    ROS_WARN_STREAM("Param '" << nh1.resolveName(option_name) << "' has value " << option_value
-                            << " outside the range [" << op_range.min << ", " << op_range.max
-                            << "]. Using current sensor value " << sensor_option_value << " instead.");
-                    option_value = sensor_option_value;
-                }
-                else
-                {
-                    sensor.set_option(option, option_value);
-                }
-            }
-            if (kIsIntOption(sensor, option))
-            {
-              ddynrec->registerVariable<int>(
-                  option_name, int(option_value),
-                  [option, sensor](int new_value) { sensor.set_option(option, new_value); },
-                  sensor.get_option_description(option), int(op_range.min), int(op_range.max));
-            }
-            else
-            {
-                if (i == RS2_OPTION_DEPTH_UNITS)
-                {
-                    if (ROS_DEPTH_SCALE >= op_range.min && ROS_DEPTH_SCALE <= op_range.max)
-                    {
-                        sensor.set_option(option, ROS_DEPTH_SCALE);
-                        op_range.min = ROS_DEPTH_SCALE;
-                        op_range.max = ROS_DEPTH_SCALE;
-
-                        _depth_scale_meters = ROS_DEPTH_SCALE;
-                    }
-                }
-                else
-                {
-                  ddynrec->registerVariable<double>(
-                      option_name, option_value,
-                      [option, sensor](double new_value) { sensor.set_option(option, new_value); },
-                      sensor.get_option_description(option), double(op_range.min), double(op_range.max));
-                }
-            }
+          ROS_WARN_STREAM("Param '" << nh1.resolveName(option_name) << "' has value " << option_value
+              << " outside the range [" << op_range.min << ", " << op_range.max
+              << "]. Using current sensor value " << sensor_option_value << " instead.");
+          option_value = sensor_option_value;
         }
         else
         {
-            const auto sensor_option_value = sensor.get_option(option);
-            auto option_value = int(sensor_option_value);
-            if (nh1.param(option_name, option_value, option_value))
-            {
-                if (std::find_if(enum_dict.cbegin(), enum_dict.cend(),
-                                 [&option_value](const std::pair<std::string, int>& kv) {
-                                     return kv.second == option_value;
-                                 }) == enum_dict.cend())
-                {
-                    ROS_WARN_STREAM("Param '" << nh1.resolveName(option_name) << "' has value " << option_value
-                                              << " that is not in the enum " << enum_dict
-                                              << ". Using current sensor value " << sensor_option_value << " instead.");
-                    option_value = sensor_option_value;
-                }
-                else
-                {
-                    sensor.set_option(option, option_value);
-                }
-            }
-            ddynrec->registerEnumVariable<int>(
-                option_name, option_value,
-                [option, sensor](int new_value) { sensor.set_option(option, new_value); },
-                sensor.get_option_description(option), enum_dict);
+          sensor.set_option(option, option_value);
         }
+      }
+      if (kIsIntOption(sensor, option))
+      {
+        ddynrec->registerVariable<int>(
+            option_name, int(option_value),
+            [option, sensor](int new_value) { sensor.set_option(option, new_value); },
+            sensor.get_option_description(option), int(op_range.min), int(op_range.max));
+      }
+      else
+      {
+        if (i == RS2_OPTION_DEPTH_UNITS)
+        {
+          if (ROS_DEPTH_SCALE >= op_range.min && ROS_DEPTH_SCALE <= op_range.max)
+          {
+            sensor.set_option(option, ROS_DEPTH_SCALE);
+            op_range.min = ROS_DEPTH_SCALE;
+            op_range.max = ROS_DEPTH_SCALE;
+
+            _depth_scale_meters = ROS_DEPTH_SCALE;
+          }
+        }
+        else
+        {
+          ddynrec->registerVariable<double>(
+              option_name, option_value,
+              [option, sensor](double new_value) { sensor.set_option(option, new_value); },
+              sensor.get_option_description(option), double(op_range.min), double(op_range.max));
+        }
+      }
     }
-    ddynrec->publishServicesTopics();
-    _ddynrec.push_back(ddynrec);
-}
+    else
+    {
+      const auto sensor_option_value = sensor.get_option(option);
+      auto option_value = int(sensor_option_value);
+      if (nh1.param(option_name, option_value, option_value))
+      {
+        if (std::find_if(enum_dict.cbegin(), enum_dict.cend(),
+              [&option_value](const std::pair<std::string, int>& kv) {
+              return kv.second == option_value;
+              }) == enum_dict.cend())
+        {
+          ROS_WARN_STREAM("Param '" << nh1.resolveName(option_name) << "' has value " << option_value
+              << " that is not in the enum " << enum_dict
+              << ". Using current sensor value " << sensor_option_value << " instead.");
+          option_value = sensor_option_value;
+        }
+        else
+        {
+          sensor.set_option(option, option_value);
+        }
+      }
+      ddynrec->registerEnumVariable<int>(
+          option_name, option_value,
+          [option, sensor](int new_value) { sensor.set_option(option, new_value); },
+          sensor.get_option_description(option), enum_dict);
+    }
+  }
+  ddynrec->publishServicesTopics();
+  _ddynrec.push_back(ddynrec);
+}*/
 
 //////////////////////////////////////////////////
 rs2_stream BaseRealSenseNode::Rs2StringToStream(const std::string &_str)
@@ -662,7 +667,7 @@ void BaseRealSenseNode::Parameters()
 }
 
 //////////////////////////////////////////////////
-void BaseRealSenseNode::SetupDevice()
+/*void BaseRealSenseNode::SetupDevice()
 {
   try
   {
@@ -815,7 +820,7 @@ void BaseRealSenseNode::SetupDevice()
     ROS_ERROR_STREAM("Unknown exception has occured!");
     throw;
   }
-}
+}*/
 
 /////////////////////////////////////////////////
 /*void BaseRealSenseNode::SetupPublishers()
