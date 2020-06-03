@@ -1,6 +1,6 @@
 if (realsense2_FOUND)
   set (plugin ignition-launch-realsense)
-  set (sources Realsense.cc)
+  set (sources Realsense.cc BaseRealSense.cc)
 
   
   add_library(${plugin} SHARED ${sources})

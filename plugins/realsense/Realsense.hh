@@ -22,11 +22,14 @@
 #include <librealsense2/hpp/rs_processing.hpp>
 #include <librealsense2/rs_advanced_mode.hpp>
 
+#include <memory>
 #include <thread>
 #include <ignition/launch/Plugin.hh>
 #include <ignition/plugin/Register.hh>
 #include <ignition/transport/Node.hh>
 #include <ignition/common/Util.hh>
+
+#include "BaseRealSense.hh"
 
 namespace ignition
 {
@@ -52,11 +55,14 @@ namespace ignition
       private: bool LoadDevice(const rs2::device_list &_list);
       private: void ChangeDeviceCallback(const rs2::event_information &_info);
 
+      private: void StartDevice();
+
       private: ignition::transport::Node node;
 
       private: rs2::context rs2Context;
       private: rs2::device rs2Device;
       private: std::string rs2SerialNumber;
+      private: std::unique_ptr<BaseRealSenseCamera> realSenseCamera;
     };
   }
 }

@@ -14,8 +14,10 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_REALSENSE_HH_
-#define IGNITION_LAUNCH_REALSENSE_HH_
+#ifndef IGNITION_LAUNCH_BASEREALSENSE_HH_
+#define IGNITION_LAUNCH_BASEREALSENSE_HH_
+
+#include <librealsense2/rs.hpp>
 
 #include <ignition/math/Temperature.hh>
 #include <ignition/msgs/imu.pb.h>
@@ -31,6 +33,7 @@ namespace ignition
 {
   namespace launch
   {
+    using StreamIndexPair = std::pair<rs2_stream, int>;
 
     /*class TemperatureDiagnostics
     {
@@ -45,7 +48,7 @@ namespace ignition
       private: ignition::math::Temperature _temperature;
     };*/
 
-    /*
+
     class PipelineSyncer : public rs2::asynchronous_syncer
     {
       public: void operator()(rs2::frame _frame) const
@@ -53,16 +56,52 @@ namespace ignition
         invoke(std::move(_frame));
       }
     };
-    */
 
     class BaseRealSenseCamera
     {
       public: BaseRealSenseCamera(rs2::device _dev,
-                                  const std::string &serialNumber);
+                                  const std::string &_serialNumber);
 
       public: virtual ~BaseRealSenseCamera();
 
-      private: bool isRunning{true};
+      public: void ToggleSensors(bool enabled);
+
+      public: virtual void PublishTopics();
+
+      private: void SetupErrorCallback();
+
+      private: rs2_stream Rs2StringToStream(const std::string &_str) const;
+
+      private: void Parameters();
+
+      private: void SetupFilters();
+
+      /// \brief The RealSense2 device
+      private: rs2::device rs2Dev;
+
+      /// \brief Stream formats.
+      private: std::map<rs2_stream, int> format;
+
+      private: mutable std::condition_variable conditionVariable;
+
+      private: PipelineSyncer pipelineSyncer;
+
+      private: std::map<StreamIndexPair, rs2::sensor> sensors;
+
+      private: StreamIndexPair pointCloudTexture;
+
+      private: bool syncFrames = false;
+
+      private: bool pointCloud = false;
+
+      private: bool alignDepth = false;
+
+      private: std::string filtersStr = "";
+
+      // private: std::map<rs2_stream, std::string> depthAlignedEncoding;
+
+
+      private: bool isRunning = true;
 
       private: std::string baseFrameId;
 
@@ -79,7 +118,6 @@ namespace ignition
 
       private: std::shared_ptr<std::thread> tfThread;
 
-      private: mutable std::condition_variable cv;
 
       private: std::shared_ptr<std::thread> monitoringThread;
 
@@ -88,8 +126,6 @@ namespace ignition
       private: std::map<rs2_stream, std::string> streamName;
 
               /*
-      public: void ToggleSensors(bool enabled);
-      public: virtual void PublishTopics() override;
 
       public: enum ImuSyncMethod
               {
@@ -100,12 +136,12 @@ namespace ignition
               */
 
       /*protected: virtual void CalcAndPublishStaticTransform(
-                     const stream_index_pair &_stream,
+                     const StreamIndexPair &_stream,
                      const rs2::stream_profile &_baseProfile);
                      */
 
       /*protected: rs2::stream_profile Profile(
-                     const stream_index_pair &_stream);
+                     const StreamIndexPair &_stream);
                      */
 
       /*protected: void PublishStaticTf(//const ros::Time &t,
@@ -121,15 +157,14 @@ namespace ignition
       private: std::atomic_bool isInitializedTimeBase{false};
       protected: std::string odomFrameId;
 
-      protected: std::map<stream_index_pair, std::string> frameId;
+      protected: std::map<StreamIndexPair, std::string> frameId;
 
-      protected: std::map<stream_index_pair, std::string> opticalFrameId;
+      protected: std::map<StreamIndexPair, std::string> opticalFrameId;
 
-      protected: std::map<stream_index_pair, std::string> depthAlignedFrameId;
+      protected: std::map<StreamIndexPair, std::string> depthAlignedFrameId;
 
       protected: ignition::transport::Node node;
 
-      protected: bool alignDepth = false;
 
                  */
 /*
@@ -137,7 +172,7 @@ namespace ignition
       {
         public: CimuData() = default;
 
-        public: CimuData(const stream_index_pair _type,
+        public: CimuData(const StreamIndexPair _type,
                     ignition::math::Vector3d &_data, double _time):
                       type(_type),
                       data(_data),
@@ -150,23 +185,20 @@ namespace ignition
           return this->time > 0;
         }
 
-        public: stream_index_pair type;
+        public: StreamIndexPair type;
         public: ignition::math::Vector3d data;
         public: double time = -1;
       };
       */
 /*
-      private: void Parameters();
 
       private: void SetupDevice();
 
-      private: void SetupErrorCallback();
 
       private: void SetupPublishers();
 
       private: void EnableDevices();
 
-      private: void SetupFilters();
 
       private: void setupStreams();
 
@@ -201,24 +233,24 @@ namespace ignition
                    const std::string &_frameId) const;
                    */
 
-      // private: IMUInfo ImuInfo(const stream_index_pair &_streamIndex);
+      // private: IMUInfo ImuInfo(const StreamIndexPair &_streamIndex);
 
       /*private: void PublishFrame(
         rs2::frame _frame, const std::chrono::time_point &_time,
-        const stream_index_pair &_stream,
-        std::map<stream_index_pair, cv::Mat> &_images,
-        const std::map<stream_index_pair, ros::Publisher> &_infoPublishers,
-        const std::map<stream_index_pair,
+        const StreamIndexPair &_stream,
+        std::map<StreamIndexPair, cv::Mat> &_images,
+        const std::map<StreamIndexPair, ros::Publisher> &_infoPublishers,
+        const std::map<StreamIndexPair,
         ImagePublisherWithFrequencyDiagnostics> &_imagePublishers,
-        std::map<stream_index_pair, int> &_seq,
-        std::map<stream_index_pair, sensor_msgs::CameraInfo> &_cameraInfo,
-        const std::map<stream_index_pair, std::string>& _opticalFrameId,
+        std::map<StreamIndexPair, int> &_seq,
+        std::map<StreamIndexPair, sensor_msgs::CameraInfo> &_cameraInfo,
+        const std::map<StreamIndexPair, std::string>& _opticalFrameId,
         const std::map<rs2_stream, std::string>& _encoding,
         bool _copyDataFromFrame = true);
         */
 
       // Not used?
-      // private: bool EnabledProfile(const stream_index_pair& stream_index, rs2::stream_profile& profile);
+      // private: bool EnabledProfile(const StreamIndexPair& stream_index, rs2::stream_profile& profile);
 
                /*
       private: void PublishAlignedDepthToOthers(
@@ -253,7 +285,6 @@ namespace ignition
 
       private: void set_sensor_auto_exposure_roi(rs2::sensor sensor);
 
-      private: rs2_stream Rs2StringToStream(const std::string &_str);
 
                */
       // private: void StartMonitoring();
@@ -261,9 +292,7 @@ namespace ignition
       // private: void PublishTemperature();
 
                /*
-      private: rs2::device rs2Dev;
 
-      private: std::map<stream_index_pair, rs2::sensor> sensors;
 
       private: std::map<std::string, std::function<void(rs2::frame)>> _sensors_callback;
 
@@ -283,17 +312,16 @@ namespace ignition
 
       private: bool  _hold_back_imu_for_frames;
 
-      private: std::map<stream_index_pair, rs2_intrinsics> _stream_intrinsics;
+      private: std::map<StreamIndexPair, rs2_intrinsics> _stream_intrinsics;
 
-      private: std::map<stream_index_pair, int> _width;
+      private: std::map<StreamIndexPair, int> _width;
 
-      private: std::map<stream_index_pair, int> _height;
+      private: std::map<StreamIndexPair, int> _height;
 
-      private: std::map<stream_index_pair, int> _fps;
+      private: std::map<StreamIndexPair, int> _fps;
 
-      private: std::map<rs2_stream, int>        _format;
 
-      private: std::map<stream_index_pair, bool> _enable;
+      private: std::map<StreamIndexPair, bool> _enable;
 
 
       private: bool publishTf = true;
@@ -307,47 +335,42 @@ namespace ignition
       private: std::vector<geometry_msgs::TransformStamped> _static_tf_msgs;
 
 
-      private: std::map<stream_index_pair,
+      private: std::map<StreamIndexPair,
                ImagePublisherWithFrequencyDiagnostics> _image_publishers;
 
-      private: std::map<stream_index_pair, ros::Publisher> _imu_publishers;
+      private: std::map<StreamIndexPair, ros::Publisher> _imu_publishers;
 
 
 
-      private: std::map<stream_index_pair, ros::Publisher> infoPublisher;
+      private: std::map<StreamIndexPair, ros::Publisher> infoPublisher;
 
-      private: std::map<stream_index_pair, cv::Mat> _image;
-
-
-      private: std::map<stream_index_pair, int> _seq;
+      private: std::map<StreamIndexPair, cv::Mat> _image;
 
 
-      private: std::map<stream_index_pair,
+      private: std::map<StreamIndexPair, int> _seq;
+
+
+      private: std::map<StreamIndexPair,
                sensor_msgs::CameraInfo> _camera_info;
 
 
       private: double _camera_time_base;
 
-      private: std::map<stream_index_pair,
+      private: std::map<StreamIndexPair,
                std::vector<rs2::stream_profile>> enabledProfiles;
 
       private: ros::Publisher _pointcloud_publisher;
 
       private: std::chrono::steady_clock::time_point timeBase;
 
-      private: bool syncFrames = false;
 
-      private: bool pointcloud = false;
 
       private: bool _publish_odom_tf;
 
       private: imu_sync_method _imu_sync_method;
 
-      private: std::string filtersStr = "";
 
-      private: stream_index_pair pointCloudTexture;
 
-      private: PipelineSyncer _syncer;
 
       private: std::vector<NamedFilter> _filters;
 
@@ -355,28 +378,27 @@ namespace ignition
 
       private: std::map<rs2_stream, std::shared_ptr<rs2::align>> _align;
 
-      private: std::map<stream_index_pair, cv::Mat> _depth_aligned_image;
+      private: std::map<StreamIndexPair, cv::Mat> _depth_aligned_image;
 
-      private: std::map<stream_index_pair, cv::Mat> _depth_scaled_image;
+      private: std::map<StreamIndexPair, cv::Mat> _depth_scaled_image;
 
-      private: std::map<rs2_stream, std::string> _depth_aligned_encoding;
 
-      private: std::map<stream_index_pair, sensor_msgs::CameraInfo>
+      private: std::map<StreamIndexPair, sensor_msgs::CameraInfo>
                _depth_aligned_camera_info;
 
-      private: std::map<stream_index_pair, int> _depth_aligned_seq;
+      private: std::map<StreamIndexPair, int> _depth_aligned_seq;
 
-      private: std::map<stream_index_pair, ros::Publisher>
+      private: std::map<StreamIndexPair, ros::Publisher>
                _depth_aligned_info_publisher;
 
-      private: std::map<stream_index_pair,
+      private: std::map<StreamIndexPair,
                ImagePublisherWithFrequencyDiagnostics>
                  _depth_aligned_image_publishers;
 
-      private: std::map<stream_index_pair, ros::Publisher>
+      private: std::map<StreamIndexPair, ros::Publisher>
                _depth_to_other_extrinsics_publishers;
 
-      private: std::map<stream_index_pair, rs2_extrinsics>
+      private: std::map<StreamIndexPair, rs2_extrinsics>
                _depth_to_other_extrinsics;
 
       private: std::map<std::string, rs2::region_of_interest>
@@ -394,7 +416,7 @@ namespace ignition
 
 
 
-      private: stream_index_pair _base_stream;
+      private: StreamIndexPair _base_stream;
 
       private: sensor_msgs::PointCloud2 _msg_pointcloud;
 
@@ -469,7 +491,5 @@ namespace ignition
   }
 }
 
-// Register the plugin
-IGNITION_ADD_PLUGIN(ignition::launch::WebsocketServer, ignition::launch::Plugin)
 
 #endif
