@@ -302,9 +302,36 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   if (frameParts[0] == "protos")
   {
     igndbg << "Protos request received\n";
+
+    std::string allProtos = "syntax = \"proto3\";\n";
+    allProtos += "package ignition.msgs;\n";
+
+    std::vector<std::string> types;
+    ignition::msgs::Factory::Types(types);
+
+    // Get all the messages, and build a single proto to send to the client.
+    for (auto const &type : types)
+    {
+      auto msg = ignition::msgs::Factory::New(type);
+      if (msg)
+      {
+        auto descriptor = msg->GetDescriptor();
+        if (descriptor)
+          allProtos += descriptor->DebugString();
+        else
+        {
+          ignerr << "Failed to get the descriptor for message["
+            << type << "]\n";
+        }
+      }
+      else
+      {
+        ignerr << "Failed to build message[" << type << "].\n";
+      }
+    }
+
     this->QueueMessage(this->connections[_socketId].get(),
-        kWebSocketServerMessageDefinitions.c_str(),
-        kWebSocketServerMessageDefinitions.length());
+        allProtos.c_str(), allProtos.length());
   }
   else if (frameParts[0] == "topics")
   {
@@ -358,8 +385,16 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
     bool result;
     unsigned int timeout = 2000;
 
-    bool executed = this->node.Request("/gazebo/worlds",
-        req, timeout, rep, result);
+    std::string serviceName = std::string("/world/") + frameParts[1] +
+      "/scene/info";
+
+    bool executed = this->node.Request(serviceName, req, timeout, rep, result);
+    if (!executed || !result)
+    {
+      ignerr << "Failed to get the scene information for " << frameParts[1]
+        << " world.\n";
+    }
+    std::cout << rep.DebugString() << std::endl;
 
     std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
         std::string("ignition.msgs.Scene"), rep.SerializeAsString());
