@@ -195,6 +195,6 @@ Topic.prototype.subscribe = function(_callback) {
       emitter(_callback);
     });
   } else {
-    emiiter(_callback);
+    emitter(_callback);
   }
 };
