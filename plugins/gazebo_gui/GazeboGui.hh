@@ -43,8 +43,6 @@ namespace ignition
     ///
     ///   <!-- Elements parsed by ign-launch -->
     ///
-    ///   <world_name>name_of_world_being_launched.sdf</world_name>
-    ///
     ///   <!-- Set window title. Defaults to "Gazebo" -->
     ///   <window_title>Custom window title</window_title>
     ///
