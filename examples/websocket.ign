@@ -9,6 +9,8 @@
     <port>9002</port>
     <authorization_key>auth_key</authorization_key>
     <admin_authorization_key>admin_key</admin_authorization_key>
+    <ssl_cert_file>/home/nkoenig/localhost.cert</ssl_cert_file>
+    <ssl_private_key_file>/home/nkoenig/localhost.key</ssl_private_key_file>
   </plugin>
 
 </ignition>

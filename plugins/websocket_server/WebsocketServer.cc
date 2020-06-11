@@ -62,6 +62,13 @@ int rootCallback(struct lws *_wsi,
     return 0;
 
   int fd = lws_get_socket_fd(_wsi);
+  std::cout << "Here[" << _reason << "]\n";
+
+  /*struct per_vhost_data__minimal *vhd =
+    (struct per_vhost_data__minimal *)
+    lws_protocol_vh_priv_get(lws_get_vhost(_wsi),
+        lws_get_protocol(_wsi));
+        */
 
   // std::lock_guard<std::mutex> mainLock(self->mutex);
   switch (_reason)
@@ -118,6 +125,11 @@ int rootCallback(struct lws *_wsi,
       igndbg << "LWS_CALLBACK_RECEIVE\n";
       self->OnMessage(fd, std::string((const char *)_in));
       break;
+
+    case LWS_CALLBACK_PROTOCOL_INIT:
+      igndbg << "LWS_CALLBACK_PROTOCOL_INIT\n";
+      break;
+
 
     default:
       // Do nothing on default.
@@ -206,6 +218,22 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
   }
   igndbg << "Using port[" << port << "]\n";
 
+  std::string sslCertFile = "";
+  // Get the ssl cert file, if present.
+  elem = _elem->FirstChildElement("ssl_cert_file");
+  if (elem)
+  {
+    sslCertFile = elem->GetText();
+  }
+
+  std::string sslPrivateKeyFile = "";
+  // Get the ssl private key file, if present.
+  elem = _elem->FirstChildElement("ssl_private_key_file");
+  if (elem)
+  {
+    sslPrivateKeyFile = elem->GetText();
+  }
+
   // All of the protocols handled by this websocket server.
   this->protocols.push_back(
     {
@@ -239,9 +267,15 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
   info.port = port;
   info.iface = NULL;
   info.protocols = &this->protocols[0];
-  // We are not using SSL right now
-  info.ssl_cert_filepath        = NULL;
-  info.ssl_private_key_filepath = NULL;
+
+  if (!sslCertFile.empty() && !sslPrivateKeyFile.empty())
+  {
+    std::cout << "SSL!!\n";
+    info.options = LWS_SERVER_OPTION_REQUIRE_VALID_OPENSSL_CLIENT_CERT;
+    info.options |= LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT;
+    info.ssl_cert_filepath        = sslCertFile.c_str();
+    info.ssl_private_key_filepath = sslPrivateKeyFile.c_str();
+  }
 
   // keep alive time of  60 seconds
   info.ka_time = 60;
