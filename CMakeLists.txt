@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5.1 FATAL_ERROR)
 #============================================================================
 # Initialize the project
 #============================================================================
-project(ignition-launch1 VERSION 1.5.0)
+project(ignition-launch1 VERSION 1.6.0)
 
 #============================================================================
 # Find ignition-cmake
@@ -33,6 +33,7 @@ message(STATUS "\n\n-- ====== Finding Dependencies ======")
 #--------------------------------------
 # Find Tinyxml2
 ign_find_package(TINYXML2 REQUIRED PRIVATE PRETTY tinyxml2)
+
 
 #--------------------------------------
 # Find ignition-common

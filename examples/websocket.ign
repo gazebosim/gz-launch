@@ -5,6 +5,10 @@
        topic -->
   <plugin name="ignition::launch::WebsocketServer"
           filename="libignition-launch-websocket-server.so">
+    <publication_hz>30</publication_hz>
+    <port>9002</port>
+    <authorization_key>auth_key</authorization_key>
+    <admin_authorization_key>admin_key</admin_authorization_key>
   </plugin>
 
 </ignition>
