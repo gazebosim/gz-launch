@@ -1,5 +1,12 @@
 ## Ignition Launch 1.x
 
+### Ignition Launch 1.6.0 (2020-06-11)
+
+1. Improved websockets by integrating: simple authentication, access to
+   protobuf message definitions, access to scene and world information, and
+   definition of custom message framing.
+    * [Pull Request 33](https://github.com/ignitionrobotics/ign-launch/pull/33)
+
 ### Ignition Launch 1.5.0 (2020-05-20)
 
 1. Added support for spawning multiple entities in the same simulation step.
