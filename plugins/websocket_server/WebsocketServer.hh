@@ -35,6 +35,23 @@ namespace ignition
     /// \brief Reads from a USB joystick device and outputs
     ///  ignition::msgs::WebsocketServer messages.
     ///
+    /// # Plugin parameters
+    ///
+    /// * <publication_hz> : An integer that is the maximum publication
+    /// hertz rate.
+    ///
+    /// * <port> : An integer that is websocket port.
+    ///
+    /// * <authorization_key> : A key used for authentication. If this is
+    /// set, then a connection must provide the matching key using an "auth"
+    /// call on the websocket. If the <admin_authorization_key> is set, then
+    /// the connection can provide that key.
+    ///
+    /// * <admin_authorization_key> : An admin key used for authentication. If
+    /// this is set, then a connection must provide the matching key using an
+    /// "auth" call on the websocket. If the <authorization_key> is set, then
+    /// the connection can provide that key.
+    ///
     /// # Websocket Server Interface
     ///
     /// The websocket server listens for incoming requests and sends
@@ -136,6 +153,8 @@ namespace ignition
         public: std::list<std::unique_ptr<char>> buffer;
         public: std::list<int> len;
         public: std::mutex mutex;
+
+        public: bool authorized{false};
       };
 
       private: void QueueMessage(Connection *_connection,
@@ -193,6 +212,13 @@ namespace ignition
       /// for each subscribed topic.
       /// \sa topicTimestamps.
       private: std::chrono::nanoseconds publishPeriod;
+
+      /// \brief Authorization key used to validate a web-socket connection.
+      private: std::string authorizationKey;
+
+      /// \brief Administrator authorization key used to validate a web-socket
+      /// connection.
+      private: std::string adminAuthorizationKey;
     };
   }
 }

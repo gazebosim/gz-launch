@@ -40,20 +40,21 @@ function Ignition(options) {
   this.root = null;
 
   if (options.url) {
-    this.connect(options.url);
+    this.connect(options.url, options.key);
   }
 }
 Ignition.prototype.__proto__ = EventEmitter2.prototype;
 
 /// \brief Connect to the specified WebSocket.
 /// \param url - WebSocket URL for Ignition HTTPServer
-Ignition.prototype.connect = function(url) {
+Ignition.prototype.connect = function(url, key) {
   var that = this;
 
   /// \brief Emits a 'connection' event on WebSocket connection.
   /// \param event - the argument to emit with the event.
   function onOpen(event) {
-    that.socket.send(buildMsg(["protos",'','','']));
+    console.log(key);
+    that.socket.send(buildMsg(['auth','','',key]));
   }
 
   /// \brief Emits a 'close' event on WebSocket disconnection.
@@ -81,18 +82,24 @@ Ignition.prototype.connect = function(url) {
       f.onloadend = function(event) {
         // This is the proto message data
         var contents = event.target.result;
-        that.root = protobuf.parse(contents, {keepCase: true}).root;
-        that.isConnected = true;
-        that.emit('connection', event);
+        console.log(contents);
+        if (contents == "authorized") {
+          that.socket.send(buildMsg(["protos",'','','']));
+        }
+        else if (contents !== "invalid") {
+          that.root = protobuf.parse(contents, {keepCase: true}).root;
+          that.isConnected = true;
+          that.emit('connection', event);
 
-        // Request the list of topics on start.
-        that.socket.send(buildMsg(['topics','','','']));
+          // Request the list of topics on start.
+          that.socket.send(buildMsg(['topics','','','']));
 
-        // Request the list of worlds on start.
-        // \todo Switch this to a service call when this issue is 
-        // resolved:
-        // https://github.com/ignitionrobotics/ign-transport/issues/135
-        that.socket.send(buildMsg(['worlds','','','']));
+          // Request the list of worlds on start.
+          // \todo Switch this to a service call when this issue is 
+          // resolved:
+          // https://github.com/ignitionrobotics/ign-transport/issues/135
+          that.socket.send(buildMsg(['worlds','','','']));
+        }
       };
 
       // Read the blob data as an array buffer.

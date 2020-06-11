@@ -11,7 +11,8 @@
   <script>
     // Create the Connection to the Ignition websocket server
     var ign = new Ignition({
-      url: 'ws://localhost:9002'
+      url: 'ws://localhost:9002',
+      key: "auth_key"
     });
 
     // Listen for the 'connection' event.
@@ -607,7 +608,7 @@
     <div id='status'>Status: disconnected</div>
     <div id='output'></div>
 
-    <div id="container">
+    <div id="container" style="height: 800px">
     </div>
   </body>
 </html>

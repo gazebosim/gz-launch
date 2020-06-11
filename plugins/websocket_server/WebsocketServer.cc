@@ -171,6 +171,41 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
   this->publishPeriod = std::chrono::duration_cast<std::chrono::nanoseconds>(
       std::chrono::duration<double>(1.0 / hz));
 
+  // Get the authorization key, if present.
+  elem = _elem->FirstChildElement("authorization_key");
+  if (elem)
+  {
+    const char *txt = elem->GetText();
+    if (txt != nullptr)
+      this->authorizationKey = txt;
+  }
+
+  // Get the admin authorization key, if present.
+  elem = _elem->FirstChildElement("admin_authorization_key");
+  if (elem)
+  {
+    const char *txt = elem->GetText();
+    if (txt != nullptr)
+      this->adminAuthorizationKey = txt;
+  }
+
+  int port = 9002;
+  // Get the port, if present.
+  elem = _elem->FirstChildElement("port");
+  if (elem)
+  {
+    try
+    {
+      port = std::stoi(elem->GetText());
+    }
+    catch (...)
+    {
+      ignerr << "Failed to convert port[" << elem->GetText() << "] to integer."
+        << std::endl;
+    }
+  }
+  igndbg << "Using port[" << port << "]\n";
+
   // All of the protocols handled by this websocket server.
   this->protocols.push_back(
     {
@@ -195,13 +230,12 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
   // The terminator
   this->protocols.push_back({NULL, NULL, 0, 0, 0, 0 });
 
-  int port = 9002;
 
   // We will handle logging
   lws_set_log_level( 0, lwsl_emit_syslog);
 
   struct lws_context_creation_info info;
-  memset( &info, 0, sizeof info );
+  memset(&info, 0, sizeof info);
   info.port = port;
   info.iface = NULL;
   info.protocols = &this->protocols[0];
@@ -260,6 +294,10 @@ void WebsocketServer::OnConnect(int _socketId)
 {
   std::unique_ptr<Connection> c(new Connection);
   c->creationTime = IGN_SYSTEM_TIME();
+
+  // No authorization key means the server is publically accessible
+  c->authorized = this->authorizationKey.empty() &&
+                  this->adminAuthorizationKey.empty();
   this->connections[_socketId] = std::move(c);
 }
 
@@ -295,6 +333,38 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   {
     ignerr << "Received an invalid frame with " << frameParts.size()
       << "components when 4 is expected.\n";
+    return;
+  }
+
+  // Check authorization
+  if (frameParts[0] == "auth" &&
+      (!this->authorizationKey.empty() || !this->adminAuthorizationKey.empty()))
+  {
+    std::string key = "";
+    if (frameParts.size() > 1)
+      key = frameParts.back();
+
+    // Only check if the key is not empty.
+    if (!key.empty())
+    {
+      this->connections[_socketId]->authorized =
+        key == this->authorizationKey ||
+        key == this->adminAuthorizationKey;
+    }
+
+    igndbg << "Authorization request received on socket[" << _socketId << "]. "
+      << "Authorized[" << this->connections[_socketId]->authorized << "]\n";
+
+    std::string result =
+      this->connections[_socketId]->authorized ? "authorized": "invalid";
+
+    this->QueueMessage(this->connections[_socketId].get(),
+        result.c_str(), result.size());
+  }
+
+  if (!this->connections[_socketId]->authorized)
+  {
+    igndbg << "Unauthorized request received on socket[" << _socketId << "]\n";
     return;
   }
 
@@ -394,7 +464,6 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
       ignerr << "Failed to get the scene information for " << frameParts[1]
         << " world.\n";
     }
-    std::cout << rep.DebugString() << std::endl;
 
     std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
         std::string("ignition.msgs.Scene"), rep.SerializeAsString());
