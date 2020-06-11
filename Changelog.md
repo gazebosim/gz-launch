@@ -2,9 +2,12 @@
 
 ### Ignition Launch 1.6.0 (2020-06-11)
 
-1. Improved websockets by integrating: simple authentication, access to
+1. Improved websockets by: adding simple authentication, access to
    protobuf message definitions, access to scene and world information, and
    definition of custom message framing.
+    * [Pull Request 22](https://github.com/ignitionrobotics/ign-launch/pull/22)
+    * [Pull Request 21](https://github.com/ignitionrobotics/ign-launch/pull/21)
+    * [Pull Request 17](https://github.com/ignitionrobotics/ign-launch/pull/17)
     * [Pull Request 33](https://github.com/ignitionrobotics/ign-launch/pull/33)
 
 ### Ignition Launch 1.5.0 (2020-05-20)
@@ -16,16 +19,6 @@
 
 1.  Use the new GUI API of ign-gazebo. This adds support for saving worlds to SDFormat from the GUI.
     * [Pull Request 19](https://github.com/ignitionrobotics/ign-launch/pull/19)
-
-1. Changed the websocket messages to be more efficient when transmitting
-   protobuf messages.
-    * [Pull Request 22](https://github.com/ignitionrobotics/ign-launch/pull/22)
-
-1. Added ability to get protobuf definitions from the websocket server
-    * [Pull Request 21](https://github.com/ignitionrobotics/ign-launch/pull/21)
-
-1. Added ability to set the publication rate of the websocket server.
-    * [Pull Request 17](https://github.com/ignitionrobotics/ign-launch/pull/17)
 
 ### Ignition Launch 1.4.1 (2019-12-05)
 
