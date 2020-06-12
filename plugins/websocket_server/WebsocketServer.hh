@@ -52,7 +52,7 @@ namespace ignition
     /// "auth" call on the websocket. If the <authorization_key> is set, then
     /// the connection can provide that key.
     ///
-    /// * <ssl> : Element that contains SSL configuration. For teting
+    /// * <ssl> : Element that contains SSL configuration. For testing
     ///           purposes you can create self-signed SSL certificates. Run
     ///
     /// ```
@@ -83,7 +83,7 @@ namespace ignition
     ///
     /// The `operation` component is mandatory and must be one of:
     ///     1. "sub": Subscribe to the topic in the `topic_name` component,
-    ///     2. "pub": Publish a message from the Ingition Transport topic in
+    ///     2. "pub": Publish a message from the Ignition Transport topic in
     ///               the `topic_name` component,
     ///     3. "topics": Get the list of available topics, and
     ///     4. "protos": Get a string containing all the protobuf
@@ -98,7 +98,7 @@ namespace ignition
     /// "ignition.msgs.Clock".
     ///
     /// The `payload` component is mandatory for the "pub" operation. If
-    /// present, it contains a serialized string of an Igntion Message.
+    /// present, it contains a serialized string of an Ignition Message.
     ///
     /// ## Example frames
     ///
@@ -108,7 +108,7 @@ namespace ignition
     ///
     /// 3. Subscribe to the "/clock" topic: `sub,/clock,,`
     ///
-    /// 4. Websocker server publishing data on the "/clock" topic:
+    /// 4. Websocket server publishing data on the "/clock" topic:
     ///    `pub,/clock,ignition.msgs.Clock,<serialized_data>`
     ///
     /// # Example usage

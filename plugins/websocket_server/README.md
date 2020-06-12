@@ -45,6 +45,13 @@ Configure the websocket plugin using:
   </ssl>
 ```
 
+   * You can create your own self-signed certificates using the following
+   command. Use "localhost" for the  "Common Name" question.
+
+   ```
+   openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.cert
+   ```
+
 2. Run the plugin.
 
 3. Run a browser, such as firefox, with the `index.html` file.

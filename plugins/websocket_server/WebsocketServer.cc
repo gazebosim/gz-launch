@@ -119,11 +119,6 @@ int rootCallback(struct lws *_wsi,
       self->OnMessage(fd, std::string((const char *)_in));
       break;
 
-    case LWS_CALLBACK_PROTOCOL_INIT:
-      igndbg << "LWS_CALLBACK_PROTOCOL_INIT\n";
-      break;
-
-
     default:
       // Do nothing on default.
       break;
@@ -264,7 +259,6 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
 
   if (!sslCertFile.empty() && !sslPrivateKeyFile.empty())
   {
-
     // Fail if the certificate file cannot be opened.
     if (!ignition::common::exists(sslCertFile))
     {
@@ -283,6 +277,7 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
 
     // Store SSL configuration.
     info.options = LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT;
+
     info.ssl_cert_filepath = sslCertFile.c_str();
     info.ssl_private_key_filepath = sslPrivateKeyFile.c_str();
   }

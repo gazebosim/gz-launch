@@ -1,5 +1,10 @@
 ## Ignition Launch 1.x
 
+### Ignition Launch 1.x.x (2020-xx-xx)
+
+1. Added SSL to websocket server.
+    * [Pull Request 34](https://github.com/ignitionrobotics/ign-launch/pull/34)
+
 ### Ignition Launch 1.6.0 (2020-06-11)
 
 1. Improved websockets by: adding simple authentication, access to
