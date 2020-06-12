@@ -52,6 +52,23 @@ namespace ignition
     /// "auth" call on the websocket. If the <authorization_key> is set, then
     /// the connection can provide that key.
     ///
+    /// * <ssl> : Element that contains SSL configuration. For teting
+    ///           purposes you can create self-signed SSL certificates. Run
+    ///
+    /// ```
+    /// openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    /// -keyout server.key -out server.cert
+    /// ```
+    ///
+    ///  Use "localhost" for the  "Common Name" question. If you are testing
+    ///  with a browser, first navigate to "https://localhost:<port>" and
+    ///  accept the self-signed certificate.
+    ///
+    ///     * <cert_file>: Child element of <ssl> that contains the path to
+    ///                     the SSL certificate file.
+    ///     * <private_key_file>: Child element of <ssl> that contains the path
+    ///                           to SSL private key file.
+    ///
     /// # Websocket Server Interface
     ///
     /// The websocket server listens for incoming requests and sends

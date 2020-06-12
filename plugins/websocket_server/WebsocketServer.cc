@@ -62,13 +62,6 @@ int rootCallback(struct lws *_wsi,
     return 0;
 
   int fd = lws_get_socket_fd(_wsi);
-  std::cout << "Here[" << _reason << "]\n";
-
-  /*struct per_vhost_data__minimal *vhd =
-    (struct per_vhost_data__minimal *)
-    lws_protocol_vh_priv_get(lws_get_vhost(_wsi),
-        lws_get_protocol(_wsi));
-        */
 
   // std::lock_guard<std::mutex> mainLock(self->mutex);
   switch (_reason)
@@ -219,19 +212,21 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
   igndbg << "Using port[" << port << "]\n";
 
   std::string sslCertFile = "";
-  // Get the ssl cert file, if present.
-  elem = _elem->FirstChildElement("ssl_cert_file");
-  if (elem)
-  {
-    sslCertFile = elem->GetText();
-  }
-
   std::string sslPrivateKeyFile = "";
-  // Get the ssl private key file, if present.
-  elem = _elem->FirstChildElement("ssl_private_key_file");
+  elem = _elem->FirstChildElement("ssl");
   if (elem)
   {
-    sslPrivateKeyFile = elem->GetText();
+    // Get the ssl cert file, if present.
+    const tinyxml2::XMLElement *certElem =
+      elem->FirstChildElement("cert_file");
+    if (certElem)
+      sslCertFile = certElem->GetText();
+
+    // Get the ssl private key file, if present.
+    const tinyxml2::XMLElement *keyElem =
+      elem->FirstChildElement("private_key_file");
+    if (keyElem)
+      sslPrivateKeyFile = keyElem->GetText();
   }
 
   // All of the protocols handled by this websocket server.
@@ -258,7 +253,6 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
   // The terminator
   this->protocols.push_back({NULL, NULL, 0, 0, 0, 0 });
 
-
   // We will handle logging
   lws_set_log_level( 0, lwsl_emit_syslog);
 
@@ -270,11 +264,36 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
 
   if (!sslCertFile.empty() && !sslPrivateKeyFile.empty())
   {
-    std::cout << "SSL!!\n";
-    info.options = LWS_SERVER_OPTION_REQUIRE_VALID_OPENSSL_CLIENT_CERT;
-    info.options |= LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT;
-    info.ssl_cert_filepath        = sslCertFile.c_str();
+
+    // Fail if the certificate file cannot be opened.
+    if (!ignition::common::exists(sslCertFile))
+    {
+      ignerr << "SSL certificate file[" << sslCertFile
+        << "] does not exist. Quitting.\n";
+      return false;
+    }
+
+    // Fail if the private key file cannot be opened.
+    if (!ignition::common::exists(sslPrivateKeyFile))
+    {
+      ignerr << "SSL private key file[" << sslPrivateKeyFile
+        << "] does not exist. Quitting.\n";
+      return false;
+    }
+
+    // Store SSL configuration.
+    info.options = LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT;
+    info.ssl_cert_filepath = sslCertFile.c_str();
     info.ssl_private_key_filepath = sslPrivateKeyFile.c_str();
+  }
+  else if (!sslCertFile.empty() || !sslPrivateKeyFile.empty())
+  {
+    ignwarn << "Partial SSL configuration specified. Please specify: "
+    << "\t<ssl>\n"
+    << "\t  <cert_file>PATH_TO_CERT_FILE</cert_file>\n"
+    << "\t  <private_key_file>PATH_TO_KEY_FILE</private_key_file>\n"
+    << "\t</ssl>.\n"
+    << "Continuing without SSL.\n";
   }
 
   // keep alive time of  60 seconds

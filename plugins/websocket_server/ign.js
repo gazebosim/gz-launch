@@ -53,7 +53,6 @@ Ignition.prototype.connect = function(url, key) {
   /// \brief Emits a 'connection' event on WebSocket connection.
   /// \param event - the argument to emit with the event.
   function onOpen(event) {
-    console.log(key);
     that.socket.send(buildMsg(['auth','','',key]));
   }
 
@@ -82,7 +81,6 @@ Ignition.prototype.connect = function(url, key) {
       f.onloadend = function(event) {
         // This is the proto message data
         var contents = event.target.result;
-        console.log(contents);
         if (contents == "authorized") {
           that.socket.send(buildMsg(["protos",'','','']));
         }
