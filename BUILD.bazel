@@ -14,7 +14,7 @@ load(
 package(default_visibility = ["//visibility:public"])
 
 PROJECT_NAME = "ignition-launch"
-PROJECT_MAJOR = 8
+PROJECT_MAJOR = 3
 PROJECT_MINOR = 0
 PROJECT_PATCH = 0
 IGN_DESIGNATION = "/tmp"
