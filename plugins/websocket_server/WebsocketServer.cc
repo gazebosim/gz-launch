@@ -281,7 +281,7 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
     info.ssl_cert_filepath = sslCertFile.c_str();
     info.ssl_private_key_filepath = sslPrivateKeyFile.c_str();
   }
-  else if (!sslCertFile.empty() || !sslPrivateKeyFile.empty())
+  else if (sslCertFile.empty() || sslPrivateKeyFile.empty())
   {
     ignwarn << "Partial SSL configuration specified. Please specify: "
     << "\t<ssl>\n"
