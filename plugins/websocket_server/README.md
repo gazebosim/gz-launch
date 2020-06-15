@@ -33,6 +33,20 @@ ign launch -f examples/websocket.ign -v 4
 firefox plugins/websocket_server/index.html
 ```
 
+
+# Authorization
+
+The `websocket_server` plugin accepts to authentication keys:
+
+* `<authorization_key>` : If this is set, then a connection must provide the
+matching key using an "auth" call on the websocket. If the `<admin_authorization_key>` is set, then the connection can provide that key.
+
+* `<admin_authorization_key>` : If this is set, then a connection must provide the matching key using an "auth" call on the websocket. If the `<authorization_key>` is set, then the connection can provide that key.
+
+Two keys are used in order to support authorization of different users.
+A competition scenario may require admin access while prohibiting user
+access.
+
 # SSL
 
 1. Use the `localhost.cert` and `localhost.key` files for testing purposes.
