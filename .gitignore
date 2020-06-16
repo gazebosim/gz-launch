@@ -8,6 +8,7 @@ build-*
 *.swp
 *.swo
 *.bak
+*.orig
 
 # C++ compiler generated files
 *.gch
