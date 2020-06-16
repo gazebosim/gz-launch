@@ -11,6 +11,14 @@ load(
     "generate_file",
 )
 
+load(
+    "@bazelruby_rules_ruby//ruby:defs.bzl",
+    "ruby_binary",
+    "ruby_library",
+    "ruby_test",
+    "ruby_rspec",
+)
+
 package(default_visibility = ["//visibility:public"])
 
 PROJECT_NAME = "ignition-launch"
@@ -21,6 +29,8 @@ IGN_DESIGNATION = "/tmp"
 CMAKE_INSTALL_PREFIX = "/tmp"
 IGN_DATA_INSTALL_DIR = "/tmp"
 IGN_LAUNCH_PLUGIN_INSTALL_PATH = "/tmp"
+library_location = "/usr"
+IGN_LIBRARY_PATH = "/usr"
 
 # Generates config.hh based on the version numbers in CMake code.
 cmake_configure_file(
@@ -47,6 +57,43 @@ cmake_configure_file(
         "CMAKE_INSTALL_PREFIX=%s" % (CMAKE_INSTALL_PREFIX),
     ],
     visibility = ["//visibility:private"],
+)
+
+cmake_configure_file(
+    name = "yaml",
+    src = "src/launch.yaml.in",
+    out = "src/launch.yaml",
+    cmakelists = ["CMakeLists.txt"],
+    defines = [
+        "PROJECT_VERSION_FULL=%d.%d.%d" % (PROJECT_MAJOR, PROJECT_MINOR, PROJECT_PATCH),  # noqa
+        "PROJECT_NAME_NO_VERSION=%s" % (PROJECT_NAME),
+        "PROJECT_NAME_NO_VERSION_LOWER=%s" % (PROJECT_NAME),
+        "ign_library_path=%s" % (IGN_LIBRARY_PATH),
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# Generates config.hh based on the version numbers in CMake code.
+cmake_configure_file(
+    name = "ruby",
+    src = "src/cmdlaunch.rb.in",
+    out = "src/cmdlaunch.rb",
+    cmakelists = ["CMakeLists.txt"],
+    defines = [
+        "library_location=%s" % [library_location],
+        "PROJECT_VERSION_FULL=%d.%d.%d" % (PROJECT_MAJOR, PROJECT_MINOR, PROJECT_PATCH),  # noqa
+        "IGN_LIBRARY_PATH=%s" % (IGN_LIBRARY_PATH),
+        "IGN_LIBRARY_NAME=%s" % (PROJECT_NAME),
+    ],
+    visibility = ["//visibility:public"],
+)
+
+ruby_binary(
+    name = "launch-ruby",
+    srcs = ["src/cmdlaunch.rb"],
+    includes = ["src"],
+    main = "src/cmdlaunch.rb",
+    visibility = ["//visibility:public"],
 )
 
 generate_file(
