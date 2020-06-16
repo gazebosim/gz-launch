@@ -52,6 +52,23 @@ namespace ignition
     /// "auth" call on the websocket. If the <authorization_key> is set, then
     /// the connection can provide that key.
     ///
+    /// * <ssl> : Element that contains SSL configuration. For testing
+    ///           purposes you can create self-signed SSL certificates. Run
+    ///
+    /// ```
+    /// openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    /// -keyout server.key -out server.cert
+    /// ```
+    ///
+    ///  Use "localhost" for the  "Common Name" question. If you are testing
+    ///  with a browser, first navigate to "https://localhost:<port>" and
+    ///  accept the self-signed certificate.
+    ///
+    ///     * <cert_file>: Child element of <ssl> that contains the path to
+    ///                     the SSL certificate file.
+    ///     * <private_key_file>: Child element of <ssl> that contains the path
+    ///                           to SSL private key file.
+    ///
     /// # Websocket Server Interface
     ///
     /// The websocket server listens for incoming requests and sends
@@ -66,7 +83,7 @@ namespace ignition
     ///
     /// The `operation` component is mandatory and must be one of:
     ///     1. "sub": Subscribe to the topic in the `topic_name` component,
-    ///     2. "pub": Publish a message from the Ingition Transport topic in
+    ///     2. "pub": Publish a message from the Ignition Transport topic in
     ///               the `topic_name` component,
     ///     3. "topics": Get the list of available topics, and
     ///     4. "protos": Get a string containing all the protobuf
@@ -81,7 +98,7 @@ namespace ignition
     /// "ignition.msgs.Clock".
     ///
     /// The `payload` component is mandatory for the "pub" operation. If
-    /// present, it contains a serialized string of an Igntion Message.
+    /// present, it contains a serialized string of an Ignition Message.
     ///
     /// ## Example frames
     ///
@@ -91,7 +108,7 @@ namespace ignition
     ///
     /// 3. Subscribe to the "/clock" topic: `sub,/clock,,`
     ///
-    /// 4. Websocker server publishing data on the "/clock" topic:
+    /// 4. Websocket server publishing data on the "/clock" topic:
     ///    `pub,/clock,ignition.msgs.Clock,<serialized_data>`
     ///
     /// # Example usage
