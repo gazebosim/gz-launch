@@ -66,13 +66,21 @@ namespace ignition
 
       public: void ToggleSensors(bool enabled);
 
-      public: virtual void PublishTopics();
+      /// \brie Start the camera.
+      public: void Start();
 
       private: void SetupErrorCallback();
 
       private: rs2_stream Rs2StringToStream(const std::string &_str) const;
 
-      private: void Parameters();
+      /// \brief Publish temperature information.
+      private: void PublishTemperature();
+
+      /// \brief Set the parameters.
+      /// \todo Implement a parameter server.
+      private: void SetParameters();
+
+      private: void SetupDevice();
 
       private: void SetupFilters();
 
@@ -82,7 +90,6 @@ namespace ignition
       /// \brief Stream formats.
       private: std::map<rs2_stream, int> format;
 
-      private: mutable std::condition_variable conditionVariable;
 
       private: PipelineSyncer pipelineSyncer;
 
@@ -101,7 +108,15 @@ namespace ignition
       // private: std::map<rs2_stream, std::string> depthAlignedEncoding;
 
 
-      private: bool isRunning = true;
+      /// \brief True if the camera is running
+      private: bool running = false;
+
+      /// \brief A thread for monitoring the internal state of the camera.
+      private: std::shared_ptr<std::thread> monitorThread;
+
+      /// \brief A condition variable used to trigger the monitorThread.
+      private: std::condition_variable monitorConditionVariable;
+
 
       private: std::string baseFrameId;
 
@@ -119,12 +134,12 @@ namespace ignition
       private: std::shared_ptr<std::thread> tfThread;
 
 
-      private: std::shared_ptr<std::thread> monitoringThread;
 
       private: std::vector<rs2_option> monitorOptions;
 
       private: std::map<rs2_stream, std::string> streamName;
 
+      // private: StreamIndexPair _base_stream;
               /*
 
       public: enum ImuSyncMethod
@@ -192,7 +207,6 @@ namespace ignition
       */
 /*
 
-      private: void SetupDevice();
 
 
       private: void SetupPublishers();
@@ -287,9 +301,7 @@ namespace ignition
 
 
                */
-      // private: void StartMonitoring();
 
-      // private: void PublishTemperature();
 
                /*
 
@@ -416,7 +428,6 @@ namespace ignition
 
 
 
-      private: StreamIndexPair _base_stream;
 
       private: sensor_msgs::PointCloud2 _msg_pointcloud;
 

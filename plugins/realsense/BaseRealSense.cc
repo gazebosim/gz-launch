@@ -14,6 +14,8 @@ BaseRealSenseCamera::BaseRealSenseCamera(rs2::device _dev,
   : rs2Dev(_dev),
     serialNumber(_serialNumber)
 {
+  igndbg << "Serial number[" << this->serialNumber << "]\n";
+
   // Types for depth stream
   // this->imageFormat[RS2_STREAM_DEPTH] = CV_16UC1;
 
@@ -68,6 +70,21 @@ BaseRealSenseCamera::BaseRealSenseCamera(rs2::device _dev,
 
   this->monitorOptions = {RS2_OPTION_ASIC_TEMPERATURE,
     RS2_OPTION_PROJECTOR_TEMPERATURE};
+
+  this->SetParameters();
+  this->SetupDevice();
+
+  /* First pass
+    this->SetupFilters();
+    this->SetupErrorCallback();
+    this->EnableDevices();
+    this->SetupPublishers();
+    this->SetupStreams();
+    this->SetBaseStream();
+    this->RegisterAutoExposureROIOptions(_node_handle);
+    this->PublishStaticTransforms();
+    this->PublishIntrinsics();
+    */
 }
 
 //////////////////////////////////////////////////
@@ -77,19 +94,333 @@ BaseRealSenseCamera::~BaseRealSenseCamera()
   if (this->tfThread)
     this->tfThread->join();
 
-  this->isRunning = false;
-  this->conditionVariable.notify_one();
+  this->running = false;
+  this->monitorConditionVariable.notify_one();
 
-  if (this->monitoringThread && this->monitoringThread->joinable())
-    this->monitoringThread->join();
+  if (this->monitorThread && this->monitorThread->joinable())
+    this->monitorThread->join();
 }
+
+//////////////////////////////////////////////////
+void BaseRealSenseCamera::Start()
+{
+  // This is for temperature diagnostics.
+  // \todo Add the concept of diagnostics to Ignition
+  /*for (rs2_option option : this->monitorOptions)
+  {
+    _temperature_nodes.push_back(
+        {option, std::make_shared<TemperatureDiagnostics>(
+            rs2_option_to_string(option), this->serialNumber)});
+  }*/
+
+  using namespace std::chrono_literals;
+
+  // This function is used by the monitor thread to periodically send
+  // temperature diagnostics.
+  std::function<void()> func = [this]()
+  {
+    std::mutex mutex;
+    std::unique_lock<std::mutex> lock(mutex);
+
+    this->running = true;
+    while (this->running)
+    {
+      this->monitorConditionVariable.wait_for(lock, 1s,
+          [&] {return !this->running;});
+
+      if (this->running)
+        this->PublishTemperature();
+    }
+  };
+
+  this->monitorThread = std::make_shared<std::thread>(func);
+}
+
+//////////////////////////////////////////////////
+void BaseRealSenseCamera::PublishTemperature()
+{
+  /* rs2::options sensor(this->sensors[_base_stream]);
+  for (OptionTemperatureDiag optionDiag : _temperature_nodes)
+  {
+    rs2_option option(optionDiag.first);
+    if (sensor.supports(option))
+    {
+      try
+      {
+        optionDiag.second->update(sensor.get_option(option));
+      }
+      catch(const std::exception& e)
+      {
+        igndbg << "Failed checking for temperature[" << e.what() << "]\n";
+      }
+    }
+  }*/
+}
+
+//////////////////////////////////////////////////
+void BaseRealSenseCamera::SetParameters()
+{
+  igndbg << "Setting RealSense parameters\n";
+
+  // Todo: Implement parameter server
+  // _pnh.param("align_depth", this->alignDepth, ALIGN_DEPTH);
+  // _pnh.param("enable_pointcloud", this->pointCloud, POINTCLOUD);
+  // _pnh.param("pointcloud_texture_stream", pcTextureStream,
+  //   std::string("RS2_STREAM_COLOR"));
+  // _pnh.param("pointcloud_texture_index", pcTextureIdx, 0);
+  // _pnh.param("filters", this->filtersStr, DEFAULT_FILTERS);
+  // _pnh.param("publish_tf", this->publishTf, PUBLISH_TF);
+  // _pnh.param("tf_publish_rate", this->tfPublishRate, TF_PUBLISH_RATE);
+
+  // _pnh.param("enable_sync", this->syncFrames, SYNC_FRAMES);
+  // _pnh.param("json_file_path", this->jsonFilePath, std::string(""));
+
+  std::string pcTextureStream("RS2_STREAM_COLOR");
+
+  int pcTextureIdx = 0;
+  this->pointCloudTexture = StreamIndexPair{
+    Rs2StringToStream(pcTextureStream), pcTextureIdx};
+
+  this->syncFrames = (this->pointCloud || this->alignDepth ||
+      this->filtersStr.size() > 0);
+
+  /*for (auto& stream : IMAGE_STREAMS)
+  {
+    std::string param_name(this->streamName[stream.first] + "_width");
+    ROS_DEBUG_STREAM("reading parameter:" << param_name);
+    _pnh.param(param_name, _width[stream], IMAGE_WIDTH);
+    param_name = this->streamName[stream.first] + "_height";
+    ROS_DEBUG_STREAM("reading parameter:" << param_name);
+    _pnh.param(param_name, _height[stream], IMAGE_HEIGHT);
+    param_name = this->streamName[stream.first] + "_fps";
+    ROS_DEBUG_STREAM("reading parameter:" << param_name);
+    _pnh.param(param_name, _fps[stream], IMAGE_FPS);
+    param_name = "enable_" + STREAM_NAME(stream);
+    ROS_DEBUG_STREAM("reading parameter:" << param_name);
+    _pnh.param(param_name, _enable[stream], true);
+  }*/
+
+  /*for (auto& stream : HID_STREAMS)
+  {
+    std::string param_name(this->streamName[stream.first] + "_fps");
+    ROS_DEBUG_STREAM("reading parameter:" << param_name);
+    _pnh.param(param_name, _fps[stream], IMU_FPS);
+    param_name = "enable_" + STREAM_NAME(stream);
+    _pnh.param(param_name, _enable[stream], ENABLE_IMU);
+    ROS_DEBUG_STREAM("_enable[" << this->streamName[stream.first] << "]:" << _enable[stream]);
+  }
+  _pnh.param("base_frame_id", this->baseframeId, DEFAULT_BASE_FRAME_ID);
+  _pnh.param("odom_frame_id", this->odomFrameId, DEFAULT_ODOM_FRAME_ID);
+  */
+
+  /*std::vector<StreamIndexPair> streams(IMAGE_STREAMS);
+  streams.insert(streams.end(), HID_STREAMS.begin(), HID_STREAMS.end());
+  for (auto& stream : streams)
+  {
+    std::string param_name(static_cast<std::ostringstream&&>(std::ostringstream() << STREAM_NAME(stream) << "_frame_id").str());
+    _pnh.param(param_name, this->frameId[stream], FRAME_ID(stream));
+    ROS_DEBUG_STREAM("frame_id: reading parameter:" << param_name << " : " << this->frameId[stream]);
+    param_name = static_cast<std::ostringstream&&>(std::ostringstream() << STREAM_NAME(stream) << "optical_frame_id").str();
+    _pnh.param(param_name, this->opticalFrameId[stream], OPTICAL_FRAME_ID(stream));
+    ROS_DEBUG_STREAM("optical: reading parameter:" << param_name << " : " << this->opticalFrameId[stream]);
+  }
+
+  std::string unite_imu_method_str("");
+  _pnh.param("unite_imu_method", unite_imu_method_str, DEFAULT_UNITE_IMU_METHOD);
+  if (unite_imu_method_str == "linear_interpolation")
+    _imu_sync_method = imu_sync_method::LINEAR_INTERPOLATION;
+  else if (unite_imu_method_str == "copy")
+    _imu_sync_method = imu_sync_method::COPY;
+  else
+    _imu_sync_method = imu_sync_method::NONE;
+
+  if (_imu_sync_method > imu_sync_method::NONE)
+  {
+    _pnh.param("imu_optical_frame_id", this->opticalFrameId[GYRO], DEFAULT_IMU_OPTICAL_FRAME_ID);
+  }
+
+  for (auto& stream : IMAGE_STREAMS)
+  {
+    if (stream == DEPTH) continue;
+    if (stream.second > 1) continue;
+    std::string param_name(static_cast<std::ostringstream&&>(std::ostringstream() << "aligned_depth_to_" << STREAM_NAME(stream) << "_frame_id").str());
+    _pnh.param(param_name, this->depthAlignedFrameId[stream], ALIGNED_DEPTH_TO_FRAME_ID(stream));
+  }
+
+  _pnh.param("allow_no_texture_points", _allow_no_texture_points, ALLOW_NO_TEXTURE_POINTS);
+  _pnh.param("clip_distance", _clipping_distance, static_cast<float>(-1.0));
+  _pnh.param("linear_accel_cov", _linear_accel_cov, static_cast<double>(0.01));
+  _pnh.param("angular_velocity_cov", _angular_velocity_cov, static_cast<double>(0.01));
+  _pnh.param("hold_back_imu_for_frames", _hold_back_imu_for_frames, HOLD_BACK_IMU_FOR_FRAMES);
+  _pnh.param("publish_odom_tf", _publish_odom_tf, PUBLISH_ODOM_TF);
+  */
+}
+
+//////////////////////////////////////////////////
+void BaseRealSenseNode::SetupDevice()
+{
+  // HERE
+  try
+  {
+    if (!this->jsonFilePath.empty())
+    {
+      if (this->rs2Dev.is<rs400::advanced_mode>())
+      {
+        std::stringstream ss;
+        std::ifstream in(this->jsonFilePath);
+
+        if (in.is_open())
+        {
+          ss << in.rdbuf();
+          std::string jsonFileContent = ss.str();
+
+          auto adv = this->rs2Dev.as<rs400::advanced_mode>();
+          adv.load_json(jsonFileContent);
+          igndbg << "JSON file loaded [" << this->jsonFilePath << "]\n";
+        }
+        else
+        {
+          ignwarn << "JSON file provided doesn't exist ["
+            << this->jsonFilePath << "]\n";
+        }
+      }
+      else
+      {
+        ignwarn << "Device does not support advanced settings.\n";
+      }
+    }
+    else
+    {
+      igndbg << "JSON file was not provided.\n";
+    }
+
+    std::string cameraName = this->rs2Dev.get_info(RS2_CAMERA_INFO_NAME);
+    igndbg << "Device Name: " << cameraName << std::endl;
+    igndbg << "Device Serial No: " << this->serialNumber << std::endl;
+
+    auto cameraId = this->rs2Dev.get_info(RS2_CAMERA_INFO_PHYSICAL_PORT);
+
+    igndbg << "Device physical port: " << cameraId << std::endl;
+
+    auto fwVer = this->rs2Dev.get_info(RS2_CAMERA_INFO_FIRMWARE_VERSION);
+    igndbg << "Device FW version: " << fw_ver << std::endl;
+
+    auto pid = this->rs2Dev.get_info(RS2_CAMERA_INFO_PRODUCT_ID);
+    igndbg << "Device Product ID: 0x" << pid << std::endl;
+
+    igndbg << "Enable PointCloud: " << ((this->pointCloud)?"On":"Off")
+      << std::endl;
+    igndbg << "Align Depth: " << ((this->alignDepth)?"On":"Off")
+      << std::endl;
+    igndbg << "Sync Mode: " << ((this->syncFrames)?"On":"Off")
+      << std::endl;
+
+    this->rs2Sensors = this->rs2Dev.query_sensors();
+
+    std::function<void(rs2::frame)> frame_callback_function, imu_callback_function;
+    if (this->syncFrames)
+    {
+      frame_callback_function = this->pipelineSyncer;
+
+      auto frame_callback_inner = [this](rs2::frame frame){
+        frame_callback(frame);
+      };
+      this->pipelineSyncer.start(frame_callback_inner);
+    }
+    else
+    {
+      frame_callback_function = [this](rs2::frame frame){frame_callback(frame);};
+    }
+
+    if (_imu_sync_method == imu_sync_method::NONE)
+    {
+      imu_callback_function = [this](rs2::frame frame){imu_callback(frame);};
+    }
+    else
+    {
+      imu_callback_function = [this](rs2::frame frame)
+      {
+        this->imuCallbackSync(frame, _imu_sync_method);
+      };
+    }
+    std::function<void(rs2::frame)> multiple_message_callback_function = [this](rs2::frame frame){multiple_message_callback(frame, _imu_sync_method);};
+
+    ROS_INFO_STREAM("Device Sensors: ");
+    for(auto&& sensor : this->rs2Sensors)
+    {
+      std::string module_name = sensor.get_info(RS2_CAMERA_INFO_NAME);
+      if (sensor.is<rs2::depth_sensor>())
+      {
+        this->sensors[DEPTH] = sensor;
+        this->sensors[INFRA1] = sensor;
+        this->sensors[INFRA2] = sensor;
+        _sensors_callback[module_name] = frame_callback_function;
+      }
+      else if (sensor.is<rs2::color_sensor>())
+      {
+        this->sensors[COLOR] = sensor;
+        _sensors_callback[module_name] = frame_callback_function;
+      }
+      else if (sensor.is<rs2::fisheye_sensor>())
+      {
+        this->sensors[FISHEYE] = sensor;
+        _sensors_callback[module_name] = frame_callback_function;
+      }
+      else if (sensor.is<rs2::motion_sensor>())
+      {
+        this->sensors[GYRO] = sensor;
+        this->sensors[ACCEL] = sensor;
+        _sensors_callback[module_name] = imu_callback_function;
+      }
+      else if (sensor.is<rs2::pose_sensor>())
+      {
+        this->sensors[GYRO] = sensor;
+        this->sensors[ACCEL] = sensor;
+        this->sensors[POSE] = sensor;
+        this->sensors[FISHEYE1] = sensor;
+        this->sensors[FISHEYE2] = sensor;
+        _sensors_callback[module_name] = multiple_message_callback_function;
+      }
+      else
+      {
+        ROS_ERROR_STREAM("Module Name \"" << module_name << "\" isn't supported by LibRealSense! Terminating RealSense Node...");
+        ros::shutdown();
+        exit(1);
+      }
+      ROS_INFO_STREAM(std::string(sensor.get_info(RS2_CAMERA_INFO_NAME)) << " was found.");
+    }
+
+    // Update "enable" map
+    for (std::pair<StreamIndexPair, bool> const& enable : _enable )
+    {
+      const StreamIndexPair& stream_index(enable.first);
+      if (enable.second && this->sensors.find(stream_index) == this->sensors.end())
+      {
+        ROS_INFO_STREAM("(" << rs2_stream_to_string(stream_index.first) << ", " << stream_index.second << ") sensor isn't supported by current device! -- Skipping...");
+        _enable[enable.first] = false;
+      }
+    }
+  }
+  catch(const std::exception& ex)
+  {
+    ignerr << "An exception has been thrown[" << ex.what() << "]\n";
+  }
+  catch(...)
+  {
+    ignerr << "Unknown exception has occured!\n";
+  }
+}
+
+
+
+
 
 /////////////////////////////////////////////////
 void BaseRealSenseCamera::ToggleSensors(bool _enabled)
 {
   for (auto it = this->sensors.begin(); it != this->sensors.end(); ++it)
   {
-    auto& sens = this->sensors[it->first];
+    auto &sens = this->sensors[it->first];
     try
     {
       if (_enabled)
@@ -140,28 +471,6 @@ void BaseRealSenseCamera::SetupErrorCallback()
   }
 }
 
-//////////////////////////////////////////////////
-void BaseRealSenseCamera::PublishTopics()
-{
-  /* First pass
-    this->Parameters();
-    this->SetupDevice();
-    this->SetupFilters();
-    this->SetupErrorCallback();
-    this->EnableDevices();
-    */
-
-    /*
-    this->SetupPublishers();
-    this->SetupStreams();
-    this->SetBaseStream();
-    this->RegisterAutoExposureROIOptions(_node_handle);
-    this->PublishStaticTransforms();
-    this->PublishIntrinsics();
-    // this->StartMonitoring();
-    ROS_INFO_STREAM("RealSense Node Is Up!");
-    */
-}
 
 //////////////////////////////////////////////////
 rs2_stream BaseRealSenseCamera::Rs2StringToStream(const std::string &_str) const
@@ -265,104 +574,6 @@ std::map<std::string, int> kGetEnumMethod(rs2::options _sensor,
   return dict;
 }
 
-//////////////////////////////////////////////////
-void BaseRealSenseCamera::Parameters()
-{
-  igndbg << "Getting RealSense parameters\n";
-
-  // Todo: Implement parameter server
-  // _pnh.param("align_depth", this->alignDepth, ALIGN_DEPTH);
-  // _pnh.param("enable_pointcloud", this->pointCloud, POINTCLOUD);
-  // _pnh.param("pointcloud_texture_stream", pcTextureStream,
-  //   std::string("RS2_STREAM_COLOR"));
-  // _pnh.param("pointcloud_texture_index", pcTextureIdx, 0);
-  // _pnh.param("filters", this->filtersStr, DEFAULT_FILTERS);
-  // _pnh.param("publish_tf", this->publishTf, PUBLISH_TF);
-  // _pnh.param("tf_publish_rate", this->tfPublishRate, TF_PUBLISH_RATE);
-
-  // _pnh.param("enable_sync", this->syncFrames, SYNC_FRAMES);
-  // _pnh.param("json_file_path", this->jsonFilePath, std::string(""));
-
-  std::string pcTextureStream("RS2_STREAM_COLOR");
-
-  int pcTextureIdx = 0;
-  this->pointCloudTexture = StreamIndexPair{
-    Rs2StringToStream(pcTextureStream), pcTextureIdx};
-
-  this->syncFrames = (this->pointCloud || this->alignDepth ||
-      this->filtersStr.size() > 0);
-
-  /*for (auto& stream : IMAGE_STREAMS)
-  {
-    std::string param_name(this->streamName[stream.first] + "_width");
-    ROS_DEBUG_STREAM("reading parameter:" << param_name);
-    _pnh.param(param_name, _width[stream], IMAGE_WIDTH);
-    param_name = this->streamName[stream.first] + "_height";
-    ROS_DEBUG_STREAM("reading parameter:" << param_name);
-    _pnh.param(param_name, _height[stream], IMAGE_HEIGHT);
-    param_name = this->streamName[stream.first] + "_fps";
-    ROS_DEBUG_STREAM("reading parameter:" << param_name);
-    _pnh.param(param_name, _fps[stream], IMAGE_FPS);
-    param_name = "enable_" + STREAM_NAME(stream);
-    ROS_DEBUG_STREAM("reading parameter:" << param_name);
-    _pnh.param(param_name, _enable[stream], true);
-  }*/
-
-  /*for (auto& stream : HID_STREAMS)
-  {
-    std::string param_name(this->streamName[stream.first] + "_fps");
-    ROS_DEBUG_STREAM("reading parameter:" << param_name);
-    _pnh.param(param_name, _fps[stream], IMU_FPS);
-    param_name = "enable_" + STREAM_NAME(stream);
-    _pnh.param(param_name, _enable[stream], ENABLE_IMU);
-    ROS_DEBUG_STREAM("_enable[" << this->streamName[stream.first] << "]:" << _enable[stream]);
-  }
-  _pnh.param("base_frame_id", this->baseframeId, DEFAULT_BASE_FRAME_ID);
-  _pnh.param("odom_frame_id", this->odomFrameId, DEFAULT_ODOM_FRAME_ID);
-  */
-
-  /*std::vector<StreamIndexPair> streams(IMAGE_STREAMS);
-  streams.insert(streams.end(), HID_STREAMS.begin(), HID_STREAMS.end());
-  for (auto& stream : streams)
-  {
-    std::string param_name(static_cast<std::ostringstream&&>(std::ostringstream() << STREAM_NAME(stream) << "_frame_id").str());
-    _pnh.param(param_name, this->frameId[stream], FRAME_ID(stream));
-    ROS_DEBUG_STREAM("frame_id: reading parameter:" << param_name << " : " << this->frameId[stream]);
-    param_name = static_cast<std::ostringstream&&>(std::ostringstream() << STREAM_NAME(stream) << "optical_frame_id").str();
-    _pnh.param(param_name, this->opticalFrameId[stream], OPTICAL_FRAME_ID(stream));
-    ROS_DEBUG_STREAM("optical: reading parameter:" << param_name << " : " << this->opticalFrameId[stream]);
-  }
-
-  std::string unite_imu_method_str("");
-  _pnh.param("unite_imu_method", unite_imu_method_str, DEFAULT_UNITE_IMU_METHOD);
-  if (unite_imu_method_str == "linear_interpolation")
-    _imu_sync_method = imu_sync_method::LINEAR_INTERPOLATION;
-  else if (unite_imu_method_str == "copy")
-    _imu_sync_method = imu_sync_method::COPY;
-  else
-    _imu_sync_method = imu_sync_method::NONE;
-
-  if (_imu_sync_method > imu_sync_method::NONE)
-  {
-    _pnh.param("imu_optical_frame_id", this->opticalFrameId[GYRO], DEFAULT_IMU_OPTICAL_FRAME_ID);
-  }
-
-  for (auto& stream : IMAGE_STREAMS)
-  {
-    if (stream == DEPTH) continue;
-    if (stream.second > 1) continue;
-    std::string param_name(static_cast<std::ostringstream&&>(std::ostringstream() << "aligned_depth_to_" << STREAM_NAME(stream) << "_frame_id").str());
-    _pnh.param(param_name, this->depthAlignedFrameId[stream], ALIGNED_DEPTH_TO_FRAME_ID(stream));
-  }
-
-  _pnh.param("allow_no_texture_points", _allow_no_texture_points, ALLOW_NO_TEXTURE_POINTS);
-  _pnh.param("clip_distance", _clipping_distance, static_cast<float>(-1.0));
-  _pnh.param("linear_accel_cov", _linear_accel_cov, static_cast<double>(0.01));
-  _pnh.param("angular_velocity_cov", _angular_velocity_cov, static_cast<double>(0.01));
-  _pnh.param("hold_back_imu_for_frames", _hold_back_imu_for_frames, HOLD_BACK_IMU_FOR_FRAMES);
-  _pnh.param("publish_odom_tf", _publish_odom_tf, PUBLISH_ODOM_TF);
-  */
-}
 
 /////////////////////////////////////////////////
 /*SyncedImuPublisher::SyncedImuPublisher(
@@ -668,162 +879,6 @@ void SyncedImuPublisher::PublishPendingMessages()
 }*/
 
 
-
-//////////////////////////////////////////////////
-/*void BaseRealSenseNode::SetupDevice()
-{
-  try
-  {
-    if (!this->jsonFilePath.empty())
-    {
-      if (this->rs2Dev.is<rs400::advanced_mode>())
-      {
-        std::stringstream ss;
-        std::ifstream in(this->jsonFilePath);
-
-        if (in.is_open())
-        {
-          ss << in.rdbuf();
-          std::string jsonFileContent = ss.str();
-
-          auto adv = this->rs2Dev.as<rs400::advanced_mode>();
-          adv.load_json(jsonFileContent);
-          igndbg << "JSON file loaded [" << this->jsonFilePath << "]\n";
-        }
-        else
-        {
-          ignwarn << "JSON file provided doesn't exist ["
-            << this->jsonFilePath << "]\n";
-        }
-      }
-      else
-      {
-        ignwarn << "Device does not support advanced settings.\n";
-      }
-    }
-    else
-    {
-      igndbg << "JSON file was not provided.\n";
-    }
-
-    std::string cameraName = this->rs2Dev.get_info(RS2_CAMERA_INFO_NAME);
-    igndbg << "Device Name: " << cameraName << std::endl;
-    igndbg << "Device Serial No: " << this->serialNumber << std::endl;
-
-    auto cameraId = this->rs2Dev.get_info(RS2_CAMERA_INFO_PHYSICAL_PORT);
-
-    igndbg << "Device physical port: " << cameraId << std::endl;
-
-    auto fwVer = this->rs2Dev.get_info(RS2_CAMERA_INFO_FIRMWARE_VERSION);
-    igndbg << "Device FW version: " << fw_ver << std::endl;
-
-    auto pid = this->rs2Dev.get_info(RS2_CAMERA_INFO_PRODUCT_ID);
-    igndbg << "Device Product ID: 0x" << pid << std::endl;
-
-    igndbg << "Enable PointCloud: " << ((this->pointCloud)?"On":"Off")
-      << std::endl;
-    igndbg << "Align Depth: " << ((this->alignDepth)?"On":"Off")
-      << std::endl;
-    igndbg << "Sync Mode: " << ((this->syncFrames)?"On":"Off")
-      << std::endl;
-
-    this->rs2Sensors = this->rs2Dev.query_sensors();
-
-    std::function<void(rs2::frame)> frame_callback_function, imu_callback_function;
-    if (this->syncFrames)
-    {
-      frame_callback_function = this->pipelineSyncer;
-
-      auto frame_callback_inner = [this](rs2::frame frame){
-        frame_callback(frame);
-      };
-      this->pipelineSyncer.start(frame_callback_inner);
-    }
-    else
-    {
-      frame_callback_function = [this](rs2::frame frame){frame_callback(frame);};
-    }
-
-    if (_imu_sync_method == imu_sync_method::NONE)
-    {
-      imu_callback_function = [this](rs2::frame frame){imu_callback(frame);};
-    }
-    else
-    {
-      imu_callback_function = [this](rs2::frame frame)
-      {
-        this->imuCallbackSync(frame, _imu_sync_method);
-      };
-    }
-    std::function<void(rs2::frame)> multiple_message_callback_function = [this](rs2::frame frame){multiple_message_callback(frame, _imu_sync_method);};
-
-    ROS_INFO_STREAM("Device Sensors: ");
-    for(auto&& sensor : this->rs2Sensors)
-    {
-      std::string module_name = sensor.get_info(RS2_CAMERA_INFO_NAME);
-      if (sensor.is<rs2::depth_sensor>())
-      {
-        this->sensors[DEPTH] = sensor;
-        this->sensors[INFRA1] = sensor;
-        this->sensors[INFRA2] = sensor;
-        _sensors_callback[module_name] = frame_callback_function;
-      }
-      else if (sensor.is<rs2::color_sensor>())
-      {
-        this->sensors[COLOR] = sensor;
-        _sensors_callback[module_name] = frame_callback_function;
-      }
-      else if (sensor.is<rs2::fisheye_sensor>())
-      {
-        this->sensors[FISHEYE] = sensor;
-        _sensors_callback[module_name] = frame_callback_function;
-      }
-      else if (sensor.is<rs2::motion_sensor>())
-      {
-        this->sensors[GYRO] = sensor;
-        this->sensors[ACCEL] = sensor;
-        _sensors_callback[module_name] = imu_callback_function;
-      }
-      else if (sensor.is<rs2::pose_sensor>())
-      {
-        this->sensors[GYRO] = sensor;
-        this->sensors[ACCEL] = sensor;
-        this->sensors[POSE] = sensor;
-        this->sensors[FISHEYE1] = sensor;
-        this->sensors[FISHEYE2] = sensor;
-        _sensors_callback[module_name] = multiple_message_callback_function;
-      }
-      else
-      {
-        ROS_ERROR_STREAM("Module Name \"" << module_name << "\" isn't supported by LibRealSense! Terminating RealSense Node...");
-        ros::shutdown();
-        exit(1);
-      }
-      ROS_INFO_STREAM(std::string(sensor.get_info(RS2_CAMERA_INFO_NAME)) << " was found.");
-    }
-
-    // Update "enable" map
-    for (std::pair<StreamIndexPair, bool> const& enable : _enable )
-    {
-      const StreamIndexPair& stream_index(enable.first);
-      if (enable.second && this->sensors.find(stream_index) == this->sensors.end())
-      {
-        ROS_INFO_STREAM("(" << rs2_stream_to_string(stream_index.first) << ", " << stream_index.second << ") sensor isn't supported by current device! -- Skipping...");
-        _enable[enable.first] = false;
-      }
-    }
-  }
-  catch(const std::exception& ex)
-  {
-    ROS_ERROR_STREAM("An exception has been thrown: " << ex.what());
-    throw;
-  }
-  catch(...)
-  {
-    ROS_ERROR_STREAM("Unknown exception has occured!");
-    throw;
-  }
-}*/
 
 /////////////////////////////////////////////////
 /*void BaseRealSenseNode::SetupPublishers()
@@ -2366,53 +2421,7 @@ void BaseRealSenseNode::MultipleMessageCallback(rs2::frame frame, imu_sync_metho
   return true;
 }*/
 
-//////////////////////////////////////////////////
-/*void BaseRealSenseNode::StartMonitoring()
-{
-    for (rs2_option option : this->monitorOptions)
-    {
-        _temperature_nodes.push_back({option, std::make_shared<TemperatureDiagnostics>(rs2_option_to_string(option), this->serialNumber )});
-    }
 
-    int time_interval(10000);
-    std::function<void()> func = [this, time_interval](){
-        std::mutex mu;
-        std::unique_lock<std::mutex> lock(mu);
-        while(this->isRunning) {
-            this->conditionVariable.wait_for(
-            lock, std::chrono::milliseconds(time_interval), [&]{return !this->isRunning;});
-            if (this->isRunning)
-            {
-                this->PublishTemperature();
-            }
-        }
-    };
-    this->monitoringThread = std::make_shared<std::thread>(func);
-}
-*/
-
-//////////////////////////////////////////////////
-/*void BaseRealSenseNode::PublishTemperature()
-{
-  rs2::options sensor(this->sensors[_base_stream]);
-  for (OptionTemperatureDiag option_diag : _temperature_nodes)
-  {
-    rs2_option option(option_diag.first);
-    if (sensor.supports(option))
-    {
-      try
-      {
-        auto option_value = sensor.get_option(option);
-        option_diag.second->update(option_value);
-      }
-      catch(const std::exception& e)
-      {
-        ROS_DEBUG_STREAM("Failed checking for temperature." << std::endl << e.what());
-      }
-    }
-  }
-}
-  */
 
 /*TemperatureDiagnostics::TemperatureDiagnostics(std::string name, std::string serial_no)
 {

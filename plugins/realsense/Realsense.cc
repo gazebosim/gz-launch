@@ -300,6 +300,7 @@ void Realsense::StartDevice()
   case RS_USB2_PID:
   case RS_L515_PID:
     {
+      igndbg << "Starting BaseRealsense device\n";
       this->realSenseCamera = std::unique_ptr<BaseRealSenseCamera>(
           new BaseRealSenseCamera(this->rs2Device, this->rs2SerialNumber));
       break;
@@ -313,4 +314,6 @@ void Realsense::StartDevice()
       "Unsupported Realsense with Product ID: 0x" << pidStr << std::endl;
     break;
   }
+
+  this->realSenseCamera->Start();
 }
