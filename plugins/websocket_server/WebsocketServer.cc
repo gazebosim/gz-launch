@@ -214,13 +214,13 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
     // Get the ssl cert file, if present.
     const tinyxml2::XMLElement *certElem =
       elem->FirstChildElement("cert_file");
-    if (certElem)
+    if (certElem && certElem->GetText())
       sslCertFile = certElem->GetText();
 
     // Get the ssl private key file, if present.
     const tinyxml2::XMLElement *keyElem =
       elem->FirstChildElement("private_key_file");
-    if (keyElem)
+    if (keyElem && keyElem->GetText())
       sslPrivateKeyFile = keyElem->GetText();
   }
 
