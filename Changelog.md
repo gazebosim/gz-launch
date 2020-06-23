@@ -2,6 +2,9 @@
 
 ### Ignition Launch 1.x.x (2020-xx-xx)
 
+1. Improve websocket performance by throttling the busy loop.
+    * [Pull Request 36](https://github.com/ignitionrobotics/ign-launch/pull/36)
+
 1. Fix empty SSL xml elements in the websocket plugin.
     * [Pull Request 35](https://github.com/ignitionrobotics/ign-launch/pull/35)
 

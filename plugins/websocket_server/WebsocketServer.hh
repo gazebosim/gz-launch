@@ -191,6 +191,16 @@ namespace ignition
       /// connections that have subscribed to the topic.
       public: std::map<std::string, std::set<int>> topicConnections;
 
+      /// \brief Run loop mutex.
+      public: std::mutex runMutex;
+
+      /// \brief Run loop condition variable.
+      public: std::condition_variable runConditionVariable;
+
+      /// \brief Number of pending messages. This is used to throttle the
+      /// run loop.
+      public: int messageCount{0};
+
       /// \brief Time of last publication for each subscribed topic. The key
       /// is the topic name and the value the time of last publication.
       /// \sa publishPeriod.
