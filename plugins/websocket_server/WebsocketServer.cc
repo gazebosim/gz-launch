@@ -355,7 +355,7 @@ void WebsocketServer::Run()
     // Wait for (1/60) seconds or an event.
     std::unique_lock<std::mutex> lock(this->runMutex);
     this->runConditionVariable.wait_for(lock,
-        0.0166s, [&]{return !this->run || this->messageCount <= 0;});
+        0.0166s, [&]{return !this->run || this->messageCount > 0;});
   }
 }
 
