@@ -85,7 +85,6 @@ int rootCallback(struct lws *_wsi,
     case LWS_CALLBACK_SERVER_WRITEABLE:
       {
         std::lock_guard<std::mutex> lock(self->connections[fd]->mutex);
-        //while (!self->connections[fd]->buffer.empty())
         if (!self->connections[fd]->buffer.empty())
         {
           int msgSize = self->connections[fd]->len.front();
@@ -101,6 +100,8 @@ int rootCallback(struct lws *_wsi,
           }
           else
           {
+            std::scoped_lock<std::mutex> runLock(self->runMutex);
+            self->messageCount--;
             // Only pop the message if it was sent successfully.
             self->connections[fd]->buffer.pop_front();
             self->connections[fd]->len.pop_front();
@@ -136,9 +137,16 @@ WebsocketServer::WebsocketServer()
 /////////////////////////////////////////////////
 WebsocketServer::~WebsocketServer()
 {
-  if (this->thread && this->run)
+  if (this->thread)
   {
-    this->run = false;
+    {
+      std::scoped_lock<std::mutex> lock(this->runMutex);
+      if (this->run)
+      {
+        this->run = false;
+        this->runConditionVariable.notify_all();
+      }
+    }
     this->thread->join();
   }
   this->thread = nullptr;
@@ -214,13 +222,13 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
     // Get the ssl cert file, if present.
     const tinyxml2::XMLElement *certElem =
       elem->FirstChildElement("cert_file");
-    if (certElem)
+    if (certElem && certElem->GetText())
       sslCertFile = certElem->GetText();
 
     // Get the ssl private key file, if present.
     const tinyxml2::XMLElement *keyElem =
       elem->FirstChildElement("private_key_file");
-    if (keyElem)
+    if (keyElem && keyElem->GetText())
       sslPrivateKeyFile = keyElem->GetText();
   }
 
@@ -322,6 +330,10 @@ void WebsocketServer::QueueMessage(Connection *_connection,
     std::lock_guard<std::mutex> lock(_connection->mutex);
     _connection->buffer.push_back(std::move(buf));
     _connection->len.push_back(_size);
+
+    std::scoped_lock<std::mutex> runLock(this->runMutex);
+    this->messageCount++;
+    this->runConditionVariable.notify_all();
   }
   else
   {
@@ -332,9 +344,19 @@ void WebsocketServer::QueueMessage(Connection *_connection,
 //////////////////////////////////////////////////
 void WebsocketServer::Run()
 {
-  uint64_t timeout = 50;
+  using namespace std::chrono_literals;
+
   while (this->run)
-    lws_service(this->context, timeout);
+  {
+    // The second parameter is a timeout that is no longer used by
+    // libwebsockets.
+    lws_service(this->context, 0);
+
+    // Wait for (1/60) seconds or an event.
+    std::unique_lock<std::mutex> lock(this->runMutex);
+    this->runConditionVariable.wait_for(lock,
+        0.0166s, [&]{return !this->run || this->messageCount > 0;});
+  }
 }
 
 //////////////////////////////////////////////////
