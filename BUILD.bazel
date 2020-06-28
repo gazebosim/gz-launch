@@ -163,10 +163,10 @@ public_headers = public_headers_no_gen + [
 ]
 
 cc_binary(
-    name = "libignition_launch.so",
+    name = "libignition-launch3.so",
     srcs = sources + private_headers + public_headers,
     includes = ["include", "src"],
-    linkopts = ["-Wl,-soname,libignition_launch.so", "-lzmq"],
+    linkopts = ["-Wl,-soname,libignition-launch3.so", "-lzmq"],
     linkshared = True,
     visibility = [],
     deps = [
@@ -180,7 +180,7 @@ cc_binary(
 
 cc_library(
     name = "ign_launch",
-    srcs = ["libignition_launch.so"],
+    srcs = ["libignition-launch3.so"],
     hdrs = public_headers,
     includes = ["include", "src"],
     visibility = ["//visibility:public"],
