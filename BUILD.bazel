@@ -8,7 +8,7 @@ load(
 )
 load(
     "//ign_bazel:generate_file.bzl",
-    "generate_file",
+    "ign_export_header",
 )
 load(
     "//ign_bazel:generate_yaml.bzl",
@@ -63,58 +63,10 @@ cmake_configure_file(
     visibility = ["//visibility:private"],
 )
 
-cmds = "    - launch   : Run and manage executables and plugins."
-
-generate_yaml(
-    name = "yaml",
-    library_name = PROJECT_NAME, 
-    library_version = "%d.%d.%d" % (PROJECT_MAJOR, PROJECT_MINOR, PROJECT_PATCH),
-    commands = cmds,
-    ruby_target = "//ign_launch:cmdlaunch.rb",
-)
-
-# Generates config.hh based on the version numbers in CMake code.
-cmake_configure_file(
-    name = "cmdlaunch.rb",
-    src = "src/cmdlaunch.rb.in",
-    out = "src/cmdlaunch.rb",
-    cmakelists = ["CMakeLists.txt"],
-    defines = [
-        "library_location=%s" % [library_location],
-        "PROJECT_VERSION_FULL=%d.%d.%d" % (PROJECT_MAJOR, PROJECT_MINOR, PROJECT_PATCH),  # noqa
-        "IGN_LIBRARY_PATH=%s" % (IGN_LIBRARY_PATH),
-        "IGN_LIBRARY_NAME=%s" % (PROJECT_NAME),
-    ],
-    visibility = ["//visibility:public"],
-)
-
-ruby_binary(
-    name = "launch-ruby",
-    srcs = ["src/cmdlaunch.rb"],
-    includes = ["src"],
-    main = "src/cmdlaunch.rb",
-    visibility = ["//visibility:public"],
-)
-
-generate_file(
+ign_export_header(
     name = "include/ignition/launch/Export.hh",
-    content = """
-#pragma once
-// IGN_DEPRECATED is defined by all ignition libraries, but the version below
-// is a simplified version.  When mixing the regular ignition libraries and
-// the drake compiled ignition libraries, the compiler throws a warning about
-// the macro being multiply defined.  We undefine it before redefining it here
-// to work around that issue.  Note that the IGNITION_LAUNCH_VISIBLE macro
-// shouldn't be defined multiple times, but we undefine it just in case.
-#ifdef IGNITION_LAUNCH_VISIBLE
-#undef IGNITION_LAUNCH_VISIBLE
-#endif
-#define IGNITION_LAUNCH_VISIBLE __attribute__ ((visibility("default")))
-#ifdef IGN_DEPRECATED
-#undef IGN_DEPRECATED
-#endif
-#define IGN_DEPRECATED(version) __attribute__ ((__deprecated__))
-    """,
+    lib_name = "ignition-launch",
+    export_base = "IGNITION_LAUNCH",
     visibility = ["//visibility:private"],
 )
 
