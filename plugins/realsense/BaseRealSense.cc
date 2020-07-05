@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2020 Open Source Robotics Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+#include <librealsense2/rs_advanced_mode.hpp>
 #include <ignition/common/Console.hh>
 
 #include <algorithm>
@@ -257,159 +274,168 @@ void BaseRealSenseCamera::SetParameters()
 }
 
 //////////////////////////////////////////////////
-void BaseRealSenseNode::SetupDevice()
+void BaseRealSenseCamera::SetupDevice()
 {
-  // HERE
   try
   {
     if (!this->jsonFilePath.empty())
-    {
-      if (this->rs2Dev.is<rs400::advanced_mode>())
-      {
-        std::stringstream ss;
-        std::ifstream in(this->jsonFilePath);
 
-        if (in.is_open())
+      for (auto it = frameset.begin(); it != frameset.end(); ++it)
+      {
+        auto f = (*it);
+        auto stream_type = f.get_profile().stream_type();
+        auto streamIndex = f.get_profile().streamIndex();
+        auto stream_format = f.get_profile().format();
+        auto stream_unique_id = f.get_profile().unique_id();
+
+        //ROS_DEBUG("Frameset contain (%s, %d, %s %d) frame. frame_number: %llu ; frame_TS: %f ; ros_TS(NSec): %lu", rs2_stream_to_string(stream_type), streamIndex, rs2_format_to_string(stream_format), stream_unique_id, frame.get_frame_number(), frameTime, t.toNSec());
+        this->RunFirstFrameInitialization(stream_type);
+      }
+
+      // Clip depth_frame for max range:
+      rs2::depth_frame depthFrame = frameset.get_depth_frame();
+      if (depthFrame && this->clippingDistance > 0)
+      {
+        clip_depth(depth_frame, this->clippingDistance);
+      }
+
+      igndbg << "num_filters: " << static_cast<int>(_filters.size())
+        << std::endl;
+
+      for (std::vector<NamedFilter>::const_iterator filterIt =
+          this->filters.begin(); filterIt != this->filters.end(); filterIt++)
+      {
+        igndbg << "Applying filter: "  << filterIt->_name.c_str() << std::endl;
+        frameset = filterIt->_filter->process(frameset);
+      }
+
+      igndbg << "List of frameset after applying filters: size: "
+        << static_cast<int>(frameset.size()) << std::endl;
+
+      for (auto it = frameset.begin(); it != frameset.end(); ++it)
+      {
+        auto f = (*it);
+        auto stream_type = f.get_profile().stream_type();
+        auto streamIndex = f.get_profile().streamIndex();
+        auto stream_format = f.get_profile().format();
+        auto stream_unique_id = f.get_profile().unique_id();
+
+        //ROS_DEBUG("Frameset contain (%s, %d, %s %d) frame. frame_number: %llu ; frame_TS: %f ; ros_TS(NSec): %lu", rs2_stream_to_string(stream_type), streamIndex, rs2_format_to_string(stream_format), stream_unique_id, frame.get_frame_number(), frameTime, t.toNSec());
+      }
+
+      igndbg << "END OF LIST\n";
+      // TODO - Fix the following issue:
+      // Currently publishers are set using a map of stream type and index only.
+      // It means that colorized depth image <DEPTH, 0, Z16> and
+      // colorized depth image <DEPTH, 0, RGB>
+      // use the same publisher.
+      // As a workaround we remove the earlier one, the original one,
+      // assuming that if colorizer filter is
+      // set it means that that's what the client wants.
+      bool pointsInSet(false);
+      std::vector<rs2::frame> framesToPublish;
+      std::vector<StreamIndexPair> is_in_set;
+
+      for (auto it = frameset.begin(); it != frameset.end(); ++it)
+      {
+        auto f = (*it);
+        auto streamType = f.get_profile().streamType();
+        auto streamIndex = f.get_profile().streamIndex();
+        auto stream_format = f.get_profile().format();
+
+        if (f.is<rs2::points>())
         {
-          ss << in.rdbuf();
-          std::string jsonFileContent = ss.str();
-
-          auto adv = this->rs2Dev.as<rs400::advanced_mode>();
-          adv.load_json(jsonFileContent);
-          igndbg << "JSON file loaded [" << this->jsonFilePath << "]\n";
+          if (!pointsInSet)
+          {
+            pointsInSet = true;
+            framesToPublish.push_back(f);
+          }
+          continue;
         }
-        else
+
+        StreamIndexPair sip{streamType,streamIndex};
+        if (std::find(is_in_set.begin(), is_in_set.end(), sip) == is_in_set.end())
         {
-          ignwarn << "JSON file provided doesn't exist ["
-            << this->jsonFilePath << "]\n";
+          is_in_set.push_back(sip);
+          framesToPublish.push_back(f);
+        }
+
+        if (this->alignDepth && streamType == RS2_STREAM_DEPTH &&
+            stream_format == RS2_FORMAT_Z16)
+        {
+          is_depth_arrived = true;
         }
       }
-      else
+
+      for (auto it = framesToPublish.begin(); it != framesToPublish.end(); ++it)
       {
-        ignwarn << "Device does not support advanced settings.\n";
+        auto f = (*it);
+        auto streamType = f.get_profile().streamType();
+        auto streamIndex = f.get_profile().streamIndex();
+        auto stream_format = f.get_profile().format();
+
+        ROS_DEBUG("Frameset contain (%s, %d, %s) frame. frame_number: %llu ; frame_TS: %f ; ros_TS(NSec): %lu",
+            rs2_stream_to_string(streamType), streamIndex, rs2_format_to_string(stream_format), frame.get_frame_number(), frame_time, t.toNSec());
+
+        if (f.is<rs2::points>())
+        {
+          if (0 != _pointcloud_publisher.getNumSubscribers())
+          {
+            ROS_DEBUG("Publish pointscloud");
+            this->PublishPointCloud(f.as<rs2::points>(), t, frameset);
+          }
+          continue;
+        }
+        StreamIndexPair sip{stream_type,streamIndex};
+        // this->PublishFrame(f, t,
+        //                 sip,
+        //                 _image,
+        //                 this->infoPublisher,
+        //                 _image_publishers, _seq,
+        //                 _camera_info, this->opticalFrameId,
+        //                 this->encoding);
+      }
+
+      if (this->alignDepth && is_depth_arrived)
+      {
+        ROS_DEBUG("publishAlignedDepthToOthers(...)");
+        this->PublishAlignedDepthToOthers(frameset, t);
       }
     }
-    else
+    else if (frame.is<rs2::video_frame>())
     {
-      igndbg << "JSON file was not provided.\n";
-    }
+      auto stream_type = frame.get_profile().stream_type();
+      auto streamIndex = frame.get_profile().streamIndex();
+      ROS_DEBUG("Single video frame arrived (%s, %d). frame_number: %llu ; frame_TS: %f ; ros_TS(NSec): %lu",
+          rs2_stream_to_string(stream_type), streamIndex, frame.get_frame_number(), frame_time, t.toNSec());
+      this->RunFirstFrameInitialization(stream_type);
 
-    std::string cameraName = this->rs2Dev.get_info(RS2_CAMERA_INFO_NAME);
-    igndbg << "Device Name: " << cameraName << std::endl;
-    igndbg << "Device Serial No: " << this->serialNumber << std::endl;
-
-    auto cameraId = this->rs2Dev.get_info(RS2_CAMERA_INFO_PHYSICAL_PORT);
-
-    igndbg << "Device physical port: " << cameraId << std::endl;
-
-    auto fwVer = this->rs2Dev.get_info(RS2_CAMERA_INFO_FIRMWARE_VERSION);
-    igndbg << "Device FW version: " << fw_ver << std::endl;
-
-    auto pid = this->rs2Dev.get_info(RS2_CAMERA_INFO_PRODUCT_ID);
-    igndbg << "Device Product ID: 0x" << pid << std::endl;
-
-    igndbg << "Enable PointCloud: " << ((this->pointCloud)?"On":"Off")
-      << std::endl;
-    igndbg << "Align Depth: " << ((this->alignDepth)?"On":"Off")
-      << std::endl;
-    igndbg << "Sync Mode: " << ((this->syncFrames)?"On":"Off")
-      << std::endl;
-
-    this->rs2Sensors = this->rs2Dev.query_sensors();
-
-    std::function<void(rs2::frame)> frame_callback_function, imu_callback_function;
-    if (this->syncFrames)
-    {
-      frame_callback_function = this->pipelineSyncer;
-
-      auto frame_callback_inner = [this](rs2::frame frame){
-        frame_callback(frame);
-      };
-      this->pipelineSyncer.start(frame_callback_inner);
-    }
-    else
-    {
-      frame_callback_function = [this](rs2::frame frame){frame_callback(frame);};
-    }
-
-    if (_imu_sync_method == imu_sync_method::NONE)
-    {
-      imu_callback_function = [this](rs2::frame frame){imu_callback(frame);};
-    }
-    else
-    {
-      imu_callback_function = [this](rs2::frame frame)
+      StreamIndexPair sip{stream_type,streamIndex};
+      if (frame.is<rs2::depth_frame>())
       {
-        this->imuCallbackSync(frame, _imu_sync_method);
-      };
-    }
-    std::function<void(rs2::frame)> multiple_message_callback_function = [this](rs2::frame frame){multiple_message_callback(frame, _imu_sync_method);};
-
-    ROS_INFO_STREAM("Device Sensors: ");
-    for(auto&& sensor : this->rs2Sensors)
-    {
-      std::string module_name = sensor.get_info(RS2_CAMERA_INFO_NAME);
-      if (sensor.is<rs2::depth_sensor>())
-      {
-        this->sensors[DEPTH] = sensor;
-        this->sensors[INFRA1] = sensor;
-        this->sensors[INFRA2] = sensor;
-        _sensors_callback[module_name] = frame_callback_function;
+        if (_clipping_distance > 0)
+        {
+          clip_depth(frame, _clipping_distance);
+        }
       }
-      else if (sensor.is<rs2::color_sensor>())
-      {
-        this->sensors[COLOR] = sensor;
-        _sensors_callback[module_name] = frame_callback_function;
-      }
-      else if (sensor.is<rs2::fisheye_sensor>())
-      {
-        this->sensors[FISHEYE] = sensor;
-        _sensors_callback[module_name] = frame_callback_function;
-      }
-      else if (sensor.is<rs2::motion_sensor>())
-      {
-        this->sensors[GYRO] = sensor;
-        this->sensors[ACCEL] = sensor;
-        _sensors_callback[module_name] = imu_callback_function;
-      }
-      else if (sensor.is<rs2::pose_sensor>())
-      {
-        this->sensors[GYRO] = sensor;
-        this->sensors[ACCEL] = sensor;
-        this->sensors[POSE] = sensor;
-        this->sensors[FISHEYE1] = sensor;
-        this->sensors[FISHEYE2] = sensor;
-        _sensors_callback[module_name] = multiple_message_callback_function;
-      }
-      else
-      {
-        ROS_ERROR_STREAM("Module Name \"" << module_name << "\" isn't supported by LibRealSense! Terminating RealSense Node...");
-        ros::shutdown();
-        exit(1);
-      }
-      ROS_INFO_STREAM(std::string(sensor.get_info(RS2_CAMERA_INFO_NAME)) << " was found.");
-    }
-
-    // Update "enable" map
-    for (std::pair<StreamIndexPair, bool> const& enable : _enable )
-    {
-      const StreamIndexPair& stream_index(enable.first);
-      if (enable.second && this->sensors.find(stream_index) == this->sensors.end())
-      {
-        ROS_INFO_STREAM("(" << rs2_stream_to_string(stream_index.first) << ", " << stream_index.second << ") sensor isn't supported by current device! -- Skipping...");
-        _enable[enable.first] = false;
-      }
+      // this->PublishFrame(frame, t,
+      //                 sip,
+      //                 _image,
+      //                 this->infoPublisher,
+      //                 _image_publishers, _seq,
+      //                 _camera_info, this->opticalFrameId,
+      //                 this->encoding);
     }
   }
   catch(const std::exception& ex)
   {
-    ignerr << "An exception has been thrown[" << ex.what() << "]\n";
+    ignerr << "An error has occurred during frame callback: " << ex.what();
   }
-  catch(...)
-  {
-    ignerr << "Unknown exception has occured!\n";
-  }
-}
+
+  this->yncedImuPublisher->Resume();
+};
+
+
 
 
 
@@ -515,7 +541,7 @@ namespace realsense2_camera
     }
 }*/
 
-// StreamIndexPair sip{stream_type, stream_index};
+// StreamIndexPair sip{stream_type, streamIndex};
 #define STREAM_NAME(sip) (static_cast<std::ostringstream&&>(std::ostringstream() << this->streamName[sip.first] << ((sip.second>0) ? std::to_string(sip.second) : ""))).str()
 #define FRAME_ID(sip) (static_cast<std::ostringstream&&>(std::ostringstream() << "camera_" << STREAM_NAME(sip) << "_frame")).str()
 #define OPTICAL_FRAME_ID(sip) (static_cast<std::ostringstream&&>(std::ostringstream() << "camera_" << STREAM_NAME(sip) << "_optical_frame")).str()
@@ -921,12 +947,12 @@ void SyncedImuPublisher::PublishPendingMessages()
     }
   }
 
-  _synced_imu_publisher = std::make_shared<SyncedImuPublisher>();
+  this->syncedImuPublisher = std::make_shared<SyncedImuPublisher>();
   if (_imu_sync_method > imu_sync_method::NONE && _enable[GYRO] && _enable[ACCEL])
   {
     ROS_INFO("Start publisher IMU");
-    _synced_imu_publisher = std::make_shared<SyncedImuPublisher>(_node_handle.advertise<sensor_msgs::Imu>("imu", 5));
-    _synced_imu_publisher->Enable(_hold_back_imu_for_frames);
+    this->syncedImuPublisher = std::make_shared<SyncedImuPublisher>(_node_handle.advertise<sensor_msgs::Imu>("imu", 5));
+    this->syncedImuPublisher->Enable(_hold_back_imu_for_frames);
   }
   else
   {
@@ -984,12 +1010,12 @@ void SyncedImuPublisher::PublishPendingMessages()
     if (RS2_STREAM_DEPTH == stream_type)
       continue;
 
-    auto stream_index = frame.get_profile().stream_index();
-    if (stream_index > 1)
+    auto streamIndex = frame.get_profile().streamIndex();
+    if (streamIndex > 1)
     {
       continue;
     }
-    StreamIndexPair sip{stream_type, stream_index};
+    StreamIndexPair sip{stream_type, streamIndex};
     auto& info_publisher = this0>depthAlignedInfoPublisher.at(sip);
     auto& image_publisher = _depth_aligned_image_publishers.at(sip);
 
@@ -1043,7 +1069,7 @@ void SyncedImuPublisher::PublishPendingMessages()
             (_height[elem] == 0 || video_profile.height() == _height[elem]) &&
             (_fps[elem] == 0 || video_profile.fps() == _fps[elem]) &&
             (_format.find(elem.first) == _format.end() || video_profile.format() == _format[elem.first] ) &&
-            video_profile.stream_index() == elem.second)
+            video_profile.streamIndex() == elem.second)
         {
           _width[elem] = video_profile.width();
           _height[elem] = video_profile.height();
@@ -1385,7 +1411,7 @@ void BaseRealSenseNode::ImuMessage_AddDefaultValues(sensor_msgs::Imu& imu_msg)
     m_mutex.lock();
 
     auto stream = frame.get_profile().stream_type();
-    auto stream_index = (stream == GYRO.first)?GYRO:ACCEL;
+    auto streamIndex = (stream == GYRO.first)?GYRO:ACCEL;
     double frame_time = frame.get_timestamp();
 
     bool placeholder_false(false);
@@ -1401,11 +1427,11 @@ void BaseRealSenseNode::ImuMessage_AddDefaultValues(sensor_msgs::Imu& imu_msg)
       //ms
       _camera_time_base) / 1000.0;
 
-    if (0 != _synced_imu_publisher->getNumSubscribers())
+    if (0 != this->syncedImuPublisher->getNumSubscribers())
     {
         auto crnt_reading = *(reinterpret_cast<const float3*>(frame.get_data()));
         Eigen::Vector3d v(crnt_reading.x, crnt_reading.y, crnt_reading.z);
-        CimuData imu_data(stream_index, v, elapsed_camera_ms);
+        CimuData imu_data(streamIndex, v, elapsed_camera_ms);
         std::deque<sensor_msgs::Imu> imu_msgs;
         switch (sync_method)
         {
@@ -1424,7 +1450,7 @@ void BaseRealSenseNode::ImuMessage_AddDefaultValues(sensor_msgs::Imu& imu_msg)
             imu_msg.header.seq = seq;
             imu_msg.header.stamp = t;
             ImuMessage_AddDefaultValues(imu_msg);
-            _synced_imu_publisher->Publish(imu_msg);
+            this->syncedImuPublisher->Publish(imu_msg);
             ROS_DEBUG("Publish united %s stream", rs2_stream_to_string(frame.get_profile().stream_type()));
             imu_msgs.pop_front();
         }
@@ -1445,11 +1471,11 @@ void BaseRealSenseNode::ImuMessage_AddDefaultValues(sensor_msgs::Imu& imu_msg)
 
     ROS_DEBUG("Frame arrived: stream: %s ; index: %d ; Timestamp Domain: %s",
                 rs2_stream_to_string(frame.get_profile().stream_type()),
-                frame.get_profile().stream_index(),
+                frame.get_profile().streamIndex(),
                 rs2_timestamp_domain_to_string(frame.get_frame_timestamp_domain()));
 
-    auto stream_index = (stream == GYRO.first)?GYRO:ACCEL;
-    if (0 != _imu_publishers[stream_index].getNumSubscribers())
+    auto streamIndex = (stream == GYRO.first)?GYRO:ACCEL;
+    if (0 != _imu_publishers[streamIndex].getNumSubscribers())
     {
         double elapsed_camera_ms = (
           //ms
@@ -1460,25 +1486,25 @@ void BaseRealSenseNode::ImuMessage_AddDefaultValues(sensor_msgs::Imu& imu_msg)
 
         auto imu_msg = sensor_msgs::Imu();
         ImuMessage_AddDefaultValues(imu_msg);
-        imu_msg.header.frame_id = this->opticalFrameId[stream_index];
+        imu_msg.header.frame_id = this->opticalFrameId[streamIndex];
 
         auto crnt_reading = *(reinterpret_cast<const float3*>(frame.get_data()));
-        if (GYRO == stream_index)
+        if (GYRO == streamIndex)
         {
             imu_msg.angular_velocity.x = crnt_reading.x;
             imu_msg.angular_velocity.y = crnt_reading.y;
             imu_msg.angular_velocity.z = crnt_reading.z;
         }
-        else if (ACCEL == stream_index)
+        else if (ACCEL == streamIndex)
         {
             imu_msg.linear_acceleration.x = crnt_reading.x;
             imu_msg.linear_acceleration.y = crnt_reading.y;
             imu_msg.linear_acceleration.z = crnt_reading.z;
         }
-        _seq[stream_index] += 1;
-        imu_msg.header.seq = _seq[stream_index];
+        _seq[streamIndex] += 1;
+        imu_msg.header.seq = _seq[streamIndex];
         imu_msg.header.stamp = t;
-        _imu_publishers[stream_index].publish(imu_msg);
+        _imu_publishers[streamIndex].publish(imu_msg);
         ROS_DEBUG("Publish %s stream", rs2_stream_to_string(frame.get_profile().stream_type()));
     }
 }*/
@@ -1495,9 +1521,9 @@ void BaseRealSenseNode::ImuMessage_AddDefaultValues(sensor_msgs::Imu& imu_msg)
 
     ROS_DEBUG("Frame arrived: stream: %s ; index: %d ; Timestamp Domain: %s",
                 rs2_stream_to_string(frame.get_profile().stream_type()),
-                frame.get_profile().stream_index(),
+                frame.get_profile().streamIndex(),
                 rs2_timestamp_domain_to_string(frame.get_frame_timestamp_domain()));
-    const auto& stream_index(POSE);
+    const auto& streamIndex(POSE);
     rs2_pose pose = frame.as<rs2::pose_frame>().get_pose_data();
     double elapsed_camera_ms = (frame_time - _camera_time_base) / 1000.0;
     ros::Time t(this->timeBase.toSec() + elapsed_camera_ms);
@@ -1526,7 +1552,7 @@ void BaseRealSenseNode::ImuMessage_AddDefaultValues(sensor_msgs::Imu& imu_msg)
 
     if (_publish_odom_tf) br.sendTransform(msg);
 
-    if (0 != _imu_publishers[stream_index].getNumSubscribers())
+    if (0 != _imu_publishers[streamIndex].getNumSubscribers())
     {
         double cov_pose(_linear_accel_cov * pow(10, 3-(int)pose.tracker_confidence));
         double cov_twist(_angular_velocity_cov * pow(10, 1-(int)pose.tracker_confidence));
@@ -1551,12 +1577,12 @@ void BaseRealSenseNode::ImuMessage_AddDefaultValues(sensor_msgs::Imu& imu_msg)
 
 
         nav_msgs::Odometry odom_msg;
-        _seq[stream_index] += 1;
+        _seq[streamIndex] += 1;
 
         odom_msg.header.frame_id = this->odomFrameId;
         odom_msg.child_frame_id = this->frameId[POSE];
         odom_msg.header.stamp = t;
-        odom_msg.header.seq = _seq[stream_index];
+        odom_msg.header.seq = _seq[streamIndex];
         odom_msg.pose.pose = pose_msg.pose;
         odom_msg.pose.covariance = {cov_pose, 0, 0, 0, 0, 0,
                                     0, cov_pose, 0, 0, 0, 0,
@@ -1572,188 +1598,10 @@ void BaseRealSenseNode::ImuMessage_AddDefaultValues(sensor_msgs::Imu& imu_msg)
                                     0, 0, 0, cov_twist, 0, 0,
                                     0, 0, 0, 0, cov_twist, 0,
                                     0, 0, 0, 0, 0, cov_twist};
-        _imu_publishers[stream_index].publish(odom_msg);
+        _imu_publishers[streamIndex].publish(odom_msg);
         ROS_DEBUG("Publish %s stream", rs2_stream_to_string(frame.get_profile().stream_type()));
     }
 }*/
-
-//////////////////////////////////////////////////
-/*void BaseRealSenseNode::frame_callback(rs2::frame frame)
-{
-    _synced_imu_publisher->Pause();
-
-    try{
-        double frame_time = frame.get_timestamp();
-
-        // We compute a ROS timestamp which is based on an initial ROS time at point of first frame,
-        // and the incremental timestamp from the camera.
-        // In sync mode the timestamp is based on ROS time
-        bool placeholder_false(false);
-        if (this->isInitializedTimeBase.compare_exchange_strong(placeholder_false, true) )
-        {
-            setBaseTime(frame_time, RS2_TIMESTAMP_DOMAIN_SYSTEM_TIME == frame.get_frame_timestamp_domain());
-        }
-
-        ros::Time t;
-        if (this->syncFrames)
-        {
-            t = ros::Time::now();
-        }
-        else
-        {
-            t = ros::Time(this->timeBase.toSec()+ (frame_time - _camera_time_base) / 1000);
-        }
-
-        if (frame.is<rs2::frameset>())
-        {
-            ROS_DEBUG("Frameset arrived.");
-            bool is_depth_arrived = false;
-            auto frameset = frame.as<rs2::frameset>();
-            ROS_DEBUG("List of frameset before applying filters: size: %d", static_cast<int>(frameset.size()));
-            for (auto it = frameset.begin(); it != frameset.end(); ++it)
-            {
-                auto f = (*it);
-                auto stream_type = f.get_profile().stream_type();
-                auto stream_index = f.get_profile().stream_index();
-                auto stream_format = f.get_profile().format();
-                auto stream_unique_id = f.get_profile().unique_id();
-
-                ROS_DEBUG("Frameset contain (%s, %d, %s %d) frame. frame_number: %llu ; frame_TS: %f ; ros_TS(NSec): %lu",
-                            rs2_stream_to_string(stream_type), stream_index, rs2_format_to_string(stream_format), stream_unique_id, frame.get_frame_number(), frame_time, t.toNSec());
-                this->RunFirstFrameInitialization(stream_type);
-            }
-            // Clip depth_frame for max range:
-            rs2::depth_frame depth_frame = frameset.get_depth_frame();
-            if (depth_frame && _clipping_distance > 0)
-            {
-                clip_depth(depth_frame, _clipping_distance);
-            }
-
-            ROS_DEBUG("num_filters: %d", static_cast<int>(_filters.size()));
-            for (std::vector<NamedFilter>::const_iterator filter_it = _filters.begin(); filter_it != _filters.end(); filter_it++)
-            {
-                ROS_DEBUG("Applying filter: %s", filter_it->_name.c_str());
-                frameset = filter_it->_filter->process(frameset);
-            }
-
-            ROS_DEBUG("List of frameset after applying filters: size: %d", static_cast<int>(frameset.size()));
-            for (auto it = frameset.begin(); it != frameset.end(); ++it)
-            {
-                auto f = (*it);
-                auto stream_type = f.get_profile().stream_type();
-                auto stream_index = f.get_profile().stream_index();
-                auto stream_format = f.get_profile().format();
-                auto stream_unique_id = f.get_profile().unique_id();
-
-                ROS_DEBUG("Frameset contain (%s, %d, %s %d) frame. frame_number: %llu ; frame_TS: %f ; ros_TS(NSec): %lu",
-                            rs2_stream_to_string(stream_type), stream_index, rs2_format_to_string(stream_format), stream_unique_id, frame.get_frame_number(), frame_time, t.toNSec());
-            }
-            ROS_DEBUG("END OF LIST");
-            ROS_DEBUG_STREAM("Remove streams with same type and index:");
-            // TODO - Fix the following issue:
-            // Currently publishers are set using a map of stream type and index only.
-            // It means that colorized depth image <DEPTH, 0, Z16> and colorized depth image <DEPTH, 0, RGB>
-            // use the same publisher.
-            // As a workaround we remove the earlier one, the original one, assuming that if colorizer filter is
-            // set it means that that's what the client wants.
-            //
-            bool points_in_set(false);
-            std::vector<rs2::frame> frames_to_publish;
-            std::vector<StreamIndexPair> is_in_set;
-            for (auto it = frameset.begin(); it != frameset.end(); ++it)
-            {
-                auto f = (*it);
-                auto stream_type = f.get_profile().stream_type();
-                auto stream_index = f.get_profile().stream_index();
-                auto stream_format = f.get_profile().format();
-                if (f.is<rs2::points>())
-                {
-                    if (!points_in_set)
-                    {
-                        points_in_set = true;
-                        frames_to_publish.push_back(f);
-                    }
-                    continue;
-                }
-                StreamIndexPair sip{stream_type,stream_index};
-                if (std::find(is_in_set.begin(), is_in_set.end(), sip) == is_in_set.end())
-                {
-                    is_in_set.push_back(sip);
-                    frames_to_publish.push_back(f);
-                }
-                if (this->alignDepth && stream_type == RS2_STREAM_DEPTH && stream_format == RS2_FORMAT_Z16)
-                {
-                    is_depth_arrived = true;
-                }
-            }
-
-            for (auto it = frames_to_publish.begin(); it != frames_to_publish.end(); ++it)
-            {
-                auto f = (*it);
-                auto stream_type = f.get_profile().stream_type();
-                auto stream_index = f.get_profile().stream_index();
-                auto stream_format = f.get_profile().format();
-
-                ROS_DEBUG("Frameset contain (%s, %d, %s) frame. frame_number: %llu ; frame_TS: %f ; ros_TS(NSec): %lu",
-                            rs2_stream_to_string(stream_type), stream_index, rs2_format_to_string(stream_format), frame.get_frame_number(), frame_time, t.toNSec());
-
-                if (f.is<rs2::points>())
-                {
-                    if (0 != _pointcloud_publisher.getNumSubscribers())
-                    {
-                        ROS_DEBUG("Publish pointscloud");
-                        this->PublishPointCloud(f.as<rs2::points>(), t, frameset);
-                    }
-                    continue;
-                }
-                StreamIndexPair sip{stream_type,stream_index};
-                // this->PublishFrame(f, t,
-                //                 sip,
-                //                 _image,
-                //                 this->infoPublisher,
-                //                 _image_publishers, _seq,
-                //                 _camera_info, this->opticalFrameId,
-                //                 this->encoding);
-            }
-
-            if (this->alignDepth && is_depth_arrived)
-            {
-                ROS_DEBUG("publishAlignedDepthToOthers(...)");
-                this->PublishAlignedDepthToOthers(frameset, t);
-            }
-        }
-        else if (frame.is<rs2::video_frame>())
-        {
-            auto stream_type = frame.get_profile().stream_type();
-            auto stream_index = frame.get_profile().stream_index();
-            ROS_DEBUG("Single video frame arrived (%s, %d). frame_number: %llu ; frame_TS: %f ; ros_TS(NSec): %lu",
-                        rs2_stream_to_string(stream_type), stream_index, frame.get_frame_number(), frame_time, t.toNSec());
-            this->RunFirstFrameInitialization(stream_type);
-
-            StreamIndexPair sip{stream_type,stream_index};
-            if (frame.is<rs2::depth_frame>())
-            {
-                if (_clipping_distance > 0)
-                {
-                    clip_depth(frame, _clipping_distance);
-                }
-            }
-            // this->PublishFrame(frame, t,
-            //                 sip,
-            //                 _image,
-            //                 this->infoPublisher,
-            //                 _image_publishers, _seq,
-            //                 _camera_info, this->opticalFrameId,
-            //                 this->encoding);
-        }
-    }
-    catch(const std::exception& ex)
-    {
-        ROS_ERROR_STREAM("An error has occurred during frame callback: " << ex.what());
-    }
-    _synced_imu_publisher->Resume();
-};
-*/
 
 /*
 //////////////////////////////////////////////////
@@ -1846,55 +1694,55 @@ void BaseRealSenseNode::MultipleMessageCallback(rs2::frame frame, imu_sync_metho
 /*void BaseRealSenseNode::UpdateStreamCalibData(
     const rs2::video_stream_profile &videoProfile)
 {
-    StreamIndexPair stream_index{video_profile.stream_type(), video_profile.stream_index()};
+    StreamIndexPair streamIndex{video_profile.stream_type(), video_profile.streamIndex()};
     auto intrinsic = video_profile.get_intrinsics();
-    _stream_intrinsics[stream_index] = intrinsic;
-    _camera_info[stream_index].width = intrinsic.width;
-    _camera_info[stream_index].height = intrinsic.height;
-    _camera_info[stream_index].header.frame_id = this->opticalFrameId[stream_index];
+    _stream_intrinsics[streamIndex] = intrinsic;
+    _camera_info[streamIndex].width = intrinsic.width;
+    _camera_info[streamIndex].height = intrinsic.height;
+    _camera_info[streamIndex].header.frame_id = this->opticalFrameId[streamIndex];
 
-    _camera_info[stream_index].K.at(0) = intrinsic.fx;
-    _camera_info[stream_index].K.at(2) = intrinsic.ppx;
-    _camera_info[stream_index].K.at(4) = intrinsic.fy;
-    _camera_info[stream_index].K.at(5) = intrinsic.ppy;
-    _camera_info[stream_index].K.at(8) = 1;
+    _camera_info[streamIndex].K.at(0) = intrinsic.fx;
+    _camera_info[streamIndex].K.at(2) = intrinsic.ppx;
+    _camera_info[streamIndex].K.at(4) = intrinsic.fy;
+    _camera_info[streamIndex].K.at(5) = intrinsic.ppy;
+    _camera_info[streamIndex].K.at(8) = 1;
 
-    _camera_info[stream_index].P.at(0) = _camera_info[stream_index].K.at(0);
-    _camera_info[stream_index].P.at(1) = 0;
-    _camera_info[stream_index].P.at(2) = _camera_info[stream_index].K.at(2);
-    _camera_info[stream_index].P.at(3) = 0;
-    _camera_info[stream_index].P.at(4) = 0;
-    _camera_info[stream_index].P.at(5) = _camera_info[stream_index].K.at(4);
-    _camera_info[stream_index].P.at(6) = _camera_info[stream_index].K.at(5);
-    _camera_info[stream_index].P.at(7) = 0;
-    _camera_info[stream_index].P.at(8) = 0;
-    _camera_info[stream_index].P.at(9) = 0;
-    _camera_info[stream_index].P.at(10) = 1;
-    _camera_info[stream_index].P.at(11) = 0;
+    _camera_info[streamIndex].P.at(0) = _camera_info[streamIndex].K.at(0);
+    _camera_info[streamIndex].P.at(1) = 0;
+    _camera_info[streamIndex].P.at(2) = _camera_info[streamIndex].K.at(2);
+    _camera_info[streamIndex].P.at(3) = 0;
+    _camera_info[streamIndex].P.at(4) = 0;
+    _camera_info[streamIndex].P.at(5) = _camera_info[streamIndex].K.at(4);
+    _camera_info[streamIndex].P.at(6) = _camera_info[streamIndex].K.at(5);
+    _camera_info[streamIndex].P.at(7) = 0;
+    _camera_info[streamIndex].P.at(8) = 0;
+    _camera_info[streamIndex].P.at(9) = 0;
+    _camera_info[streamIndex].P.at(10) = 1;
+    _camera_info[streamIndex].P.at(11) = 0;
 
-    _camera_info[stream_index].distortion_model = "plumb_bob";
+    _camera_info[streamIndex].distortion_model = "plumb_bob";
 
     // set R (rotation matrix) values to identity matrix
-    _camera_info[stream_index].R.at(0) = 1.0;
-    _camera_info[stream_index].R.at(1) = 0.0;
-    _camera_info[stream_index].R.at(2) = 0.0;
-    _camera_info[stream_index].R.at(3) = 0.0;
-    _camera_info[stream_index].R.at(4) = 1.0;
-    _camera_info[stream_index].R.at(5) = 0.0;
-    _camera_info[stream_index].R.at(6) = 0.0;
-    _camera_info[stream_index].R.at(7) = 0.0;
-    _camera_info[stream_index].R.at(8) = 1.0;
+    _camera_info[streamIndex].R.at(0) = 1.0;
+    _camera_info[streamIndex].R.at(1) = 0.0;
+    _camera_info[streamIndex].R.at(2) = 0.0;
+    _camera_info[streamIndex].R.at(3) = 0.0;
+    _camera_info[streamIndex].R.at(4) = 1.0;
+    _camera_info[streamIndex].R.at(5) = 0.0;
+    _camera_info[streamIndex].R.at(6) = 0.0;
+    _camera_info[streamIndex].R.at(7) = 0.0;
+    _camera_info[streamIndex].R.at(8) = 1.0;
 
-    _camera_info[stream_index].D.resize(5);
+    _camera_info[streamIndex].D.resize(5);
     for (int i = 0; i < 5; i++)
     {
-        _camera_info[stream_index].D.at(i) = intrinsic.coeffs[i];
+        _camera_info[streamIndex].D.at(i) = intrinsic.coeffs[i];
     }
 
-    if (stream_index == DEPTH && _enable[DEPTH] && _enable[COLOR])
+    if (streamIndex == DEPTH && _enable[DEPTH] && _enable[COLOR])
     {
-        _camera_info[stream_index].P.at(3) = 0;     // Tx
-        _camera_info[stream_index].P.at(7) = 0;     // Ty
+        _camera_info[streamIndex].P.at(3) = 0;     // Tx
+        _camera_info[streamIndex].P.at(7) = 0;     // Ty
     }
 
     if (this->alignDepth)
@@ -1904,8 +1752,8 @@ void BaseRealSenseNode::MultipleMessageCallback(rs2::frame frame, imu_sync_metho
             for (auto& profile : profiles.second)
             {
                 auto video_profile = profile.as<rs2::video_stream_profile>();
-                StreamIndexPair stream_index{video_profile.stream_type(), video_profile.stream_index()};
-                _depth_aligned_camera_info[stream_index] = _camera_info[stream_index];
+                StreamIndexPair streamIndex{video_profile.stream_type(), video_profile.streamIndex()};
+                _depth_aligned_camera_info[streamIndex] = _camera_info[streamIndex];
             }
         }
     }
@@ -2282,7 +2130,7 @@ void BaseRealSenseNode::MultipleMessageCallback(rs2::frame frame, imu_sync_metho
         [&stream] (const rs2::stream_profile &profile)
         {
           return ((profile.stream_type() == stream.first) &&
-                  (profile.stream_index() == stream.second));
+                  (profile.streamIndex() == stream.second));
         }));
 }*/
 

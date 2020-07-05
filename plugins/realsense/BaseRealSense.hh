@@ -84,6 +84,10 @@ namespace ignition
 
       private: void SetupFilters();
 
+      private: void FrameCallback(rs2::frame _frame);
+
+      private: void SetBaseTime(double _frameTime, bool _warnNoMetadata);
+
       /// \brief The RealSense2 device
       private: rs2::device rs2Dev;
 
@@ -138,6 +142,12 @@ namespace ignition
       private: std::vector<rs2_option> monitorOptions;
 
       private: std::map<rs2_stream, std::string> streamName;
+
+      private: std::vector<rs2::sensor> rs2Sensors;
+
+      private: std::shared_ptr<SyncedImuPublisher> syncedImuPublisher;
+
+      private: float clippingDistance;
 
       // private: StreamIndexPair _base_stream;
               /*
@@ -216,7 +226,6 @@ namespace ignition
 
       private: void setupStreams();
 
-      private: void setBaseTime(double frame_time, bool warn_no_metadata);
 
       private: cv::Mat& fix_depth_scale(const cv::Mat& from_image,
                    cv::Mat& to_image);
@@ -287,7 +296,6 @@ namespace ignition
 
       private: void multiple_message_callback(rs2::frame frame, imu_sync_method sync_method);
 
-      private: void frame_callback(rs2::frame frame);
 
       private: void registerDynamicOption(ros::NodeHandle& nh, rs2::options sensor, std::string& module_name);
 
@@ -314,7 +322,6 @@ namespace ignition
 
       private: float _depth_scale_meters;
 
-      private: float _clipping_distance;
 
       private: bool _allow_no_texture_points;
 
@@ -386,7 +393,6 @@ namespace ignition
 
       private: std::vector<NamedFilter> _filters;
 
-      private: std::vector<rs2::sensor> rs2Sensors;
 
       private: std::map<rs2_stream, std::shared_ptr<rs2::align>> _align;
 
@@ -433,7 +439,6 @@ namespace ignition
 
       private: std::vector<unsigned int> _valid_pc_indices;
 
-      private: std::shared_ptr<SyncedImuPublisher> _synced_imu_publisher;
                */
     };
 
