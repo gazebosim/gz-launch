@@ -55,7 +55,8 @@ namespace ignition
       private: bool LoadDevice(const rs2::device_list &_list);
       private: void ChangeDeviceCallback(const rs2::event_information &_info);
 
-      private: void StartDevice();
+      /// \brief Run the camera.
+      private: void Run();
 
       private: ignition::transport::Node node;
 
@@ -63,6 +64,7 @@ namespace ignition
       private: rs2::device rs2Device;
       private: std::string rs2SerialNumber;
       private: std::unique_ptr<BaseRealSenseCamera> realSenseCamera;
+      private: std::thread runThread;
     };
   }
 }

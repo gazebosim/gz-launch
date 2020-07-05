@@ -274,7 +274,7 @@ void BaseRealSenseCamera::SetParameters()
 }
 
 //////////////////////////////////////////////////
-void BaseRealSenseCamera::SetupDevice()
+/*void BaseRealSenseCamera::SetupDevice()
 {
   try
   {
@@ -434,6 +434,7 @@ void BaseRealSenseCamera::SetupDevice()
 
   this->yncedImuPublisher->Resume();
 };
+*/
 
 
 

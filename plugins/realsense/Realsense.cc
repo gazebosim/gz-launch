@@ -122,38 +122,12 @@ bool Realsense::Load(const tinyxml2::XMLElement * /*_elem*/)
 
   this->rs2Context.set_devices_changed_callback(changeDeviceCallbackFunction);
 
-  this->StartDevice();
-
-/*
   std::string cameraName = this->rs2Device.get_info(RS2_CAMERA_INFO_NAME);
 
   std::cout << "Camera name[" << cameraName << "]\n";
-  std::cout << "1\n";
-  rs2::pipeline p;
-  std::cout << "2\n";
-  p.start();
-  std::cout << "3\n";
 
-  // Block program until frames arrive
-  rs2::frameset frames = p.wait_for_frames();
-  std::cout << "4\n";
+  this->runThread = std::thread(&Realsense::Run, this);
 
-  // Try to get a frame of a depth image
-  rs2::depth_frame depth = frames.get_depth_frame();
-  std::cout << "5\n";
-
-  // Get the depth frame's dimensions
-  float width = depth.get_width();
-  float height = depth.get_height();
-  std::cout << "6\n";
-
-  // Query the distance from the camera to the object in the center of the image
-  float dist_to_center = depth.get_distance(width / 2, height / 2);
-  std::cout << "7\n";
-
-  std::cout << "The camera is facing an object " << dist_to_center << " meters away \n";
-  std::cout << "8\n";
-*/
   return true;
 }
 
@@ -233,7 +207,6 @@ void Realsense::ChangeDeviceCallback(const rs2::event_information &_info)
     {
       igndbg << "Checking for new devices.\n";
       this->LoadDevice(newDevices);
-      this->StartDevice();
     }
   }
 }
@@ -272,48 +245,54 @@ std::string Realsense::ParseUsbPort(const std::string &line) const
 }
 
 //////////////////////////////////////////////////
-void Realsense::StartDevice()
+void Realsense::Run()
 {
-  if (!this->rs2Device)
-    return;
+  // Create a Pipeline - this serves as a top-level API for streaming and
+  // processing frames
+  rs2::pipeline pipe;
 
-  std::string pidStr(this->rs2Device.get_info(RS2_CAMERA_INFO_PRODUCT_ID));
+  // Point cloud
+  rs2::pointcloud pointCloud;
 
-  uint16_t pid = std::stoi(pidStr, 0, 16);
+  // We want the points object to be persistent so we can display the last
+  // cloud when a frame drops
+  rs2::points points;
 
-  switch(pid)
+  // Configure and start the pipeline
+  pipe.start();
+
+  while (true)
   {
-  case SR300_PID:
-  case SR300v2_PID:
-  case RS400_PID:
-  case RS405_PID:
-  case RS410_PID:
-  case RS460_PID:
-  case RS415_PID:
-  case RS420_PID:
-  case RS420_MM_PID:
-  case RS430_PID:
-  case RS430_MM_PID:
-  case RS430_MM_RGB_PID:
-  case RS435_RGB_PID:
-  case RS435i_RGB_PID:
-  case RS_USB2_PID:
-  case RS_L515_PID:
-    {
-      igndbg << "Starting BaseRealsense device\n";
-      this->realSenseCamera = std::unique_ptr<BaseRealSenseCamera>(
-          new BaseRealSenseCamera(this->rs2Device, this->rs2SerialNumber));
-      break;
-    }
-  case RS_T265_PID:
-    // todo
-    ignerr << "RealSense T265 not supported.\n";
-    break;
-  default:
-    ignerr <<
-      "Unsupported Realsense with Product ID: 0x" << pidStr << std::endl;
-    break;
-  }
+    // Wait for the next set of frames from the camera
+    rs2::frameset frames = pipe.wait_for_frames();
 
-  this->realSenseCamera->Start();
+    // Get a color frame
+    auto color = frames.get_color_frame();
+
+    // For cameras that don't have RGB sensor, we'll map the pointcloud
+    // to infrared instead of color
+    if (!color)
+      color = frames.get_infrared_frame();
+
+    // Tell pointcloud object to map to this color frame
+    pointCloud.map_to(color);
+
+    // Get a depth frame
+    rs2::depth_frame depth = frames.get_depth_frame();
+
+    // Generate the pointcloud and texture mappings
+    points = pointCloud.calculate(depth);
+
+    std::cout << "got point cloud\n";
+
+    // Get the depth frame's dimensions
+    // float width = depth.get_width();
+    // float height = depth.get_height();
+
+    // Query the distance from the camera to the object in the center of the
+    // image
+    // float distToCenter = depth.get_distance(width / 2, height / 2);
+
+    // std::cout << "The camera is facing an object " << distToCenter << " meters away \n";
+  }
 }

@@ -145,7 +145,7 @@ namespace ignition
 
       private: std::vector<rs2::sensor> rs2Sensors;
 
-      private: std::shared_ptr<SyncedImuPublisher> syncedImuPublisher;
+      // private: std::shared_ptr<SyncedImuPublisher> syncedImuPublisher;
 
       private: float clippingDistance;
 

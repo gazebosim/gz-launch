@@ -28,17 +28,112 @@ pipelines:
           - apt-get -y install
             libignition-cmake2-dev
             libignition-common3-dev
-            libignition-gui2-dev
+            libignition-fuel-tools4-dev
             libignition-math6-dev
-            libignition-msgs4-dev
-            libignition-physics-dev
+            libignition-math6-eigen3-dev
+            libignition-msgs5-dev
+            libignition-physics2-dev
             libignition-plugin-dev
-            libignition-sensors2-dev
             libignition-tools-dev
-            libignition-fuel-tools3-dev
-            libignition-transport7-dev
-            libsdformat8-dev
-            libignition-gazebo2-dev
+            libignition-transport8-dev
+            libsdformat9-dev
+            # libignition-gazebo3-dev
+            # libignition-gui3-dev
+            # libignition-rendering3-dev
+            # libignition-sensors3-dev
+          # # Ignition msgs (uncomment if a specific branch is needed)
+          # - apt install -y
+          #   libprotobuf-dev protobuf-compiler libprotoc-dev
+          # - git clone http://github.com/ignitionrobotics/ign-msgs -b master
+          # - cd ign-msgs
+          # - mkdir build
+          # - cd build
+          # - cmake ..
+          # - make -j4 install
+          # - cd ../..
+          # # Ignition transport (uncomment if a specific branch is needed)
+          # - apt install -y
+          #   libzmq3-dev uuid-dev libsqlite3-dev
+          # - git clone http://github.com/ignitionrobotics/ign-transport -b master
+          # - cd ign-transport
+          # - mkdir build
+          # - cd build
+          # - cmake .. -DBUILD_TESTING=false
+          # - make -j4 install
+          # - cd ../..
+          # # SDFormat from source
+          # - apt install -y
+          #   libxml2-utils
+          #   libtinyxml-dev
+          # - git clone http://github.com/osrf/sdformat -b master
+          # - cd sdformat
+          # - mkdir build
+          # - cd build
+          # - cmake .. -DBUILD_TESTING=false
+          # - make -j4 install
+          # - cd ../..
+          # Ignition Rendering from source
+          - apt install -y
+            libogre-1.9-dev libogre-2.1-dev libglew-dev libfreeimage-dev freeglut3-dev libxmu-dev libxi-dev uuid-dev xvfb
+          - git clone https://github.com/ignitionrobotics/ign-rendering -b master
+          - cd ign-rendering
+          - mkdir build
+          - cd build
+          - cmake .. -DBUILD_TESTING=false
+          - make install
+          - cd ../..
+          # Ignition GUI from source
+          - apt install -y
+            qtbase5-dev libtinyxml2-dev
+            libprotoc-dev
+            libprotobuf-dev
+            qtdeclarative5-dev
+            qtquickcontrols2-5-dev
+            qml-module-qtquick2
+            qml-module-qtquick-controls
+            qml-module-qtquick-controls2
+            qml-module-qtquick-dialogs
+            qml-module-qtquick-layouts
+            qml-module-qt-labs-folderlistmodel
+            qml-module-qt-labs-settings
+            qml-module-qtgraphicaleffects
+          - git clone https://github.com/ignitionrobotics/ign-gui -b master
+          - cd ign-gui
+          - mkdir build
+          - cd build
+          - cmake .. -DBUILD_TESTING=false
+          - make install
+          - cd ../..
+          # # Ignition Physics from source
+          # - apt install -y
+          #   dart6-data
+          #   libdart6-collision-ode-dev
+          #   libdart6-dev
+          #   libdart6-utils-urdf-dev
+          #   libbenchmark-dev
+          # - git clone https://github.com/ignitionrobotics/ign-physics -b master
+          # - cd ign-physics
+          # - mkdir build
+          # - cd build
+          # - cmake .. -DBUILD_TESTING=false
+          # - make install
+          # - cd ../..
+          # Ignition Sensors from source
+          - git clone https://github.com/ignitionrobotics/ign-sensors -b master
+          - cd ign-sensors
+          - mkdir build
+          - cd build
+          - cmake .. -DBUILD_TESTING=false
+          - make install
+          - cd ../..
+          # Ignition Gazebo from source
+          - git clone https://github.com/ignitionrobotics/ign-gazebo -b master
+          - cd ign-gazebo
+          - mkdir build
+          - cd build
+          - cmake .. -DBUILD_TESTING=false
+          - make install
+          - cd ../..
           # Ignition Launch
           - mkdir build
           - cd build
