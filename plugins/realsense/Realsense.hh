@@ -59,6 +59,7 @@ namespace ignition
       private: void Run();
 
       private: ignition::transport::Node node;
+      private: ignition::transport::Node::Publisher pointCloudPub;
 
       private: rs2::context rs2Context;
       private: rs2::device rs2Device;

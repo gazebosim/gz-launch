@@ -126,6 +126,9 @@ bool Realsense::Load(const tinyxml2::XMLElement * /*_elem*/)
 
   std::cout << "Camera name[" << cameraName << "]\n";
 
+  // \todo: Use point cloud packed.
+  this->pointCloudPub = this->node.Advertise<ignition::msgs::PointCloud>("/point_cloud");
+
   this->runThread = std::thread(&Realsense::Run, this);
 
   return true;
@@ -261,9 +264,12 @@ void Realsense::Run()
   // Configure and start the pipeline
   pipe.start();
 
+
   while (true)
   {
-    // Wait for the next set of frames from the camera
+    ignition::msgs::PointCloud pointCloudMsg;
+
+    // Wait for the next set of coherent frames from the camera
     rs2::frameset frames = pipe.wait_for_frames();
 
     // Get a color frame
@@ -282,8 +288,17 @@ void Realsense::Run()
 
     // Generate the pointcloud and texture mappings
     points = pointCloud.calculate(depth);
+    std::cout << "got point cloud[" << points.size() << "]\n";
 
-    std::cout << "got point cloud\n";
+    const rs2::vertex *vertex = points.get_vertices();
+    for (size_t index = 0; index < points.size(); ++index, ++vertex)
+    {
+      ignition::msgs::Vector3d *vectorMsg = pointCloudMsg.add_points();
+      vectorMsg->set_x(vertex->x);
+      vectorMsg->set_y(vertex->y);
+      vectorMsg->set_z(vertex->z);
+    }
+    this->pointCloudPub.Publish(pointCloudMsg);
 
     // Get the depth frame's dimensions
     // float width = depth.get_width();
