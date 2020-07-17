@@ -7,7 +7,7 @@ load(
     "generate_include_header",
 )
 load(
-    "//ign_bazel:generate_file.bzl",
+    "//ign_bazel:ign_export_header.bzl",
     "ign_export_header",
 )
 load(
@@ -85,7 +85,7 @@ sources = [
 ]
 
 test_sources = [
-    "src/ign_TEST.cc",
+    # "src/ign_TEST.cc",
     "src/Manager_TEST.cc",
 ]
 
@@ -151,15 +151,6 @@ cc_library(
     ],
     allow_empty = False,
     ),
-    copts = [
-        "-Iexternal/qt/QtCore",
-        "-Iexternal/qt/QtGui",
-        "-Iexternal/qt/QtQml",
-        "-Iexternal/qt/QtQuick",
-        "-Iexternal/qt/QtQuickControls2",
-        "-Iexternal/qt/QtWidgets",
-        "-Iexternal/qt",
-    ],
     deps = [
         "//ign_launch",
         "//ign_msgs",
@@ -172,7 +163,6 @@ cc_library(
         "//sdformat",
         "//ign_plugin/register:register",
         "//ign_plugin/core:ign_plugin",
-        "@qt//:headers",
     ],
 ) for plugin in plugins]
 
@@ -180,15 +170,18 @@ cc_library(
     name = src.replace("/", "_").replace(".cc", "").replace("src_", ""),
     srcs = [src] + private_headers,
     deps = [
+	"//ign_common/profiler",
         "//ign_launch",
         "//ign_launch/test:test_utils",
         "//ign_msgs",
         "//ign_gui",
+        "//ign_fuel_tools",
         "//ign_bazel:utilities",
         "//ign_gazebo",
         "//ign_common",
         "//ign_common/events:events",
         "//ign_transport",
+        "//ign_rendering",
         "//sdformat",
         "//ign_plugin/register:register",
         "//ign_plugin/core:ign_plugin",
