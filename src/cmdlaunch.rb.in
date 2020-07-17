@@ -209,7 +209,7 @@ class Cmd
       end
     rescue
       puts "Library error: Problem running [#{options['command']}]() "\
-           "from @IGN_LIBRARY_NAME@."
+           "from ignition-launch."
     end # begin
   end # execute
 end # class
