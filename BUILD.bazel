@@ -189,3 +189,6 @@ cc_library(
         "@gtest//:gtest_main",
     ],
 ) for src in test_sources]
+
+exports_files(["src/cmdlaunch.rb.in"])
+exports_files(["CMakeLists.txt"])
