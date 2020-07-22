@@ -757,6 +757,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
   ignition::common::SystemPaths systemPaths;
   systemPaths.SetPluginPathEnv("IGN_LAUNCH_PLUGIN_PATH");
   systemPaths.AddPluginPaths(IGNITION_LAUNCH_PLUGIN_INSTALL_PATH);
+  std::cout << "ign launch plugin path " << IGNITION_LAUNCH_PLUGIN_INSTALL_PATH << std::endl;
 
   // Add LD_LIBRARY_PATH
 #ifdef __linux__

@@ -32,7 +32,7 @@ PROJECT_PATCH = 0
 IGN_DESIGNATION = "/tmp"
 CMAKE_INSTALL_PREFIX = "/tmp"
 IGN_DATA_INSTALL_DIR = "/tmp"
-IGN_LAUNCH_PLUGIN_INSTALL_PATH = "/tmp"
+IGN_LAUNCH_PLUGIN_INSTALL_PATH = "./ign_launch"
 library_location = "/usr"
 IGN_LIBRARY_PATH = "/usr"
 
@@ -90,12 +90,8 @@ test_sources = [
 ]
 
 plugins = [
-    "gazebo_factory",
-    "gazebo_gui",
-    "gazebo_server",
     "joystick",
     "joy_to_twist",
-    "websocket_server",
 ]
 
 generate_include_header(
@@ -138,39 +134,170 @@ cc_library(
     visibility = ["//visibility:public"],
 )
 
-[cc_library(
-    name = plugin,
+[cc_binary(
+    name = "libignition-launch-%s.so" % plugin.replace("_", ""),
     srcs = glob([
         "plugins/%s/*.cc" % plugin,
         "plugins/%s/*.hh" % plugin,
     ],
     allow_empty = False,
     ),
-    hdrs = glob([
-        "plugins/%s/*.hh" % plugin,
-    ],
-    allow_empty = False,
-    ),
+    linkshared = True,
     deps = [
         "//ign_launch",
         "//ign_msgs",
         "//ign_gui",
         "//ign_bazel:utilities",
         "//ign_gazebo",
+        "//ign_gazebo:ign_gazebo_systems",
+        "//ign_rendering",
+        "//ign_physics",
+        "//ign_common",
+        "//ign_fuel_tools",
+        "//ign_common/events:events",
+        "//ign_transport",
+        "//ign_transport/log",
+        "//sdformat",
+        "//ign_sensors:all",
+        "//ign_plugin/register:register",
+        "//ign_plugin/core:ign_plugin",
+    ],
+    visibility = ["//visibility:public"],
+) for plugin in plugins]
+cc_binary(
+    name = "libignition-launch-gazebo.so",
+    srcs = glob([
+        "plugins/gazebo_server/*.cc",
+        "plugins/gazebo_server/*.hh",
+    ],
+    allow_empty = False,
+    ),
+    linkshared = True,
+    deps = [
+        "//ign_launch",
+        "//ign_msgs",
+        "//ign_gui",
+        "//ign_bazel:utilities",
+        "//ign_gazebo",
+        "//ign_gazebo:ign_gazebo_systems",
+        "//ign_rendering",
+        "//ign_physics",
+        "//ign_fuel_tools",
         "//ign_common",
         "//ign_common/events:events",
         "//ign_transport",
+        "//ign_transport/log",
+        "//ign_sensors:all",
         "//sdformat",
         "//ign_plugin/register:register",
         "//ign_plugin/core:ign_plugin",
     ],
-) for plugin in plugins]
+)
+cc_binary(
+    name = "libignition-launch-gazebogui.so",
+    srcs = glob([
+        "plugins/gazebo_gui/*.cc",
+        "plugins/gazebo_gui/*.hh",
+    ],
+    allow_empty = False,
+    ),
+    linkshared = True,
+    deps = [
+        "//ign_launch",
+        "//ign_msgs",
+        "//ign_gui",
+        "//ign_bazel:utilities",
+        "//ign_gazebo",
+        "//ign_gazebo:ign_gazebo_systems",
+        "//ign_rendering",
+        "//ign_physics",
+        "//ign_fuel_tools",
+        "//ign_common",
+        "//ign_common/events:events",
+        "//ign_transport",
+        "//ign_sensors:all",
+        "//ign_transport/log",
+        "//sdformat",
+        "//ign_plugin/register:register",
+        "//ign_plugin/core:ign_plugin",
+    ],
+)
+cc_binary(
+    name = "libignition-launch-gazebo-factory.so",
+    srcs = glob([
+        "plugins/gazebo_factory/*.cc",
+        "plugins/gazebo_factory/*.hh",
+    ],
+    allow_empty = False,
+    ),
+    linkshared = True,
+    deps = [
+        "//ign_launch",
+        "//ign_msgs",
+        "//ign_gui",
+        "//ign_bazel:utilities",
+        "//ign_gazebo",
+        "//ign_gazebo:ign_gazebo_systems",
+        "//ign_rendering",
+        "//ign_physics",
+        "//ign_fuel_tools",
+        "//ign_common",
+        "//ign_common/events:events",
+        "//ign_transport",
+        "//ign_sensors:all",
+        "//ign_transport/log",
+        "//sdformat",
+        "//ign_plugin/register:register",
+        "//ign_plugin/core:ign_plugin",
+    ],
+)
+cc_binary(
+    name = "libignition-launch-websocket-server.so",
+    srcs = glob([
+        "plugins/websocket_server/*.cc",
+        "plugins/websocket_server/*.hh",
+    ],
+    allow_empty = False,
+    ),
+    linkshared = True,
+    deps = [
+        "//ign_launch",
+        "//ign_msgs",
+        "//ign_gui",
+        "//ign_bazel:utilities",
+        "//ign_gazebo",
+        "//ign_gazebo:ign_gazebo_systems",
+        "//ign_rendering",
+        "//ign_fuel_tools",
+        "//ign_common",
+        "//ign_physics",
+        "//ign_sensors:all",
+        "//ign_common/events:events",
+        "//ign_transport",
+        "//ign_transport/log",
+        "//sdformat",
+        "//ign_plugin/register:register",
+        "//ign_plugin/core:ign_plugin",
+    ],
+)
+
+cc_library(
+    name = "ign-launch-plugins",
+    deps = [":libignition-launch-%s.so" % plugin.replace("_", "") for plugin in plugins]
+    + [
+        "libignition-launch-websocket-server.so",
+        "libignition-launch-gazebo-factory.so",
+        "libignition-launch-gazebo.so",
+        "libignition-launch-gazebogui.so",
+    ],
+    visibility = ["//visibility:public"],
+)
 
 [cc_test(
     name = src.replace("/", "_").replace(".cc", "").replace("src_", ""),
     srcs = [src] + private_headers,
     deps = [
-	"//ign_common/profiler",
+	      "//ign_common/profiler",
         "//ign_launch",
         "//ign_launch/test:test_utils",
         "//ign_msgs",
