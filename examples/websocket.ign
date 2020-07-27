@@ -10,6 +10,10 @@
     <authorization_key>auth_key</authorization_key>
     <admin_authorization_key>admin_key</admin_authorization_key>
 
+    <!-- The maximum number of allowed connections. If this element is not
+         defined or negative, then a limit is not enforced. -->
+    <max_connections>10</max_connections>
+
     <!-- SSL configuration -->
     <!-- Specify the path to both the certificate and private key. -->
     <!-- Sample self-signed SSL certifacts are located in the

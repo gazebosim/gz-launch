@@ -66,6 +66,19 @@ int rootCallback(struct lws *_wsi,
   // std::lock_guard<std::mutex> mainLock(self->mutex);
   switch (_reason)
   {
+    // Filter network connections.
+    case LWS_CALLBACK_FILTER_NETWORK_CONNECTION:
+      // Prevent too many connections.
+      if (self->maxConnections >= 0 &&
+          self->connections.size()+1 > self->maxConnections)
+      {
+        ignerr << "Skipping new connection, limit of "
+          << self->maxConnections << " has been reached\n";
+        // Return non-zero to close the connection.
+        return -1;
+      }
+      break;
+
     // Open connections.
     case LWS_CALLBACK_ESTABLISHED:
       igndbg << "LWS_CALLBACK_ESTABLISHED\n";
@@ -213,6 +226,23 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
     }
   }
   igndbg << "Using port[" << port << "]\n";
+
+  // Get the maximum connection count, if present.
+  elem = _elem->FirstChildElement("max_connections");
+  if (elem)
+  {
+    try
+    {
+      this->maxConnections = std::stoi(elem->GetText());
+    }
+    catch (...)
+    {
+      ignerr << "Failed to convert port[" << elem->GetText() << "] to integer."
+        << std::endl;
+    }
+    igndbg << "Using maximum connetion count of "
+      << this->maxConnections << std::endl;
+  }
 
   std::string sslCertFile = "";
   std::string sslPrivateKeyFile = "";
@@ -374,6 +404,9 @@ void WebsocketServer::OnConnect(int _socketId)
 //////////////////////////////////////////////////
 void WebsocketServer::OnDisconnect(int _socketId)
 {
+  if (this->connections.find(_socketId) == this->connections.end())
+    return;
+
   this->connections.erase(_socketId);
 
   // Somewhat slow operation.
@@ -393,6 +426,10 @@ void WebsocketServer::OnDisconnect(int _socketId)
 //////////////////////////////////////////////////
 void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
 {
+  // Skip invalid sockets
+  if (this->connections.find(_socketId) == this->connections.end())
+    return;
+
   // Frame: operation,topic,type,payload
   std::vector<std::string> frameParts = common::split(_msg, ",");
 

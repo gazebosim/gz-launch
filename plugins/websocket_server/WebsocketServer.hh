@@ -150,7 +150,13 @@ namespace ignition
                    const size_t _size,
                    const ignition::transport::MessageInfo &_info);
 
+      /// \brief Callback that is triggered when a new connection is
+      /// established.
+      /// \param[in] _socketId ID of the socket.
       public: void OnConnect(int _socketId);
+
+      /// \brief Callback that is triggered when a connection ended.
+      /// \param[in] _socketId ID of the socket.
       public: void OnDisconnect(int _socketId);
 
       public: void OnMessage(int _socketId, const std::string &_msg);
@@ -200,6 +206,10 @@ namespace ignition
       /// \brief Number of pending messages. This is used to throttle the
       /// run loop.
       public: int messageCount{0};
+
+      /// \brief The maximum number of connections. A negative number
+      /// indicates no limit.
+      public: int maxConnections{-1};
 
       /// \brief Time of last publication for each subscribed topic. The key
       /// is the topic name and the value the time of last publication.
