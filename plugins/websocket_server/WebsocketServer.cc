@@ -240,7 +240,7 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
       ignerr << "Failed to convert port[" << elem->GetText() << "] to integer."
         << std::endl;
     }
-    igndbg << "Using maximum connetion count of "
+    igndbg << "Using maximum connection count of "
       << this->maxConnections << std::endl;
   }
 
@@ -404,6 +404,7 @@ void WebsocketServer::OnConnect(int _socketId)
 //////////////////////////////////////////////////
 void WebsocketServer::OnDisconnect(int _socketId)
 {
+  // Skip invalid sockets
   if (this->connections.find(_socketId) == this->connections.end())
     return;
 
