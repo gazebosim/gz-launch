@@ -1,5 +1,11 @@
 ## Ignition Launch 1.x
 
+### Ignition Launch 1.8.0 (2020-07-28)
+
+1. Added `<max_connections>` to the websocket server that supports
+   specifying the maximum allowed websocket connections.
+    * [Pull Request 40](https://github.com/ignitionrobotics/ign-launch/pull/40)
+
 ### Ignition Launch 1.7.1 (2020-06-23)
 
 1. Improve websocket performance by throttling the busy loop, and fix empty SSL
