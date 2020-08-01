@@ -80,6 +80,10 @@ ign_find_package (Qt5
 ign_find_package(ignition-gazebo4 REQUIRED PRIVATE COMPONENTS gui)
 set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo4_VERSION_MAJOR})
 
+#--------------------------------------
+# Set the bazel prefix to empty
+set(BAZEL_IGN_PREFIX "")
+
 ign_pkg_check_modules(websockets libwebsockets)
 if (NOT websockets_FOUND)
   ign_build_warning("Unable to find libwebsockets. The websocket_server plugin will not be built.")

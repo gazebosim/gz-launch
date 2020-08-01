@@ -677,6 +677,12 @@ void ManagerPrivate::ParseExecutables(const tinyxml2::XMLElement *_elem)
 
     if (valid)
     {
+      // Prepend an extra path for the ign binary in the case
+      // of a Bazel build
+      if (cmdParts[0] == "ign")
+      {
+        cmdParts[0] = BAZEL_IGN_PREFIX + cmdParts[0];
+      }
       if (!this->RunExecutable(nameStr, cmdParts, autoRestart, localEnvs))
       {
         ignerr << "Unable to run executable named[" << nameStr << "] in "

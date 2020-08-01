@@ -124,6 +124,9 @@ cc_binary(
         "//ign_plugin/loader:loader",
         "//ign_plugin/core:ign_plugin",
     ],
+    defines = [
+        "BAZEL_IGN_PREFIX='\"ign_tools/\"'",
+    ],
 )
 
 cc_library(
