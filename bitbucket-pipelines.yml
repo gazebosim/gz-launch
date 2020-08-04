@@ -28,19 +28,19 @@ pipelines:
           - apt-get -y install
             libignition-cmake2-dev
             libignition-common3-dev
-            libignition-fuel-tools4-dev
+            libignition-fuel-tools5-dev
             libignition-math6-dev
             libignition-math6-eigen3-dev
-            libignition-msgs5-dev
-            libignition-physics2-dev
+            libignition-msgs6-dev
+            libignition-physics3-dev
             libignition-plugin-dev
             libignition-tools-dev
-            libignition-transport8-dev
-            libsdformat9-dev
-            # libignition-gazebo3-dev
-            # libignition-gui3-dev
-            # libignition-rendering3-dev
-            # libignition-sensors3-dev
+            libignition-transport9-dev
+            libsdformat10-dev
+            # libignition-gazebo4-dev
+            # libignition-gui4-dev
+            # libignition-rendering4-dev
+            # libignition-sensors4-dev
           # # Ignition msgs (uncomment if a specific branch is needed)
           # - apt install -y
           #   libprotobuf-dev protobuf-compiler libprotoc-dev
