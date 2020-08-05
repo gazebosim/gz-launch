@@ -16,4 +16,3 @@ libsdformat8-dev
 libtinyxml2-dev
 libwebsockets-dev
 libyaml-dev
-python-yaml
