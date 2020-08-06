@@ -16,12 +16,11 @@
 */
 
 #include <ignition/common/Console.hh>
-#include <sdf/sdf.hh>
 #include <ignition/fuel_tools/FuelClient.hh>
 #include <ignition/fuel_tools/ClientConfig.hh>
 #include <ignition/fuel_tools/Result.hh>
 #include <ignition/fuel_tools/WorldIdentifier.hh>
-
+#include <sdf/sdf.hh>
 
 #include "GazeboServer.hh"
 
@@ -95,17 +94,13 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
 
   // Get the world file
   elem = _elem->FirstChildElement("world_file");
-  ignwarn << "in load" << std::endl;
   if (elem)
   {
-    ignwarn << "elem text is " << elem->GetText() << std::endl;
     std::string current = elem->GetText();
 
     // If the world file is not a file, assume it is a fuel world
     if (!ignition::common::isFile(current))
     {
-      // TODO here download, check cached, find sdf file
-      
       std::string path;
       std::string fileName = "";
       ignition::fuel_tools::ServerConfig server;
@@ -116,20 +111,17 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
   
       if (fuelClient.CachedWorld(ignition::common::URI(current), path))
       {
-        ignwarn << "Cached - path is " << path << std::endl;
         fileName = findResourceSdf(path);
       } 
-      
-      ignition::fuel_tools::Result result = fuelClient.DownloadWorld(ignition::common::URI(current), path);
-      
-      if (result)
+      else if (ignition::fuel_tools::Result result =
+          fuelClient.DownloadWorld(ignition::common::URI(current), path);
+          result)
       {
-        ignwarn << "Downloaded - path is " << path << std::endl;
         fileName = findResourceSdf(path);
       } 
       else
       {
-        std::cout << "Download failed because " << result.ReadableResult()
+        ignwarn << "Fuel world download failed because " << result.ReadableResult()
             << std::endl;
       }
       serverConfig.SetSdfFile(fileName);
