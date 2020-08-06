@@ -34,9 +34,14 @@
 #include <vector>
 
 #include <ignition/common/Console.hh>
+#include <ignition/common/Filesystem.hh>
 #include <ignition/common/SignalHandler.hh>
 #include <ignition/common/SystemPaths.hh>
 #include <ignition/plugin/Loader.hh>
+#include <ignition/fuel_tools/FuelClient.hh>
+#include <ignition/fuel_tools/ClientConfig.hh>
+#include <ignition/fuel_tools/Result.hh>
+#include <ignition/fuel_tools/WorldIdentifier.hh>
 
 #include "ignition/launch/config.hh"
 #include "ignition/launch/Plugin.hh"

@@ -17,6 +17,12 @@
 
 #include <ignition/common/Console.hh>
 #include <sdf/sdf.hh>
+#include <ignition/fuel_tools/FuelClient.hh>
+#include <ignition/fuel_tools/ClientConfig.hh>
+#include <ignition/fuel_tools/Result.hh>
+#include <ignition/fuel_tools/WorldIdentifier.hh>
+
+
 #include "GazeboServer.hh"
 
 using namespace ignition;
@@ -50,6 +56,31 @@ void copyElement(sdf::ElementPtr _sdf, const tinyxml2::XMLElement *_xml)
   }
 }
 
+//////////////////////////////////////////////////
+std::string findResourceSdf(const std::string &_path)
+{
+  if (ignition::common::exists(_path))
+  {
+    for (ignition::common::DirIter file(_path);
+         file != ignition::common::DirIter(); ++file)
+    {
+      std::string current(*file);
+      if (ignition::common::isFile(current))
+      {
+        std::string fileName = ignition::common::basename(current);
+        std::string::size_type fileExtensionIndex = fileName.rfind(".");
+        std::string fileExtension = fileName.substr(fileExtensionIndex + 1);
+       
+        if (fileExtension == "sdf")
+        {
+          return current;
+        }
+      } 
+    } 
+  } 
+  return "";
+} 
+
 /////////////////////////////////////////////////
 GazeboServer::GazeboServer()
   : ignition::launch::Plugin()
@@ -64,8 +95,50 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
 
   // Get the world file
   elem = _elem->FirstChildElement("world_file");
+  ignwarn << "in load" << std::endl;
   if (elem)
-    serverConfig.SetSdfFile(elem->GetText());
+  {
+    ignwarn << "elem text is " << elem->GetText() << std::endl;
+    std::string current = elem->GetText();
+
+    // If the world file is not a file, assume it is a fuel world
+    if (!ignition::common::isFile(current))
+    {
+      // TODO here download, check cached, find sdf file
+      
+      std::string path;
+      std::string fileName = "";
+      ignition::fuel_tools::ServerConfig server;
+      server.SetUrl(ignition::common::URI("https://fuel.ignitionrobotics.org"));
+      ignition::fuel_tools::ClientConfig config;
+      config.AddServer(server);
+      ignition::fuel_tools::FuelClient fuelClient(config);
+  
+      if (fuelClient.CachedWorld(ignition::common::URI(current), path))
+      {
+        ignwarn << "Cached - path is " << path << std::endl;
+        fileName = findResourceSdf(path);
+      } 
+      
+      ignition::fuel_tools::Result result = fuelClient.DownloadWorld(ignition::common::URI(current), path);
+      
+      if (result)
+      {
+        ignwarn << "Downloaded - path is " << path << std::endl;
+        fileName = findResourceSdf(path);
+      } 
+      else
+      {
+        std::cout << "Download failed because " << result.ReadableResult()
+            << std::endl;
+      }
+      serverConfig.SetSdfFile(fileName);
+    }
+    else
+    { 
+      serverConfig.SetSdfFile(elem->GetText());
+    }
+  }
 
   // Set whether to use levels
   elem = _elem->FirstChildElement("levels");

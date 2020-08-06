@@ -65,6 +65,11 @@ ign_find_package(ignition-math6 REQUIRED)
 set(IGN_MATH_MAJOR_VER ${ignition-math6_VERSION_MAJOR})
 
 #--------------------------------------
+# Find ignition-fuel_tools3
+ign_find_package(ignition-fuel_tools3 REQUIRED)
+set(IGN_FUEL_TOOLS_VER ${ignition-fuel_tools3_VERSION_MAJOR})
+
+#--------------------------------------
 # Find ignition-gui
 ign_find_package(ignition-gui2 REQUIRED)
 set(IGN_GUI_MAJOR_VER ${ignition-gui2_VERSION_MAJOR})

@@ -18,6 +18,7 @@ target_link_libraries(${PROJECT_LIBRARY_TARGET_NAME}
   PUBLIC
     ignition-plugin${IGN_PLUGIN_MAJOR_VER}::loader
     ignition-plugin${IGN_PLUGIN_MAJOR_VER}::register
+    ignition-fuel_tools${IGN_FUEL_TOOLS_VER}::ignition-fuel_tools${IGN_FUEL_TOOLS_VER}
     TINYXML2::TINYXML2
   PRIVATE
     ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
