@@ -262,6 +262,7 @@ cc_binary(
     ],
     allow_empty = False,
     ),
+    linkopts = ["-lwebsockets"],
     linkshared = True,
     deps = [
         "//ign_launch",
