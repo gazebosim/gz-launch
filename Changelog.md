@@ -20,6 +20,33 @@
 
 ## Ignition Launch 1.x
 
+### Ignition Launch 1.8.0 (2020-07-28)
+
+1. Added `<max_connections>` to the websocket server that supports
+   specifying the maximum allowed websocket connections.
+    * [Pull Request 40](https://github.com/ignitionrobotics/ign-launch/pull/40)
+
+### Ignition Launch 1.7.1 (2020-06-23)
+
+1. Improve websocket performance by throttling the busy loop, and fix empty SSL
+   XML elements.
+    * [Pull Request 37](https://github.com/ignitionrobotics/ign-launch/pull/37)
+
+### Ignition Launch 1.7.0 (2020-06-16)
+
+1. Added SSL to websocket server.
+    * [Pull Request 34](https://github.com/ignitionrobotics/ign-launch/pull/34)
+
+### Ignition Launch 1.6.0 (2020-06-11)
+
+1. Improved websockets by: adding simple authentication, access to
+   protobuf message definitions, access to scene and world information, and
+   definition of custom message framing.
+    * [Pull Request 22](https://github.com/ignitionrobotics/ign-launch/pull/22)
+    * [Pull Request 21](https://github.com/ignitionrobotics/ign-launch/pull/21)
+    * [Pull Request 17](https://github.com/ignitionrobotics/ign-launch/pull/17)
+    * [Pull Request 33](https://github.com/ignitionrobotics/ign-launch/pull/33)
+
 ### Ignition Launch 1.5.0 (2020-05-20)
 
 1. Added support for spawning multiple entities in the same simulation step.
