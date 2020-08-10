@@ -4,7 +4,7 @@
   <!-- Load a joystick plugin that will read from a device and output to a
        topic -->
   <plugin name="ignition::launch::WebsocketServer"
-          filename="libignition-launch-websocket-server.so">
+          filename="ignition-launch-websocket-server">
   </plugin>
 
 </ignition>

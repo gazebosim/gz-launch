@@ -39,7 +39,7 @@ namespace ignition
     ///
     /// <!-- Inform ignition::Launch about the JoyToTwist plugin -->
     ///  <plugin name="ignition::launch::WebsocketServer"
-    ///      filename="libignition-launch-joystick0.so">
+    ///      filename="ignition-launch-joystick0">
     ///
     ///    <!-- WebsocketServer device -->
     ///    <device>/dev/input/js0</device>

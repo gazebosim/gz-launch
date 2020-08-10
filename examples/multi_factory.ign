@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <ignition version='1.0'>
   <plugin name="ignition::launch::GazeboFactory"
-    filename="libignition-launch-gazebo-factory.so">
+    filename="ignition-launch-gazebo-factory">
     <spawn>
       <name>x2</name>
       <allow_renaming>true</allow_renaming>
