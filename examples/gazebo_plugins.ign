@@ -20,7 +20,7 @@
   <!-- Load a joystick plugin that will read from a device and output to a
        topic -->
   <plugin name="ignition::launch::Joystick"
-          filename="libignition-launch-joystick.so">
+          filename="ignition-launch-joystick">
     <device>/dev/input/js0</device>
     <sticky_buttons>false</sticky_buttons>
     <dead_zone>0.05</dead_zone>
@@ -31,7 +31,7 @@
   <!-- Load a plugin that transforms a joystick message to a
        twist message -->
   <plugin name="ignition::launch::JoyToTwist"
-          filename="libignition-launch-joytotwist.so">
+          filename="ignition-launch-joytotwist">
     <input_topic>/joy</input_topic>
     <output_topic>/model/vehicle_green/cmd_vel</output_topic>
   </plugin>
@@ -39,14 +39,14 @@
   <!-- Load a plugin that transforms a joystick message to a
        twist message -->
   <plugin name="ignition::launch::JoyToTwist"
-          filename="libignition-launch-joytotwist.so">
+          filename="ignition-launch-joytotwist">
     <input_topic>/joy</input_topic>
     <output_topic>/model/vehicle_blue/cmd_vel</output_topic>
   </plugin>
 
   <!-- Run the gazebo server with a set of plugins -->
   <plugin name="ignition::launch::GazeboServer"
-          filename="libignition-launch-gazebo.so">
+          filename="ignition-launch-gazebo">
     <world_file><%= worldName %>.sdf</world_file>
     <run>true</run>
     <!-- 3000 Hz == 300% RTF == 3x real time -->
@@ -78,18 +78,18 @@
          necessary plugin
     <plugin entity_name="<%= worldName %>"
             entity_type="world"
-            filename="libignition-gazebo1-physics-system.so"
+            filename="ignition-gazebo1-physics-system"
             name="ignition::gazebo::systems::Physics">
     </plugin>
     <plugin entity_name="<%= worldName %>"
             entity_type="world"
-            filename="libignition-gazebo1-scene-broadcaster-system.so"
+            filename="ignition-gazebo1-scene-broadcaster-system"
             name="ignition::gazebo::systems::SceneBroadcaster">
     </plugin>
 
     <plugin entity_name="vehicle_green"
             entity_type="model"
-            filename="libignition-gazebo1-diff-drive-system.so"
+            filename="ignition-gazebo1-diff-drive-system"
             name="ignition::gazebo::systems::DiffDrive">
       <left_joint>left_wheel_joint</left_joint>
       <right_joint>right_wheel_joint</right_joint>
@@ -99,7 +99,7 @@
 
     <plugin entity_name="vehicle_blue"
             entity_type="model"
-            filename="libignition-gazebo1-diff-drive-system.so"
+            filename="ignition-gazebo1-diff-drive-system"
             name="ignition::gazebo::systems::DiffDrive">
       <left_joint>left_wheel_joint</left_joint>
       <right_joint>right_wheel_joint</right_joint>
@@ -112,7 +112,7 @@
 
   <executable_wrapper>
     <plugin name="ignition::launch::GazeboGui"
-          filename="libignition-launch-gazebogui.so">
+          filename="ignition-launch-gazebogui">
 
       <!-- Override default window title (Gazebo) -->
       <window_title>Ignition Launch</window_title>

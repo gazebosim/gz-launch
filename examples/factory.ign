@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <ignition version='1.0'>
   <plugin name="ignition::launch::GazeboFactory"
-    filename="libignition-launch-gazebo-factory.so">
+    filename="ignition-launch-gazebo-factory">
     <spawn>
       <name>x2</name>
       <allow_renaming>true</allow_renaming>
@@ -10,7 +10,7 @@
       <sdf version='1.6'>
         <include>
           <uri>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/X2 UGV/1</uri>
-          <plugin filename="libignition-gazebo-diff-drive-system.so"
+          <plugin filename="ignition-gazebo-diff-drive-system"
                   name="ignition::gazebo::systems::DiffDrive">
             <left_joint>front_left_wheel_joint</left_joint>
             <left_joint>rear_left_wheel_joint</left_joint>
@@ -21,7 +21,7 @@
           </plugin>
 
           <!-- Publish robot state information -->
-          <plugin filename="libignition-gazebo-state-publisher-system.so"
+          <plugin filename="ignition-gazebo-state-publisher-system"
                   name="ignition::gazebo::systems::StatePublisher"></plugin>
         </include>
       </sdf>
