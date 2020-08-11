@@ -175,7 +175,7 @@ int httpCallback(struct lws *_wsi,
       break;
   }
 
-  return 0;
+  return -1;
 }
 
 int rootCallback(struct lws *_wsi,
