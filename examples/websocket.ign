@@ -1,8 +1,8 @@
 <?xml version='1.0'?>
 <ignition version='1.0'>
 
-  <!-- Load a joystick plugin that will read from a device and output to a
-       topic -->
+  <!-- Load a websocket server that provides access to Ignition Transport
+       topics through websockets.-->
   <plugin name="ignition::launch::WebsocketServer"
           filename="libignition-launch-websocket-server.so">
     <publication_hz>30</publication_hz>
