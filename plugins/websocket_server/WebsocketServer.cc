@@ -40,6 +40,11 @@ using namespace ignition::launch;
 /// \return A string that is the frame header.
 #define BUILD_MSG(_op, _topic, _type, _payload) (BUILD_HEADER(_op, _topic, _type) + _payload)
 
+/// \brief Gets the websocket server from the lws protocol passed to handler.
+/// \attention The protocol should be defined with a reference to a websocket
+/// server in the `user` field.
+/// \param[in] _wsi lws connection.
+/// \return A pointer to the websocket server assigned to the protocol.
 WebsocketServer *get_server(struct lws *_wsi) {
   WebsocketServer *self = nullptr;
 
@@ -53,10 +58,16 @@ WebsocketServer *get_server(struct lws *_wsi) {
   return self;
 }
 
+/// \brief Sets HTTP response status code and writes Content-Type and
+/// Content-Lenght HTTP headers.
+/// \param[in] _wsi lws connection.
+/// \param[in] status_code Status code.
+/// \param[in] content_type Content mime-type.
+/// \param[in] content_length Size of the body in bytes.
 int write_http_headers(struct lws *_wsi,
-                       unsigned long content_length,
                        int status_code,
-                       const char *mime_type) {
+                       const char *content_type,
+                       unsigned long content_length) {
   unsigned char buf[4096 + LWS_PRE];
   unsigned char *p, *start, *end;
   int n;
@@ -75,8 +86,8 @@ int write_http_headers(struct lws *_wsi,
   // Content-Type
   if (lws_add_http_header_by_token(_wsi,
       WSI_TOKEN_HTTP_CONTENT_TYPE,
-      reinterpret_cast<const unsigned char *>(mime_type),
-      strlen(mime_type),
+      reinterpret_cast<const unsigned char *>(content_type),
+      strlen(content_type),
       &p,
       end))
     return 1;
@@ -142,7 +153,7 @@ int httpCallback(struct lws *_wsi,
         }
 
         // Write response headers
-        if (write_http_headers(_wsi, buflen, 200, "application/json"))
+        if (write_http_headers(_wsi, 200, "application/json", buflen))
           return 1;
 
         // Write response body
