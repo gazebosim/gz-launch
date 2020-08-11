@@ -164,13 +164,13 @@ int httpCallback(struct lws *_wsi,
         unsigned char buf[buflen + LWS_PRE];
         int n;
         n = snprintf(reinterpret_cast<char *>(buf), buflen, format,
-                     conns.c_str());
+            conns.c_str());
         // Check that no characters were discarded
         if (n - int(buflen) > 0)
         {
           ignwarn << "Discarded "
-                  << n - int(buflen)
-                  << "characters when preparing metrics.\n";
+            << n - int(buflen)
+            << "characters when preparing metrics.\n";
         }
 
         // Write response headers
@@ -201,7 +201,7 @@ int httpCallback(struct lws *_wsi,
 }
 
 /// \brief Default request event handler. All requests that do not explicitly
-/// specify a protocol name are hanlded by this function.
+/// specify a protocol name are handled by this function.
 /// \param _wsi lws connection.
 /// \param _reason lws event. Reason for the call.
 /// \param _user Pointer to per-session user data allocated by library.
