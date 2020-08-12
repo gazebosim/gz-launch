@@ -30,7 +30,7 @@ namespace ignition
     ///
     /// # Example usage
     ///  <plugin name="ignition::launch::GazeboFactory"
-    ///          filename="libignition-launch-gazebo-factory.so">
+    ///          filename="ignition-launch-gazebo-factory">
     ///
     ///   <spawn>
     ///     <!-- Name to give the model -->
@@ -49,7 +49,7 @@ namespace ignition
     ///       <include>
     ///         <uri>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/X2 UGV/1</uri>
     ///         <!-- Publish robot state information -->
-    ///         <plugin filename="libignition-gazebo-state-publisher-system.so"
+    ///         <plugin filename="ignition-gazebo-state-publisher-system"
     ///              name="ignition::gazebo::systems::StatePublisher"></plugin>
     ///       </include>
     ///     </sdf>

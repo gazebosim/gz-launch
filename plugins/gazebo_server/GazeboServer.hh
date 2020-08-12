@@ -31,14 +31,14 @@ namespace ignition
     /// # Example usage
     /// <!-- Run the gazebo server with a set of plugins -->
     /// <plugin name="ignition::launch::GazeboServer"
-    ///         filename="libignition-launch-gazebo.so">
+    ///         filename="ignition-launch-gazebo">
     ///   <!-- The SDF file to run -->
     ///   <world_file>diff_drive.sdf</world_file>
     ///
     ///   <!-- The physics system -->
     ///   <plugin entity_name="<%= worldName %>"
     ///           entity_type="world"
-    ///           filename="libignition-gazebo-physics-system.so"
+    ///           filename="ignition-gazebo-physics-system"
     ///           name="ignition::gazebo::systems::v0::Physics">
     ///   </plugin>
     ///

@@ -120,7 +120,7 @@ namespace ignition
     ///
     /// <!-- Inform ignition::Launch about the JoyToTwist plugin -->
     ///  <plugin name="ignition::launch::WebsocketServer"
-    ///      filename="libignition-launch-joystick0.so">
+    ///      filename="ignition-launch-joystick0">
     ///
     ///    <!-- Publication Hz -->
     ///    <publication_hz>30</publication_hz>
