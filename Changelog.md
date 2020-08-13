@@ -1,6 +1,6 @@
 ## Ignition Launch 1.x
 
-### Ignition Launch 1.9.0 (2020-08-10)
+### Ignition Launch 1.9.0 (2020-08-13)
 
 1. Added HTTP handling support to websocket server and a metrics HTTP endpoint 
    to monitor websocket server status.
