@@ -5,6 +5,7 @@ build-*
 
 # OS generated files
 .DS_Store
+*.bak
 *.swp
 *.swo
 *.orig
