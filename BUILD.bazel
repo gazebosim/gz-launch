@@ -29,12 +29,12 @@ PROJECT_NAME = "ignition-launch"
 PROJECT_MAJOR = 3
 PROJECT_MINOR = 0
 PROJECT_PATCH = 0
-IGN_DESIGNATION = "/tmp"
-CMAKE_INSTALL_PREFIX = "/tmp"
-IGN_DATA_INSTALL_DIR = "/tmp"
+IGN_DESIGNATION = "dome"
+CMAKE_INSTALL_PREFIX = "./ign_launch"
+IGN_DATA_INSTALL_DIR = "./ign_launch"
 IGN_LAUNCH_PLUGIN_INSTALL_PATH = "./ign_launch"
-library_location = "/usr"
-IGN_LIBRARY_PATH = "/usr"
+library_location = "./ign_launch"
+IGN_LIBRARY_PATH = "./ign_launch"
 
 # Generates config.hh based on the version numbers in CMake code.
 cmake_configure_file(
@@ -43,10 +43,6 @@ cmake_configure_file(
     out = "include/ignition/launch/config.hh",
     cmakelists = ["CMakeLists.txt"],
     defines = [
-        "PROJECT_VERSION_MAJOR=%d" % (PROJECT_MAJOR),
-        "PROJECT_MAJOR_VERSION=%d" % (PROJECT_MAJOR),
-        "PROJECT_MINOR_VERSION=%d" % (PROJECT_MINOR),
-        "PROJECT_PATCH_VERSION=%d" % (PROJECT_PATCH),
         "PROJECT_VERSION_PATCH=%d" % (PROJECT_PATCH),
         "PROJECT_VERSION_MAJOR=%d" % (PROJECT_MAJOR),
         "PROJECT_VERSION_MINOR=%d" % (PROJECT_MINOR),
@@ -55,7 +51,6 @@ cmake_configure_file(
         "PROJECT_NAME_NO_VERSION=%s" % (PROJECT_NAME),
         "PROJECT_NAME=%s" % (PROJECT_NAME),
         "PROJECT_NAME_LOWER=%s" % (PROJECT_NAME),
-        "IGN_DESIGNATION=%s" % (IGN_DESIGNATION),
         "IGN_DATA_INSTALL_DIR=%s" % (IGN_DATA_INSTALL_DIR),
         "IGN_LAUNCH_PLUGIN_INSTALL_PATH=%s" % (IGN_LAUNCH_PLUGIN_INSTALL_PATH),
         "CMAKE_INSTALL_PREFIX=%s" % (CMAKE_INSTALL_PREFIX),
