@@ -1,0 +1,37 @@
+load(
+    "//ign_bazel:cmake_configure_file.bzl",
+    "cmake_configure_file",
+)
+
+BINARY_DIR = "./ign_launch"
+SOURCE_DIR = "./ign_launch"
+CMAKE_BINARY_DIR = "./ign_launch"
+IGNITION_TOOLS_BINARY_DIRS = "./ign_launch"
+PROJECT_NAME = "ignition-launch"
+PROJECT_MAJOR = 3
+PROJECT_MINOR = 0
+PROJECT_PATCH = 0
+
+# Generates config.hh based on the version numbers in CMake code.
+cmake_configure_file(
+    name = "test_config",
+    src = "test_config.hh.in",
+    out = "ignition/launch/test_config.hh",
+    cmakelists = ["CMakeLists.txt"],
+    defines = [
+        "PROJECT_BINARY_DIR=%s" % (BINARY_DIR),
+        "PROJECT_SOURCE_DIR=%s" % (SOURCE_DIR),
+        "CMAKE_BINARY_DIR=%s" % (CMAKE_BINARY_DIR),
+        "IGNITION-TOOLS_BINARY_DIRS=%s" % (IGNITION_TOOLS_BINARY_DIRS),
+        "PROJECT_VERSION_FULL=%d.%d.%d" % (PROJECT_MAJOR, PROJECT_MINOR, PROJECT_PATCH),  # noqa
+    ],
+    visibility = ["//visibility:private"],
+)
+
+cc_library(
+    name = "test_utils",
+    srcs = ["ignition/launch/test_config.hh"],
+    includes = ["."],
+    visibility = ["//visibility:public"],
+)
+
