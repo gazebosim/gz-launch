@@ -7,26 +7,26 @@ In this tutorial we will explain the configuration scripts in the `examples` dir
 We can do many things:
 
 * Run multiple executable commands
-* Launch a world with a punch of plugins
+* Spawn a robot into simulation with plugins
 
-To run the script
+To run a script use
 
-`ign launch FILE_NAME`
+`ign launch LAUNCH_FILE_NAME`
 
 ## Launch files
 
-Every script starts with these two tags. which specify the `xml` version and `ignition` version.
+Every script starts with these two tags, which specify the `xml` version and `ignition` version.
 
 ```xml
 <?xml version="1.0"?>
 <ignition version='1.0'>
 ```
 
-## Multiple executable
+## Multiple executable commands
 
 We can run multiple commands from one file.
 
-if you have a look at the [gazebo.ign](../examples/gazebo.ign). This script run the gazebo `server` and gazebo `client`. We need to just write the command in the `command` tag.
+Take a look at the [gazebo.ign](../examples/gazebo.ign) launch file. This script runs the Gazebo `server` and Gazebo `client`. We need to just write the command in the `command` tag.
 
 ```xml
 <executable name='gazebo-server'>
@@ -34,13 +34,13 @@ if you have a look at the [gazebo.ign](../examples/gazebo.ign). This script run 
 </executable>
 ```
 
-## Add plugins and launch worlds
+## Spawn a robot into simulation with plugins
 
-If we look at the [factory.ign](../examples/factory.ign). We defined a `GazeboFactory` plugin under which we included `X2 UGV` robot and added the `DiffDrive` plugin to control the robot. And added the `StatePublisher` which publishes the the robot state information.
+Now take a look at the [factory.ign](../examples/factory.ign) launch file. We defined a `GazeboFactory` plugin under which we included an `X2 UGV` robot and added the `DiffDrive` plugin to control the robot. We also added the `StatePublisher` plugin which publishes the the robot state information.
 
-## Launch plugins with a world
+## Launch simulation with plugins in separate processes
 
-The [gazebo_plugins.ign](../examples/gazebo_plugins.ign). This script loads some plugins. The `joystick` plugin that will read from a device and output to a topic. The `JoyToTwist` plugin that transforms a `joystick` message to a `twist` message. The `GazeboServer` plugin launches the gazebo server.
+The [gazebo_plugins.ign](../examples/gazebo_plugins.ign) launch file loads some plugins and also starts simulation. The `joystick` plugin that will be launched in its own processes and will read from a joystick device and output data onto a topic. The `JoyToTwist` plugin also launches into a separate process and transforms a `joystick` message to a `twist` message. Finally, The `GazeboServer` plugin launches the Gazebo server.
 
 The script can take an world as an argument. To run this script.
 
