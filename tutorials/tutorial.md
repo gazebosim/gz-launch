@@ -40,14 +40,18 @@ Now take a look at the [factory.ign](../examples/factory.ign) launch file. We de
 
 ## Launch simulation with plugins in separate processes
 
-The [gazebo_plugins.ign](../examples/gazebo_plugins.ign) launch file loads some plugins and also starts simulation. The `joystick` plugin that will be launched in its own processes and will read from a joystick device and output data onto a topic. The `JoyToTwist` plugin also launches into a separate process and transforms a `joystick` message to a `twist` message. Finally, The `GazeboServer` plugin launches the Gazebo server.
+The [gazebo_plugins.ign](../examples/gazebo_plugins.ign) launch file loads some plugins
+and also starts simulation. The `joystick` plugin will be launched in its own process
+and will read from a joystick device and output data onto a topic. The `JoyToTwist`
+plugin also launches into a separate process and transforms a `joystick` message to a
+`twist` message. Finally, The `GazeboServer` plugin launches the Gazebo server.
 
-The script can take an world as an argument. To run this script.
+The script can take a world as an argument. To run this script.
 
 `ign launch gazebo_plugins.ign [worldName:=<worldName>]`
 
 The [worldName] command line argument is optional. If left blank, or not specified, then "diff_drive" is used for the world name.
 
-Example to load `the shapes.sdf`.
+Example to load `the shapes.sdf`:
 
 `ign launch gazebo_plugins.ign worldName:=shapes`
