@@ -40,21 +40,183 @@ using namespace ignition::launch;
 /// \return A string that is the frame header.
 #define BUILD_MSG(_op, _topic, _type, _payload) (BUILD_HEADER(_op, _topic, _type) + _payload)
 
-int rootCallback(struct lws *_wsi,
-                 enum lws_callback_reasons _reason,
-                 void * /*user*/,
-                 void * _in,
-                 size_t /*len*/)
+/// \brief Gets the websocket server from the lws connection passed to a
+/// handler.
+/// \attention The protocol should be defined with a reference to a websocket
+/// server in the `user` field.
+/// \param[in] _wsi lws connection.
+/// \return A pointer to the websocket server assigned to the protocol.
+WebsocketServer *get_server(struct lws *_wsi)
 {
   WebsocketServer *self = nullptr;
 
   // Get the protocol definition for this callback
-  lws_protocols *protocol = const_cast<lws_protocols*>(
-      lws_get_protocol(_wsi));
+  lws_protocols *protocol = const_cast<lws_protocols *>(lws_get_protocol(_wsi));
 
   // It's possible that the protocol is null.
   if (protocol)
-    self = static_cast<WebsocketServer*>(protocol->user);
+    self = static_cast<WebsocketServer *>(protocol->user);
+
+  return self;
+}
+
+/// \brief Sets HTTP response status code and writes Content-Type and
+/// Content-Length HTTP headers.
+/// \param[in] _wsi lws connection.
+/// \param[in] _statusCode Status code.
+/// \param[in] _contentType Content mime-type.
+/// \param[in] _contentLength Size of the body in bytes.
+/// \return Returns 1 if there was an error writing the header, 0 otherwise.
+int write_http_headers(struct lws *_wsi,
+                       int _statusCode,
+                       const char *_contentType,
+                       unsigned long _contentLength)
+{
+  // Buffer is oversized to account for variable content lengths and future
+  // potential headers.
+  unsigned char buf[4096 + LWS_PRE];
+  unsigned char *p, *start, *end;
+  int n;
+
+  p = buf + LWS_PRE;
+  start = p;
+  end = p + sizeof(buf) - LWS_PRE;
+
+  // Status code
+  if (lws_add_http_header_status(_wsi,
+      _statusCode,
+      reinterpret_cast<unsigned char **>(&p),
+      end))
+    return 1;
+
+  // Content-Type
+  if (lws_add_http_header_by_token(_wsi,
+      WSI_TOKEN_HTTP_CONTENT_TYPE,
+      reinterpret_cast<const unsigned char *>(_contentType),
+      strlen(_contentType),
+      &p,
+      end))
+    return 1;
+
+  // Content-Length
+  if (lws_add_http_header_content_length(_wsi,
+      _contentLength - 1,
+      &p,
+      end))
+    return 1;
+
+  // Finalize header
+  if (lws_finalize_http_header(_wsi, &p, end))
+    return 1;
+
+  // Write headers
+  n = lws_write(_wsi, start, p - start, LWS_WRITE_HTTP_HEADERS);
+  if (n < 0)
+    return 1;
+
+  return 0;
+}
+
+/// \brief Handles HTTP lws events.
+/// \note This is called by rootCallback to handle HTTP-specific events.
+/// rootCallback is called first because regular HTTP requests do not provide a
+/// protocol name and the request is sent to rootCallback by default.
+/// \param _wsi lws connection.
+/// \param _reason lws event. Reason for the call.
+/// \param _user Pointer to per-session user data allocated by library.
+/// \param _in Pointer used for some callback reasons.
+/// \param _len Length set for some callback reasons.
+/// \return Returns 1 if there an error was found while processing an event,
+/// or -1 otherwise to signal lws to close the request.
+int httpCallback(struct lws *_wsi,
+                 enum lws_callback_reasons _reason,
+                 void *_user,
+                 void *_in,
+                 size_t _len)
+{
+  WebsocketServer *self = get_server(_wsi);
+
+  switch (_reason)
+  {
+    case LWS_CALLBACK_HTTP:
+    {
+      char *URI = (char *) _in;
+      igndbg << "Requested URI: " << URI << "\n";
+
+      // Router
+      // Server metrics
+      if (strcmp(URI, "/metrics") == 0)
+      {
+        igndbg << "Handling /metrics\n";
+
+        // TODO Support a proper way to output metrics
+
+        // Format contains the format of the string returned by this route.
+        // The following metrics are currently supported:
+        // * connections - Number of live connections.
+        const char *format = "{ \"connections\": %s }";
+
+        // Get number of connections
+        std::string conns = std::to_string(self->connections.size());
+
+        // Prepare the output
+        size_t buflen = strlen(format) + (conns.size() - 1);
+        unsigned char buf[buflen + LWS_PRE];
+        int n;
+        n = snprintf(reinterpret_cast<char *>(buf), buflen, format,
+            conns.c_str());
+        // Check that no characters were discarded
+        if (n - int(buflen) > 0)
+        {
+          ignwarn << "Discarded "
+            << n - int(buflen)
+            << "characters when preparing metrics.\n";
+        }
+
+        // Write response headers
+        if (write_http_headers(_wsi, 200, "application/json", buflen))
+          return 1;
+
+        // Write response body
+        lws_write_http(_wsi,
+                       reinterpret_cast<unsigned char *>(buf),
+                       strlen(reinterpret_cast<const char *>(buf)));
+        break;
+      }
+      // Return a 404 if no route was matched
+      else
+      {
+        igndbg << "Resource not found.\n";
+        lws_return_http_status(_wsi, HTTP_STATUS_NOT_FOUND, "Not Found");
+      }
+      break;
+    }
+
+    default:
+      // Do nothing on default.
+      break;
+  }
+
+  return -1;
+}
+
+/// \brief Default request event handler. All requests that do not explicitly
+/// specify a protocol name are handled by this function.
+/// \param _wsi lws connection.
+/// \param _reason lws event. Reason for the call.
+/// \param _user Pointer to per-session user data allocated by library.
+/// \param _in Pointer used for some callback reasons.
+/// \param _len Length set for some callback reasons.
+/// \return Returns 1 if there an error was found while processing an event,
+/// -1 to signal lws to close the request or 0 to continue processing the
+/// request.
+int rootCallback(struct lws *_wsi,
+                 enum lws_callback_reasons _reason,
+                 void *_user,
+                 void *_in,
+                 size_t _len)
+{
+  WebsocketServer *self = get_server(_wsi);
 
   // We require the self pointer, and ignore the cases when this function is
   // called without a self pointer.
@@ -92,6 +254,11 @@ int rootCallback(struct lws *_wsi,
     case LWS_CALLBACK_CLOSED:
       igndbg << "LWS_CALLBACK_CLOSED\n";
       self->OnDisconnect(fd);
+      break;
+
+    case LWS_CALLBACK_HTTP:
+      igndbg << "LWS_CALLBACK_HTTP\n";
+      return httpCallback(_wsi, _reason, _user, _in, _len);
       break;
 
     // Publish outboud messages
@@ -262,7 +429,7 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
       sslPrivateKeyFile = keyElem->GetText();
   }
 
-  // All of the protocols handled by this websocket server.
+ // All of the protocols handled by this server.
   this->protocols.push_back(
     {
       // Name of the protocol. This must match the one given in the client
