@@ -33,7 +33,7 @@ namespace ignition
     ///
     /// <!-- Inform ignition::Launch about the JoyToTwist plugin -->
     ///  <plugin name="ignition::launch::Joystick"
-    ///      filename="libignition-launch-joystick0.so">
+    ///      filename="ignition-launch-joystick0">
     ///
     ///    <!-- Joystick device -->
     ///    <device>/dev/input/js0</device>
