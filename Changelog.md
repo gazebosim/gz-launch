@@ -20,6 +20,12 @@
 
 ## Ignition Launch 1.x
 
+### Ignition Launch 1.9.0 (2020-08-13)
+
+1. Added HTTP handling support to websocket server and a metrics HTTP endpoint 
+   to monitor websocket server status.
+   * [Pull Request 49](https://github.com/ignitionrobotics/ign-launch/pull/49)
+
 ### Ignition Launch 1.8.0 (2020-07-28)
 
 1. Added `<max_connections>` to the websocket server that supports

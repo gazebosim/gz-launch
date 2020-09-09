@@ -20,9 +20,9 @@
             <wheel_radius>0.098</wheel_radius>
           </plugin>
 
-          <!-- Publish robot state information -->
+          <!-- Publish robot joint state information -->
           <plugin filename="ignition-gazebo-state-publisher-system"
-                  name="ignition::gazebo::systems::StatePublisher"></plugin>
+                  name="ignition::gazebo::systems::JointStatePublisher"></plugin>
         </include>
       </sdf>
     </spawn>
