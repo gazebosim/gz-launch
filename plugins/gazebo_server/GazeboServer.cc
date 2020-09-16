@@ -202,19 +202,12 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
       {
         ignLogInit(recordPathMod, "server_console.log");
       }
-      // TODO(anyone) In Ignition-D, to be moved to outside and after this
-      //   if-else statement, after all ignLogInit() calls have been finalized,
-      //   so that <path> in SDF will always be ignored in favor of logging both
-      //   console logs and LogRecord recordings to common::ignLogDirectory().
-      //   In Blueprint and Citadel, LogRecord will record to <path> if no
-      //   --record-path is specified on command line.
-      serverConfig.SetLogRecordPath(recordPathMod);
-      serverConfig.SetLogIgnoreSdfPath(true);
     }
     else
     {
       ignLogInit(recordPathMod, "server_console.log");
     }
+    serverConfig.SetLogRecordPath(recordPathMod);
 
     bool compress{false};
     const auto *compressElem = elem->FirstChildElement("compress");
