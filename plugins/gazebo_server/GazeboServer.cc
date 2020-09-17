@@ -77,6 +77,8 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
   }
 
   elem = _elem->FirstChildElement("record");
+  // Path for logs
+  std::string recordPathMod = serverConfig.LogRecordPath();
   if (elem)
   {
     const tinyxml2::XMLElement *enabled = elem->FirstChildElement("enabled");
@@ -87,17 +89,142 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
           common::lowercase(str) == "true");
     }
 
-    const tinyxml2::XMLElement *path = elem->FirstChildElement("path");
-    if (path)
+    const auto *resources = elem->FirstChildElement("resources");
+    if (resources)
     {
-      std::string str = path->GetText();
-      serverConfig.SetLogRecordPath(str);
+      std::string str = resources->GetText();
+      serverConfig.SetLogRecordResources(str == "1" ||
+          common::lowercase(str) == "true");
     }
-    ignLogInit(serverConfig.LogRecordPath(), "server_console.log");
+
+    bool overwrite{false};
+    const auto *overwriteElem = elem->FirstChildElement("overwrite");
+    if (overwriteElem)
+    {
+      std::string str = overwriteElem->GetText();
+      overwrite = (str == "1" || common::lowercase(str) == "true");
+    }
+
+    // Update compressed file path to name of recording directory path
+    std::string cmpPath = std::string(recordPathMod);
+    if (!std::string(1, cmpPath.back()).compare(ignition::common::separator("")))
+      // Remove the separator at end of path
+      cmpPath = cmpPath.substr(0, cmpPath.length() - 1);
+    cmpPath += ".zip";
+
+    const auto *pathElem = elem->FirstChildElement("path");
+    if (pathElem)
+    {
+      recordPathMod = pathElem->GetText();
+    }
+
+    // Initialize console log
+    if (!recordPathMod.empty())
+    {
+      // Update compressed file path to name of recording directory path
+      cmpPath = std::string(recordPathMod);
+      if (!std::string(1, cmpPath.back()).compare(ignition::common::separator(
+        "")))
+        // Remove the separator at end of path
+        cmpPath = cmpPath.substr(0, cmpPath.length() - 1);
+      cmpPath += ".zip";
+
+      // Check if path or compressed file with same prefix exists
+      if (ignition::common::exists(recordPathMod) ||
+        ignition::common::exists(cmpPath))
+      {
+        // Overwrite if flag specified
+        if (overwrite)
+        {
+          bool recordMsg = false, cmpMsg = false;
+          // Remove files before initializing console log files on top of them
+          if (ignition::common::exists(recordPathMod))
+          {
+            recordMsg = true;
+            ignition::common::removeAll(recordPathMod);
+          }
+          if (ignition::common::exists(cmpPath))
+          {
+            cmpMsg = true;
+            ignition::common::removeFile(cmpPath);
+          }
+
+          // Create log file before printing any messages so they can be logged
+          ignLogInit(recordPathMod, "server_console.log");
+
+          if (recordMsg)
+          {
+            ignmsg << "Log path already exists on disk! Existing files will be "
+              << "overwritten." << std::endl;
+            ignmsg << "Removing existing path [" << recordPathMod << "]\n";
+          }
+
+          if (cmpMsg)
+          {
+            ignwarn << "Compressed log path already exists on disk! Existing "
+              << "files will be overwritten." << std::endl;
+            ignmsg << "Removing existing compressed file [" << cmpPath << "]\n";
+          }
+        }
+        // Otherwise rename to unique path
+        else
+        {
+          // Remove the separator at end of path
+          if (!std::string(1, recordPathMod.back()).compare(
+            ignition::common::separator("")))
+            recordPathMod = recordPathMod.substr(0, recordPathMod.length() - 1);
+          recordPathMod = ignition::common::uniqueDirectoryPath(recordPathMod);
+
+          cmpPath = std::string(recordPathMod);
+          // Remove the separator at end of path
+          if (!std::string(1, cmpPath.back()).compare(
+            ignition::common::separator("")))
+            cmpPath = cmpPath.substr(0, cmpPath.length() - 1);
+          cmpPath += ".zip";
+
+          // If compressed file exists, rename again
+          if (ignition::common::exists(cmpPath))
+          {
+            cmpPath = ignition::common::uniqueFilePath(recordPathMod, "zip");
+
+            size_t extIdx = cmpPath.find_last_of(".");
+            recordPathMod = cmpPath.substr(0, extIdx);
+          }
+
+          ignLogInit(recordPathMod, "server_console.log");
+          ignwarn << "Log path already exists on disk! "
+            << "Recording instead to [" << recordPathMod << "]" << std::endl;
+          ignwarn << "Compressed log path already exists on disk! "
+            << "Recording instead to [" << cmpPath << "]" << std::endl;
+        }
+      }
+      else
+      {
+        ignLogInit(recordPathMod, "server_console.log");
+      }
+    }
+    else
+    {
+      ignLogInit(recordPathMod, "server_console.log");
+    }
+    serverConfig.SetLogRecordPath(recordPathMod);
+
+    bool compress{false};
+    const auto *compressElem = elem->FirstChildElement("compress");
+    if (compressElem)
+    {
+      std::string str = compressElem->GetText();
+      compress = (str == "1" || common::lowercase(str) == "true");
+
+      if (compress)
+        serverConfig.SetLogRecordCompressPath(cmpPath);
+    }
+
+    ignmsg << "Logging to [" << recordPathMod << "]" << std::endl;
   }
 
   if (serverConfig.UseLogRecord())
-    ignmsg << "Recording to [" << serverConfig.LogRecordPath() << "]\n";
+    ignmsg << "Recording to [" << recordPathMod << "]\n";
 
   // Set whether to use a custom random seed
   elem = _elem->FirstChildElement("seed");

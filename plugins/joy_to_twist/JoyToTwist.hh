@@ -36,7 +36,7 @@ namespace ignition
     ///
     /// <!-- Inform ignition::Launch about the JoyToTwist plugin -->
     /// <plugin name="ignition::launch::JoyToTwist"
-    ///         filename="libignition-launch-joytotwist0.so">
+    ///         filename=ignition-launch-joytotwist0">
     ///   <!-- Incoming topic that publishes
     ///         ignition::msgs::Joystick messages -->
     ///   <input_topic>/joy</input_topic>

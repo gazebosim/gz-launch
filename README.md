@@ -16,7 +16,7 @@ Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/ico
 
 Ignition Launch, a component of [Ignition
 Robotics](https://ignitionrobotics.org), provides a command line interface
-to run and manager application and plugins. 
+to run and manager application and plugins.
 
 # Table of Contents
 
@@ -112,7 +112,7 @@ necessary prerequisites followed by building from source.
     ```
 
     ```
-    sudo apt-get -y install libignition-cmake2-dev libignition-gazebo2-dev 
+    sudo apt-get -y install libignition-cmake2-dev libignition-gazebo2-dev
     ```
 
 ### Building from source

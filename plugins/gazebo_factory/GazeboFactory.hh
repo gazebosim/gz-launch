@@ -30,28 +30,34 @@ namespace ignition
     ///
     /// # Example usage
     ///  <plugin name="ignition::launch::GazeboFactory"
-    ///          filename="libignition-launch-gazebo-factory.so">
+    ///          filename="ignition-launch-gazebo-factory">
     ///
-    ///   <!-- Name to give the model -->
-    ///   <name>x2</name>
+    ///   <spawn>
+    ///     <!-- Name to give the model -->
+    ///     <name>x2</name>
     ///
-    ///   <!-- Allow the model to be renamed when the given name is already
-    ///        taken -->
-    ///   <allow_renaming>true</allow_renaming>
+    ///     <!-- Allow the model to be renamed when the given name is already
+    ///          taken -->
+    ///     <allow_renaming>true</allow_renaming>
     ///
-    ///   <!-- Pose of the model -->
-    ///   <pose>1 2 0.5 0 0 0</pose>
+    ///     <!-- Pose of the model -->
+    ///     <pose>1 2 0.5 0 0 0</pose>
     ///
-    ///   <!-- SDF snippet that contains information about what should be
-    ///        spawned -->
-    ///   <sdf version='1.6'>
-    ///     <include>
-    ///       <uri>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/X2 UGV/1</uri>
-    ///       <!-- Publish robot state information -->
-    ///       <plugin filename="libignition-gazebo-state-publisher-system.so"
-    ///               name="ignition::gazebo::systems::StatePublisher"></plugin>
-    ///     </include>
-    ///   </sdf>
+    ///     <!-- SDF snippet that contains information about what should be
+    ///          spawned -->
+    ///     <sdf version='1.6'>
+    ///       <include>
+    ///         <uri>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/X2 UGV/1</uri>
+    ///         <!-- Publish robot state information -->
+    ///         <plugin filename="ignition-gazebo-state-publisher-system"
+    ///              name="ignition::gazebo::systems::StatePublisher"></plugin>
+    ///       </include>
+    ///     </sdf>
+    ///   </spawn>
+    ///
+    ///   <spawn>
+    ///   ...
+    ///   </spawn>
     /// </plugin>
     class GazeboFactory : public ignition::launch::Plugin
     {
@@ -65,8 +71,20 @@ namespace ignition
       public: virtual bool Load(
                   const tinyxml2::XMLElement *_elem) override final;
 
+      /// \brief Process a spawn XML request and generate a new entry
+      /// in the worldFactoryMsgs map.
+      private: void ProcessSpawn(const tinyxml2::XMLElement *_elem);
+
       // Transport node.
       private: transport::Node node;
+
+      /// \brief Factory message for each world. Key = world name,
+      /// value = entities to spawn.
+      private: std::map<std::string, msgs::EntityFactory_V> worldFactoryMsgs;
+
+      /// \brief Performer messages for each world. Key = world name,
+      /// value = vector of performer names.
+      private: std::map<std::string, std::vector<std::string>> worldPerformers;
     };
   }
 }
