@@ -571,6 +571,7 @@ void WebsocketServer::OnConnect(int _socketId)
 //////////////////////////////////////////////////
 void WebsocketServer::OnDisconnect(int _socketId)
 {
+  std::lock_guard<std::mutex> mainLock(this->subscriptionMutex);
   // Skip invalid sockets
   if (this->connections.find(_socketId) == this->connections.end())
     return;
@@ -799,8 +800,11 @@ void WebsocketServer::OnWebsocketSubscribedMessage(
       // Send the message
       for (const int &socketId : iter->second)
       {
-        this->QueueMessage(this->connections[socketId].get(),
-            msg.c_str(), msg.length());
+        if (this->connections.find(socketId) != this->connections.end())
+        {
+          this->QueueMessage(this->connections[socketId].get(),
+              msg.c_str(), msg.length());
+        }
       }
     }
   }
