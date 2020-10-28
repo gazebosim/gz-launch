@@ -37,10 +37,10 @@ pipelines:
             libignition-tools-dev
             libignition-transport9-dev
             libsdformat10-dev
-            # libignition-gazebo4-dev
-            # libignition-gui4-dev
-            # libignition-rendering4-dev
-            # libignition-sensors4-dev
+            # libignition-gazebo5-dev
+            # libignition-gui5-dev
+            # libignition-rendering5-dev
+            # libignition-sensors5-dev
           # # Ignition msgs (uncomment if a specific branch is needed)
           # - apt install -y
           #   libprotobuf-dev protobuf-compiler libprotoc-dev
