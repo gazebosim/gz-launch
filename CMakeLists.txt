@@ -67,8 +67,8 @@ set(IGN_MATH_MAJOR_VER ${ignition-math6_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-gui
-ign_find_package(ignition-gui4 REQUIRED)
-set(IGN_GUI_MAJOR_VER ${ignition-gui4_VERSION_MAJOR})
+ign_find_package(ignition-gui5 REQUIRED)
+set(IGN_GUI_MAJOR_VER ${ignition-gui5_VERSION_MAJOR})
 ign_find_package (Qt5
   COMPONENTS
     Core
@@ -79,8 +79,8 @@ ign_find_package (Qt5
 
 #--------------------------------------
 # Find ignition-gazebo
-ign_find_package(ignition-gazebo4 REQUIRED PRIVATE COMPONENTS gui)
-set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo4_VERSION_MAJOR})
+ign_find_package(ignition-gazebo5 REQUIRED PRIVATE COMPONENTS gui)
+set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo5_VERSION_MAJOR})
 
 ign_pkg_check_modules(websockets libwebsockets)
 if (NOT websockets_FOUND)
