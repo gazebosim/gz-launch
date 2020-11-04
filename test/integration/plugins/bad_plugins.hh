@@ -22,5 +22,5 @@ class SegfaultOnLoad : public ignition::launch::Plugin
 {
   public: SegfaultOnLoad();
   public: virtual bool Load(
-              const tinyxml2::XMLElement * /*_elem*/) override final;
+              const tinyxml2::XMLElement * /*_elem*/) final;
 };

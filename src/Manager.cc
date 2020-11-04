@@ -15,6 +15,8 @@
  *
 */
 
+#include "Manager.hh"
+
 #include <fcntl.h>
 #include <semaphore.h>
 #include <signal.h>
@@ -25,6 +27,7 @@
 
 #include <condition_variable>
 #include <ctime>
+#include <limits>
 #include <list>
 #include <mutex>
 #include <numeric>
@@ -33,6 +36,7 @@
 #include <string>
 #include <thread>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 #include <ignition/common/Console.hh>
@@ -44,7 +48,6 @@
 #include "ignition/launch/config.hh"
 #include "ignition/launch/Plugin.hh"
 
-#include "Manager.hh"
 #include "vendor/backward.hpp"
 
 using namespace ignition::launch;
