@@ -15,6 +15,8 @@
  *
 */
 
+#include "Manager.hh"
+
 #include <fcntl.h>
 #include <semaphore.h>
 #include <signal.h>
@@ -24,30 +26,32 @@
 #include <unistd.h>
 
 #include <condition_variable>
+#include <ctime>
+#include <limits>
 #include <list>
 #include <mutex>
 #include <numeric>
 #include <queue>
+#include <random>
 #include <string>
 #include <thread>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 #include <ignition/common/Console.hh>
 #include <ignition/common/SignalHandler.hh>
 #include <ignition/common/SystemPaths.hh>
+#include <ignition/math/Rand.hh>
 #include <ignition/plugin/Loader.hh>
 
 #include "ignition/launch/config.hh"
 #include "ignition/launch/Plugin.hh"
 
-#include "Manager.hh"
 #include "vendor/backward.hpp"
 
 using namespace ignition::launch;
 using namespace std::chrono_literals;
-
-static constexpr const char* kSemaphoreName = "/child_semaphore";
 
 /// \brief A class to encapsulate an executable (program) to run.
 class Executable
@@ -178,6 +182,9 @@ class ignition::launch::ManagerPrivate
   /// \brief Semaphore to prevent restartThread from being a spinlock
   private: sem_t *stoppedChildSem;
 
+  /// \brief Name of the semaphore created by stoppedChildSem.
+  private: std::string stoppedChildSemName;
+
   /// \brief Thread containing the restart loop
   private: std::thread restartThread;
 
@@ -294,10 +301,31 @@ ManagerPrivate::ManagerPrivate()
   this->sigHandler->AddCallback(
       std::bind(&ManagerPrivate::OnSigIntTerm, this, std::placeholders::_1));
 
+  {
+    // The semaphore we initialize in the next section needs a unique name, so
+    // we need to seed a random number generator with a quality random number.
+    // Especially time(0) itself is not a good seed as there may be multiple
+    // processes launched at the same time.
+    const auto time_seed = static_cast<size_t>(std::time(nullptr));
+    const auto pid_seed = std::hash<std::thread::id>()(
+        std::this_thread::get_id());
+    std::seed_seq seed_value{time_seed, pid_seed};
+    std::vector<size_t> seeds(1);
+    seed_value.generate(seeds.begin(), seeds.end());
+    math::Rand::Seed(seeds[0]);
+  }
+  const auto semRandomId = math::Rand::IntUniform(0,
+      std::numeric_limits<int32_t>::max());
+
   // Initialize semaphore
-  this->stoppedChildSem = sem_open(kSemaphoreName, O_CREAT, 0644, 1);
-  if (this->stoppedChildSem == SEM_FAILED) {
-    ignerr << "Error initializing semaphore: " << strerror(errno) << std::endl;
+  this->stoppedChildSemName = std::string("ign-launch-") +
+      std::to_string(semRandomId);
+  this->stoppedChildSem = sem_open(this->stoppedChildSemName.c_str(), O_CREAT,
+      0644, 1);
+  if (this->stoppedChildSem == SEM_FAILED)
+  {
+    ignerr << "Error initializing semaphore " << this->stoppedChildSemName
+           << ": " << strerror(errno) << std::endl;
   }
 
   // Register a signal handler to capture child process death events.
@@ -305,7 +333,8 @@ ManagerPrivate::ManagerPrivate()
     ignerr << "signal(2) failed while setting up for SIGCHLD" << std::endl;
 
   // Register backward signal handler for other signals
-  std::vector<int> signals = {
+  std::vector<int> signals =
+  {
     SIGABRT,    // Abort signal from abort(3)
     SIGBUS,     // Bus error (bad memory access)
     SIGFPE,     // Floating point exception
@@ -329,12 +358,14 @@ ManagerPrivate::~ManagerPrivate()
   {
     if (sem_close(this->stoppedChildSem) == -1)
     {
-      ignerr << "Failed to close semaphore: " << strerror(errno) << std::endl;
+      ignerr << "Failed to close semaphore " << this->stoppedChildSemName
+             << ": " << strerror(errno) << std::endl;
     }
 
-    if (sem_unlink(kSemaphoreName) == -1)
+    if (sem_unlink(this->stoppedChildSemName.c_str()) == -1)
     {
-      ignerr << "Failed to unlink semaphore: " << strerror(errno) << std::endl;
+      ignerr << "Failed to unlink semaphore " << this->stoppedChildSemName
+             << ": " << strerror(errno) << std::endl;
     }
   }
 }

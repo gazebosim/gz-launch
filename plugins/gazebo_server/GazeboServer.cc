@@ -89,6 +89,15 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
           common::lowercase(str) == "true");
     }
 
+    // Add topics to record, if present.
+    for (const tinyxml2::XMLElement *recordTopic =
+        elem->FirstChildElement("record_topic"); recordTopic;
+        recordTopic = recordTopic->NextSiblingElement("record_topic"))
+    {
+      std::string topic = recordTopic->GetText();
+      serverConfig.AddLogRecordTopic(topic);
+    }
+
     const auto *resources = elem->FirstChildElement("resources");
     if (resources)
     {

@@ -20,9 +20,25 @@
 
 ## Ignition Launch 1.x
 
+### Ignition Launch 1.X.X (20XX-XX-XX)
+
+### Ignition Launch 1.10.0 (2020-09-25)
+
+1. Add PKGCONFIG information to ignition-tools ign_find_package
+   * [Pull Request 44](https://github.com/ignitionrobotics/ign-launch/pull/44)
+
+1. Fix factory.ign launch file
+   * [Pull Request 55](https://github.com/ignitionrobotics/ign-launch/pull/55)
+
+1. Use random name for manager semaphore
+   * [Pull Request 57](https://github.com/ignitionrobotics/ign-launch/pull/57)
+
+1. Add support for specifying topics to record
+   * [Pull Request 54](https://github.com/ignitionrobotics/ign-launch/pull/54)
+
 ### Ignition Launch 1.9.0 (2020-08-13)
 
-1. Added HTTP handling support to websocket server and a metrics HTTP endpoint 
+1. Added HTTP handling support to websocket server and a metrics HTTP endpoint
    to monitor websocket server status.
    * [Pull Request 49](https://github.com/ignitionrobotics/ign-launch/pull/49)
 
