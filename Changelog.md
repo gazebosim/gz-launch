@@ -1,8 +1,19 @@
 ## Ignition Launch 3.x
 
-### Ignition Launch 3.X.X
+### Ignition Launch 3.X.X (20XX-XX-XX)
 
-### Ignition Launch 3.0.0 (20XX-XX-XX)
+### Ignition Launch 3.0.0 (2020-09-30)
+
+1. Migration from BitBucket to GitHub
+    * [Pull request 13](https://github.com/ignitionrobotics/ign-launch/pull/13)
+    * [Pull request 16](https://github.com/ignitionrobotics/ign-launch/pull/16)
+    * [Pull request 28](https://github.com/ignitionrobotics/ign-launch/pull/28)
+
+1. Add PKGCONFIG information to ignition-tools ign_find_package
+    * [Pull request 44](https://github.com/ignitionrobotics/ign-launch/pull/44)
+
+1. Depend on ign-msgs6, ign-transport9
+    * [Pull request 39](https://github.com/ignitionrobotics/ign-launch/pull/39)
 
 1. Depend on ign-gazebo4, ign-gui4
     * [BitBucket pull request 64](https://osrf-migration.github.io/ignition-gh-pages/#!/ignitionrobotics/ign-launch/pull-requests/64)
@@ -29,9 +40,25 @@
 
 ## Ignition Launch 1.x
 
+### Ignition Launch 1.X.X (20XX-XX-XX)
+
+### Ignition Launch 1.10.0 (2020-09-25)
+
+1. Add PKGCONFIG information to ignition-tools ign_find_package
+   * [Pull Request 44](https://github.com/ignitionrobotics/ign-launch/pull/44)
+
+1. Fix factory.ign launch file
+   * [Pull Request 55](https://github.com/ignitionrobotics/ign-launch/pull/55)
+
+1. Use random name for manager semaphore
+   * [Pull Request 57](https://github.com/ignitionrobotics/ign-launch/pull/57)
+
+1. Add support for specifying topics to record
+   * [Pull Request 54](https://github.com/ignitionrobotics/ign-launch/pull/54)
+
 ### Ignition Launch 1.9.0 (2020-08-13)
 
-1. Added HTTP handling support to websocket server and a metrics HTTP endpoint 
+1. Added HTTP handling support to websocket server and a metrics HTTP endpoint
    to monitor websocket server status.
    * [Pull Request 49](https://github.com/ignitionrobotics/ign-launch/pull/49)
 
