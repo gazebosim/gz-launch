@@ -1,5 +1,12 @@
 ## Ignition Launch 2.x
 
+### Ignition Launch 2.2.0 (2020-10-14)
+
+* All changes up to and including those in version 1.10.0
+
+* Added a tutorial.
+    * [Pull request 48](https://github.com/ignitionrobotics/ign-launch/pull/48)
+
 ### Ignition Launch 2.1.0 (2020-05-21)
 
 1. Merged ign-launch1 forward.
@@ -23,6 +30,9 @@
 ### Ignition Launch 1.X.X (20XX-XX-XX)
 
 ### Ignition Launch 1.10.0 (2020-09-25)
+
+* Modernize Github Actions CI.
+    * [Pull request 42](https://github.com/ignitionrobotics/ign-launch/pull/42)
 
 1. Add PKGCONFIG information to ignition-tools ign_find_package
    * [Pull Request 44](https://github.com/ignitionrobotics/ign-launch/pull/44)
