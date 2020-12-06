@@ -117,7 +117,7 @@ cc_binary(
         "//ign_msgs",
         "//ign_common",
         "//ign_plugin/loader:loader",
-        "//ign_plugin/core:ign_plugin",
+        "//ign_plugin",
     ],
     defines = [
         "BAZEL_IGN_PREFIX='\"ign_tools/\"'",
@@ -156,9 +156,8 @@ cc_library(
         "//ign_transport",
         "//ign_transport/log",
         "//sdformat",
-        "//ign_sensors:all",
         "//ign_plugin/register:register",
-        "//ign_plugin/core:ign_plugin",
+        "//ign_plugin",
     ],
     visibility = ["//visibility:public"],
 ) for plugin in plugins]
@@ -185,10 +184,9 @@ cc_binary(
         "//ign_common/events:events",
         "//ign_transport",
         "//ign_transport/log",
-        "//ign_sensors:all",
         "//sdformat",
         "//ign_plugin/register:register",
-        "//ign_plugin/core:ign_plugin",
+        "//ign_plugin",
     ],
 )
 cc_binary(
@@ -213,11 +211,10 @@ cc_binary(
         "//ign_common",
         "//ign_common/events:events",
         "//ign_transport",
-        "//ign_sensors:all",
         "//ign_transport/log",
         "//sdformat",
         "//ign_plugin/register:register",
-        "//ign_plugin/core:ign_plugin",
+        "//ign_plugin",
     ],
 )
 cc_binary(
@@ -242,11 +239,10 @@ cc_binary(
         "//ign_common",
         "//ign_common/events:events",
         "//ign_transport",
-        "//ign_sensors:all",
         "//ign_transport/log",
         "//sdformat",
         "//ign_plugin/register:register",
-        "//ign_plugin/core:ign_plugin",
+        "//ign_plugin",
     ],
 )
 cc_binary(
@@ -270,13 +266,12 @@ cc_binary(
         "//ign_fuel_tools",
         "//ign_common",
         "//ign_physics",
-        "//ign_sensors:all",
         "//ign_common/events:events",
         "//ign_transport",
         "//ign_transport/log",
         "//sdformat",
         "//ign_plugin/register:register",
-        "//ign_plugin/core:ign_plugin",
+        "//ign_plugin",
     ],
 )
 
@@ -310,7 +305,7 @@ cc_library(
         "//ign_rendering",
         "//sdformat",
         "//ign_plugin/register:register",
-        "//ign_plugin/core:ign_plugin",
+        "//ign_plugin",
         "@gtest//:gtest",
         "@gtest//:gtest_main",
     ],
