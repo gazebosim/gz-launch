@@ -68,6 +68,9 @@
 1. Add support for specifying topics to record
    * [Pull Request 54](https://github.com/ignitionrobotics/ign-launch/pull/54)
 
+1. Fix race condition in websocket server.
+   * [Pull Request 68](https://github.com/ignitionrobotics/ign-launch/pull/68) 
+
 ### Ignition Launch 1.9.0 (2020-08-13)
 
 1. Added HTTP handling support to websocket server and a metrics HTTP endpoint
