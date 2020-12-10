@@ -1,6 +1,8 @@
 ## Ignition Launch 3.x
 
-### Ignition Launch 3.X.X (20XX-XX-XX)
+### Ignition Launch 3.1.0 (2020-12-10)
+
+1. All changes up to and including those in version 2.2.0.
 
 ### Ignition Launch 3.0.0 (2020-09-30)
 
@@ -22,9 +24,9 @@
 
 ### Ignition Launch 2.2.0 (2020-10-14)
 
-* All changes up to and including those in version 1.10.0
+1. All changes up to and including those in version 1.10.0
 
-* Added a tutorial.
+1. Added a tutorial.
     * [Pull request 48](https://github.com/ignitionrobotics/ign-launch/pull/48)
 
 ### Ignition Launch 2.1.0 (2020-05-21)
