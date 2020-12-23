@@ -1,6 +1,13 @@
 ## Ignition Launch 1.x
 
-### Ignition Launch 1.X.X (20XX-XX-XX)
+### Ignition Launch 1.10.1 (2020-12-23)
+
+1. Fix codecheck
+   * [Pull Request 67](https://github.com/ignitionrobotics/ign-launch/pull/67)
+   * [Pull Request 70](https://github.com/ignitionrobotics/ign-launch/pull/70)
+
+1. Fix race condition in websocket server
+   * [Pull Request 68](https://github.com/ignitionrobotics/ign-launch/pull/68)
 
 ### Ignition Launch 1.10.0 (2020-09-25)
 
