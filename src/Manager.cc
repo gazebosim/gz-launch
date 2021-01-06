@@ -521,6 +521,9 @@ bool ManagerPrivate::ParseConfig(const std::string &_config)
     ignerr << "Invalid config file,m issing <ignition> element\n";
     return false;
   }
+  // Keep the environment variables in memory. See manpage for putenv.
+  this->envs = this->ParseEnvs(root);
+  this->SetEnvs(this->envs);
 
   // Parse and create all the <executable> elements.
   this->ParseExecutables(root);
@@ -528,10 +531,6 @@ bool ManagerPrivate::ParseConfig(const std::string &_config)
   // Parse and create all the <executable_wrapper> elements.
   if (this->master)
     this->ParseExecutableWrappers(root);
-
-  // Keep the environment variables in memory. See manpage for putenv.
-  this->envs = this->ParseEnvs(root);
-  this->SetEnvs(this->envs);
 
   // Parse and create all the <plugin> elements.
   if (this->master)
