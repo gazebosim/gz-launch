@@ -69,28 +69,32 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/launch${PROJECT_VERSION_MAJOR}.yaml DE
 # Generate the ruby script for internal testing.
 # Note that the major version of the library is included in the name.
 # Ex: cmdlaunch0.rb
-set(cmd_script_generated_test "${CMAKE_BINARY_DIR}/test/lib/ruby/ignition/cmdlaunch${PROJECT_VERSION_MAJOR}.rb")
-set(cmd_script_configured_test "${cmd_script_generated_test}.configured")
+# Note on WIN32: colcon generates the ign rb file for both configurations Relase and Debug
+# and trigger the error "Evaluation file to be written multiple times with different content"
+if((NOT WIN32) OR (BUILD_TYPE STREQUAL "Release"))
+    set(cmd_script_generated_test "${CMAKE_BINARY_DIR}/test/lib/ruby/ignition/cmdlaunch${PROJECT_VERSION_MAJOR}.rb")
+    set(cmd_script_configured_test "${cmd_script_generated_test}.configured")
 
-# Set the library_location variable to the full path of the library file within
-# the build directory.
-set(IGN_LIBRARY_NAME "$<TARGET_FILE:${PROJECT_LIBRARY_TARGET_NAME}>")
+    # Set the library_location variable to the full path of the library file within
+    # the build directory.
+    set(IGN_LIBRARY_NAME "$<TARGET_FILE:${PROJECT_LIBRARY_TARGET_NAME}>")
 
-configure_file(
-  "cmdlaunch.rb.in"
-  "${cmd_script_configured_test}"
-  @ONLY)
+    configure_file(
+      "cmdlaunch.rb.in"
+      "${cmd_script_configured_test}"
+      @ONLY)
 
-file(GENERATE
-  OUTPUT "${cmd_script_generated_test}"
-  INPUT  "${cmd_script_configured_test}")
+    file(GENERATE
+      OUTPUT "${cmd_script_generated_test}"
+      INPUT  "${cmd_script_configured_test}")
 
-# Used only for internal testing.
-set(ign_library_path "${CMAKE_BINARY_DIR}/test/lib/ruby/ignition/cmdlaunch${PROJECT_VERSION_MAJOR}")
+    # Used only for internal testing.
+    set(ign_library_path "${CMAKE_BINARY_DIR}/test/lib/ruby/ignition/cmdlaunch${PROJECT_VERSION_MAJOR}")
 
-# Generate a configuration file for internal testing.
-# Note that the major version of the library is included in the name.
-# Ex: launch0.yaml
-configure_file(
-  "launch.yaml.in"
-    "${CMAKE_BINARY_DIR}/test/conf/launch${PROJECT_VERSION_MAJOR}.yaml" @ONLY)
+    # Generate a configuration file for internal testing.
+    # Note that the major version of the library is included in the name.
+    # Ex: launch0.yaml
+    configure_file(
+      "launch.yaml.in"
+	"${CMAKE_BINARY_DIR}/test/conf/launch${PROJECT_VERSION_MAJOR}.yaml" @ONLY)
+endif()
