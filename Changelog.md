@@ -1,5 +1,11 @@
 ## Ignition Launch 2.x
 
+### Ignition Launch 2.2.1 (2021-01-08)
+
+1.  Fix env parsing by placing it before executable parsing.
+    * [Pull request 81](https://github.com/ignitionrobotics/ign-launch/pull/81)
+    * [Pull request 82](https://github.com/ignitionrobotics/ign-launch/pull/82)
+
 ### Ignition Launch 2.2.0 (2020-10-14)
 
 * All changes up to and including those in version 1.10.0
