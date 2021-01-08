@@ -25,7 +25,7 @@
 
 #include "Manager.hh"
 
-static const std::string kTestScriptPath = "/tmp/ign-launch.sh";
+static constexpr char kTestScriptPath[] = "/tmp/ign-launch.sh";
 
 /////////////////////////////////////////////////
 bool RemoveTestScript()
@@ -53,7 +53,7 @@ bool WriteTestScript()
 echo $TEST_VAR
 touch $TEST_VAR
 )";
-  chmod(kTestScriptPath.c_str(), S_IRWXU);
+  chmod(kTestScriptPath, S_IRWXU);
   return true;
 }
 
