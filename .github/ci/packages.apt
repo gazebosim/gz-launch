@@ -8,13 +8,13 @@ libignition-gui5-dev
 libignition-math6-dev
 libignition-math6-eigen3-dev
 libignition-msgs7-dev
-libignition-physics3-dev
+libignition-physics4-dev
 libignition-plugin-dev
 libignition-rendering5-dev
 libignition-sensors5-dev
 libignition-tools-dev
 libignition-transport10-dev
-libsdformat10-dev
+libsdformat11-dev
 libtinyxml2-dev
 libwebsockets-dev
 libxi-dev
