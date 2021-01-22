@@ -1,7 +1,7 @@
 binutils-dev
 libgflags-dev
 libignition-cmake2-dev
-libignition-common3-dev
+libignition-common4-dev
 libignition-fuel-tools6-dev
 libignition-gazebo5-dev
 libignition-gui5-dev
