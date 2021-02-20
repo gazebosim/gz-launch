@@ -150,6 +150,9 @@ namespace ignition
                    const size_t _size,
                    const ignition::transport::MessageInfo &_info);
 
+      /// \brief Callback when an image is received on a topic
+      /// \param[in] _msg Image msg
+      /// \param[in] _info ign transport message info
       private: void OnWebsocketSubscribedImageMessage(
           const ignition::msgs::Image &_msg,
           const ignition::transport::MessageInfo &_info);

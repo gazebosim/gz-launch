@@ -638,7 +638,6 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
         result.c_str(), result.size());
   }
 
-  // todo uncomment me
   if (!this->connections[_socketId]->authorized)
   {
     igndbg << "Unauthorized request received on socket[" << _socketId << "]\n";
