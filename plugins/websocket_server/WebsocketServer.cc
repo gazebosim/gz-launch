@@ -17,6 +17,7 @@
 
 #include <algorithm>
 #include <ignition/common/Console.hh>
+#include <ignition/common/Image.hh>
 #include <ignition/common/Util.hh>
 #include <ignition/msgs.hh>
 
@@ -638,11 +639,11 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   }
 
   // todo uncomment me
-//  if (!this->connections[_socketId]->authorized)
-//  {
-//    igndbg << "Unauthorized request received on socket[" << _socketId << "]\n";
-//    return;
-//  }
+  if (!this->connections[_socketId]->authorized)
+  {
+    igndbg << "Unauthorized request received on socket[" << _socketId << "]\n";
+    return;
+  }
 
   // Handle the case where the client requests the message definitions.
   if (frameParts[0] == "protos")
