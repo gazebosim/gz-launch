@@ -27,7 +27,7 @@ pipelines:
           # Dependency: Ignition packages
           - apt-get -y install
             libignition-cmake2-dev
-            libignition-common3-dev
+            libignition-common4-dev
             libignition-fuel-tools6-dev
             libignition-math6-dev
             libignition-math6-eigen3-dev
