@@ -123,18 +123,14 @@ cc_binary(
         "include",
         "src",
     ],
-    linkopts = [
-        "-Wl,-soname,libignition-launch3.so",
-        "-lzmq",
-    ],
     linkshared = True,
-    visibility = [],
     deps = [
         "//ign_bazel:utilities",
         "//ign_common",
         "//ign_msgs",
         "//ign_plugin",
         "//ign_plugin/loader",
+        "@zmq",
     ],
 )
 
@@ -175,7 +171,7 @@ cc_library(
         "//ign_plugin/register",
         "//ign_rendering",
         "//ign_transport",
-        "//ign_transport/log",
+        "//ign_transport/log:ign_transport-log",
         "//sdformat",
     ],
 ) for plugin in plugins]
@@ -205,7 +201,7 @@ cc_binary(
         "//ign_plugin/register",
         "//ign_rendering",
         "//ign_transport",
-        "//ign_transport/log",
+        "//ign_transport/log:ign_transport-log",
         "//sdformat",
     ],
 )
@@ -235,7 +231,7 @@ cc_binary(
         "//ign_plugin/register",
         "//ign_rendering",
         "//ign_transport",
-        "//ign_transport/log",
+        "//ign_transport/log:ign_transport-log",
         "//sdformat",
     ],
 )
@@ -265,7 +261,7 @@ cc_binary(
         "//ign_plugin/register",
         "//ign_rendering",
         "//ign_transport",
-        "//ign_transport/log",
+        "//ign_transport/log:ign_transport-log",
         "//sdformat",
     ],
 )
@@ -296,7 +292,7 @@ cc_binary(
         "//ign_plugin/register",
         "//ign_rendering",
         "//ign_transport",
-        "//ign_transport/log",
+        "//ign_transport/log:ign_transport-log",
         "//sdformat",
     ],
 )
