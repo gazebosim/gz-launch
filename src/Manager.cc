@@ -18,12 +18,14 @@
 #include "Manager.hh"
 
 #include <fcntl.h>
-#include <semaphore.h>
+#ifndef _WIN32
+  #include <semaphore.h>
+  #include <sys/stat.h>
+  #include <sys/wait.h>
+  #include <unistd.h>
+#endif
 #include <signal.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
 #include <tinyxml2.h>
-#include <unistd.h>
 
 #include <condition_variable>
 #include <ctime>
