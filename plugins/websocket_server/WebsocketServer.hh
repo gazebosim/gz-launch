@@ -130,7 +130,7 @@ namespace ignition
     ///
     /// `ign launch -v 4 websocket.ign`
     ///
-    /// 3. Open the [index.html](https://github.com/ignitionrobotics/ign-launch/blob/master/plugins/websocket_server/index.html) webpage.
+    /// 3. Open the [index.html](https://github.com/ignitionrobotics/ign-launch/blob/ign-launch2/plugins/websocket_server/index.html) webpage.
     ///
     class WebsocketServer : public ignition::launch::Plugin
     {
