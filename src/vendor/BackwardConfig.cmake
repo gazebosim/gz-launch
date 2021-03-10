@@ -20,8 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Imported from: https://github.com/bombela/backward-cpp/blob/e50dff5a380b56416294030e0bf03b7924c7cf97/BackwardConfig.cmake
-
 ###############################################################################
 # OPTIONS
 ###############################################################################
@@ -43,8 +41,12 @@ set(STACK_DETAILS_BFD FALSE CACHE BOOL
 set(STACK_DETAILS_DWARF FALSE CACHE BOOL
 	"Use libdwarf/libelf to read debug info")
 
-set(BACKWARD_TESTS FALSE CACHE BOOL "Enable tests")
-
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR AND NOT DEFINED BACKWARD_TESTS)
+	# If this is a top level CMake project, we most lixely want the tests
+	set(BACKWARD_TESTS ON CACHE BOOL "Enable tests")
+else()
+	set(BACKWARD_TESTS OFF CACHE BOOL "Enable tests")
+endif()
 ###############################################################################
 # CONFIGS
 ###############################################################################
@@ -198,7 +200,7 @@ if (NOT TARGET Backward::Backward)
 	)
 	if(BACKWARD_HAS_EXTERNAL_LIBRARIES)
 		set_target_properties(Backward::Backward PROPERTIES
-			INTERFACE_LINK_LIBRARIES "${BACKWARD_LIBRARIES}"
+			INTERFACE_LINK_LIBRARIES "${BACKWARD_LIBRARIES}" 
 		)
 	endif()
 endif()
