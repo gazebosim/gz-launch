@@ -6,6 +6,8 @@ Ignition @IGN_DESIGNATION_CAP@ library and how to use the library effectively.
 
 **Tutorials**
 
+1. \subpage basics "Ignition launch tutorial"
+
 ## License
 
 The code associated with this documentation is licensed under an [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
