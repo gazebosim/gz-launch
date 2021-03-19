@@ -1,4 +1,4 @@
-# Ignition launch tutorial
+\page basics Ignition launch tutorial
 
 Ignition Launch is used to run and manage plugins and programs. A configuration script can be used to specify which programs and plugins to execute. Alternatively, individual programs and plugins can be run from the command line.
 
@@ -55,3 +55,17 @@ The [worldName] command line argument is optional. If left blank, or not specifi
 Example to load `the shapes.sdf`:
 
 `ign launch gazebo_plugins.ign worldName:=shapes`
+
+## Launch file lookup
+
+There is a lookup process happening if the specified file is not an absolute
+path. It searches for a file with the given name in paths as follows:
+
+1. current directory
+1. all paths specified in environment variable `IGN_LAUNCH_CONFIG_PATH`
+1. a hardcoded install location (usually
+   `/usr/share/ignition/ignition-launchN/configs/`)
+
+The `IGN_LAUNCH_CONFIG_PATH` environment variable can contain either a single
+path or a path list (_new since 2.2.2_). Path list is a colon-separated (on
+UNIX) or semicolon-separated (on Windows) list of absolute paths.
