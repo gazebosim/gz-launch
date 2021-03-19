@@ -159,25 +159,34 @@ class Cmd
       end
 
       if options.key?('file')
-        # Check if the passed in file exists. 
+        # Check if the passed in file exists.
+        path = ''
         if File.exists?(options['file'])
           path = options['file']
+        end
         # If not, then first check the IGN_LAUNCH_CONFIG_PATH environment
         # variable, then the configuration path from the launch library.
-        else
+        if path.empty?
           configPathEnv = ENV['IGN_LAUNCH_CONFIG_PATH']
-          if !configPathEnv.nil? &&
-              File.exists?(File.join(configPathEnv, options['file']))
-            path = File.join(configPathEnv, options['file'])
-          # get the configuration path from the launch library.
-          else
-            Importer.extern 'char *configPath()'
-            path = File.join(Importer.configPath().to_s, options['file'])
-            if !File.exists?(path) 
-              puts "Unable to find file " + options['file']
-              exit(-1)
+          if !configPathEnv.nil?
+            configPaths = configPathEnv.split(File::PATH_SEPARATOR)
+            for configPath in configPaths
+              filePath = File.join(configPath, options['file'])
+              if File.exists?(filePath)
+                path = filePath
+                break
+              end
             end
           end
+        end
+        # get the configuration path from the launch library.
+        if path.empty?
+          Importer.extern 'char *configPath()'
+          path = File.join(Importer.configPath().to_s, options['file'])
+        end
+        if path.empty? or !File.exists?(path)
+          puts "Unable to find file " + options['file']
+          exit(-1)
         end
 
         # ERB parse the file with the variable bindings
