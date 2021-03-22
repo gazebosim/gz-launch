@@ -7,8 +7,11 @@
           filename="ignition-launch-websocket-server">
     <publication_hz>30</publication_hz>
     <port>9002</port>
-    <authorization_key>auth_key</authorization_key>
-    <admin_authorization_key>admin_key</admin_authorization_key>
+
+    <!-- The following elements support authorization keys-->
+    <!-- <authorization_key>auth_key</authorization_key>
+         <admin_authorization_key>admin_key</admin_authorization_key>
+    -->
 
     <!-- The maximum number of allowed connections. If this element is not
          defined or negative, then a limit is not enforced. -->
