@@ -19,6 +19,7 @@
 #include <ignition/common/Console.hh>
 #include <ignition/common/Util.hh>
 #include <ignition/msgs.hh>
+#include <ignition/transport/Publisher.hh>
 
 #include "MessageDefinitions.hh"
 #include "WebsocketServer.hh"
@@ -695,6 +696,36 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
 
     std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
         std::string("ignition.msgs.StringMsg_V"), msg.SerializeAsString());
+
+    // Queue the message for delivery.
+    this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
+  }
+  else if (frameParts[0] == "topics-types")
+  {
+    igndbg << "Topic and message type list request recieved\n";
+    ignition::msgs::Publishers msg;
+
+    std::vector<std::string> topics;
+
+    // Get the list of topics
+    this->node.TopicList(topics);
+
+    // Store the topics in a message and serialize the message.
+    for (const std::string &topic : topics)
+    {
+      std::vector<transport::MessagePublisher> publishers;
+      this->node.TopicInfo(topic, publishers);
+      for (const transport::MessagePublisher &publisher : publishers)
+      {
+        msgs::Publish *pubMsg = msg.add_publisher();
+        pubMsg->set_topic(topic);
+        pubMsg->set_msg_type(publisher.MsgTypeName());
+      }
+    }
+
+    std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
+        std::string("ignition.msgs.Publishers"), msg.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),

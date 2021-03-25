@@ -85,7 +85,9 @@ namespace ignition
     ///     1. "sub": Subscribe to the topic in the `topic_name` component,
     ///     2. "pub": Publish a message from the Ignition Transport topic in
     ///               the `topic_name` component,
-    ///     3. "topics": Get the list of available topics, and
+    ///     3. "topics": Get the list of available topics,
+    ///     3. "topics-types": Get the list of available topics and their
+    ///                        message types, and
     ///     4. "protos": Get a string containing all the protobuf
     ///                  definitions.
     ///
