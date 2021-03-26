@@ -1,3 +1,21 @@
+## Ignition Launch 4.x
+
+### Ignition Launch 4.X.X (20XX-XX-XX)
+
+### Ignition Launch 4.0.0 (20XX-XX-XX)
+
+1. Bump in edifice: ign-common4
+    * [Pull request #90](https://github.com/ignitionrobotics/ign-launch/pull/90)
+
+1. Bump in edifice: sdformat11
+    * [Pull request #87](https://github.com/ignitionrobotics/ign-launch/pull/87)
+
+1. Bump in edifice: ign-msgs7
+    * [Pull request #86](https://github.com/ignitionrobotics/ign-launch/pull/86)
+
+1. Bump in edifice: ign-rendering5
+    * [Pull request #69](https://github.com/ignitionrobotics/ign-launch/pull/69)
+
 ## Ignition Launch 3.x
 
 ### Ignition Launch 3.1.1 (2021-01-08)
@@ -79,7 +97,7 @@
    * [Pull Request 54](https://github.com/ignitionrobotics/ign-launch/pull/54)
 
 1. Fix race condition in websocket server.
-   * [Pull Request 68](https://github.com/ignitionrobotics/ign-launch/pull/68) 
+   * [Pull Request 68](https://github.com/ignitionrobotics/ign-launch/pull/68)
 
 ### Ignition Launch 1.9.0 (2020-08-13)
 
