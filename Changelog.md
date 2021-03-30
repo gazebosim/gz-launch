@@ -2,7 +2,7 @@
 
 ### Ignition Launch 4.X.X (20XX-XX-XX)
 
-### Ignition Launch 4.0.0 (20XX-XX-XX)
+### Ignition Launch 4.0.0 (2021-03-30)
 
 1. Bump in edifice: ign-common4
     * [Pull request #90](https://github.com/ignitionrobotics/ign-launch/pull/90)
