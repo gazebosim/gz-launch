@@ -1,3 +1,9 @@
+## Ignition Launch 5.x
+
+### Ignition Launch 5.X.X (20XX-XX-XX)
+
+### Ignition Launch 5.0.0 (20XX-XX-XX)
+
 ## Ignition Launch 4.x
 
 ### Ignition Launch 4.X.X (20XX-XX-XX)
