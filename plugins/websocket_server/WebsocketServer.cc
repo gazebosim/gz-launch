@@ -761,6 +761,32 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
           this, std::placeholders::_1,
           std::placeholders::_2, std::placeholders::_3));
   }
+  else if (frameParts[0] == "unsub")
+  {
+    igndbg << "Unsubscribe request for topic[" << frameParts[1] << "]\n";
+    std::map<std::string, std::set<int>>::iterator topicConnectionIter =
+      this->topicConnections.find(frameParts[1]);
+
+    if (topicConnectionIter != this->topicConnections.end())
+    {
+      // Remove from the topic connections map
+      topicConnectionIter->second.extract(_socketId);
+
+      // Only unsubscribe from the Ignition Transport topic if there are no
+      // more websocket connections.
+      if (topicConnectionIter->second.empty())
+      {
+        igndbg << "Unsubscribing from Ignition Transport Topic["
+          << frameParts[1] << "]\n";
+        this->node.Unsubscribe(frameParts[1]);
+      }
+    }
+    else
+    {
+      ignwarn << "The websocket server is not subscribed to topic["
+        << frameParts[1] << "]. Unable to unsubscribe from the topic\n";
+    }
+  }
 }
 
 //////////////////////////////////////////////////
