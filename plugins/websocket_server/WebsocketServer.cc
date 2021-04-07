@@ -17,6 +17,7 @@
 
 #include <algorithm>
 #include <ignition/common/Console.hh>
+#include <ignition/common/Image.hh>
 #include <ignition/common/Util.hh>
 #include <ignition/msgs.hh>
 
@@ -260,7 +261,6 @@ int rootCallback(struct lws *_wsi,
       igndbg << "LWS_CALLBACK_HTTP\n";
       return httpCallback(_wsi, _reason, _user, _in, _len);
       break;
-
     // Publish outboud messages
     case LWS_CALLBACK_SERVER_WRITEABLE:
       {
@@ -761,6 +761,42 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
           this, std::placeholders::_1,
           std::placeholders::_2, std::placeholders::_3));
   }
+  else if (frameParts[0] == "image")
+  {
+    // Store the relation of socketId to subscribed topic.
+    this->topicConnections[frameParts[1]].insert(_socketId);
+    this->topicTimestamps[frameParts[1]] =
+      std::chrono::steady_clock::now() - this->publishPeriod;
+
+    std::vector<std::string> allTopics;
+    std::set<std::string> imageTopics;
+    this->node.TopicList(allTopics);
+    for (auto queryTopic: allTopics)
+    {
+      std::vector<transport::MessagePublisher> publishers;
+      this->node.TopicInfo(queryTopic, publishers);
+      for (auto pub: publishers)
+      {
+        if (pub.MsgTypeName() == "ignition.msgs.Image")
+        {
+          imageTopics.insert(queryTopic);
+          break;
+        }
+      }
+    }
+    std::string topic = frameParts[1];
+    if (!imageTopics.count(topic))
+    {
+      igndbg << "Could not find topic: " << topic  << " to stream"
+                << std::endl;
+      return;
+    }
+
+    igndbg << "Subscribe request to image topic[" << frameParts[1] << "]\n";
+    this->node.Subscribe(frameParts[1],
+        &WebsocketServer::OnWebsocketSubscribedImageMessage, this);
+  }
+
 }
 
 //////////////////////////////////////////////////
@@ -804,6 +840,50 @@ void WebsocketServer::OnWebsocketSubscribedMessage(
         {
           this->QueueMessage(this->connections[socketId].get(),
               msg.c_str(), msg.length());
+        }
+      }
+    }
+  }
+}
+
+//////////////////////////////////////////////////
+void WebsocketServer::OnWebsocketSubscribedImageMessage(
+    const ignition::msgs::Image &_msg,
+    const ignition::transport::MessageInfo &_info)
+{
+  std::map<std::string, std::set<int>>::const_iterator iter =
+    this->topicConnections.find(_info.Topic());
+
+  if (iter != this->topicConnections.end())
+  {
+    std::lock_guard<std::mutex> mainLock(this->subscriptionMutex);
+    std::chrono::time_point<std::chrono::steady_clock> systemTime =
+      std::chrono::steady_clock::now();
+
+    std::chrono::nanoseconds timeDelta =
+      systemTime - this->topicTimestamps[_info.Topic()];
+
+    if (timeDelta > this->publishPeriod)
+    {
+      // Store the last time this topic was published.
+      this->topicTimestamps[_info.Topic()] = systemTime;
+
+      // send raw png data
+      std::vector<unsigned char> buffer;
+      common::Image image;
+      image.SetFromData(
+          (unsigned char*) _msg.data().c_str(),
+          _msg.width(), _msg.height(), common::Image::RGB_INT8);
+      image.SavePNGToBuffer(buffer);
+      std::string img(reinterpret_cast<char *>(buffer.data()), buffer.size());
+
+      // Send the message
+      for (const int &socketId : iter->second)
+      {
+        if (this->connections.find(socketId) != this->connections.end())
+        {
+          this->QueueMessage(this->connections[socketId].get(),
+              img.c_str(), img.length());
         }
       }
     }
