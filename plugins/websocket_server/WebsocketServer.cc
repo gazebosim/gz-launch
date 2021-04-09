@@ -770,7 +770,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
     if (topicConnectionIter != this->topicConnections.end())
     {
       // Remove from the topic connections map
-      topicConnectionIter->second.extract(_socketId);
+      topicConnectionIter->second.erase(_socketId);
 
       // Only unsubscribe from the Ignition Transport topic if there are no
       // more websocket connections.
