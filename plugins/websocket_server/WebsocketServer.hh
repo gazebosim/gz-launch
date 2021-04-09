@@ -86,9 +86,11 @@ namespace ignition
     ///     2. "pub": Publish a message from the Ignition Transport topic in
     ///               the `topic_name` component,
     ///     3. "topics": Get the list of available topics,
-    ///     4. "protos": Get a string containing all the protobuf
-    ///                  definitions, and
-    ///     5. "unsub": Unsubscribe from the topic in the `topic_name` component
+    ///     4. "topics-types": Get the list of available topics and their
+    ///                        message types, and
+    ///     5. "protos": Get a string containing all the protobuf
+    ///                  definitions.
+    ///     6. "unsub": Unsubscribe from the topic in the `topic_name` component
     ///
     /// The `topic_name` component is mandatory for the "sub", "pub", and
     /// "unsub" operations. If present, it must be the name of an Ignition
@@ -150,6 +152,13 @@ namespace ignition
       private: void OnWebsocketSubscribedMessage(const char *_data,
                    const size_t _size,
                    const ignition::transport::MessageInfo &_info);
+
+      /// \brief Callback when an image is received on a topic
+      /// \param[in] _msg Image msg
+      /// \param[in] _info ign transport message info
+      private: void OnWebsocketSubscribedImageMessage(
+          const ignition::msgs::Image &_msg,
+          const ignition::transport::MessageInfo &_info);
 
       /// \brief Callback that is triggered when a new connection is
       /// established.
