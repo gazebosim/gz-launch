@@ -896,6 +896,15 @@ void WebsocketServer::OnWebsocketSubscribedImageMessage(
 
     if (timeDelta > this->publishPeriod)
     {
+      // Get the header, or build a new header if it doesn't exist.
+      auto header = this->publishHeaders.find(_info.Topic());
+      if (header == this->publishHeaders.end())
+      {
+        this->publishHeaders[_info.Topic()] = BUILD_HEADER(
+          this->operations[PUBLISH], _info.Topic(), _info.Type());
+        header = this->publishHeaders.find(_info.Topic());
+      }
+
       // Store the last time this topic was published.
       this->topicTimestamps[_info.Topic()] = systemTime;
 
@@ -908,13 +917,16 @@ void WebsocketServer::OnWebsocketSubscribedImageMessage(
       image.SavePNGToBuffer(buffer);
       std::string img(reinterpret_cast<char *>(buffer.data()), buffer.size());
 
+      // Construct the final message.
+      std::string msg = header->second + img;
+
       // Send the message
       for (const int &socketId : iter->second)
       {
         if (this->connections.find(socketId) != this->connections.end())
         {
           this->QueueMessage(this->connections[socketId].get(),
-              img.c_str(), img.length());
+              msg.c_str(), msg.length());
         }
       }
     }
