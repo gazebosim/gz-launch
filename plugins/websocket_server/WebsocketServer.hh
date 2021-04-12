@@ -87,10 +87,12 @@ namespace ignition
     ///               the `topic_name` component,
     ///     3. "topics": Get the list of available topics,
     ///     4. "topics-types": Get the list of available topics and their
-    ///                        message types, and
+    ///                        message types,
     ///     5. "protos": Get a string containing all the protobuf
+    ///                  definitions, and
+    ///     6. "particle_emitters": Get the list of particle emitters.
     ///                  definitions.
-    ///     6. "unsub": Unsubscribe from the topic in the `topic_name` component
+    ///     7. "unsub": Unsubscribe from the topic in the `topic_name` component
     ///
     /// The `topic_name` component is mandatory for the "sub", "pub", and
     /// "unsub" operations. If present, it must be the name of an Ignition
