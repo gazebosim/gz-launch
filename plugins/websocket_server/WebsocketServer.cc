@@ -752,7 +752,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   /// to rely on the "scene" message.
   else if (frameParts[0] == "particle_emitters")
   {
-    igndbg << "Particle emitter request recieved for world["
+    igndbg << "Particle emitter request received for world["
       << frameParts[1] << "]\n";
     ignition::msgs::Empty req;
     req.set_unused(true);
