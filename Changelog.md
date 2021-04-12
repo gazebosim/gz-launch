@@ -1,5 +1,23 @@
 ## Ignition Launch 3.x
 
+### Ignition Launch 3.2.0 (2021-04-12)
+
+1. Support unsubscribing from a topic in the websocket server.
+    * [Pull request 107](https://github.com/ignitionrobotics/ign-launch/pull/107)
+
+1. Support particle_emitters in the websocket server.
+    * [Pull request 104](https://github.com/ignitionrobotics/ign-launch/pull/104)
+
+1. Support getting topic names and message types in the websocket server.
+    * [Pull request 102](https://github.com/ignitionrobotics/ign-launch/pull/102)
+
+1. Image streaming over websocket.
+    * [Pull request 97](https://github.com/ignitionrobotics/ign-launch/pull/97)
+
+1. Treat IGN_LAUNCH_CONFIG_PATH as a path list.
+    * [Pull request 93](https://github.com/ignitionrobotics/ign-launch/pull/93)
+
+
 ### Ignition Launch 3.1.1 (2021-01-08)
 
 1. All changes up to and including those in version 2.2.1.
