@@ -44,7 +44,7 @@ pipelines:
           # # Ignition msgs (uncomment if a specific branch is needed)
           # - apt install -y
           #   libprotobuf-dev protobuf-compiler libprotoc-dev
-          # - git clone http://github.com/ignitionrobotics/ign-msgs -b master
+          # - git clone http://github.com/ignitionrobotics/ign-msgs
           # - cd ign-msgs
           # - mkdir build
           # - cd build
@@ -54,7 +54,7 @@ pipelines:
           # # Ignition transport (uncomment if a specific branch is needed)
           # - apt install -y
           #   libzmq3-dev uuid-dev libsqlite3-dev
-          # - git clone http://github.com/ignitionrobotics/ign-transport -b master
+          # - git clone http://github.com/ignitionrobotics/ign-transport
           # - cd ign-transport
           # - mkdir build
           # - cd build
@@ -65,7 +65,7 @@ pipelines:
           # - apt install -y
           #   libxml2-utils
           #   libtinyxml-dev
-          # - git clone http://github.com/osrf/sdformat -b master
+          # - git clone http://github.com/osrf/sdformat
           # - cd sdformat
           # - mkdir build
           # - cd build
@@ -75,7 +75,7 @@ pipelines:
           # Ignition Rendering from source
           - apt install -y
             libogre-1.9-dev libogre-2.1-dev libglew-dev libfreeimage-dev freeglut3-dev libxmu-dev libxi-dev uuid-dev xvfb
-          - git clone https://github.com/ignitionrobotics/ign-rendering -b master
+          - git clone https://github.com/ignitionrobotics/ign-rendering
           - cd ign-rendering
           - mkdir build
           - cd build
@@ -97,7 +97,7 @@ pipelines:
             qml-module-qt-labs-folderlistmodel
             qml-module-qt-labs-settings
             qml-module-qtgraphicaleffects
-          - git clone https://github.com/ignitionrobotics/ign-gui -b master
+          - git clone https://github.com/ignitionrobotics/ign-gui
           - cd ign-gui
           - mkdir build
           - cd build
@@ -111,7 +111,7 @@ pipelines:
           #   libdart6-dev
           #   libdart6-utils-urdf-dev
           #   libbenchmark-dev
-          # - git clone https://github.com/ignitionrobotics/ign-physics -b master
+          # - git clone https://github.com/ignitionrobotics/ign-physics
           # - cd ign-physics
           # - mkdir build
           # - cd build
@@ -119,7 +119,7 @@ pipelines:
           # - make install
           # - cd ../..
           # Ignition Sensors from source
-          - git clone https://github.com/ignitionrobotics/ign-sensors -b master
+          - git clone https://github.com/ignitionrobotics/ign-sensors
           - cd ign-sensors
           - mkdir build
           - cd build
@@ -127,7 +127,7 @@ pipelines:
           - make install
           - cd ../..
           # Ignition Gazebo from source
-          - git clone https://github.com/ignitionrobotics/ign-gazebo -b master
+          - git clone https://github.com/ignitionrobotics/ign-gazebo
           - cd ign-gazebo
           - mkdir build
           - cd build

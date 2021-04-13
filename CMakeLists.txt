@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5.1 FATAL_ERROR)
 #============================================================================
 # Initialize the project
 #============================================================================
-project(ignition-launch4 VERSION 4.0.0)
+project(ignition-launch5 VERSION 5.0.0)
 
 #============================================================================
 # Find ignition-cmake
@@ -14,7 +14,7 @@ set(IGN_CMAKE_VER ${ignition-cmake2_VERSION_MAJOR})
 #============================================================================
 # Configure the project
 #============================================================================
-ign_configure_project(VERSION_SUFFIX)
+ign_configure_project(VERSION_SUFFIX pre1)
 
 # Create cppcheck suppression list file.
 configure_file(tools/cppcheck.suppress.in ${CMAKE_BINARY_DIR}/cppcheck.suppress)

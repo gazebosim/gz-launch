@@ -1,6 +1,36 @@
+## Ignition Launch 5.x
+
+### Ignition Launch 5.X.X (20XX-XX-XX)
+
+### Ignition Launch 5.0.0 (20XX-XX-XX)
+
+## Ignition Launch 4.x
+
+### Ignition Launch 4.X.X (20XX-XX-XX)
+
+### Ignition Launch 4.0.0 (20XX-XX-XX)
+
+1. Bump in edifice: ign-common4
+    * [Pull request #90](https://github.com/ignitionrobotics/ign-launch/pull/90)
+
+1. Bump in edifice: sdformat11
+    * [Pull request #87](https://github.com/ignitionrobotics/ign-launch/pull/87)
+
+1. Bump in edifice: ign-msgs7
+    * [Pull request #86](https://github.com/ignitionrobotics/ign-launch/pull/86)
+
+1. Bump in edifice: ign-rendering5
+    * [Pull request #69](https://github.com/ignitionrobotics/ign-launch/pull/69)
+
 ## Ignition Launch 3.x
 
-### Ignition Launch 3.X.X (20XX-XX-XX)
+### Ignition Launch 3.1.1 (2021-01-08)
+
+1. All changes up to and including those in version 2.2.1.
+
+### Ignition Launch 3.1.0 (2020-12-10)
+
+1. All changes up to and including those in version 2.2.0.
 
 ### Ignition Launch 3.0.0 (2020-09-30)
 
@@ -20,11 +50,17 @@
 
 ## Ignition Launch 2.x
 
+### Ignition Launch 2.2.1 (2021-01-08)
+
+1.  Fix env parsing by placing it before executable parsing.
+    * [Pull request 81](https://github.com/ignitionrobotics/ign-launch/pull/81)
+    * [Pull request 82](https://github.com/ignitionrobotics/ign-launch/pull/82)
+
 ### Ignition Launch 2.2.0 (2020-10-14)
 
-* All changes up to and including those in version 1.10.0
+1. All changes up to and including those in version 1.10.0
 
-* Added a tutorial.
+1. Added a tutorial.
     * [Pull request 48](https://github.com/ignitionrobotics/ign-launch/pull/48)
 
 ### Ignition Launch 2.1.0 (2020-05-21)
@@ -65,6 +101,9 @@
 
 1. Add support for specifying topics to record
    * [Pull Request 54](https://github.com/ignitionrobotics/ign-launch/pull/54)
+
+1. Fix race condition in websocket server.
+   * [Pull Request 68](https://github.com/ignitionrobotics/ign-launch/pull/68)
 
 ### Ignition Launch 1.9.0 (2020-08-13)
 
