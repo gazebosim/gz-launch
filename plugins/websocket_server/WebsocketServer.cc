@@ -262,6 +262,7 @@ int rootCallback(struct lws *_wsi,
       igndbg << "LWS_CALLBACK_HTTP\n";
       return httpCallback(_wsi, _reason, _user, _in, _len);
       break;
+
     // Publish outboud messages
     case LWS_CALLBACK_SERVER_WRITEABLE:
       {
@@ -779,6 +780,37 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
     this->QueueMessage(this->connections[_socketId].get(),
         data.c_str(), data.length());
   }
+  /// \todo(nkoeng) Deprecate this in Ignition Fortress, and instruct users
+  /// to rely on the "scene" message.
+  else if (frameParts[0] == "particle_emitters")
+  {
+    igndbg << "Particle emitter request received for world["
+      << frameParts[1] << "]\n";
+    ignition::msgs::Empty req;
+    req.set_unused(true);
+
+    ignition::msgs::ParticleEmitter_V rep;
+    bool result;
+    unsigned int timeout = 2000;
+
+    std::string serviceName = std::string("/world/") + frameParts[1] +
+      "/particle_emitters";
+
+    bool executed = this->node.Request(serviceName, req, timeout, rep, result);
+    if (!executed || !result)
+    {
+      ignerr << "Failed to get the particle emitter information for "
+        << frameParts[1] << " world.\n";
+    }
+
+    std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
+        std::string("ignition.msgs.ParticleEmitter_V"),
+        rep.SerializeAsString());
+
+    // Queue the message for delivery.
+    this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
+  }
   else if (frameParts[0] == "sub")
   {
     // Store the relation of socketId to subscribed topic.
@@ -827,7 +859,32 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
     this->node.Subscribe(frameParts[1],
         &WebsocketServer::OnWebsocketSubscribedImageMessage, this);
   }
+  else if (frameParts[0] == "unsub")
+  {
+    igndbg << "Unsubscribe request for topic[" << frameParts[1] << "]\n";
+    std::map<std::string, std::set<int>>::iterator topicConnectionIter =
+      this->topicConnections.find(frameParts[1]);
 
+    if (topicConnectionIter != this->topicConnections.end())
+    {
+      // Remove from the topic connections map
+      topicConnectionIter->second.erase(_socketId);
+
+      // Only unsubscribe from the Ignition Transport topic if there are no
+      // more websocket connections.
+      if (topicConnectionIter->second.empty())
+      {
+        igndbg << "Unsubscribing from Ignition Transport Topic["
+          << frameParts[1] << "]\n";
+        this->node.Unsubscribe(frameParts[1]);
+      }
+    }
+    else
+    {
+      ignwarn << "The websocket server is not subscribed to topic["
+        << frameParts[1] << "]. Unable to unsubscribe from the topic\n";
+    }
+  }
 }
 
 //////////////////////////////////////////////////
