@@ -1,5 +1,10 @@
 ## Ignition Launch 3.x
 
+### Ignition Launch 3.2.1 (2021-04-19)
+
+1. Add header to image msg.
+    * [Pull request 109](https://github.com/ignitionrobotics/ign-launch/pull/109)
+
 ### Ignition Launch 3.2.0 (2021-04-12)
 
 1. Support unsubscribing from a topic in the websocket server.
