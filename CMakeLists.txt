@@ -36,7 +36,8 @@ ign_find_package(TINYXML2 REQUIRED PRIVATE PRETTY tinyxml2)
 
 #--------------------------------------
 # Find ignition-common
-ign_find_package(ignition-common3 REQUIRED PRIVATE COMPONENTS graphics)
+ign_find_package(ignition-common3 REQUIRED VERSION 3.13
+  PRIVATE COMPONENTS graphics)
 set(IGN_COMMON_MAJOR_VER ${ignition-common3_VERSION_MAJOR})
 
 #--------------------------------------

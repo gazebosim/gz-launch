@@ -965,12 +965,34 @@ void WebsocketServer::OnWebsocketSubscribedImageMessage(
       // Store the last time this topic was published.
       this->topicTimestamps[_info.Topic()] = systemTime;
 
-      // send raw png data
-      std::vector<unsigned char> buffer;
+      // convert to RGB image if needed
       common::Image image;
-      image.SetFromData(
-          (unsigned char*) _msg.data().c_str(),
-          _msg.width(), _msg.height(), common::Image::RGB_INT8);
+      switch (_msg.pixel_format_type())
+      {
+        case msgs::PixelFormatType::RGB_INT8:
+          image.SetFromData(reinterpret_cast<const unsigned char *>(
+              _msg.data().c_str()),
+              _msg.width(), _msg.height(), common::Image::RGB_INT8);
+          break;
+        case msgs::PixelFormatType::R_FLOAT32:
+          common::Image::ConvertToRGBImage<float>(_msg.data().c_str(),
+              _msg.width(), _msg.height(), image,
+              0, std::numeric_limits<float>::lowest(), true);
+          break;
+        case msgs::PixelFormatType::L_INT16:
+          common::Image::ConvertToRGBImage<uint16_t>(_msg.data().c_str(),
+              _msg.width(), _msg.height(), image);
+          break;
+        case msgs::PixelFormatType::L_INT8:
+          common::Image::ConvertToRGBImage<uint8_t>(_msg.data().c_str(),
+              _msg.width(), _msg.height(), image);
+          break;
+        default:
+          return;
+      }
+
+      // alway publish rgb_int8 format
+      std::vector<unsigned char> buffer;
       image.SavePNGToBuffer(buffer);
       std::string img(reinterpret_cast<char *>(buffer.data()), buffer.size());
 
