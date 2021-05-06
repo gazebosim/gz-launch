@@ -1,5 +1,10 @@
 ## Ignition Launch 3.x
 
+### Ignition Launch 3.3.0 (2021-05-06)
+
+1. Convert depth and thermal image data to RGB before sending over websockets
+    * [Pull request 112](https://github.com/ignitionrobotics/ign-launch/pull/112)
+
 ### Ignition Launch 3.2.1 (2021-04-19)
 
 1. Add header to image msg.
