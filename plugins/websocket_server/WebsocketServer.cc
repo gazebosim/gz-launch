@@ -226,6 +226,7 @@ int rootCallback(struct lws *_wsi,
     return 0;
 
   int fd = lws_get_socket_fd(_wsi);
+//  std::cerr << "reason "  << _reason << std::endl;
 
   // std::lock_guard<std::mutex> mainLock(self->mutex);
   switch (_reason)
@@ -266,7 +267,9 @@ int rootCallback(struct lws *_wsi,
     // Publish outboud messages
     case LWS_CALLBACK_SERVER_WRITEABLE:
       {
+//        std::cerr << "   writing to websocket message count " << self->messageCount  << std::endl;
         std::lock_guard<std::mutex> lock(self->connections[fd]->mutex);
+
         if (!self->connections[fd]->buffer.empty())
         {
           int msgSize = self->connections[fd]->len.front();
@@ -289,6 +292,7 @@ int rootCallback(struct lws *_wsi,
             self->connections[fd]->len.pop_front();
           }
         }
+//        std::cerr << "   writing to websocket done ! message count " << self->messageCount  << std::endl;
 
         // This will generate a LWS_CALLBACK_SERVER_WRITEABLE event when the
         // connection is writable.
@@ -360,7 +364,6 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
   }
   this->publishPeriod = std::chrono::duration_cast<std::chrono::nanoseconds>(
       std::chrono::duration<double>(1.0 / hz));
-
   // Get the authorization key, if present.
   elem = _elem->FirstChildElement("authorization_key");
   if (elem)
@@ -406,11 +409,60 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
     }
     catch (...)
     {
-      ignerr << "Failed to convert port[" << elem->GetText() << "] to integer."
-        << std::endl;
+      ignerr << "Failed to convert max_connections[" << elem->GetText()
+        << "] to integer." << std::endl;
     }
     igndbg << "Using maximum connection count of "
       << this->maxConnections << std::endl;
+  }
+
+  // Get the msg count per connection.
+  elem = _elem->FirstChildElement("queue_size_per_connection");
+  if (elem)
+  {
+    int size = -1;
+    auto result = elem->QueryIntText(&size);
+    if (result == tinyxml2::XML_SUCCESS && size >= 0)
+    {
+      this->queueSizePerConnection = size;
+    }
+    else
+    {
+      ignerr << "Failed to parse queue_size_per_connection["
+        << elem->GetText() << "]." << std::endl;
+    }
+    igndbg << "Using connection msg queue size of "
+      << this->queueSizePerConnection << std::endl;
+  }
+
+  // Get the msg type subscription limit
+  elem = _elem->FirstChildElement("subscription_limit_per_connection");
+  if (elem)
+  {
+    auto childElem = elem->FirstChildElement("subscription");
+    while (childElem)
+    {
+      auto msgTypeElem = childElem->FirstChildElement("msg_type");
+      auto limitElem = childElem->FirstChildElement("limit");
+      if (msgTypeElem && limitElem)
+      {
+        std::string msgType = msgTypeElem->GetText();
+        int limit = -1;
+        auto result = limitElem->QueryIntText(&limit);
+        if (result == tinyxml2::XML_SUCCESS && limit >= 0)
+        {
+          this->msgTypeSubscriptionLimit[msgType] = limit;
+          igndbg << "Setting msg type subscription limit[" << msgType
+                 << ", " << limit << "]" << std::endl;
+        }
+        else
+        {
+          ignerr << "Failed to parse subscription limit["
+            << msgType << ", " << limitElem->GetText() << "]." << std::endl;
+        }
+      }
+      childElem = childElem->NextSiblingElement("subscription");
+    }
   }
 
   std::string sslCertFile = "";
@@ -527,12 +579,24 @@ void WebsocketServer::QueueMessage(Connection *_connection,
     memcpy(buf.get() + LWS_PRE, _data, _size);
 
     std::lock_guard<std::mutex> lock(_connection->mutex);
-    _connection->buffer.push_back(std::move(buf));
-    _connection->len.push_back(_size);
+    if (_connection->buffer.size() < this->queueSizePerConnection)
+    {
+      _connection->buffer.push_back(std::move(buf));
+      _connection->len.push_back(_size);
 
-    std::scoped_lock<std::mutex> runLock(this->runMutex);
-    this->messageCount++;
-    this->runConditionVariable.notify_all();
+      std::scoped_lock<std::mutex> runLock(this->runMutex);
+      this->messageCount++;
+      std::cerr << "message count " << this->messageCount  << " " << _size << std::endl;
+      this->runConditionVariable.notify_all();
+    }
+    else
+    {
+      static bool warned{false};
+      if (!warned)
+      {
+        std::cerr << "Queue size reached for connection" << std::endl;
+      }
+    }
   }
   else
   {
@@ -814,12 +878,58 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   else if (frameParts[0] == "sub")
   {
     // Store the relation of socketId to subscribed topic.
-    this->topicConnections[frameParts[1]].insert(_socketId);
-    this->topicTimestamps[frameParts[1]] =
+    std::string topic = frameParts[1];
+    this->topicConnections[topic].insert(_socketId);
+    this->topicTimestamps[topic] =
       std::chrono::steady_clock::now() - this->publishPeriod;
 
+    std::cerr << "got sub for " << topic << std::endl;
+
+    // check if limit reached for the subscribed msg type
+    std::vector<transport::MessagePublisher> publishers;
+    this->node.TopicInfo(topic, publishers);
+    if (!publishers.empty())
+    {
+      std::string msgType = publishers.begin()->MsgTypeName();
+      std::cerr << "msg type " << msgType << std::endl;
+      auto limitIt = this->msgTypeSubscriptionLimit.find(msgType);
+      if (limitIt != this->msgTypeSubscriptionLimit.end())
+      {
+        bool limitReached = false;
+        auto &con = this->connections[_socketId];
+        auto &subCount = con->msgTypeSubscriptionCount;
+        auto countIt = subCount.find(msgType);
+        if (countIt != subCount.end())
+        {
+          if (countIt->second + 1 <= limitIt->second)
+          {
+            countIt->second++;
+          }
+          else
+          {
+            limitReached = true;
+          }
+        }
+        else if (limitIt->second > 0)
+        {
+          subCount[msgType] = 1;
+        }
+        else
+        {
+          limitReached = true;
+        }
+        if (limitReached)
+        {
+          igndbg << "Msg type subscription limit reached[" << msgType
+              << ", " << limitIt->second << "] for connection[" << _socketId
+              << "]" << std::endl;
+          return;
+        }
+      }
+    }
+
     igndbg << "Subscribe request to topic[" << frameParts[1] << "]\n";
-    this->node.SubscribeRaw(frameParts[1],
+    this->node.SubscribeRaw(topic,
         std::bind(&WebsocketServer::OnWebsocketSubscribedMessage,
           this, std::placeholders::_1,
           std::placeholders::_2, std::placeholders::_3));
@@ -861,14 +971,20 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   }
   else if (frameParts[0] == "unsub")
   {
-    igndbg << "Unsubscribe request for topic[" << frameParts[1] << "]\n";
+    std::string topic = frameParts[1];
+    igndbg << "Unsubscribe request for topic[" << topic << "]\n";
     std::map<std::string, std::set<int>>::iterator topicConnectionIter =
-      this->topicConnections.find(frameParts[1]);
+      this->topicConnections.find(topic);
 
     if (topicConnectionIter != this->topicConnections.end())
     {
       // Remove from the topic connections map
       topicConnectionIter->second.erase(_socketId);
+
+      // remove from the connection's topic throttling maps
+      auto &con = this->connections[_socketId];
+      con->topicPublishPeriods.erase(topic);
+      con->topicTimestamps.erase(topic);
 
       // Only unsubscribe from the Ignition Transport topic if there are no
       // more websocket connections.
@@ -882,7 +998,28 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
     else
     {
       ignwarn << "The websocket server is not subscribed to topic["
-        << frameParts[1] << "]. Unable to unsubscribe from the topic\n";
+        << topic << "]. Unable to unsubscribe from the topic\n";
+    }
+  }
+  else if (frameParts[0] == "throttle")
+  {
+    igndbg << "Throttle request for topic[" << frameParts[1] << "]\n";
+    std::string topic = frameParts[1];
+    if (!topic.empty())
+    {
+      try
+      {
+        int rate = std::stoi(frameParts[3]);
+        double period = 1.0 / static_cast<double>(rate);
+        this->connections[_socketId]->topicPublishPeriods[topic] =
+            std::chrono::duration_cast<std::chrono::nanoseconds>(
+            std::chrono::duration<double>(1.0 / rate));
+      }
+      catch (...)
+      {
+        ignwarn << "Unable to set topic rate for topic[" << topic
+                << "]" << std::endl;
+      }
     }
   }
 }
@@ -924,10 +1061,18 @@ void WebsocketServer::OnWebsocketSubscribedMessage(
       // Send the message
       for (const int &socketId : iter->second)
       {
-        if (this->connections.find(socketId) != this->connections.end())
+        auto conIt = this->connections.find(socketId);
+        if (conIt != this->connections.end())
         {
-          this->QueueMessage(this->connections[socketId].get(),
-              msg.c_str(), msg.length());
+          // do additional throttling based on client connection setting
+          auto lastPubTimeCon = conIt->second->topicTimestamps[_info.Topic()];
+          std::chrono::nanoseconds timeDeltaCon = systemTime - lastPubTimeCon;
+          if (timeDeltaCon > conIt->second->topicPublishPeriods[_info.Topic()])
+          {
+            conIt->second->topicTimestamps[_info.Topic()] = systemTime;
+            this->QueueMessage(conIt->second.get(),
+                msg.c_str(), msg.length());
+          }
         }
       }
     }

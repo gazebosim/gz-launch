@@ -190,6 +190,21 @@ namespace ignition
         public: std::mutex mutex;
 
         public: bool authorized{false};
+
+        /// \brief A map of topic name to outbound publish rate
+        /// A value of 0 means unthrottled
+        public: std::map<std::string, std::chrono::nanoseconds>
+            topicPublishPeriods;
+
+        /// \brief A map of topic name to timestamp of last published message
+        /// for this connection
+        public: std::map<std::string,
+            std::chrono::time_point<std::chrono::steady_clock>> topicTimestamps;
+
+        /// \brief The number of subscriptions of a msg type this connection
+        /// has. The key is the msg type, e.g. ignition.msgs.Image, and the
+        /// value is the subscription count
+        public: std::map<std::string, int> msgTypeSubscriptionCount;
       };
 
       private: void QueueMessage(Connection *_connection,
@@ -208,6 +223,11 @@ namespace ignition
       /// The key is the topic name, and the value is the set of websocket
       /// connections that have subscribed to the topic.
       public: std::map<std::string, std::set<int>> topicConnections;
+
+      /// \brief The limit placed on the number of subscriptions per msg type
+      /// for each connection. The key is the msg type, e.g.
+      /// ignition.msgs.Image, and the value is the subscription limit
+      public: std::map<std::string, int> msgTypeSubscriptionLimit;
 
       /// \brief Run loop mutex.
       public: std::mutex runMutex;
@@ -229,6 +249,10 @@ namespace ignition
       private: std::map<std::string,
                std::chrono::time_point<std::chrono::steady_clock>>
                  topicTimestamps;
+
+      /// \brief The message queue size per connection. A negative number
+      /// indicates no limit.
+      public: int queueSizePerConnection{-1};
 
       /// \brief The set of valid operations. This enum must align with the
       /// `operations` member variable.
