@@ -175,7 +175,6 @@ namespace ignition
 
       public: void OnRequestMessage(int _socketId, const std::string &_msg);
 
-
       /// \brief Check and update subscription count for a message type. If
       /// a client has more subscriptions to a topic of a specified type than
       /// the subscription limit, this will block subscription. On the other
@@ -184,6 +183,8 @@ namespace ignition
       /// \param[in] _socketId Connection socket id
       /// \param[in] _subscribe True for subscribe operation, false for
       /// unsubscribe operation
+      /// \return True if the subscription count is incremented or decremented,
+      /// and false to indicate the subcription limit has reached.
       public: bool UpdateMsgTypeSubscriptionCount(const std::string &_topic,
           int _socketId, bool _subscribe);
 
