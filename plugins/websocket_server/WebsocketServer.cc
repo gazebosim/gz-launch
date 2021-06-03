@@ -226,7 +226,6 @@ int rootCallback(struct lws *_wsi,
     return 0;
 
   int fd = lws_get_socket_fd(_wsi);
-//  std::cerr << "reason "  << _reason << std::endl;
 
   // std::lock_guard<std::mutex> mainLock(self->mutex);
   switch (_reason)
@@ -267,7 +266,6 @@ int rootCallback(struct lws *_wsi,
     // Publish outboud messages
     case LWS_CALLBACK_SERVER_WRITEABLE:
       {
-//        std::cerr << "   writing to websocket message count " << self->messageCount  << std::endl;
         std::lock_guard<std::mutex> lock(self->connections[fd]->mutex);
 
         if (!self->connections[fd]->buffer.empty())
@@ -292,7 +290,6 @@ int rootCallback(struct lws *_wsi,
             self->connections[fd]->len.pop_front();
           }
         }
-//        std::cerr << "   writing to websocket done ! message count " << self->messageCount  << std::endl;
 
         // This will generate a LWS_CALLBACK_SERVER_WRITEABLE event when the
         // connection is writable.
@@ -586,7 +583,6 @@ void WebsocketServer::QueueMessage(Connection *_connection,
 
       std::scoped_lock<std::mutex> runLock(this->runMutex);
       this->messageCount++;
-      std::cerr << "message count " << this->messageCount  << " " << _size << std::endl;
       this->runConditionVariable.notify_all();
     }
     else
@@ -594,7 +590,7 @@ void WebsocketServer::QueueMessage(Connection *_connection,
       static bool warned{false};
       if (!warned)
       {
-        std::cerr << "Queue size reached for connection" << std::endl;
+        ignwarn << "Queue size reached for connection" << std::endl;
       }
     }
   }
@@ -877,56 +873,16 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   }
   else if (frameParts[0] == "sub")
   {
-    // Store the relation of socketId to subscribed topic.
     std::string topic = frameParts[1];
+
+    // check and update subscription count
+    if (!this->UpdateMsgTypeSubscriptionCount(topic, _socketId, true))
+      return;
+
+    // Store the relation of socketId to subscribed topic.
     this->topicConnections[topic].insert(_socketId);
     this->topicTimestamps[topic] =
       std::chrono::steady_clock::now() - this->publishPeriod;
-
-    std::cerr << "got sub for " << topic << std::endl;
-
-    // check if limit reached for the subscribed msg type
-    std::vector<transport::MessagePublisher> publishers;
-    this->node.TopicInfo(topic, publishers);
-    if (!publishers.empty())
-    {
-      std::string msgType = publishers.begin()->MsgTypeName();
-      std::cerr << "msg type " << msgType << std::endl;
-      auto limitIt = this->msgTypeSubscriptionLimit.find(msgType);
-      if (limitIt != this->msgTypeSubscriptionLimit.end())
-      {
-        bool limitReached = false;
-        auto &con = this->connections[_socketId];
-        auto &subCount = con->msgTypeSubscriptionCount;
-        auto countIt = subCount.find(msgType);
-        if (countIt != subCount.end())
-        {
-          if (countIt->second + 1 <= limitIt->second)
-          {
-            countIt->second++;
-          }
-          else
-          {
-            limitReached = true;
-          }
-        }
-        else if (limitIt->second > 0)
-        {
-          subCount[msgType] = 1;
-        }
-        else
-        {
-          limitReached = true;
-        }
-        if (limitReached)
-        {
-          igndbg << "Msg type subscription limit reached[" << msgType
-              << ", " << limitIt->second << "] for connection[" << _socketId
-              << "]" << std::endl;
-          return;
-        }
-      }
-    }
 
     igndbg << "Subscribe request to topic[" << frameParts[1] << "]\n";
     this->node.SubscribeRaw(topic,
@@ -936,9 +892,15 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   }
   else if (frameParts[0] == "image")
   {
+    std::string topic = frameParts[1];
+
+    // check and update subscription count
+    if (!this->UpdateMsgTypeSubscriptionCount(topic, _socketId, true))
+      return;
+
     // Store the relation of socketId to subscribed topic.
-    this->topicConnections[frameParts[1]].insert(_socketId);
-    this->topicTimestamps[frameParts[1]] =
+    this->topicConnections[topic].insert(_socketId);
+    this->topicTimestamps[topic] =
       std::chrono::steady_clock::now() - this->publishPeriod;
 
     std::vector<std::string> allTopics;
@@ -957,7 +919,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
         }
       }
     }
-    std::string topic = frameParts[1];
+
     if (!imageTopics.count(topic))
     {
       igndbg << "Could not find topic: " << topic  << " to stream"
@@ -972,6 +934,10 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   else if (frameParts[0] == "unsub")
   {
     std::string topic = frameParts[1];
+
+    // check and update subscription count
+    this->UpdateMsgTypeSubscriptionCount(topic, _socketId, false);
+
     igndbg << "Unsubscribe request for topic[" << topic << "]\n";
     std::map<std::string, std::set<int>>::iterator topicConnectionIter =
       this->topicConnections.find(topic);
@@ -1003,8 +969,8 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   }
   else if (frameParts[0] == "throttle")
   {
-    igndbg << "Throttle request for topic[" << frameParts[1] << "]\n";
     std::string topic = frameParts[1];
+    igndbg << "Throttle request for topic[" << topic << "]\n";
     if (!topic.empty())
     {
       try
@@ -1155,4 +1121,78 @@ void WebsocketServer::OnWebsocketSubscribedImageMessage(
       }
     }
   }
+}
+
+//////////////////////////////////////////////////
+bool WebsocketServer::UpdateMsgTypeSubscriptionCount(const std::string &_topic,
+    int _socketId, bool _subscribe)
+{
+  // check if limit reached for the subscribed msg type
+  // if not, update subscription count
+  std::vector<transport::MessagePublisher> publishers;
+  this->node.TopicInfo(_topic, publishers);
+  if (!publishers.empty())
+  {
+    std::string msgType = publishers.begin()->MsgTypeName();
+    auto limitIt = this->msgTypeSubscriptionLimit.find(msgType);
+    if (limitIt != this->msgTypeSubscriptionLimit.end())
+    {
+      bool limitReached = false;
+      auto conIt = this->connections.find(_socketId);
+      if (conIt != this->connections.end())
+      {
+        auto &con = conIt->second;
+        auto &subCount = con->msgTypeSubscriptionCount;
+        auto countIt = subCount.find(msgType);
+
+        // if there is already a subscription on the topic for this connection
+        if (countIt != subCount.end())
+        {
+          // subscribe: increment count and check if reached limit
+          // unsubscribe: decrement count and make sure count is >= 0
+          if (_subscribe)
+          {
+            if (countIt->second + 1 <= limitIt->second)
+            {
+              countIt->second++;
+            }
+            else
+            {
+              limitReached = true;
+            }
+          }
+          else
+          {
+            countIt->second = std::max(0, countIt->second - 1);
+          }
+        }
+        // if topic not yet subscribed, set count to 1 on subscription
+        // ignore for unsubscribe option
+        else if (limitIt->second > 0)
+        {
+          if (_subscribe)
+            subCount[msgType] = 1;
+        }
+        // corner case when msg type subscription limit is set to 0
+        else if (_subscribe)
+        {
+          limitReached = true;
+        }
+        if (limitReached)
+        {
+          ignwarn << "Msg type subscription limit reached[" << msgType
+              << ", " << limitIt->second << "] for connection[" << _socketId
+              << "]" << std::endl;
+          return false;
+        }
+      }
+      else
+      {
+        ignwarn << "Unable to find connection[" << _socketId << "]"
+            << " when setting subscription limit." << std::endl;
+        return false;
+      }
+    }
+  }
+  return true;
 }

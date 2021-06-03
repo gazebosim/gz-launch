@@ -175,6 +175,18 @@ namespace ignition
 
       public: void OnRequestMessage(int _socketId, const std::string &_msg);
 
+
+      /// \brief Check and update subscription count for a message type. If
+      /// a client has more subscriptions to a topic of a specified type than
+      /// the subscription limit, this will block subscription. On the other
+      /// hand, for an unsubscription operation, the count is decremented.
+      /// \param[in] _topic Topic to subscribe to or unsubscribe from
+      /// \param[in] _socketId Connection socket id
+      /// \param[in] _subscribe True for subscribe operation, false for
+      /// unsubscribe operation
+      public: bool UpdateMsgTypeSubscriptionCount(const std::string &_topic,
+          int _socketId, bool _subscribe);
+
       private: ignition::transport::Node node;
 
       private: bool run = true;
