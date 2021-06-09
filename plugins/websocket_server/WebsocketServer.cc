@@ -935,9 +935,6 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   {
     std::string topic = frameParts[1];
 
-    // check and update subscription count
-    this->UpdateMsgTypeSubscriptionCount(topic, _socketId, false);
-
     igndbg << "Unsubscribe request for topic[" << topic << "]\n";
     std::map<std::string, std::set<int>>::iterator topicConnectionIter =
       this->topicConnections.find(topic);
@@ -951,6 +948,9 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
       auto &con = this->connections[_socketId];
       con->topicPublishPeriods.erase(topic);
       con->topicTimestamps.erase(topic);
+
+      // check and update subscription count
+      this->UpdateMsgTypeSubscriptionCount(topic, _socketId, false);
 
       // Only unsubscribe from the Ignition Transport topic if there are no
       // more websocket connections.
@@ -1033,7 +1033,7 @@ void WebsocketServer::OnWebsocketSubscribedMessage(
           // do additional throttling based on client connection setting
           auto lastPubTimeCon = conIt->second->topicTimestamps[_info.Topic()];
           std::chrono::nanoseconds timeDeltaCon = systemTime - lastPubTimeCon;
-          if (timeDeltaCon > conIt->second->topicPublishPeriods[_info.Topic()])
+          if (timeDeltaCon >= conIt->second->topicPublishPeriods[_info.Topic()])
           {
             conIt->second->topicTimestamps[_info.Topic()] = systemTime;
             this->QueueMessage(conIt->second.get(),
