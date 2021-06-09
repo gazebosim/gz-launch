@@ -1,5 +1,10 @@
 ## Ignition Launch 3.x
 
+### Ignition Launch 3.4.0 (2021-06-09)
+
+1. Extend websocket server to support message limits and throttling.
+    * [Pull request 116](https://github.com/ignitionrobotics/ign-launch/pull/116)
+
 ### Ignition Launch 3.3.0 (2021-05-06)
 
 1. Convert depth and thermal image data to RGB before sending over websockets
