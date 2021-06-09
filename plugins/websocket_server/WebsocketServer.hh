@@ -175,6 +175,19 @@ namespace ignition
 
       public: void OnRequestMessage(int _socketId, const std::string &_msg);
 
+      /// \brief Check and update subscription count for a message type. If
+      /// a client has more subscriptions to a topic of a specified type than
+      /// the subscription limit, this will block subscription. On the other
+      /// hand, for an unsubscription operation, the count is decremented.
+      /// \param[in] _topic Topic to subscribe to or unsubscribe from
+      /// \param[in] _socketId Connection socket id
+      /// \param[in] _subscribe True for subscribe operation, false for
+      /// unsubscribe operation
+      /// \return True if the subscription count is incremented or decremented,
+      /// and false to indicate the subcription limit has reached.
+      public: bool UpdateMsgTypeSubscriptionCount(const std::string &_topic,
+          int _socketId, bool _subscribe);
+
       private: ignition::transport::Node node;
 
       private: bool run = true;
@@ -190,6 +203,21 @@ namespace ignition
         public: std::mutex mutex;
 
         public: bool authorized{false};
+
+        /// \brief A map of topic name to outbound publish rate
+        /// A value of 0 means unthrottled
+        public: std::map<std::string, std::chrono::nanoseconds>
+            topicPublishPeriods;
+
+        /// \brief A map of topic name to timestamp of last published message
+        /// for this connection
+        public: std::map<std::string,
+            std::chrono::time_point<std::chrono::steady_clock>> topicTimestamps;
+
+        /// \brief The number of subscriptions of a msg type this connection
+        /// has. The key is the msg type, e.g. ignition.msgs.Image, and the
+        /// value is the subscription count
+        public: std::map<std::string, int> msgTypeSubscriptionCount;
       };
 
       private: void QueueMessage(Connection *_connection,
@@ -208,6 +236,11 @@ namespace ignition
       /// The key is the topic name, and the value is the set of websocket
       /// connections that have subscribed to the topic.
       public: std::map<std::string, std::set<int>> topicConnections;
+
+      /// \brief The limit placed on the number of subscriptions per msg type
+      /// for each connection. The key is the msg type, e.g.
+      /// ignition.msgs.Image, and the value is the subscription limit
+      public: std::map<std::string, int> msgTypeSubscriptionLimit;
 
       /// \brief Run loop mutex.
       public: std::mutex runMutex;
@@ -229,6 +262,10 @@ namespace ignition
       private: std::map<std::string,
                std::chrono::time_point<std::chrono::steady_clock>>
                  topicTimestamps;
+
+      /// \brief The message queue size per connection. A negative number
+      /// indicates no limit.
+      public: int queueSizePerConnection{-1};
 
       /// \brief The set of valid operations. This enum must align with the
       /// `operations` member variable.
