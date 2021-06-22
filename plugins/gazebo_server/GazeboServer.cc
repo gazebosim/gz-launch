@@ -23,7 +23,7 @@ using namespace ignition;
 using namespace ignition::launch;
 
 /////////////////////////////////////////////////
-void copyElement(sdf::ElementPtr _sdf, const tinyxml2::XMLElement *_xml)
+static void copyElement(sdf::ElementPtr _sdf, const tinyxml2::XMLElement *_xml)
 {
   _sdf->SetName(_xml->Value());
   if (_xml->GetText() != nullptr)
