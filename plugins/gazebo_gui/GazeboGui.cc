@@ -20,7 +20,6 @@
 #include <ignition/common/Console.hh>
 #include <ignition/common/Filesystem.hh>
 #include <ignition/gazebo/config.hh>
-#include <ignition/gazebo/gui/GuiRunner.hh>
 #include <ignition/gui/MainWindow.hh>
 #include "ignition/gazebo/gui/Gui.hh"
 #include "ignition/gazebo/gui/TmpIface.hh"
