@@ -22,7 +22,6 @@
 #include <ignition/gazebo/config.hh>
 #include <ignition/gui/MainWindow.hh>
 #include "ignition/gazebo/gui/Gui.hh"
-#include "ignition/gazebo/gui/TmpIface.hh"
 
 #include "GazeboGui.hh"
 
