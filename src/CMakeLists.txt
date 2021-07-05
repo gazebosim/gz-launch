@@ -7,7 +7,7 @@ set (sources
 
 set (gtest_sources
   Manager_TEST.cc
-  ign_TEST.cc
+#  ign_TEST.cc
 )
 
 # Create the library target.

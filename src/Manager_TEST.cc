@@ -53,7 +53,11 @@ bool WriteTestScript()
 echo $TEST_VAR
 touch $TEST_VAR
 )";
+#ifndef WIN32
   chmod(kTestScriptPath, S_IRWXU);
+#else
+  _chmod(kTestScriptPath, _S_IREAD | _S_IWRITE);
+#endif
   return true;
 }
 

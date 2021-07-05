@@ -24,6 +24,13 @@
 #ifndef H_6B9572DA_A64B_49E6_B234_051480991C89
 #define H_6B9572DA_A64B_49E6_B234_051480991C89
 
+#if (_WIN32)
+  /* Needed for std::min */
+  #ifndef NOMINMAX
+    #define NOMINMAX
+  #endif
+#endif
+
 #ifndef __cplusplus
 #error "It's not going to compile without a C++ compiler..."
 #endif
