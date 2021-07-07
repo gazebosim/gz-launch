@@ -53,7 +53,7 @@ endif()
 #===============================================================================
 # Generate the ruby script for internal testing.
 # Note that the major version of the library is included in the name.
-# Ex: cmdtransport0.rb
+# Ex: cmdlaunch5.rb
 set(cmd_script_generated_test "${CMAKE_BINARY_DIR}/test/lib/ruby/ignition/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb")
 set(cmd_script_configured_test "${CMAKE_CURRENT_BINARY_DIR}/test_cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb.configured")
 
@@ -76,7 +76,7 @@ file(GENERATE
 # Used for the installed version.
 # Generate the ruby script that gets installed.
 # Note that the major version of the library is included in the name.
-# Ex: cmdtransport0.rb
+# Ex: cmdlaunch5.rb
 set(cmd_script_generated "${CMAKE_CURRENT_BINARY_DIR}/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb")
 set(cmd_script_configured "${cmd_script_generated}.configured")
 
@@ -99,7 +99,7 @@ set(ign_library_path "${CMAKE_BINARY_DIR}/test/lib/ruby/ignition/cmd${IGN_DESIGN
 
 # Generate a configuration file for internal testing.
 # Note that the major version of the library is included in the name.
-# Ex: transport0.yaml
+# Ex: launch5.yaml
 configure_file(
   "${IGN_DESIGNATION}.yaml.in"
   "${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml.configured" @ONLY)
@@ -113,7 +113,7 @@ set(ign_library_path "${CMAKE_INSTALL_PREFIX}/lib/ruby/ignition/cmd${IGN_DESIGNA
 
 # Generate the configuration file that is installed.
 # Note that the major version of the library is included in the name.
-# Ex: transport0.yaml
+# Ex: launch5.yaml
 configure_file(
   "${IGN_DESIGNATION}.yaml.in"
   "${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml" @ONLY)
