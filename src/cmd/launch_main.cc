@@ -93,6 +93,7 @@ void runLaunchCommand(const LaunchOptions &_opt)
       {
         ignerr << "This argument [" << arg << "] is wrong for erb"
                << std::endl;
+        exit(1);
       }
     }
     cmd += " " + _opt.launchfile;
