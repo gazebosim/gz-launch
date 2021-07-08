@@ -17,6 +17,7 @@
 
 #include "Manager.hh"
 
+#include <csignal> // NOLINT(*)
 #include <fcntl.h>
 #ifndef _WIN32
   #include <semaphore.h>
@@ -114,7 +115,7 @@ class Executable
             envs(_envs)
           {}
 #else
-  public: Executable(const std::string &_name, const PROCESS_INFORMATION _pi,
+  public: Executable(const std::string &_name, const HANDLE _pi,
             const std::vector<std::string> &_cmd, bool _autoRestart,
             const std::list<std::string> &_envs)
           : name(_name), pi(_pi), command(_cmd), autoRestart(_autoRestart),
@@ -128,7 +129,7 @@ class Executable
 #ifndef _WIN32
   public: pid_t pid = -1;
 #else
-  public: PROCESS_INFORMATION pi;
+  public: HANDLE pi;
 #endif
 
   /// \brief The command to run.
@@ -227,14 +228,15 @@ class ignition::launch::ManagerPrivate
 #ifndef _WIN32
   public: std::queue<pid_t> stoppedChildren;
 #else
-  public: std::queue<PROCESS_INFORMATION> stoppedChildren;
+  public: std::queue<HANDLE> stoppedChildren;
 #endif
   /// \brief Semaphore to prevent restartThread from being a spinlock
 #ifndef _WIN32
   public: sem_t *stoppedChildSem;
 #else
   public: HANDLE stoppedChildSem;
-  public: PROCESS_INFORMATION pi;
+  public: HANDLE pi;
+  public: std::atomic<bool> isLoopRunning = false;
 #endif
   /// \brief Name of the semaphore created by stoppedChildSem.
   private: std::string stoppedChildSemName;
@@ -300,35 +302,37 @@ Manager::Manager()
   if (!this->dataPtr->sigHandler->Initialized())
     ignerr << "signal(2) failed while setting up for SIGINT" << std::endl;
 #ifdef _WIN32
-  // https://stackoverflow.com/questions/53208/how-do-i-automatically-destroy-child-processes-in-windows
-  this->dataPtr->ghJob = CreateJobObject(nullptr, nullptr);
-  if (this->dataPtr->ghJob == nullptr)
-  {
-    ignerr << "Could not create job object" << std::endl;
-  }
-  else
-  {
-    JOBOBJECT_EXTENDED_LIMIT_INFORMATION jeli = { 0 };
-    // Configure all child processes associated with the job to terminate when the
-    jeli.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
-    if(0 == SetInformationJobObject(
-      this->dataPtr->ghJob, JobObjectExtendedLimitInformation, &jeli, sizeof(jeli)))
-    {
-      ignerr << "Could not SetInformationJobObject" << std::endl;
-    }
-  }
+  // // https://stackoverflow.com/questions/53208/how-do-i-automatically-destroy-child-processes-in-windows
+  // this->dataPtr->ghJob = CreateJobObject(nullptr, nullptr);
+  // if (this->dataPtr->ghJob == nullptr)
+  // {
+  //   ignerr << "Could not create job object" << std::endl;
+  // }
+  // else
+  // {
+  //   JOBOBJECT_EXTENDED_LIMIT_INFORMATION jeli = { 0 };
+  //   // Configure all child processes associated with the job to terminate when the
+  //   jeli.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+  //   if(0 == SetInformationJobObject(
+  //     this->dataPtr->ghJob, JobObjectExtendedLimitInformation, &jeli, sizeof(jeli)))
+  //   {
+  //     ignerr << "Could not SetInformationJobObject" << std::endl;
+  //   }
+  // }
 #endif
 }
 
 /////////////////////////////////////////////////
 Manager::~Manager()
 {
+  std::cerr << "~Manager()" << '\n';
   this->dataPtr->Stop();
 }
 
 /////////////////////////////////////////////////
 bool Manager::RunConfig(const std::string &_config)
 {
+  std::cerr << "RunConfig" << '\n';
   std::unique_lock<std::mutex> lock(this->dataPtr->runMutex);
 
   // This is the master.
@@ -408,7 +412,8 @@ ManagerPrivate::ManagerPrivate()
            << ": " << strerror(errno) << std::endl;
   }
 #else
-  this->stoppedChildSem = CreateSemaphoreA(NULL, O_CREAT, LONG_MAX,  this->stoppedChildSemName.c_str());
+  std::cerr << "this->stoppedChildSemName.c_str() " << this->stoppedChildSemName.c_str() << '\n';
+  this->stoppedChildSem = CreateSemaphoreA(NULL, 0, LONG_MAX, this->stoppedChildSemName.c_str());
   if (this->stoppedChildSem == nullptr)
   {
     ignerr << "Error initializing semaphore " << this->stoppedChildSemName
@@ -446,6 +451,7 @@ ManagerPrivate::ManagerPrivate()
 /////////////////////////////////////////////////
 ManagerPrivate::~ManagerPrivate()
 {
+  std::cerr << "~ManagerPrivate()" << '\n';
   if (this->master)
   {
 #ifndef _WIN32
@@ -474,6 +480,7 @@ ManagerPrivate::~ManagerPrivate()
 /////////////////////////////////////////////////
 bool ManagerPrivate::Stop()
 {
+  std::cerr << "Stop" << '\n';
   if (this->runMutex.try_lock())
   {
     if (this->running)
@@ -491,12 +498,14 @@ bool ManagerPrivate::Stop()
     int retVal = ReleaseSemaphore(this->stoppedChildSem, 1, nullptr);
     if (retVal != 0)
     {
-      ignerr << "Error Releasing Semaphore" << std::endl;
+      ignerr << "Error Releasing Semaphore " << GetLastErrorAsString() << std::endl;
     }
 #endif
     if (this->restartThread.joinable())
       this->restartThread.join();
   }
+  std::cerr << "Stop end" << '\n';
+
   return this->running;
 }
 
@@ -527,14 +536,14 @@ void ManagerPrivate::OnSigChild(int _sig)
     myself->stoppedChildren.push(p);
     sem_post(myself->stoppedChildSem);
   }
-#else
-  // Wait until child process exits.
-  // WaitForSingleObject(pi.hwProcess, INFINITE);
-  // int retVal = ReleaseSemaphore(myself->stoppedChildSem, 1, nullptr);
-  // if (retVal != 0)
-  // {
-  //   ignerr << "Error Releasing Semaphore" << std::endl;
-  // }
+// #else
+//   // Wait until child process exits.
+//   // WaitForSingleObject(pi.hwProcess, INFINITE);
+//   int retVal = ReleaseSemaphore(myself->stoppedChildSem, 1, nullptr);
+//   if (retVal != 0)
+//   {
+//     ignerr << "Error Releasing Semaphore" << std::endl;
+//   }
 #endif
 }
 
@@ -548,82 +557,145 @@ void ManagerPrivate::StartWorkerThread()
 /////////////////////////////////////////////////
 void ManagerPrivate::RestartLoop()
 {
-  // sigset_t chldmask;
-  //
-  // if ((sigemptyset(&chldmask) == -1) || (sigaddset(&chldmask, SIGCHLD) == -1))
-  // {
-  //   ignerr << "Failed to initialize signal mask: "
-  //     << strerror(errno) << std::endl;
-  //   return;
-  // }
-  //
-  // while (this->running)
-  // {
-  //   // Wait for the signal handler to signal that a child has exited.
-  //   int s = sem_wait(this->stoppedChildSem);
-  //   if (s == -1)
-  //   {
-  //     if (errno != EINTR)
-  //       ignwarn << "sem_wait error: "
-  //         << strerror(errno) << std::endl;
-  //     continue;
-  //   }
-  //
-  //   // Block SIGCHLD while consuming queue.
-  //   if (sigprocmask(SIG_BLOCK, &chldmask, NULL) == -1)
-  //   {
-  //     ignerr << "Failed to setup block for SIGCHLD: "
-  //       << strerror(errno) << std::endl;
-  //     continue;
-  //   }
-  //
-  //   // Consume stopped children from the queue.
-  //   while (!this->stoppedChildren.empty())
-  //   {
-  //     std::lock_guard<std::mutex> mutex(this->executablesMutex);
-  //
-  //     // Executable to restart
-  //     Executable restartExec;
-  //
-  //     pid_t p = this->stoppedChildren.front();
-  //     this->stoppedChildren.pop();
-  //
-  //     // Find the executable
-  //     for (std::list<Executable>::iterator iter = this->executables.begin();
-  //          iter != this->executables.end(); ++iter)
-  //     {
-  //       if (iter->pid == p)
-  //       {
-  //         igndbg << "Death of process[" << p << "] with name["
-  //                << iter->name << "].\n";
-  //
-  //         // Restart if autoRestart is enabled
-  //         if (iter->autoRestart)
-  //           restartExec = *iter;
-  //
-  //         this->executables.erase(iter);
-  //         break;
-  //       }
-  //     }
-  //
-  //     if (!restartExec.name.empty() && !restartExec.command.empty())
-  //     {
-  //       igndbg << "Restarting process with name[" << restartExec.name << "]\n";
-  //       this->RunExecutable(restartExec);
-  //     }
-  //
-  //     this->runCondition.notify_all();
-  //   }
-  //
-  //   // Unblock SIGCHLD
-  //   if (sigprocmask(SIG_UNBLOCK, &chldmask, NULL) == -1)
-  //   {
-  //     ignerr << "Failed to unblock SIGCHLD: " << strerror(errno) << std::endl;
-  //     continue;
-  //   }
-  // }
-}
+  std::cerr << "RestartLoop start" << '\n';
 
+#ifndef _WIN32
+  sigset_t chldmask;
+
+  if ((sigemptyset(&chldmask) == -1) || (sigaddset(&chldmask, SIGCHLD) == -1))
+  {
+    ignerr << "Failed to initialize signal mask: "
+      << strerror(errno) << std::endl;
+    return;
+  }
+
+  while (this->running)
+  {
+    // Wait for the signal handler to signal that a child has exited.
+    int s = sem_wait(this->stoppedChildSem);
+    if (s == -1)
+    {
+      if (errno != EINTR)
+        ignwarn << "sem_wait error: "
+          << strerror(errno) << std::endl;
+      continue;
+    }
+
+    // Block SIGCHLD while consuming queue.
+    if (sigprocmask(SIG_BLOCK, &chldmask, NULL) == -1)
+    {
+      ignerr << "Failed to setup block for SIGCHLD: "
+        << strerror(errno) << std::endl;
+      continue;
+    }
+
+    // Consume stopped children from the queue.
+    while (!this->stoppedChildren.empty())
+    {
+      std::lock_guard<std::mutex> mutex(this->executablesMutex);
+
+      // Executable to restart
+      Executable restartExec;
+
+      pid_t p = this->stoppedChildren.front();
+      this->stoppedChildren.pop();
+
+      // Find the executable
+      for (std::list<Executable>::iterator iter = this->executables.begin();
+           iter != this->executables.end(); ++iter)
+      {
+        if (iter->pid == p)
+        {
+          igndbg << "Death of process[" << p << "] with name["
+                 << iter->name << "].\n";
+
+          // Restart if autoRestart is enabled
+          if (iter->autoRestart)
+            restartExec = *iter;
+
+          this->executables.erase(iter);
+          break;
+        }
+      }
+
+      if (!restartExec.name.empty() && !restartExec.command.empty())
+      {
+        igndbg << "Restarting process with name[" << restartExec.name << "]\n";
+        this->RunExecutable(restartExec);
+      }
+
+      this->runCondition.notify_all();
+    }
+
+    // Unblock SIGCHLD
+    if (sigprocmask(SIG_UNBLOCK, &chldmask, NULL) == -1)
+    {
+      ignerr << "Failed to unblock SIGCHLD: " << strerror(errno) << std::endl;
+      continue;
+    }
+  }
+#else
+  this->isLoopRunning = true;
+  // Create a vector of monitor threads that wait for each process to stop.
+  std::vector<std::thread> monitors;
+  for (const Executable &exec : this->executables)
+    monitors.push_back(std::thread([&] {
+      WaitForSingleObject(exec.pi, INFINITE);
+      myself->stoppedChildren.push(exec.pi);
+    }));
+
+  while (this->running)
+  {
+    std::cerr << "WaitForSingleObject" << '\n';
+    // Wait for the signal handler to signal that a child has exited.
+    int s = WaitForSingleObject(this->stoppedChildSem, INFINITE);
+    std::cerr << "WaitForSingleObject2" << '\n';
+    if (!this->running)
+      break;
+    std::cerr << "WaitForSingleObject-2" << '\n';
+
+    // Consume stopped children from the queue.
+    while (!this->stoppedChildren.empty())
+    {
+      std::lock_guard<std::mutex> mutex(this->executablesMutex);
+
+      // Executable to restart
+      Executable restartExec;
+
+      HANDLE p = this->stoppedChildren.front();
+      this->stoppedChildren.pop();
+
+      // Find the executable
+      for (std::list<Executable>::iterator iter = this->executables.begin();
+           iter != this->executables.end(); ++iter)
+      {
+        if (iter->pi == p)
+        {
+          igndbg << "Death of process[" << p << "] with name ["
+                 << iter->name << "].\n";
+
+          // Restart if autoRestart is enabled
+          if (iter->autoRestart)
+            restartExec = *iter;
+
+          this->executables.erase(iter);
+          break;
+        }
+      }
+
+      if (!restartExec.name.empty() && !restartExec.command.empty())
+      {
+        igndbg << "Restarting process with name[" << restartExec.name << "]\n";
+        this->RunExecutable(restartExec);
+      }
+
+      this->runCondition.notify_all();
+    }
+  }
+  this->isLoopRunning = false;
+#endif
+  std::cerr << "RestartLoop start end" << '\n';
+}
 
 /////////////////////////////////////////////////
 bool ManagerPrivate::ParseConfig(const std::string &_config)
@@ -688,65 +760,93 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
     ignerr << "Empty command.\n";
     return false;
   }
-
 #ifdef _WIN32
-  STARTUPINFO si;
-  PROCESS_INFORMATION pi;
-  ZeroMemory(&si, sizeof(si));
-  si.cb = sizeof(si);
-  ZeroMemory(&pi, sizeof(pi));
-  const char * name = _name.c_str();
-  std::string cmd = std::accumulate(_cmd.begin(), _cmd.end(), std::string(""));
-  if (!CreateProcessA(name,
-                      const_cast<char *>(cmd.c_str()),
-                      nullptr,
-                      nullptr,
-                      FALSE,
-                      CREATE_NO_WINDOW,
-                      nullptr,
-                      nullptr,
-                      &si,
-                      &pi)) {
-    // A child is not the master
-    this->master = false;
+  // STARTUPINFO si;
+  // PROCESS_INFORMATION pi;
+  // SECURITY_ATTRIBUTES saAttr;
+  // ZeroMemory(&si, sizeof(si));
+  // si.cb = sizeof(si);
+  // ZeroMemory(&pi, sizeof(pi));
 
-    if (this->ghJob)
-    {
-      if(0 == AssignProcessToJobObject(this->ghJob, pi.hProcess))
-      {
-        ignerr << "Could not AssignProcessToObject" << std::endl;
-      }
-    }
+  typedef struct MyData {
+      std::vector<std::string> _cmd;
+      HANDLE stoppedChildSem;
+  } MYDATA, *PMYDATA;
+
+  SetEnvs(_envs);
+
+  PMYDATA pDataArray = (PMYDATA) HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
+                sizeof(MYDATA));
+  if (pDataArray == nullptr)
+  {
+    ignerr << "allocation fails " << GetLastErrorAsString() << '\n';
+    return false;
+  }
+
+  for (auto & cmd : _cmd){
+    pDataArray->_cmd.push_back(cmd);
+  }
+
+  pDataArray->stoppedChildSem = this->stoppedChildSem;
+
+  auto dontThreadOnMe = [](LPVOID lpParam) -> DWORD {
+    PMYDATA pDataArray;
+    pDataArray = (PMYDATA)lpParam;
 
     // Create a vector of char* in the child process
     std::vector<char*> cstrings;
-    for (const std::string &part : _cmd)
+    cstrings.push_back("C:\\WINDOWS\\SYSTEM32\\CMD.EXE");
+    cstrings.push_back("cmd.exe ");
+    cstrings.push_back("/c");
+    for (const std::string &part : pDataArray->_cmd)
     {
       cstrings.push_back(const_cast<char *>(part.c_str()));
     }
 
     // Add the nullptr termination.
     cstrings.push_back(nullptr);
-
-    // Remove from foreground process group.
-    // setpgid(0, 0);
-
-    this->SetEnvs(_envs);
-
-    // Run the command, replacing the current process image
-    if (_execvp(cstrings[0], &cstrings[0]) < 0)
+    //
+    // // Remove from foreground process group.
+    // // setpgid(0, 0);
+    //
+    //
+    // // Run the command, replacing the current process image
+    if (_spawnv(_P_WAIT , cstrings[0], &cstrings[0]) < 0)
     {
       ignerr << "Unable to run command["
-        << std::accumulate(_cmd.begin(), _cmd.end(), std::string("")) << "]\n";
-      return false;
+        << std::accumulate(pDataArray->_cmd.begin(), pDataArray->_cmd.end(), std::string("")) << "] "
+        << GetLastErrorAsString() << "\n";
+      return -1;
     }
+
+    if (!ReleaseSemaphore(pDataArray->stoppedChildSem, 1, nullptr))
+    {
+      ignerr << "Error Releasing Semaphore " << GetLastErrorAsString() << std::endl;
+    }
+    std::cerr << "released Semaphore" << '\n';
+
+    if(pDataArray != NULL)
+    {
+      HeapFree(GetProcessHeap(), 0, pDataArray);
+      pDataArray = NULL;    // Ensure address is not reused.
+    }
+    std::cerr << "released memory" << '\n';
+
+    return 0;
+  };
+
+  auto thread = CreateThread(nullptr, 0, dontThreadOnMe, pDataArray, 0, nullptr);
+
+  if (thread == nullptr) {
+      std::cerr << "Error creating thread on Windows "
+                << GetLastErrorAsString() << '\n';
   } else {
     std::lock_guard<std::mutex> mutex(this->executablesMutex);
     this->master = true;
 
     // Store the PID in the parent process.
     this->executables.push_back(Executable(
-          _name, pi, _cmd, _autoRestart, _envs));
+          _name, thread, _cmd, _autoRestart, _envs));
   }
 #else
   // Fork a process for the command
@@ -801,6 +901,7 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
 /////////////////////////////////////////////////
 void ManagerPrivate::ShutdownExecutables()
 {
+  std::cerr << "ShutdownExecutables" << '\n';
   std::lock_guard<std::mutex> mutex(this->executablesMutex);
 
 #ifndef _WIN32
@@ -815,7 +916,14 @@ void ManagerPrivate::ShutdownExecutables()
 #ifndef _WIN32
       waitpid(exec.pid, nullptr, 0);
 #else
-      WaitForSingleObject(exec.pi.hProcess, INFINITE);
+      // std::cerr << "wait for dwProcessId " << exec.pi.dwProcessId << '\n';
+      WaitForSingleObject(exec.pi, INFINITE);
+      // std::cerr << "wait for dwProcessId end " << exec.pi.dwProcessId << '\n';
+      int retVal = ReleaseSemaphore(myself->stoppedChildSem, 1, nullptr);
+      if (retVal != 0)
+      {
+        ignerr << "Error Releasing Semaphore" << std::endl;
+      }
 #endif
     }));
 
@@ -827,7 +935,14 @@ void ManagerPrivate::ShutdownExecutables()
 #else
   for (const PROCESS_INFORMATION &wrapper : this->wrappedPlugins)
     monitors.push_back(std::thread([&] {
+      std::cerr << "wait for dwProcessId " << wrapper.dwProcessId << '\n';
       WaitForSingleObject(wrapper.hProcess, INFINITE);
+      std::cerr << "wait for dwProcessId end " << wrapper.dwProcessId << '\n';
+      int retVal = ReleaseSemaphore(myself->stoppedChildSem, 1, nullptr);
+      if (retVal != 0)
+      {
+        ignerr << "Error Releasing Semaphore" << std::endl;
+      }
     }));
 #endif
 
@@ -839,8 +954,9 @@ void ManagerPrivate::ShutdownExecutables()
       << "] with PID[" << exec.pid << "]\n";
     kill(exec.pid, SIGINT);
 #else
-      << "] with PID[" << exec.pi.dwProcessId << "]\n";
-    TerminateProcess(exec.pi.hProcess, 0);
+  << "]\n";
+      // << "] with PID[" << exec.pi.dwProcessId << "]\n";
+    // TerminateProcess(exec.pi.hProcess, 0);
 #endif
   }
 
@@ -865,6 +981,7 @@ void ManagerPrivate::ShutdownExecutables()
   // Wait for all the monitors to stop
   for (std::thread &m : monitors)
     m.join();
+  igndbg << "All finished\n";
 }
 
 //////////////////////////////////////////////////
@@ -1071,6 +1188,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
 void ManagerPrivate::ParseExecutableWrappers(
   const tinyxml2::XMLElement *_elem)
 {
+  std::cerr << "ParseExecutableWrappers" << '\n';
   // // Process all the executables.
   // const tinyxml2::XMLElement *execElem = _elem->FirstChildElement(
   //     "executable_wrapper");
