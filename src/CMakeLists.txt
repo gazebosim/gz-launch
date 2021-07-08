@@ -40,7 +40,7 @@ ign_build_tests(TYPE UNIT SOURCES ${gtest_sources}
 # Ex: cmdlaunch0.rb
 if (APPLE)
   set(IGN_LIBRARY_NAME lib${PROJECT_LIBRARY_TARGET_NAME}.dylib)
-elif(LINUX)
+elseif(LINUX)
   set(IGN_LIBRARY_NAME lib${PROJECT_LIBRARY_TARGET_NAME}.so)
 else()
   set(IGN_LIBRARY_NAME C:\\ignition\\ign-ws\\install\\bin\\${PROJECT_LIBRARY_TARGET_NAME}.dll)
