@@ -68,43 +68,43 @@ type nul > %TEST_VAR%
   return true;
 }
 
-// /////////////////////////////////////////////////
-// TEST(Ignition_TEST, RunEmptyConfig)
-// {
-//   ignition::launch::Manager mgr;
-//
-//   // Expect false because no config file was set.
-//   EXPECT_FALSE(mgr.RunConfig(""));
-// }
-//
-// /////////////////////////////////////////////////
-// TEST(Ignition_TEST, MissingIgnition)
-// {
-//   std::string config =
-//     "<executable name='gazebo'>"
-//     "  <command>ign-gazebo-server</command>"
-//     "</executable>";
-//
-//   ignition::launch::Manager mgr;
-//
-//   // Stop the manager after a short pause.
-//   EXPECT_FALSE(mgr.RunConfig(config));
-// }
-//
-// /////////////////////////////////////////////////
-// TEST(Ignition_TEST, RunBadXml)
-// {
-//   std::string config =
-//     "<ignition version='1.0'>"
-//     " executable></executable"
-//     "</ignition>";
-//
-//   ignition::launch::Manager mgr;
-//
-//   // Stop the manager after a short pause.
-//   EXPECT_FALSE(mgr.RunConfig(config));
-// }
-//
+/////////////////////////////////////////////////
+TEST(Ignition_TEST, RunEmptyConfig)
+{
+  ignition::launch::Manager mgr;
+
+  // Expect false because no config file was set.
+  EXPECT_FALSE(mgr.RunConfig(""));
+}
+
+/////////////////////////////////////////////////
+TEST(Ignition_TEST, MissingIgnition)
+{
+  std::string config =
+    "<executable name='gazebo'>"
+    "  <command>ign-gazebo-server</command>"
+    "</executable>";
+
+  ignition::launch::Manager mgr;
+
+  // Stop the manager after a short pause.
+  EXPECT_FALSE(mgr.RunConfig(config));
+}
+
+/////////////////////////////////////////////////
+TEST(Ignition_TEST, RunBadXml)
+{
+  std::string config =
+    "<ignition version='1.0'>"
+    " executable></executable"
+    "</ignition>";
+
+  ignition::launch::Manager mgr;
+
+  // Stop the manager after a short pause.
+  EXPECT_FALSE(mgr.RunConfig(config));
+}
+
 /////////////////////////////////////////////////
 TEST(Ignition_TEST, RunLs)
 {
@@ -117,14 +117,11 @@ TEST(Ignition_TEST, RunLs)
 #endif
 
   std::string config =
-    "<ignition version='1.0'>"
+    R"(<ignition version='1.0'>"
     "  <executable name='listDirectory'>"
-    "    <command>" + cmd + "</command>"
+    "    <command>)" + cmd + R"(</command>"
     "  </executable>"
-    "  <executable name='listDirectory'>"
-    "    <command>dir C:\</command>"
-    "  </executable>"
-    "</ignition>";
+    "</ignition>)";
 
   ignition::launch::Manager mgr;
 
@@ -158,7 +155,7 @@ TEST(Ignition_TEST, RunEnvPre)
     <value>)" + testPath + R"(</value>
   </env>
   <executable name='touch'>
-    <command>)" + kTestScriptPath + R"(</command>
+    <command>)" + std::string(kTestScriptPath) + R"(</command>
   </executable>
 </ignition>
 )";
@@ -192,7 +189,7 @@ TEST(Ignition_TEST, RunEnvPost)
   std::string config = R"(
 <ignition version='1.0'>
   <executable name='touch'>
-    <command>)" + kTestScriptPath + R"(</command>
+    <command>)" + std::string(kTestScriptPath) + R"(</command>
   </executable>
   <env>
     <name>TEST_VAR</name>
