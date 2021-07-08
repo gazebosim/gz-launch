@@ -69,10 +69,10 @@ using namespace std::chrono_literals;
 // there is no error.
 std::string GetLastErrorAsString()
 {
-  //Get the error message ID, if any.
+  // Get the error message ID, if any.
   DWORD errorMessageID = ::GetLastError();
   if(errorMessageID == 0) {
-    //No error message has been recorded
+    // No error message has been recorded
     return std::string();
   }
 
@@ -92,10 +92,10 @@ std::string GetLastErrorAsString()
     0,
     NULL);
 
-  //Copy the error message into a std::string.
+  // Copy the error message into a std::string.
   std::string message(messageBuffer, size);
 
-  //Free the Win32's string's buffer.
+  // Free the Win32's string's buffer.
   LocalFree(messageBuffer);
 
   return message;
