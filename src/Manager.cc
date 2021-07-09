@@ -1149,7 +1149,9 @@ void ManagerPrivate::ParseExecutableWrappers(
   // Process all the executables.
   const tinyxml2::XMLElement *execElem = _elem->FirstChildElement(
       "executable_wrapper");
+#ifndef _WIN32
   std::list<pid_t> pluginPids;
+#endif
 
   // This "i" variable is just used for output messages.
   for (int i = 0; execElem && this->master; ++i)
@@ -1182,15 +1184,16 @@ void ManagerPrivate::ParseExecutableWrappers(
         this->LoadPlugin(pluginElem);
         return;
       }
-    }
 #else
-
 #endif
+    }
     execElem = execElem->NextSiblingElement("executable_wrapper");
   }
 
+#ifndef _WIN32
   if (this->master)
     this->wrappedPlugins = pluginPids;
+#endif
 }
 
 //////////////////////////////////////////////////
