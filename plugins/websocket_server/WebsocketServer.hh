@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+*
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -51,6 +51,13 @@ namespace ignition
     /// this is set, then a connection must provide the matching key using an
     /// "auth" call on the websocket. If the <authorization_key> is set, then
     /// the connection can provide that key.
+    ///
+    /// * <max_connections> : An integer that specifies the maximum number
+    /// of active websocket connections. A value less than zero indicates an
+    /// unlimited number, this is the default. A websocket client error
+    /// code of 1008 along with a reason set to "max_connections" will be
+    /// returned if a new connection is rejected due to the max connection
+    /// threshold.
     ///
     /// * <ssl> : Element that contains SSL configuration. For testing
     ///           purposes you can create self-signed SSL certificates. Run
