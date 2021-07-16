@@ -230,19 +230,6 @@ int rootCallback(struct lws *_wsi,
   // std::lock_guard<std::mutex> mainLock(self->mutex);
   switch (_reason)
   {
-    // Filter network connections.
-    case LWS_CALLBACK_FILTER_NETWORK_CONNECTION:
-      // Prevent too many connections.
-      if (self->maxConnections >= 0 &&
-          self->connections.size()+1 > self->maxConnections)
-      {
-        ignerr << "Skipping new connection, limit of "
-          << self->maxConnections << " has been reached\n";
-        // Return non-zero to close the connection.
-        return -1;
-      }
-      break;
-
     // Open connections.
     case LWS_CALLBACK_ESTABLISHED:
       igndbg << "LWS_CALLBACK_ESTABLISHED\n";
@@ -300,6 +287,23 @@ int rootCallback(struct lws *_wsi,
     // Handle incoming messages
     case LWS_CALLBACK_RECEIVE:
       igndbg << "LWS_CALLBACK_RECEIVE\n";
+
+      // Prevent too many connections.
+      if (self->maxConnections >= 0 &&
+          self->connections.size()+1 > self->maxConnections)
+      {
+        ignerr << "Skipping new connection, limit of "
+          << self->maxConnections << " has been reached\n";
+
+        // This will return an error code of 1008 with a reason of
+        // "max_connections".
+        std::string reason = "max_connections";
+        lws_close_reason(_wsi, LWS_CLOSE_STATUS_POLICY_VIOLATION,
+          reinterpret_cast<unsigned char *>(reason.data()), reason.size());
+
+        // Return non-zero to close the connection.
+        return -1;
+      }
       self->OnMessage(fd, std::string((const char *)_in));
       break;
 
