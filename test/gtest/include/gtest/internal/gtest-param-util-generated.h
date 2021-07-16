@@ -40,14 +40,19 @@
 // and at most 10 arguments in Combine. Please contact
 // googletestframework@googlegroups.com if you need more.
 // Please note that the number of arguments to Combine is limited
-// by the maximum arity of the implementation of tuple which is
+// by the maximum arity of the implementation of tr1::tuple which is
 // currently set at 10.
 
 #ifndef GTEST_INCLUDE_GTEST_INTERNAL_GTEST_PARAM_UTIL_GENERATED_H_
 #define GTEST_INCLUDE_GTEST_INTERNAL_GTEST_PARAM_UTIL_GENERATED_H_
 
+// scripts/fuse_gtest.py depends on gtest's own header being #included
+// *unconditionally*.  Therefore these #includes cannot be moved
+// inside #if GTEST_HAS_PARAM_TEST.
 #include "gtest/internal/gtest-param-util.h"
 #include "gtest/internal/gtest-port.h"
+
+#if GTEST_HAS_PARAM_TEST
 
 namespace testing {
 
@@ -74,10 +79,7 @@ class ValueArray1 {
   explicit ValueArray1(T1 v1) : v1_(v1) {}
 
   template <typename T>
-  operator ParamGenerator<T>() const {
-    const T array[] = {static_cast<T>(v1_)};
-    return ValuesIn(array);
-  }
+  operator ParamGenerator<T>() const { return ValuesIn(&v1_, &v1_ + 1); }
 
  private:
   // No implementation - assignment is unsupported.
@@ -3155,9 +3157,9 @@ class ValueArray50 {
 //
 template <typename T1, typename T2>
 class CartesianProductGenerator2
-    : public ParamGeneratorInterface< ::testing::tuple<T1, T2> > {
+    : public ParamGeneratorInterface< ::std::tr1::tuple<T1, T2> > {
  public:
-  typedef ::testing::tuple<T1, T2> ParamType;
+  typedef ::std::tr1::tuple<T1, T2> ParamType;
 
   CartesianProductGenerator2(const ParamGenerator<T1>& g1,
       const ParamGenerator<T2>& g2)
@@ -3203,7 +3205,7 @@ class CartesianProductGenerator2
     virtual ParamIteratorInterface<ParamType>* Clone() const {
       return new Iterator(*this);
     }
-    virtual const ParamType* Current() const { return current_value_.get(); }
+    virtual const ParamType* Current() const { return &current_value_; }
     virtual bool Equals(const ParamIteratorInterface<ParamType>& other) const {
       // Having the same base generator guarantees that the other
       // iterator is of the same type and we can downcast.
@@ -3235,7 +3237,7 @@ class CartesianProductGenerator2
 
     void ComputeCurrentValue() {
       if (!AtEnd())
-        current_value_.reset(new ParamType(*current1_, *current2_));
+        current_value_ = ParamType(*current1_, *current2_);
     }
     bool AtEnd() const {
       // We must report iterator past the end of the range when either of the
@@ -3257,7 +3259,7 @@ class CartesianProductGenerator2
     const typename ParamGenerator<T2>::iterator begin2_;
     const typename ParamGenerator<T2>::iterator end2_;
     typename ParamGenerator<T2>::iterator current2_;
-    linked_ptr<ParamType> current_value_;
+    ParamType current_value_;
   };  // class CartesianProductGenerator2::Iterator
 
   // No implementation - assignment is unsupported.
@@ -3270,9 +3272,9 @@ class CartesianProductGenerator2
 
 template <typename T1, typename T2, typename T3>
 class CartesianProductGenerator3
-    : public ParamGeneratorInterface< ::testing::tuple<T1, T2, T3> > {
+    : public ParamGeneratorInterface< ::std::tr1::tuple<T1, T2, T3> > {
  public:
-  typedef ::testing::tuple<T1, T2, T3> ParamType;
+  typedef ::std::tr1::tuple<T1, T2, T3> ParamType;
 
   CartesianProductGenerator3(const ParamGenerator<T1>& g1,
       const ParamGenerator<T2>& g2, const ParamGenerator<T3>& g3)
@@ -3326,7 +3328,7 @@ class CartesianProductGenerator3
     virtual ParamIteratorInterface<ParamType>* Clone() const {
       return new Iterator(*this);
     }
-    virtual const ParamType* Current() const { return current_value_.get(); }
+    virtual const ParamType* Current() const { return &current_value_; }
     virtual bool Equals(const ParamIteratorInterface<ParamType>& other) const {
       // Having the same base generator guarantees that the other
       // iterator is of the same type and we can downcast.
@@ -3362,7 +3364,7 @@ class CartesianProductGenerator3
 
     void ComputeCurrentValue() {
       if (!AtEnd())
-        current_value_.reset(new ParamType(*current1_, *current2_, *current3_));
+        current_value_ = ParamType(*current1_, *current2_, *current3_);
     }
     bool AtEnd() const {
       // We must report iterator past the end of the range when either of the
@@ -3388,7 +3390,7 @@ class CartesianProductGenerator3
     const typename ParamGenerator<T3>::iterator begin3_;
     const typename ParamGenerator<T3>::iterator end3_;
     typename ParamGenerator<T3>::iterator current3_;
-    linked_ptr<ParamType> current_value_;
+    ParamType current_value_;
   };  // class CartesianProductGenerator3::Iterator
 
   // No implementation - assignment is unsupported.
@@ -3402,9 +3404,9 @@ class CartesianProductGenerator3
 
 template <typename T1, typename T2, typename T3, typename T4>
 class CartesianProductGenerator4
-    : public ParamGeneratorInterface< ::testing::tuple<T1, T2, T3, T4> > {
+    : public ParamGeneratorInterface< ::std::tr1::tuple<T1, T2, T3, T4> > {
  public:
-  typedef ::testing::tuple<T1, T2, T3, T4> ParamType;
+  typedef ::std::tr1::tuple<T1, T2, T3, T4> ParamType;
 
   CartesianProductGenerator4(const ParamGenerator<T1>& g1,
       const ParamGenerator<T2>& g2, const ParamGenerator<T3>& g3,
@@ -3467,7 +3469,7 @@ class CartesianProductGenerator4
     virtual ParamIteratorInterface<ParamType>* Clone() const {
       return new Iterator(*this);
     }
-    virtual const ParamType* Current() const { return current_value_.get(); }
+    virtual const ParamType* Current() const { return &current_value_; }
     virtual bool Equals(const ParamIteratorInterface<ParamType>& other) const {
       // Having the same base generator guarantees that the other
       // iterator is of the same type and we can downcast.
@@ -3507,8 +3509,8 @@ class CartesianProductGenerator4
 
     void ComputeCurrentValue() {
       if (!AtEnd())
-        current_value_.reset(new ParamType(*current1_, *current2_, *current3_,
-            *current4_));
+        current_value_ = ParamType(*current1_, *current2_, *current3_,
+            *current4_);
     }
     bool AtEnd() const {
       // We must report iterator past the end of the range when either of the
@@ -3538,7 +3540,7 @@ class CartesianProductGenerator4
     const typename ParamGenerator<T4>::iterator begin4_;
     const typename ParamGenerator<T4>::iterator end4_;
     typename ParamGenerator<T4>::iterator current4_;
-    linked_ptr<ParamType> current_value_;
+    ParamType current_value_;
   };  // class CartesianProductGenerator4::Iterator
 
   // No implementation - assignment is unsupported.
@@ -3553,9 +3555,9 @@ class CartesianProductGenerator4
 
 template <typename T1, typename T2, typename T3, typename T4, typename T5>
 class CartesianProductGenerator5
-    : public ParamGeneratorInterface< ::testing::tuple<T1, T2, T3, T4, T5> > {
+    : public ParamGeneratorInterface< ::std::tr1::tuple<T1, T2, T3, T4, T5> > {
  public:
-  typedef ::testing::tuple<T1, T2, T3, T4, T5> ParamType;
+  typedef ::std::tr1::tuple<T1, T2, T3, T4, T5> ParamType;
 
   CartesianProductGenerator5(const ParamGenerator<T1>& g1,
       const ParamGenerator<T2>& g2, const ParamGenerator<T3>& g3,
@@ -3625,7 +3627,7 @@ class CartesianProductGenerator5
     virtual ParamIteratorInterface<ParamType>* Clone() const {
       return new Iterator(*this);
     }
-    virtual const ParamType* Current() const { return current_value_.get(); }
+    virtual const ParamType* Current() const { return &current_value_; }
     virtual bool Equals(const ParamIteratorInterface<ParamType>& other) const {
       // Having the same base generator guarantees that the other
       // iterator is of the same type and we can downcast.
@@ -3669,8 +3671,8 @@ class CartesianProductGenerator5
 
     void ComputeCurrentValue() {
       if (!AtEnd())
-        current_value_.reset(new ParamType(*current1_, *current2_, *current3_,
-            *current4_, *current5_));
+        current_value_ = ParamType(*current1_, *current2_, *current3_,
+            *current4_, *current5_);
     }
     bool AtEnd() const {
       // We must report iterator past the end of the range when either of the
@@ -3704,7 +3706,7 @@ class CartesianProductGenerator5
     const typename ParamGenerator<T5>::iterator begin5_;
     const typename ParamGenerator<T5>::iterator end5_;
     typename ParamGenerator<T5>::iterator current5_;
-    linked_ptr<ParamType> current_value_;
+    ParamType current_value_;
   };  // class CartesianProductGenerator5::Iterator
 
   // No implementation - assignment is unsupported.
@@ -3721,10 +3723,10 @@ class CartesianProductGenerator5
 template <typename T1, typename T2, typename T3, typename T4, typename T5,
     typename T6>
 class CartesianProductGenerator6
-    : public ParamGeneratorInterface< ::testing::tuple<T1, T2, T3, T4, T5,
+    : public ParamGeneratorInterface< ::std::tr1::tuple<T1, T2, T3, T4, T5,
         T6> > {
  public:
-  typedef ::testing::tuple<T1, T2, T3, T4, T5, T6> ParamType;
+  typedef ::std::tr1::tuple<T1, T2, T3, T4, T5, T6> ParamType;
 
   CartesianProductGenerator6(const ParamGenerator<T1>& g1,
       const ParamGenerator<T2>& g2, const ParamGenerator<T3>& g3,
@@ -3802,7 +3804,7 @@ class CartesianProductGenerator6
     virtual ParamIteratorInterface<ParamType>* Clone() const {
       return new Iterator(*this);
     }
-    virtual const ParamType* Current() const { return current_value_.get(); }
+    virtual const ParamType* Current() const { return &current_value_; }
     virtual bool Equals(const ParamIteratorInterface<ParamType>& other) const {
       // Having the same base generator guarantees that the other
       // iterator is of the same type and we can downcast.
@@ -3850,8 +3852,8 @@ class CartesianProductGenerator6
 
     void ComputeCurrentValue() {
       if (!AtEnd())
-        current_value_.reset(new ParamType(*current1_, *current2_, *current3_,
-            *current4_, *current5_, *current6_));
+        current_value_ = ParamType(*current1_, *current2_, *current3_,
+            *current4_, *current5_, *current6_);
     }
     bool AtEnd() const {
       // We must report iterator past the end of the range when either of the
@@ -3889,7 +3891,7 @@ class CartesianProductGenerator6
     const typename ParamGenerator<T6>::iterator begin6_;
     const typename ParamGenerator<T6>::iterator end6_;
     typename ParamGenerator<T6>::iterator current6_;
-    linked_ptr<ParamType> current_value_;
+    ParamType current_value_;
   };  // class CartesianProductGenerator6::Iterator
 
   // No implementation - assignment is unsupported.
@@ -3907,10 +3909,10 @@ class CartesianProductGenerator6
 template <typename T1, typename T2, typename T3, typename T4, typename T5,
     typename T6, typename T7>
 class CartesianProductGenerator7
-    : public ParamGeneratorInterface< ::testing::tuple<T1, T2, T3, T4, T5, T6,
+    : public ParamGeneratorInterface< ::std::tr1::tuple<T1, T2, T3, T4, T5, T6,
         T7> > {
  public:
-  typedef ::testing::tuple<T1, T2, T3, T4, T5, T6, T7> ParamType;
+  typedef ::std::tr1::tuple<T1, T2, T3, T4, T5, T6, T7> ParamType;
 
   CartesianProductGenerator7(const ParamGenerator<T1>& g1,
       const ParamGenerator<T2>& g2, const ParamGenerator<T3>& g3,
@@ -3996,7 +3998,7 @@ class CartesianProductGenerator7
     virtual ParamIteratorInterface<ParamType>* Clone() const {
       return new Iterator(*this);
     }
-    virtual const ParamType* Current() const { return current_value_.get(); }
+    virtual const ParamType* Current() const { return &current_value_; }
     virtual bool Equals(const ParamIteratorInterface<ParamType>& other) const {
       // Having the same base generator guarantees that the other
       // iterator is of the same type and we can downcast.
@@ -4048,8 +4050,8 @@ class CartesianProductGenerator7
 
     void ComputeCurrentValue() {
       if (!AtEnd())
-        current_value_.reset(new ParamType(*current1_, *current2_, *current3_,
-            *current4_, *current5_, *current6_, *current7_));
+        current_value_ = ParamType(*current1_, *current2_, *current3_,
+            *current4_, *current5_, *current6_, *current7_);
     }
     bool AtEnd() const {
       // We must report iterator past the end of the range when either of the
@@ -4091,7 +4093,7 @@ class CartesianProductGenerator7
     const typename ParamGenerator<T7>::iterator begin7_;
     const typename ParamGenerator<T7>::iterator end7_;
     typename ParamGenerator<T7>::iterator current7_;
-    linked_ptr<ParamType> current_value_;
+    ParamType current_value_;
   };  // class CartesianProductGenerator7::Iterator
 
   // No implementation - assignment is unsupported.
@@ -4110,10 +4112,10 @@ class CartesianProductGenerator7
 template <typename T1, typename T2, typename T3, typename T4, typename T5,
     typename T6, typename T7, typename T8>
 class CartesianProductGenerator8
-    : public ParamGeneratorInterface< ::testing::tuple<T1, T2, T3, T4, T5, T6,
+    : public ParamGeneratorInterface< ::std::tr1::tuple<T1, T2, T3, T4, T5, T6,
         T7, T8> > {
  public:
-  typedef ::testing::tuple<T1, T2, T3, T4, T5, T6, T7, T8> ParamType;
+  typedef ::std::tr1::tuple<T1, T2, T3, T4, T5, T6, T7, T8> ParamType;
 
   CartesianProductGenerator8(const ParamGenerator<T1>& g1,
       const ParamGenerator<T2>& g2, const ParamGenerator<T3>& g3,
@@ -4209,7 +4211,7 @@ class CartesianProductGenerator8
     virtual ParamIteratorInterface<ParamType>* Clone() const {
       return new Iterator(*this);
     }
-    virtual const ParamType* Current() const { return current_value_.get(); }
+    virtual const ParamType* Current() const { return &current_value_; }
     virtual bool Equals(const ParamIteratorInterface<ParamType>& other) const {
       // Having the same base generator guarantees that the other
       // iterator is of the same type and we can downcast.
@@ -4265,8 +4267,8 @@ class CartesianProductGenerator8
 
     void ComputeCurrentValue() {
       if (!AtEnd())
-        current_value_.reset(new ParamType(*current1_, *current2_, *current3_,
-            *current4_, *current5_, *current6_, *current7_, *current8_));
+        current_value_ = ParamType(*current1_, *current2_, *current3_,
+            *current4_, *current5_, *current6_, *current7_, *current8_);
     }
     bool AtEnd() const {
       // We must report iterator past the end of the range when either of the
@@ -4312,7 +4314,7 @@ class CartesianProductGenerator8
     const typename ParamGenerator<T8>::iterator begin8_;
     const typename ParamGenerator<T8>::iterator end8_;
     typename ParamGenerator<T8>::iterator current8_;
-    linked_ptr<ParamType> current_value_;
+    ParamType current_value_;
   };  // class CartesianProductGenerator8::Iterator
 
   // No implementation - assignment is unsupported.
@@ -4332,10 +4334,10 @@ class CartesianProductGenerator8
 template <typename T1, typename T2, typename T3, typename T4, typename T5,
     typename T6, typename T7, typename T8, typename T9>
 class CartesianProductGenerator9
-    : public ParamGeneratorInterface< ::testing::tuple<T1, T2, T3, T4, T5, T6,
+    : public ParamGeneratorInterface< ::std::tr1::tuple<T1, T2, T3, T4, T5, T6,
         T7, T8, T9> > {
  public:
-  typedef ::testing::tuple<T1, T2, T3, T4, T5, T6, T7, T8, T9> ParamType;
+  typedef ::std::tr1::tuple<T1, T2, T3, T4, T5, T6, T7, T8, T9> ParamType;
 
   CartesianProductGenerator9(const ParamGenerator<T1>& g1,
       const ParamGenerator<T2>& g2, const ParamGenerator<T3>& g3,
@@ -4438,7 +4440,7 @@ class CartesianProductGenerator9
     virtual ParamIteratorInterface<ParamType>* Clone() const {
       return new Iterator(*this);
     }
-    virtual const ParamType* Current() const { return current_value_.get(); }
+    virtual const ParamType* Current() const { return &current_value_; }
     virtual bool Equals(const ParamIteratorInterface<ParamType>& other) const {
       // Having the same base generator guarantees that the other
       // iterator is of the same type and we can downcast.
@@ -4498,9 +4500,9 @@ class CartesianProductGenerator9
 
     void ComputeCurrentValue() {
       if (!AtEnd())
-        current_value_.reset(new ParamType(*current1_, *current2_, *current3_,
+        current_value_ = ParamType(*current1_, *current2_, *current3_,
             *current4_, *current5_, *current6_, *current7_, *current8_,
-            *current9_));
+            *current9_);
     }
     bool AtEnd() const {
       // We must report iterator past the end of the range when either of the
@@ -4550,7 +4552,7 @@ class CartesianProductGenerator9
     const typename ParamGenerator<T9>::iterator begin9_;
     const typename ParamGenerator<T9>::iterator end9_;
     typename ParamGenerator<T9>::iterator current9_;
-    linked_ptr<ParamType> current_value_;
+    ParamType current_value_;
   };  // class CartesianProductGenerator9::Iterator
 
   // No implementation - assignment is unsupported.
@@ -4571,10 +4573,10 @@ class CartesianProductGenerator9
 template <typename T1, typename T2, typename T3, typename T4, typename T5,
     typename T6, typename T7, typename T8, typename T9, typename T10>
 class CartesianProductGenerator10
-    : public ParamGeneratorInterface< ::testing::tuple<T1, T2, T3, T4, T5, T6,
+    : public ParamGeneratorInterface< ::std::tr1::tuple<T1, T2, T3, T4, T5, T6,
         T7, T8, T9, T10> > {
  public:
-  typedef ::testing::tuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> ParamType;
+  typedef ::std::tr1::tuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> ParamType;
 
   CartesianProductGenerator10(const ParamGenerator<T1>& g1,
       const ParamGenerator<T2>& g2, const ParamGenerator<T3>& g3,
@@ -4685,7 +4687,7 @@ class CartesianProductGenerator10
     virtual ParamIteratorInterface<ParamType>* Clone() const {
       return new Iterator(*this);
     }
-    virtual const ParamType* Current() const { return current_value_.get(); }
+    virtual const ParamType* Current() const { return &current_value_; }
     virtual bool Equals(const ParamIteratorInterface<ParamType>& other) const {
       // Having the same base generator guarantees that the other
       // iterator is of the same type and we can downcast.
@@ -4749,9 +4751,9 @@ class CartesianProductGenerator10
 
     void ComputeCurrentValue() {
       if (!AtEnd())
-        current_value_.reset(new ParamType(*current1_, *current2_, *current3_,
+        current_value_ = ParamType(*current1_, *current2_, *current3_,
             *current4_, *current5_, *current6_, *current7_, *current8_,
-            *current9_, *current10_));
+            *current9_, *current10_);
     }
     bool AtEnd() const {
       // We must report iterator past the end of the range when either of the
@@ -4805,7 +4807,7 @@ class CartesianProductGenerator10
     const typename ParamGenerator<T10>::iterator begin10_;
     const typename ParamGenerator<T10>::iterator end10_;
     typename ParamGenerator<T10>::iterator current10_;
-    linked_ptr<ParamType> current_value_;
+    ParamType current_value_;
   };  // class CartesianProductGenerator10::Iterator
 
   // No implementation - assignment is unsupported.
@@ -4836,8 +4838,8 @@ class CartesianProductHolder2 {
 CartesianProductHolder2(const Generator1& g1, const Generator2& g2)
       : g1_(g1), g2_(g2) {}
   template <typename T1, typename T2>
-  operator ParamGenerator< ::testing::tuple<T1, T2> >() const {
-    return ParamGenerator< ::testing::tuple<T1, T2> >(
+  operator ParamGenerator< ::std::tr1::tuple<T1, T2> >() const {
+    return ParamGenerator< ::std::tr1::tuple<T1, T2> >(
         new CartesianProductGenerator2<T1, T2>(
         static_cast<ParamGenerator<T1> >(g1_),
         static_cast<ParamGenerator<T2> >(g2_)));
@@ -4858,8 +4860,8 @@ CartesianProductHolder3(const Generator1& g1, const Generator2& g2,
     const Generator3& g3)
       : g1_(g1), g2_(g2), g3_(g3) {}
   template <typename T1, typename T2, typename T3>
-  operator ParamGenerator< ::testing::tuple<T1, T2, T3> >() const {
-    return ParamGenerator< ::testing::tuple<T1, T2, T3> >(
+  operator ParamGenerator< ::std::tr1::tuple<T1, T2, T3> >() const {
+    return ParamGenerator< ::std::tr1::tuple<T1, T2, T3> >(
         new CartesianProductGenerator3<T1, T2, T3>(
         static_cast<ParamGenerator<T1> >(g1_),
         static_cast<ParamGenerator<T2> >(g2_),
@@ -4883,8 +4885,8 @@ CartesianProductHolder4(const Generator1& g1, const Generator2& g2,
     const Generator3& g3, const Generator4& g4)
       : g1_(g1), g2_(g2), g3_(g3), g4_(g4) {}
   template <typename T1, typename T2, typename T3, typename T4>
-  operator ParamGenerator< ::testing::tuple<T1, T2, T3, T4> >() const {
-    return ParamGenerator< ::testing::tuple<T1, T2, T3, T4> >(
+  operator ParamGenerator< ::std::tr1::tuple<T1, T2, T3, T4> >() const {
+    return ParamGenerator< ::std::tr1::tuple<T1, T2, T3, T4> >(
         new CartesianProductGenerator4<T1, T2, T3, T4>(
         static_cast<ParamGenerator<T1> >(g1_),
         static_cast<ParamGenerator<T2> >(g2_),
@@ -4910,8 +4912,8 @@ CartesianProductHolder5(const Generator1& g1, const Generator2& g2,
     const Generator3& g3, const Generator4& g4, const Generator5& g5)
       : g1_(g1), g2_(g2), g3_(g3), g4_(g4), g5_(g5) {}
   template <typename T1, typename T2, typename T3, typename T4, typename T5>
-  operator ParamGenerator< ::testing::tuple<T1, T2, T3, T4, T5> >() const {
-    return ParamGenerator< ::testing::tuple<T1, T2, T3, T4, T5> >(
+  operator ParamGenerator< ::std::tr1::tuple<T1, T2, T3, T4, T5> >() const {
+    return ParamGenerator< ::std::tr1::tuple<T1, T2, T3, T4, T5> >(
         new CartesianProductGenerator5<T1, T2, T3, T4, T5>(
         static_cast<ParamGenerator<T1> >(g1_),
         static_cast<ParamGenerator<T2> >(g2_),
@@ -4941,8 +4943,8 @@ CartesianProductHolder6(const Generator1& g1, const Generator2& g2,
       : g1_(g1), g2_(g2), g3_(g3), g4_(g4), g5_(g5), g6_(g6) {}
   template <typename T1, typename T2, typename T3, typename T4, typename T5,
       typename T6>
-  operator ParamGenerator< ::testing::tuple<T1, T2, T3, T4, T5, T6> >() const {
-    return ParamGenerator< ::testing::tuple<T1, T2, T3, T4, T5, T6> >(
+  operator ParamGenerator< ::std::tr1::tuple<T1, T2, T3, T4, T5, T6> >() const {
+    return ParamGenerator< ::std::tr1::tuple<T1, T2, T3, T4, T5, T6> >(
         new CartesianProductGenerator6<T1, T2, T3, T4, T5, T6>(
         static_cast<ParamGenerator<T1> >(g1_),
         static_cast<ParamGenerator<T2> >(g2_),
@@ -4974,9 +4976,9 @@ CartesianProductHolder7(const Generator1& g1, const Generator2& g2,
       : g1_(g1), g2_(g2), g3_(g3), g4_(g4), g5_(g5), g6_(g6), g7_(g7) {}
   template <typename T1, typename T2, typename T3, typename T4, typename T5,
       typename T6, typename T7>
-  operator ParamGenerator< ::testing::tuple<T1, T2, T3, T4, T5, T6,
+  operator ParamGenerator< ::std::tr1::tuple<T1, T2, T3, T4, T5, T6,
       T7> >() const {
-    return ParamGenerator< ::testing::tuple<T1, T2, T3, T4, T5, T6, T7> >(
+    return ParamGenerator< ::std::tr1::tuple<T1, T2, T3, T4, T5, T6, T7> >(
         new CartesianProductGenerator7<T1, T2, T3, T4, T5, T6, T7>(
         static_cast<ParamGenerator<T1> >(g1_),
         static_cast<ParamGenerator<T2> >(g2_),
@@ -5012,9 +5014,9 @@ CartesianProductHolder8(const Generator1& g1, const Generator2& g2,
           g8_(g8) {}
   template <typename T1, typename T2, typename T3, typename T4, typename T5,
       typename T6, typename T7, typename T8>
-  operator ParamGenerator< ::testing::tuple<T1, T2, T3, T4, T5, T6, T7,
+  operator ParamGenerator< ::std::tr1::tuple<T1, T2, T3, T4, T5, T6, T7,
       T8> >() const {
-    return ParamGenerator< ::testing::tuple<T1, T2, T3, T4, T5, T6, T7, T8> >(
+    return ParamGenerator< ::std::tr1::tuple<T1, T2, T3, T4, T5, T6, T7, T8> >(
         new CartesianProductGenerator8<T1, T2, T3, T4, T5, T6, T7, T8>(
         static_cast<ParamGenerator<T1> >(g1_),
         static_cast<ParamGenerator<T2> >(g2_),
@@ -5053,9 +5055,9 @@ CartesianProductHolder9(const Generator1& g1, const Generator2& g2,
           g9_(g9) {}
   template <typename T1, typename T2, typename T3, typename T4, typename T5,
       typename T6, typename T7, typename T8, typename T9>
-  operator ParamGenerator< ::testing::tuple<T1, T2, T3, T4, T5, T6, T7, T8,
+  operator ParamGenerator< ::std::tr1::tuple<T1, T2, T3, T4, T5, T6, T7, T8,
       T9> >() const {
-    return ParamGenerator< ::testing::tuple<T1, T2, T3, T4, T5, T6, T7, T8,
+    return ParamGenerator< ::std::tr1::tuple<T1, T2, T3, T4, T5, T6, T7, T8,
         T9> >(
         new CartesianProductGenerator9<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
         static_cast<ParamGenerator<T1> >(g1_),
@@ -5097,10 +5099,10 @@ CartesianProductHolder10(const Generator1& g1, const Generator2& g2,
           g9_(g9), g10_(g10) {}
   template <typename T1, typename T2, typename T3, typename T4, typename T5,
       typename T6, typename T7, typename T8, typename T9, typename T10>
-  operator ParamGenerator< ::testing::tuple<T1, T2, T3, T4, T5, T6, T7, T8, T9,
-      T10> >() const {
-    return ParamGenerator< ::testing::tuple<T1, T2, T3, T4, T5, T6, T7, T8, T9,
-        T10> >(
+  operator ParamGenerator< ::std::tr1::tuple<T1, T2, T3, T4, T5, T6, T7, T8,
+      T9, T10> >() const {
+    return ParamGenerator< ::std::tr1::tuple<T1, T2, T3, T4, T5, T6, T7, T8,
+        T9, T10> >(
         new CartesianProductGenerator10<T1, T2, T3, T4, T5, T6, T7, T8, T9,
             T10>(
         static_cast<ParamGenerator<T1> >(g1_),
@@ -5135,5 +5137,7 @@ CartesianProductHolder10(const Generator1& g1, const Generator2& g2,
 
 }  // namespace internal
 }  // namespace testing
+
+#endif  //  GTEST_HAS_PARAM_TEST
 
 #endif  // GTEST_INCLUDE_GTEST_INTERNAL_GTEST_PARAM_UTIL_GENERATED_H_
