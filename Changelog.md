@@ -1,5 +1,10 @@
 ## Ignition Launch 3.x
 
+### Ignition Launch 3.4.1 (2021-07-15)
+
+1. Generate a better error websocket error code for `max_connections`.
+    * [Pull request 123](https://github.com/ignitionrobotics/ign-launch/pull/123)
+
 ### Ignition Launch 3.4.0 (2021-06-09)
 
 1. Extend websocket server to support message limits and throttling.
