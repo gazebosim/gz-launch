@@ -8,16 +8,13 @@ project(ignition-launch4 VERSION 4.0.0)
 #============================================================================
 # Find ignition-cmake
 #============================================================================
-find_package(ignition-cmake2 REQUIRED)
+find_package(ignition-cmake2 2.8.0 REQUIRED)
 set(IGN_CMAKE_VER ${ignition-cmake2_VERSION_MAJOR})
 
 #============================================================================
 # Configure the project
 #============================================================================
 ign_configure_project(VERSION_SUFFIX)
-
-# Create cppcheck suppression list file.
-configure_file(tools/cppcheck.suppress.in ${CMAKE_BINARY_DIR}/cppcheck.suppress)
 
 #============================================================================
 # Set project-specific options
