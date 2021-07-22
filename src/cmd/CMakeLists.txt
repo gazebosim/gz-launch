@@ -51,28 +51,6 @@ if (TARGET UNIT_ign_TEST)
 endif()
 
 #===============================================================================
-# Generate the ruby script for internal testing.
-# Note that the major version of the library is included in the name.
-# Ex: cmdlaunch5.rb
-set(cmd_script_generated_test "${CMAKE_BINARY_DIR}/test/lib/ruby/ignition/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb")
-set(cmd_script_configured_test "${CMAKE_CURRENT_BINARY_DIR}/test_cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb.configured")
-
-# Set the library_location variable to the full path of the library file within
-# the build directory.
-set(launch_exe_location "$<TARGET_FILE:${launch_executable}>")
-
-configure_file(
-  "cmd${IGN_DESIGNATION}.rb.in"
-  "${cmd_script_configured_test}"
-  @ONLY
-)
-
-file(GENERATE
-  OUTPUT "${cmd_script_generated_test}"
-  INPUT  "${cmd_script_configured_test}"
-)
-
-#===============================================================================
 # Used for the installed version.
 # Generate the ruby script that gets installed.
 # Note that the major version of the library is included in the name.
@@ -84,8 +62,6 @@ set(cmd_script_configured "${cmd_script_generated}.configured")
 # within the install directory structure.
 set(launch_exe_location "../../../${CMAKE_INSTALL_LIBDIR}/ignition/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}/$<TARGET_FILE_NAME:${launch_executable}>")
 
-message("launch_exe_location " ${launch_exe_location})
-
 configure_file(
   "cmd${IGN_DESIGNATION}.rb.in"
   "${cmd_script_configured}"
@@ -95,20 +71,7 @@ file(GENERATE
   OUTPUT "${cmd_script_generated}"
   INPUT  "${cmd_script_configured}")
 
-set(ign_library_path "${CMAKE_BINARY_DIR}/test/lib/ruby/ignition/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}")
-
-# Generate a configuration file for internal testing.
-# Note that the major version of the library is included in the name.
-# Ex: launch5.yaml
-configure_file(
-  "${IGN_DESIGNATION}.yaml.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml.configured" @ONLY)
-
-file(GENERATE
-  OUTPUT "${CMAKE_BINARY_DIR}/test/conf/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml"
-  INPUT "${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml.configured")
-
-# Used for the installed version.
+#Used for the installed version.
 set(ign_library_path "${CMAKE_INSTALL_PREFIX}/lib/ruby/ignition/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}")
 
 # Generate the configuration file that is installed.
@@ -116,7 +79,11 @@ set(ign_library_path "${CMAKE_INSTALL_PREFIX}/lib/ruby/ignition/cmd${IGN_DESIGNA
 # Ex: launch5.yaml
 configure_file(
   "${IGN_DESIGNATION}.yaml.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml" @ONLY)
+  "${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.configure.yaml" @ONLY)
+
+file(GENERATE
+  OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml"
+  INPUT "${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.configure.yaml")
 
 # Install the yaml configuration files in an unversioned location.
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml
@@ -124,3 +91,46 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MA
 
 # Install the ruby command line library in an unversioned location.
 install(FILES ${cmd_script_generated} DESTINATION lib/ruby/ignition)
+
+if (TARGET UNIT_ign_TEST)
+	# Generate the ruby script for internal testing.
+	# Note that the major version of the library is included in the name.
+	# Ex: cmdlaunch5.rb
+	set(cmd_script_generated_test "${CMAKE_BINARY_DIR}/test/$<CONFIG>/lib/ruby/ignition/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb")
+	set(cmd_script_configured_test "${CMAKE_CURRENT_BINARY_DIR}/test_cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb.configured")
+
+	# Set the library_location variable to the full path of the library file within
+	# the build directory.
+	set(launch_exe_location "$<TARGET_FILE_NAME:${launch_executable}>")
+
+	configure_file(
+	  "cmd${IGN_DESIGNATION}.rb.in"
+	  "${cmd_script_configured_test}"
+	  @ONLY
+	)
+
+	file(GENERATE
+	  OUTPUT "${cmd_script_generated_test}"
+	  INPUT  "${cmd_script_configured_test}"
+	)
+	# Generate a configuration file for internal testing.
+	# Note that the major version of the library is included in the name.
+	# Ex: launch5.yaml
+	configure_file(
+	  "${IGN_DESIGNATION}.yaml.in"
+	  "${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml.configured" @ONLY)
+
+	# Used for the installed version.
+	set(ign_library_path "${CMAKE_INSTALL_PREFIX}/lib/ruby/ignition/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb")
+
+  file(GENERATE
+	  OUTPUT "${CMAKE_BINARY_DIR}/test/conf/$<CONFIG>/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml"
+	  INPUT "${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml.configured")
+
+  set_tests_properties(
+    UNIT_ign_TEST
+    PROPERTIES
+    ENVIRONMENT
+      "IGN_CONFIG_PATH=${CMAKE_BINARY_DIR}/test/conf/$<CONFIG>"
+  )
+endif()
