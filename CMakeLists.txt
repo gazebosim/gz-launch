@@ -37,6 +37,11 @@ ign_find_package(ignition-common3 REQUIRED PRIVATE)
 set(IGN_COMMON_MAJOR_VER ${ignition-common3_VERSION_MAJOR})
 
 #--------------------------------------
+# Find ignition-utils
+ign_find_package(ignition-utils1 REQUIRED COMPONENTS cli)
+set(IGN_UTILS_VER ${ignition-utils1_VERSION_MAJOR})
+
+#--------------------------------------
 # Find ignition-plugin
 ign_find_package(ignition-plugin1 REQUIRED_BY launch COMPONENTS loader register)
 set(IGN_PLUGIN_MAJOR_VER ${ignition-plugin1_VERSION_MAJOR})

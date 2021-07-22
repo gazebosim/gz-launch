@@ -21,17 +21,17 @@
 
 /// \brief External hook to read the library version.
 /// \return C-string representing the version. Ex.: 0.1.2
-extern "C" IGNITION_LAUNCH_VISIBLE char *ignitionVersion();
+extern "C" char *ignitionVersion();
 
 /// \brief Set verbosity level
 /// \param[in] _verbosity 0 to 4
-extern "C" IGNITION_LAUNCH_VISIBLE void cmdVerbosity(
-    const char *_verbosity);
+extern "C" void cmdVerbosity(
+    const int _verbosity);
 
 /// \brief External hook to execute 'ign fuel list -t model' from the command
 /// line.
 /// \param[in] _config Config file to run.
 /// \return 1 if successful, 0 if not.
-extern "C" IGNITION_LAUNCH_VISIBLE int run(const char *_config);
+extern "C" int run(const char *_config);
 
 #endif

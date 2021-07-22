@@ -21,12 +21,7 @@
 
 #include <string>
 
-#include <ignition/common/Filesystem.hh>
 #include "ignition/launch/test_config.hh"  // NOLINT(build/include)
-
-static const std::string kIgnCommand(
-    std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH + " " +
-    std::string(BREW_RUBY) + std::string(IGN_PATH) + " launch ");
 
 /////////////////////////////////////////////////
 std::string customExecStr(std::string _cmd)
@@ -53,8 +48,8 @@ std::string customExecStr(std::string _cmd)
 /////////////////////////////////////////////////
 TEST(CmdLine, Ls)
 {
-  std::string cmd = kIgnCommand +
-    std::string(PROJECT_SOURCE_PATH) + "/test/config/ls.ign";
+  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
+    " ign launch " + std::string(PROJECT_SOURCE_PATH) + "/test/config/ls.ign";
 
   std::cout << "Running command [" << cmd << "]" << std::endl;
 
@@ -70,7 +65,8 @@ TEST(CmdLine, EchoSelf)
   std::string filePath =
       std::string(PROJECT_SOURCE_PATH) + "/test/config/echo.ign";
 
-  std::string cmd = kIgnCommand + filePath;
+  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
+    " ign launch " + filePath;
 
   std::string output = customExecStr(cmd);
   EXPECT_EQ(filePath, output) << output;
@@ -105,4 +101,41 @@ TEST(CmdLine, HelpVsCompletionFlags)
   {
     EXPECT_NE(std::string::npos, helpOutput.find(flag)) << helpOutput;
   }
+}
+
+/////////////////////////////////////////////////
+TEST(CmdLine, HelpSelf)
+{
+  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
+    " ign launch --help";
+
+  std::string output = customExecStr(cmd);
+  EXPECT_NE(std::string::npos,
+    output.find("Introspect Ignition launch")) << output;
+}
+
+/////////////////////////////////////////////////
+TEST(CmdLine, EchoErb)
+{
+  std::string filePath =
+      std::string(PROJECT_SOURCE_PATH) + "/test/config/erb.ign";
+
+  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
+    " ign launch " + filePath + " testVar:=erb1234";
+
+  std::string output = customExecStr(cmd);
+  EXPECT_EQ("erb1234", output) << output;
+}
+
+/////////////////////////////////////////////////
+TEST(CmdLine, EchoBadErb)
+{
+  std::string filePath =
+      std::string(PROJECT_SOURCE_PATH) + "/test/config/erb.ign";
+
+  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
+    " ign launch " + filePath + " badargument";
+
+  std::string output = customExecStr(cmd);
+  EXPECT_NE(std::string::npos, output.find("is wrong for erb")) << output;
 }
