@@ -8,7 +8,7 @@
 
 ### Ignition Launch 4.X.X (20XX-XX-XX)
 
-### Ignition Launch 4.0.0 (20XX-XX-XX)
+### Ignition Launch 4.0.0 (2021-03-30)
 
 1. Bump in edifice: ign-common4
     * [Pull request #90](https://github.com/ignitionrobotics/ign-launch/pull/90)
@@ -23,6 +23,44 @@
     * [Pull request #69](https://github.com/ignitionrobotics/ign-launch/pull/69)
 
 ## Ignition Launch 3.x
+
+### Ignition Launch 3.4.1 (2021-07-15)
+
+1. Generate a better error websocket error code for `max_connections`.
+    * [Pull request 123](https://github.com/ignitionrobotics/ign-launch/pull/123)
+
+### Ignition Launch 3.4.0 (2021-06-09)
+
+1. Extend websocket server to support message limits and throttling.
+    * [Pull request 116](https://github.com/ignitionrobotics/ign-launch/pull/116)
+
+### Ignition Launch 3.3.0 (2021-05-06)
+
+1. Convert depth and thermal image data to RGB before sending over websockets
+    * [Pull request 112](https://github.com/ignitionrobotics/ign-launch/pull/112)
+
+### Ignition Launch 3.2.1 (2021-04-19)
+
+1. Add header to image msg.
+    * [Pull request 109](https://github.com/ignitionrobotics/ign-launch/pull/109)
+
+### Ignition Launch 3.2.0 (2021-04-12)
+
+1. Support unsubscribing from a topic in the websocket server.
+    * [Pull request 107](https://github.com/ignitionrobotics/ign-launch/pull/107)
+
+1. Support particle_emitters in the websocket server.
+    * [Pull request 104](https://github.com/ignitionrobotics/ign-launch/pull/104)
+
+1. Support getting topic names and message types in the websocket server.
+    * [Pull request 102](https://github.com/ignitionrobotics/ign-launch/pull/102)
+
+1. Image streaming over websocket.
+    * [Pull request 97](https://github.com/ignitionrobotics/ign-launch/pull/97)
+
+1. Treat IGN_LAUNCH_CONFIG_PATH as a path list.
+    * [Pull request 93](https://github.com/ignitionrobotics/ign-launch/pull/93)
+
 
 ### Ignition Launch 3.1.1 (2021-01-08)
 

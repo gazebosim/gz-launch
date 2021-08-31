@@ -8,16 +8,13 @@ project(ignition-launch5 VERSION 5.0.0)
 #============================================================================
 # Find ignition-cmake
 #============================================================================
-find_package(ignition-cmake2 REQUIRED)
+find_package(ignition-cmake2 2.8.0 REQUIRED)
 set(IGN_CMAKE_VER ${ignition-cmake2_VERSION_MAJOR})
 
 #============================================================================
 # Configure the project
 #============================================================================
-ign_configure_project(VERSION_SUFFIX pre1)
-
-# Create cppcheck suppression list file.
-configure_file(tools/cppcheck.suppress.in ${CMAKE_BINARY_DIR}/cppcheck.suppress)
+ign_configure_project(VERSION_SUFFIX)
 
 #============================================================================
 # Set project-specific options
@@ -38,6 +35,11 @@ ign_find_package(TINYXML2 REQUIRED PRIVATE PRETTY tinyxml2)
 # Find ignition-common
 ign_find_package(ignition-common4 REQUIRED PRIVATE)
 set(IGN_COMMON_MAJOR_VER ${ignition-common4_VERSION_MAJOR})
+
+#--------------------------------------
+# Find ignition-utils
+ign_find_package(ignition-utils1 REQUIRED COMPONENTS cli)
+set(IGN_UTILS_VER ${ignition-utils1_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-plugin

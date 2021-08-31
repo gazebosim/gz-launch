@@ -16,9 +16,9 @@
 */
 
 #include <gtest/gtest.h>
-
 #include <cstdio>
 #include <cstdlib>
+
 #include <string>
 
 #include <ignition/common/Filesystem.hh>
@@ -72,17 +72,55 @@ TEST(CmdLine, Ls)
   EXPECT_TRUE(output.find("CMakeFiles") != std::string::npos) << output;
   EXPECT_TRUE(output.find("Makefile") != std::string::npos) << output;
 }
-//
-// /////////////////////////////////////////////////
-// TEST(CmdLine, EchoSelf)
-// {
-//   std::string filePath =
-//     ignition::common::joinPaths(
-//       std::string(PROJECT_SOURCE_PATH), "test", "config", "echo.ign");
-//
-//   std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
-//     " ign launch " + filePath;
-//
-//   std::string output = customExecStr(cmd);
-//   EXPECT_EQ(filePath, output) << output;
-// }
+
+/////////////////////////////////////////////////
+TEST(CmdLine, EchoSelf)
+{
+  std::string filePath =
+    ignition::common::joinPaths(
+      std::string(PROJECT_SOURCE_PATH), "test", "config", "echo.ign");
+  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
+    " ign launch " + filePath;
+
+  std::string output = customExecStr(cmd);
+  EXPECT_EQ(filePath, output) << output;
+}
+
+/////////////////////////////////////////////////
+TEST(CmdLine, HelpSelf)
+{
+  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
+    " ign launch --help";
+
+  std::string output = customExecStr(cmd);
+  EXPECT_NE(std::string::npos,
+    output.find("Introspect Ignition launch")) << output;
+}
+
+/////////////////////////////////////////////////
+TEST(CmdLine, EchoErb)
+{
+  std::string filePath =
+    ignition::common::joinPaths(
+      std::string(PROJECT_SOURCE_PATH), "test", "config", "echo.ign");
+
+  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
+    " ign launch " + filePath + " testVar:=erb1234";
+
+  std::string output = customExecStr(cmd);
+  EXPECT_EQ("erb1234", output) << output;
+}
+
+/////////////////////////////////////////////////
+TEST(CmdLine, EchoBadErb)
+{
+   std::string filePath =
+    ignition::common::joinPaths(
+      std::string(PROJECT_SOURCE_PATH), "test", "config", "echo.ign");
+
+  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
+    " ign launch " + filePath + " badargument";
+
+  std::string output = customExecStr(cmd);
+  EXPECT_NE(std::string::npos, output.find("is wrong for erb")) << output;
+}

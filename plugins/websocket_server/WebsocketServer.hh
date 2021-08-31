@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+*
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -52,6 +52,13 @@ namespace ignition
     /// "auth" call on the websocket. If the <authorization_key> is set, then
     /// the connection can provide that key.
     ///
+    /// * <max_connections> : An integer that specifies the maximum number
+    /// of active websocket connections. A value less than zero indicates an
+    /// unlimited number, this is the default. A websocket client error
+    /// code of 1008 along with a reason set to "max_connections" will be
+    /// returned if a new connection is rejected due to the max connection
+    /// threshold.
+    ///
     /// * <ssl> : Element that contains SSL configuration. For testing
     ///           purposes you can create self-signed SSL certificates. Run
     ///
@@ -85,13 +92,18 @@ namespace ignition
     ///     1. "sub": Subscribe to the topic in the `topic_name` component,
     ///     2. "pub": Publish a message from the Ignition Transport topic in
     ///               the `topic_name` component,
-    ///     3. "topics": Get the list of available topics, and
-    ///     4. "protos": Get a string containing all the protobuf
+    ///     3. "topics": Get the list of available topics,
+    ///     4. "topics-types": Get the list of available topics and their
+    ///                        message types,
+    ///     5. "protos": Get a string containing all the protobuf
+    ///                  definitions, and
+    ///     6. "particle_emitters": Get the list of particle emitters.
     ///                  definitions.
+    ///     7. "unsub": Unsubscribe from the topic in the `topic_name` component
     ///
-    /// The `topic_name` component is mandatory for the "sub" and "pub"
-    /// operations. If present, it must be the name of an Ignition Transport
-    /// topic.
+    /// The `topic_name` component is mandatory for the "sub", "pub", and
+    /// "unsub" operations. If present, it must be the name of an Ignition
+    /// Transport topic.
     ///
     /// The `message_type` component is mandatory for the "pub" operation. If
     /// present it names the Ignition Message type, such as
@@ -150,6 +162,13 @@ namespace ignition
                    const size_t _size,
                    const ignition::transport::MessageInfo &_info);
 
+      /// \brief Callback when an image is received on a topic
+      /// \param[in] _msg Image msg
+      /// \param[in] _info ign transport message info
+      private: void OnWebsocketSubscribedImageMessage(
+          const ignition::msgs::Image &_msg,
+          const ignition::transport::MessageInfo &_info);
+
       /// \brief Callback that is triggered when a new connection is
       /// established.
       /// \param[in] _socketId ID of the socket.
@@ -162,6 +181,19 @@ namespace ignition
       public: void OnMessage(int _socketId, const std::string &_msg);
 
       public: void OnRequestMessage(int _socketId, const std::string &_msg);
+
+      /// \brief Check and update subscription count for a message type. If
+      /// a client has more subscriptions to a topic of a specified type than
+      /// the subscription limit, this will block subscription. On the other
+      /// hand, for an unsubscription operation, the count is decremented.
+      /// \param[in] _topic Topic to subscribe to or unsubscribe from
+      /// \param[in] _socketId Connection socket id
+      /// \param[in] _subscribe True for subscribe operation, false for
+      /// unsubscribe operation
+      /// \return True if the subscription count is incremented or decremented,
+      /// and false to indicate the subcription limit has reached.
+      public: bool UpdateMsgTypeSubscriptionCount(const std::string &_topic,
+          int _socketId, bool _subscribe);
 
       private: ignition::transport::Node node;
 
@@ -178,6 +210,21 @@ namespace ignition
         public: std::mutex mutex;
 
         public: bool authorized{false};
+
+        /// \brief A map of topic name to outbound publish rate
+        /// A value of 0 means unthrottled
+        public: std::map<std::string, std::chrono::nanoseconds>
+            topicPublishPeriods;
+
+        /// \brief A map of topic name to timestamp of last published message
+        /// for this connection
+        public: std::map<std::string,
+            std::chrono::time_point<std::chrono::steady_clock>> topicTimestamps;
+
+        /// \brief The number of subscriptions of a msg type this connection
+        /// has. The key is the msg type, e.g. ignition.msgs.Image, and the
+        /// value is the subscription count
+        public: std::map<std::string, int> msgTypeSubscriptionCount;
       };
 
       private: void QueueMessage(Connection *_connection,
@@ -196,6 +243,11 @@ namespace ignition
       /// The key is the topic name, and the value is the set of websocket
       /// connections that have subscribed to the topic.
       public: std::map<std::string, std::set<int>> topicConnections;
+
+      /// \brief The limit placed on the number of subscriptions per msg type
+      /// for each connection. The key is the msg type, e.g.
+      /// ignition.msgs.Image, and the value is the subscription limit
+      public: std::map<std::string, int> msgTypeSubscriptionLimit;
 
       /// \brief Run loop mutex.
       public: std::mutex runMutex;
@@ -217,6 +269,10 @@ namespace ignition
       private: std::map<std::string,
                std::chrono::time_point<std::chrono::steady_clock>>
                  topicTimestamps;
+
+      /// \brief The message queue size per connection. A negative number
+      /// indicates no limit.
+      public: int queueSizePerConnection{-1};
 
       /// \brief The set of valid operations. This enum must align with the
       /// `operations` member variable.
