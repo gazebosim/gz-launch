@@ -102,7 +102,7 @@ TEST(CmdLine, EchoErb)
 {
   std::string filePath =
     ignition::common::joinPaths(
-      std::string(PROJECT_SOURCE_PATH), "test", "config", "echo.ign");
+      std::string(PROJECT_SOURCE_PATH), "test", "config", "erb.ign");
 
   std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
     " ign launch " + filePath + " testVar:=erb1234";
@@ -116,7 +116,7 @@ TEST(CmdLine, EchoBadErb)
 {
    std::string filePath =
     ignition::common::joinPaths(
-      std::string(PROJECT_SOURCE_PATH), "test", "config", "echo.ign");
+      std::string(PROJECT_SOURCE_PATH), "test", "config", "erb.ign");
 
   std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
     " ign launch " + filePath + " badargument";
