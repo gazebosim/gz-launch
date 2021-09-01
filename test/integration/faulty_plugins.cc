@@ -18,6 +18,8 @@
 #include <gtest/gtest.h>
 #include <gtest/gtest-death-test.h>
 
+#include <ignition/utilities/ExtraTestMacros.hh>
+
 #include "Manager.hh"
 
 std::string getConfig(const std::string &_pluginName)
@@ -36,9 +38,9 @@ bool runConfig(const std::string &_config)
   return mgr.RunConfig(_config);
 }
 
-TEST(PluginDeathTest, SegfaultOnLoad)
+// Disable test on Windows, no KilledBySignal available in that platform
+TEST(PluginDeathTest, IGN_UTILS_TEST_DISABLED_ON_WIN32(SegfaultOnLoad))
 {
   auto config = getConfig("SegfaultOnLoad");
-  EXPECT_EXIT(runConfig(config), testing::KilledBySignal(SIGSEGV), "");
+  EXPECT_EXIT(runConfig(config), ::testing::KilledBySignal(SIGSEGV), "");
 }
-
