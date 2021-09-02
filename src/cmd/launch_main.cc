@@ -24,6 +24,10 @@
 #include "ignition/launch/config.hh"
 #include "ign.hh"
 
+#ifdef _WIN32
+#define popen _popen
+#define pclose _pclose
+#endif
 
 /////////////////////////////////////////////////
 std::string erbExec(std::string _cmd)
