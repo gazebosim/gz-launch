@@ -39,6 +39,6 @@ bool runConfig(const std::string &_config)
 TEST(PluginDeathTest, SegfaultOnLoad)
 {
   auto config = getConfig("SegfaultOnLoad");
-  EXPECT_EXIT(runConfig(config), ::testing::KilledBySignal(SIGSEGV), "");
+  EXPECT_EXIT(runConfig(config), testing::KilledBySignal(SIGSEGV), "");
 }
 

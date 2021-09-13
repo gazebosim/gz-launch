@@ -21,7 +21,14 @@
 
 #include <string>
 
+#include <ignition/common/Filesystem.hh>
+
 #include "ignition/launch/test_config.hh"  // NOLINT(build/include)
+
+#ifdef _WIN32
+#define popen _popen
+#define pclose _pclose
+#endif
 
 /////////////////////////////////////////////////
 std::string customExecStr(std::string _cmd)
@@ -45,16 +52,17 @@ std::string customExecStr(std::string _cmd)
   return result;
 }
 
+std::string get_config_path(const std::string filename)
+{
+  return(ignition::common::joinPaths(
+    std::string(PROJECT_SOURCE_PATH), "test", "config", filename));
+}
+
 /////////////////////////////////////////////////
 TEST(CmdLine, Ls)
 {
-  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
-    " ign launch " + std::string(PROJECT_SOURCE_PATH) + "/test/config/ls.ign";
-
-  std::cout << "Running command [" << cmd << "]" << std::endl;
-
+  std::string cmd = "ign launch " + get_config_path("ls.ign");
   std::string output = customExecStr(cmd);
-  std::cout << output << std::endl;
   EXPECT_TRUE(output.find("CMakeFiles") != std::string::npos) << output;
   EXPECT_TRUE(output.find("Makefile") != std::string::npos) << output;
 }
@@ -62,12 +70,8 @@ TEST(CmdLine, Ls)
 /////////////////////////////////////////////////
 TEST(CmdLine, EchoSelf)
 {
-  std::string filePath =
-      std::string(PROJECT_SOURCE_PATH) + "/test/config/echo.ign";
-
-  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
-    " ign launch " + filePath;
-
+  std::string filePath = get_config_path("echo.ign");
+  std::string cmd = "ign launch " + filePath;
   std::string output = customExecStr(cmd);
   EXPECT_EQ(filePath, output) << output;
 }
@@ -75,10 +79,7 @@ TEST(CmdLine, EchoSelf)
 /////////////////////////////////////////////////
 TEST(CmdLine, HelpSelf)
 {
-  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
-    " ign launch --help";
-
-  std::string output = customExecStr(cmd);
+  std::string output = customExecStr("ign launch --help");
   EXPECT_NE(std::string::npos,
     output.find("Introspect Ignition launch")) << output;
 }
@@ -86,12 +87,8 @@ TEST(CmdLine, HelpSelf)
 /////////////////////////////////////////////////
 TEST(CmdLine, EchoErb)
 {
-  std::string filePath =
-      std::string(PROJECT_SOURCE_PATH) + "/test/config/erb.ign";
-
-  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
-    " ign launch " + filePath + " testVar:=erb1234";
-
+  std::string filePath = get_config_path("erb.ign");
+  std::string cmd = "ign launch " + filePath + " testVar:=erb1234";
   std::string output = customExecStr(cmd);
   EXPECT_EQ("erb1234", output) << output;
 }
@@ -99,12 +96,8 @@ TEST(CmdLine, EchoErb)
 /////////////////////////////////////////////////
 TEST(CmdLine, EchoBadErb)
 {
-  std::string filePath =
-      std::string(PROJECT_SOURCE_PATH) + "/test/config/erb.ign";
-
-  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
-    " ign launch " + filePath + " badargument";
-
+  std::string filePath = get_config_path("erb.ign");
+  std::string cmd = " ign launch " + filePath + " badargument";
   std::string output = customExecStr(cmd);
   EXPECT_NE(std::string::npos, output.find("is wrong for erb")) << output;
 }

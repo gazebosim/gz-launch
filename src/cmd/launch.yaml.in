@@ -4,5 +4,5 @@ library_name: @PROJECT_NAME_NO_VERSION@
 library_version: @PROJECT_VERSION_FULL@
 library_path: @ign_library_path@
 commands:
-    - launch : Run and manage executables and plugins.
+    - launch: Run and manage executables and plugins.
 ---

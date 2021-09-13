@@ -25,15 +25,25 @@
 
 #include "Manager.hh"
 
-static constexpr char kTestScriptPath[] = "/tmp/ign-launch.sh";
+class ManagerTest : public ::testing::Test
+{
+ public:
+   ManagerTest(){}
+#ifndef _WIN32
+   std::string testScriptPath = "/tmp/ign-launch.sh";
+#else
+   std::string testScriptPath =
+     std::string(getenv("localappdata")) + "\\Temp\\ign-launch.bat";
+#endif
+};
 
 /////////////////////////////////////////////////
-bool RemoveTestScript()
+bool RemoveTestScript(std::string _testScriptPath)
 {
   // Remove the file if it already exists
-  if (ignition::common::isFile(kTestScriptPath))
+  if (ignition::common::isFile(_testScriptPath))
   {
-    if (!ignition::common::removeFile(kTestScriptPath))
+    if (!ignition::common::removeFile(_testScriptPath))
     {
       return false;
     }
@@ -42,23 +52,30 @@ bool RemoveTestScript()
 }
 
 /////////////////////////////////////////////////
-bool WriteTestScript()
+bool WriteTestScript(std::string _testScriptPath)
 {
-  if (!RemoveTestScript())
+  if (!RemoveTestScript(_testScriptPath))
     return false;
 
   // Write a simple script and mark it executable
-  std::ofstream ofs(kTestScriptPath);
+  std::ofstream ofs(_testScriptPath);
+#ifndef WIN32
   ofs << R"(#!/usr/bin/env bash
 echo $TEST_VAR
 touch $TEST_VAR
 )";
-  chmod(kTestScriptPath, S_IRWXU);
+  chmod(_testScriptPath.c_str(), S_IRWXU);
+#else
+  ofs << R"(echo %TEST_VAR%
+type nul > %TEST_VAR%
+)";
+  _chmod(_testScriptPath.c_str(), _S_IREAD | _S_IWRITE);
+#endif
   return true;
 }
 
 /////////////////////////////////////////////////
-TEST(Ignition_TEST, RunEmptyConfig)
+TEST_F(ManagerTest, RunEmptyConfig)
 {
   ignition::launch::Manager mgr;
 
@@ -67,7 +84,7 @@ TEST(Ignition_TEST, RunEmptyConfig)
 }
 
 /////////////////////////////////////////////////
-TEST(Ignition_TEST, MissingIgnition)
+TEST_F(ManagerTest, MissingIgnition)
 {
   std::string config =
     "<executable name='gazebo'>"
@@ -81,7 +98,7 @@ TEST(Ignition_TEST, MissingIgnition)
 }
 
 /////////////////////////////////////////////////
-TEST(Ignition_TEST, RunBadXml)
+TEST_F(ManagerTest, RunBadXml)
 {
   std::string config =
     "<ignition version='1.0'>"
@@ -95,22 +112,22 @@ TEST(Ignition_TEST, RunBadXml)
 }
 
 /////////////////////////////////////////////////
-TEST(Ignition_TEST, RunLs)
+TEST_F(ManagerTest, RunLs)
 {
   std::string cmd;
 
-#ifdef _MSCV_VER
+#ifdef _WIN32
   cmd = "dir";
 #else
   cmd = "ls";
 #endif
 
   std::string config =
-    "<ignition version='1.0'>"
-    "  <executable name='ls'>"
-    "    <command>" + cmd + "</command>"
+    R"(<ignition version='1.0'>"
+    "  <executable name='listDirectory'>"
+    "    <command>)" + cmd + R"(</command>"
     "  </executable>"
-    "</ignition>";
+    "</ignition>)";
 
   ignition::launch::Manager mgr;
 
@@ -119,19 +136,23 @@ TEST(Ignition_TEST, RunLs)
   EXPECT_TRUE(mgr.RunConfig(config));
 }
 
-
 /////////////////////////////////////////////////
-TEST(Ignition_TEST, IGN_UTILS_TEST_DISABLED_ON_WIN32(RunEnvPre))
+TEST_F(ManagerTest, RunEnvPre)
 {
   // Test that environment is applied regardless of order
+  #ifndef _WIN32
   std::string testPath = "/tmp/ign-launch-env-test-pre";
+  #else
+  std::string testPath =
+    std::string(getenv("localappdata")) + "\\Temp\\ign-launch-env-test-pre";
+  #endif
 
   if (ignition::common::isFile(testPath))
   {
     ASSERT_TRUE(ignition::common::removeFile(testPath));
   }
 
-  ASSERT_TRUE(WriteTestScript());
+  ASSERT_TRUE(WriteTestScript(testScriptPath));
 
   std::string config = R"(
 <ignition version='1.0'>
@@ -140,7 +161,7 @@ TEST(Ignition_TEST, IGN_UTILS_TEST_DISABLED_ON_WIN32(RunEnvPre))
     <value>)" + testPath + R"(</value>
   </env>
   <executable name='touch'>
-    <command>/tmp/ign-launch.sh</command>
+    <command>)" + std::string(testScriptPath) + R"(</command>
   </executable>
 </ignition>
 )";
@@ -150,26 +171,31 @@ TEST(Ignition_TEST, IGN_UTILS_TEST_DISABLED_ON_WIN32(RunEnvPre))
   EXPECT_TRUE(mgr.RunConfig(config));
   EXPECT_TRUE(ignition::common::isFile(testPath));
   EXPECT_TRUE(ignition::common::removeFile(testPath));
-  EXPECT_TRUE(RemoveTestScript());
+  EXPECT_TRUE(RemoveTestScript(testScriptPath));
 }
 
 /////////////////////////////////////////////////
-TEST(Ignition_TEST, IGN_UTILS_TEST_DISABLED_ON_WIN32(RunEnvPost))
+TEST_F(ManagerTest, RunEnvPost)
 {
   // Test that environment is applied regardless of order
+  #ifndef _WIN32
   std::string testPath = "/tmp/ign-launch-env-test-post";
+  #else
+  std::string testPath =
+    std::string(getenv("localappdata")) + "\\Temp\\ign-launch-env-test-post";
+  #endif
 
   if (ignition::common::isFile(testPath))
   {
     ASSERT_TRUE(ignition::common::removeFile(testPath));
   }
 
-  ASSERT_TRUE(WriteTestScript());
+  ASSERT_TRUE(WriteTestScript(testScriptPath));
 
   std::string config = R"(
 <ignition version='1.0'>
   <executable name='touch'>
-    <command>/tmp/ign-launch.sh</command>
+    <command>)" + std::string(testScriptPath) + R"(</command>
   </executable>
   <env>
     <name>TEST_VAR</name>
@@ -183,7 +209,7 @@ TEST(Ignition_TEST, IGN_UTILS_TEST_DISABLED_ON_WIN32(RunEnvPost))
   EXPECT_TRUE(mgr.RunConfig(config));
   EXPECT_TRUE(ignition::common::isFile(testPath));
   EXPECT_TRUE(ignition::common::removeFile(testPath));
-  EXPECT_TRUE(RemoveTestScript());
+  EXPECT_TRUE(RemoveTestScript(testScriptPath));
 }
 
 /////////////////////////////////////////////////

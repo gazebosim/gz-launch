@@ -17,7 +17,12 @@
 
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <unistd.h>
+#ifndef _WIN32
+  #include <unistd.h>
+#else
+
+#endif
+
 #include <ignition/common/Console.hh>
 #include <ignition/common/Util.hh>
 #include <ignition/math/Helpers.hh>
