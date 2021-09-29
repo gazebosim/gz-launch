@@ -76,16 +76,40 @@ void runLaunchCommand(const LaunchOptions &_opt)
 {
   cmdVerbosity(_opt.verboseLevel);
 
-  if (!_opt.launchfile.empty())
+  std::string launchfile = _opt.launchfile;
+  if (!launchfile.empty())
   {
-    if (!ignition::common::isFile(_opt.launchfile))
+    // If the launch file is not a file, then look in the paths set by the
+    // IGN_LAUNCH_CONFIG_PATH environment variable.
+    if (!ignition::common::isFile(launchfile))
     {
-      ignerr << "File [" + _opt.launchfile + "] does not exists"
-             << std::endl;
-      exit(-1);
+      std::string configPathEnv;
+      ignition::common::env("IGN_LAUNCH_CONFIG_PATH", configPathEnv, true);
+      if (!configPathEnv.empty())
+      {
+        std::vector<std::string> paths =
+          ignition::common::split(configPathEnv, ":");
+        for (const std::string &path : paths)
+        {
+          std::string filePath =
+            ignition::common::joinPaths(path, launchfile);
+          if (ignition::common::isFile(filePath))
+          {
+            launchfile = filePath;
+            break;
+          }
+        }
+      }
+
+      if (!ignition::common::isFile(launchfile))
+      {
+        ignerr << "File [" + launchfile + "] does not exists"
+          << std::endl;
+        exit(-1);
+      }
     }
 
-    std::string cmd = "erb -v ";
+    std::string cmd = "erb ";
     for (auto & arg : _opt.more_comms)
     {
       auto tokens = ignition::common::split(arg, ":=");
@@ -100,7 +124,7 @@ void runLaunchCommand(const LaunchOptions &_opt)
         exit(1);
       }
     }
-    cmd += " " + _opt.launchfile;
+    cmd += " " + launchfile;
     std::string config = erbExec(cmd);
     run(config.c_str());
     return;
