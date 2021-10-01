@@ -7,6 +7,7 @@ Ignition @IGN_DESIGNATION_CAP@ library and how to use the library effectively.
 **Tutorials**
 
 1. \subpage basics "Ignition launch tutorial"
+1. \subpage install "Install instructions"
 
 ## License
 
