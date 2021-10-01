@@ -1,7 +1,5 @@
 \page install Installation
 
-Next Tutorial: \ref commandline
-
 # Install
 
 These instructions are for installing only Ignition Launch. If you're interested
