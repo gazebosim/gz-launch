@@ -2,13 +2,14 @@
 
 ### Ignition Launch 5.X.X (20XX-XX-XX)
 
-### Ignition Launch 5.0.0 (2021-09-XX)
+### Ignition Launch 5.0.0 (2021-10-01)
 
 1. Port ign-launch to Windows
     * [Pull request #120](https://github.com/ignitionrobotics/ign-launch/pull/120)
 
 1. Add standalone executables
     * [Pull request #121](https://github.com/ignitionrobotics/ign-launch/pull/121)
+    * [Pull request #131](https://github.com/ignitionrobotics/ign-launch/pull/131)
 
 1. Remove unused includes (fix build)
     * [Pull request #119](https://github.com/ignitionrobotics/ign-launch/pull/119)
