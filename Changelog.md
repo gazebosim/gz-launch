@@ -1,3 +1,7 @@
+## Ignition Launch 6.x
+
+### Ignition Launch 6.X.X (202X-XX-XX)
+
 ## Ignition Launch 5.x
 
 ### Ignition Launch 5.X.X (20XX-XX-XX)
