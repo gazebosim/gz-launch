@@ -64,6 +64,23 @@
 
 ## Ignition Launch 2.x
 
+### Ignition Launch 2.2.2 (2021-10-11)
+
+1. Master branch updates.
+    * [Pull request 98](https://github.com/ignitionrobotics/ign-launch/pull/98)
+
+1. Treat `IGN_LAUNCH_CONFIG_PATH` as a path list.
+    * [Pull request 93](https://github.com/ignitionrobotics/ign-launch/pull/93)
+
+1. Remove tools/code_check and update codecov.
+    * [Pull request 115](https://github.com/ignitionrobotics/ign-launch/pull/115)
+
+1. Update gtest for Windows compilation.
+    * [Pull request 122](https://github.com/ignitionrobotics/ign-launch/pull/122)
+
+1. Remove bitbucket-pipelines.yml.
+    * [Pull request 128](https://github.com/ignitionrobotics/ign-launch/pull/128)
+
 ### Ignition Launch 2.2.1 (2021-01-08)
 
 1.  Fix env parsing by placing it before executable parsing.
