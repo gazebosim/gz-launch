@@ -61,14 +61,14 @@ necessary prerequisites followed by building from source.
 1. Install third-party libraries:
 
     ```
-    sudo apt-get -y install cmake build-essential curl cppcheck g++-8 doxygen ruby-ronn libtinyxml2-dev software-properties-common
+    sudo apt -y install \
+      $(sort -u $(find . -iname 'packages-'`lsb_release -cs`'.apt' -o -iname 'packages.apt' | grep -v '/\.git/') | sed '/ignition\|sdf/d' | tr '\n' ' ')
     ```
 
 1. Install required Ignition libraries
 
     ```sh
     sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
-    sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-prerelease `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-prerelease.list'
     wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
     sudo apt-get update
     sudo apt-get -y install libignition-cmake2-dev libignition-gazebo2-dev
