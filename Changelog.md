@@ -1,6 +1,6 @@
 ## Ignition Launch 3.x
 
-### Ignition Launch 3.4.2 (2021-10-12)
+### Ignition Launch 3.4.2 (2021-10-14)
 
 1. All changes included in Ignition Launch 2.2.2.
 
