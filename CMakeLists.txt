@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5.1 FATAL_ERROR)
 #============================================================================
 # Initialize the project
 #============================================================================
-project(ignition-launch3 VERSION 3.4.1)
+project(ignition-launch3 VERSION 3.4.2)
 
 #============================================================================
 # Find ignition-cmake
