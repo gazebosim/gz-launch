@@ -3,21 +3,18 @@ cmake_minimum_required(VERSION 3.5.1 FATAL_ERROR)
 #============================================================================
 # Initialize the project
 #============================================================================
-project(ignition-launch3 VERSION 3.0.0)
+project(ignition-launch3 VERSION 3.4.2)
 
 #============================================================================
 # Find ignition-cmake
 #============================================================================
-find_package(ignition-cmake2 REQUIRED)
+find_package(ignition-cmake2 2.8.0 REQUIRED)
 set(IGN_CMAKE_VER ${ignition-cmake2_VERSION_MAJOR})
 
 #============================================================================
 # Configure the project
 #============================================================================
-ign_configure_project(VERSION_SUFFIX pre1)
-
-# Create cppcheck suppression list file.
-configure_file(tools/cppcheck.suppress.in ${CMAKE_BINARY_DIR}/cppcheck.suppress)
+ign_configure_project(VERSION_SUFFIX)
 
 #============================================================================
 # Set project-specific options
@@ -36,7 +33,8 @@ ign_find_package(TINYXML2 REQUIRED PRIVATE PRETTY tinyxml2)
 
 #--------------------------------------
 # Find ignition-common
-ign_find_package(ignition-common3 REQUIRED PRIVATE)
+ign_find_package(ignition-common3 REQUIRED VERSION 3.13
+  PRIVATE COMPONENTS graphics)
 set(IGN_COMMON_MAJOR_VER ${ignition-common3_VERSION_MAJOR})
 
 #--------------------------------------
@@ -46,17 +44,19 @@ set(IGN_PLUGIN_MAJOR_VER ${ignition-plugin1_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-tools
-ign_find_package(ignition-tools REQUIRED)
+ign_find_package(ignition-tools
+  REQUIRED
+  PKGCONFIG "ignition-tools")
 
 #--------------------------------------
 # Find ignition-transport
-ign_find_package(ignition-transport8 REQUIRED)
-set(IGN_TRANSPORT_MAJOR_VER ${ignition-transport8_VERSION_MAJOR})
+ign_find_package(ignition-transport9 REQUIRED)
+set(IGN_TRANSPORT_MAJOR_VER ${ignition-transport9_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-msgs
-ign_find_package(ignition-msgs5 REQUIRED)
-set(IGN_MSGS_MAJOR_VER ${ignition-msgs5_VERSION_MAJOR})
+ign_find_package(ignition-msgs6 REQUIRED)
+set(IGN_MSGS_MAJOR_VER ${ignition-msgs6_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-math
@@ -116,4 +116,20 @@ ign_create_packages()
 #============================================================================
 # Configure documentation
 #============================================================================
-ign_create_docs()
+configure_file(${CMAKE_SOURCE_DIR}/api.md.in ${CMAKE_BINARY_DIR}/api.md)
+configure_file(${CMAKE_SOURCE_DIR}/tutorials.md.in ${CMAKE_BINARY_DIR}/tutorials.md)
+
+ign_create_docs(
+  API_MAINPAGE_MD "${CMAKE_BINARY_DIR}/api.md"
+  TUTORIALS_MAINPAGE_MD "${CMAKE_BINARY_DIR}/tutorials.md"
+  TAGFILES
+   "${IGNITION-MATH_DOXYGEN_TAGFILE} = ${IGNITION-MATH_API_URL}"
+   "${IGNITION-MSGS_DOXYGEN_TAGFILE} = ${IGNITION-MSGS_API_URL}"
+   "${IGNITION-PHYSICS_DOXYGEN_TAGFILE} = ${IGNITION-PHYSICS_API_URL}"
+   "${IGNITION-PLUGIN_DOXYGEN_TAGFILE} = ${IGNITION-PLUGIN_API_URL}"
+   "${IGNITION-TRANSPORT_DOXYGEN_TAGFILE} = ${IGNITION-TRANSPORT_API_URL}"
+   "${IGNITION-SENSORS_DOXYGEN_TAGFILE} = ${IGNITION-SENSORS_API_URL}"
+   "${IGNITION-COMMON_DOXYGEN_TAGFILE} = ${IGNITION-COMMON_API_URL}"
+   "${IGNITION-GAZEBO_DOXYGEN_TAGFILE} = ${IGNITION-GAZEBO_API_URL}"
+   "${IGNITION-GUI_DOXYGEN_TAGFILE} = ${IGNITION-GUI_API_URL}"
+)

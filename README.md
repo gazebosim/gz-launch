@@ -9,14 +9,14 @@
 
 Build | Status
 -- | --
-Test coverage | [![codecov](https://codecov.io/gh/ignitionrobotics/ign-launch/branch/master/graph/badge.svg)](https://codecov.io/gh/ignitionrobotics/ign-launch)
-Ubuntu Bionic | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-master-bionic-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-master-bionic-amd64)
-Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-master-homebrew-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-master-homebrew-amd64)
-Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-master-windows7-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-master-windows7-amd64)
+Test coverage | [![codecov](https://codecov.io/gh/ignitionrobotics/ign-launch/branch/ign-launch3/graph/badge.svg)](https://codecov.io/gh/ignitionrobotics/ign-launch)
+Ubuntu Bionic | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-ign-launch3-bionic-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-ign-launch3-bionic-amd64)
+Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-ign-launch3-homebrew-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-ign-launch3-homebrew-amd64)
+Windows       | [![Build Status](https://build.osrfoundation.org/job/ign_launch-ign-3-win/badge/icon)](https://build.osrfoundation.org/job/ign_launch-ign-3-win/)
 
 Ignition Launch, a component of [Ignition
 Robotics](https://ignitionrobotics.org), provides a command line interface
-to run and manager application and plugins. 
+to run and manager application and plugins.
 
 # Table of Contents
 
@@ -112,7 +112,7 @@ necessary prerequisites followed by building from source.
     ```
 
     ```
-    sudo apt-get -y install libignition-cmake2-dev libignition-gazebo2-dev 
+    sudo apt-get -y install libignition-cmake2-dev libignition-gazebo2-dev
     ```
 
 ### Building from source
@@ -137,7 +137,7 @@ necessary prerequisites followed by building from source.
 
 # Usage
 
-Sample launch configuration files are in the [examples directory](https://github.com/ignitionrobotics/ign-launch/blob/master/examples/).
+Sample launch configuration files are in the [examples directory](https://github.com/ignitionrobotics/ign-launch/blob/ign-launch3/examples/).
 
 **Example**
 
@@ -244,13 +244,12 @@ ign-launch
 
 # Contributing
 
-Please see
-[CONTRIBUTING.md](https://github.com/ignitionrobotics/ign-gazebo/blob/master/CONTRIBUTING.md).
+Please see the [contribution guide](https://ignitionrobotics.org/docs/all/contributing).
 
 # Code of Conduct
 
 Please see
-[CODE_OF_CONDUCT.md](https://github.com/ignitionrobotics/ign-gazebo/blob/master/CODE_OF_CONDUCT.md).
+[CODE_OF_CONDUCT.md](https://github.com/ignitionrobotics/ign-gazebo/blob/main/CODE_OF_CONDUCT.md).
 
 # Versioning
 
@@ -258,4 +257,4 @@ This library uses [Semantic Versioning](https://semver.org/). Additionally, this
 
 # License
 
-This library is licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0). See also the [LICENSE](https://github.com/ignitionrobotics/ign-launch/blob/master/LICENSE) file.
+This library is licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0). See also the [LICENSE](https://github.com/ignitionrobotics/ign-launch/blob/main/LICENSE) file.
