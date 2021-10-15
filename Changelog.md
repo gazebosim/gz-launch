@@ -2,6 +2,10 @@
 
 ### Ignition Launch 4.X.X (20XX-XX-XX)
 
+### Ignition Launch 4.1.0 (2021-10-14)
+
+1. All changes included in Ignition Launch 3.4.2.
+
 ### Ignition Launch 4.0.0 (2021-03-30)
 
 1. Bump in edifice: ign-common4
