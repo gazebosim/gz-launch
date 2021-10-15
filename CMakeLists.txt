@@ -20,6 +20,10 @@ ign_configure_project(VERSION_SUFFIX)
 # Set project-specific options
 #============================================================================
 
+# Set the IGN_LIBRARY_PATH, which is used in cmdlaunch.rb.in. 
+# This variable is also set by the bazel build.
+set(IGN_LIBRARY_PATH "${CMAKE_INSTALL_PREFIX}/${IGN_LIB_INSTALL_DIR}")
+
 set(IGN_LAUNCH_PLUGIN_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/${IGN_LIB_INSTALL_DIR}/ign-${IGN_DESIGNATION}-${PROJECT_VERSION_MAJOR}/plugins/")
 
 #============================================================================

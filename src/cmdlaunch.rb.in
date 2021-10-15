@@ -31,6 +31,7 @@ require 'erb'
 # Constants.
 LIBRARY_NAME = '@IGN_LIBRARY_NAME@'
 LIBRARY_VERSION = '@PROJECT_VERSION_FULL@'
+LIBRARY_PATH ='@IGN_LIBRARY_PATH@'
 
 COMMON_OPTIONS =
                "  -h [--help]              Print this help message.\n"\
@@ -121,13 +122,12 @@ class Cmd
     options = parse(args)
 
      if LIBRARY_NAME[0] == '/'
-       # If the first character is a slash, we'll assume that we've been given an
-       # absolute path to the library. This is only used during test mode.
+       # If the first character is a slash, we'll assume that we've been given
+       # an absolute path to the library. This is only used during test mode.
        plugin = LIBRARY_NAME
      else
-       # We're assuming that the library path is relative to the current
-       # location of this script.
-       plugin = File.expand_path(File.join(File.dirname(__FILE__), LIBRARY_NAME))
+       # Construct the path to the library based on LIBRARY_PATH variable. 
+       plugin = File.expand_path(File.join(LIBRARY_PATH, LIBRARY_NAME))
      end
 
     # Read the plugin that handles the command.
