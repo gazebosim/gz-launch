@@ -2,6 +2,10 @@
 
 ### Ignition Launch 5.X.X (20XX-XX-XX)
 
+### Ignition Launch 5.1.0 (2021-10-01)
+
+1. All changes included in Ignition Launch 4.1.0.
+
 ### Ignition Launch 5.0.0 (2021-10-01)
 
 1. Port ign-launch to Windows
