@@ -85,8 +85,6 @@ set(cmd_script_configured "${cmd_script_generated}.configured")
 # within the install directory structure.
 set(launch_exe_location "../../../${CMAKE_INSTALL_LIBDIR}/ignition/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}/$<TARGET_FILE_NAME:${launch_executable}>")
 
-message("launch_exe_location " ${launch_exe_location})
-
 configure_file(
   "cmd${IGN_DESIGNATION}.rb.in"
   "${cmd_script_configured}"
