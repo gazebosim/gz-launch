@@ -54,13 +54,13 @@ ign_find_package(ignition-tools
 
 #--------------------------------------
 # Find ignition-transport
-ign_find_package(ignition-transport11 REQUIRED)
-set(IGN_TRANSPORT_MAJOR_VER ${ignition-transport11_VERSION_MAJOR})
+ign_find_package(ignition-transport12 REQUIRED)
+set(IGN_TRANSPORT_MAJOR_VER ${ignition-transport12_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-msgs
-ign_find_package(ignition-msgs8 REQUIRED)
-set(IGN_MSGS_MAJOR_VER ${ignition-msgs8_VERSION_MAJOR})
+ign_find_package(ignition-msgs9 REQUIRED)
+set(IGN_MSGS_MAJOR_VER ${ignition-msgs9_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-math
