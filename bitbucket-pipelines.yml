@@ -28,14 +28,14 @@ pipelines:
           - apt-get -y install
             libignition-cmake2-dev
             libignition-common4-dev
-            libignition-fuel-tools7-dev
+            libignition-fuel-tools8-dev
             libignition-math6-dev
             libignition-math6-eigen3-dev
-            libignition-msgs8-dev
+            libignition-msgs9-dev
             libignition-physics5-dev
             libignition-plugin-dev
             libignition-tools-dev
-            libignition-transport11-dev
+            libignition-transport12-dev
             libsdformat12-dev
             # libignition-gazebo7-dev
             # libignition-gui7-dev
