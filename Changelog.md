@@ -6,13 +6,14 @@
 
 ### Ignition Launch 5.X.X (20XX-XX-XX)
 
-### Ignition Launch 5.0.0 (2021-09-XX)
+### Ignition Launch 5.0.0 (2021-10-01)
 
 1. Port ign-launch to Windows
     * [Pull request #120](https://github.com/ignitionrobotics/ign-launch/pull/120)
 
 1. Add standalone executables
     * [Pull request #121](https://github.com/ignitionrobotics/ign-launch/pull/121)
+    * [Pull request #131](https://github.com/ignitionrobotics/ign-launch/pull/131)
 
 1. Remove unused includes (fix build)
     * [Pull request #119](https://github.com/ignitionrobotics/ign-launch/pull/119)
@@ -27,6 +28,10 @@
 ## Ignition Launch 4.x
 
 ### Ignition Launch 4.X.X (20XX-XX-XX)
+
+### Ignition Launch 4.1.0 (2021-10-14)
+
+1. All changes included in Ignition Launch 3.4.2.
 
 ### Ignition Launch 4.0.0 (2021-03-30)
 
@@ -43,6 +48,10 @@
     * [Pull request #69](https://github.com/ignitionrobotics/ign-launch/pull/69)
 
 ## Ignition Launch 3.x
+
+### Ignition Launch 3.4.2 (2021-10-14)
+
+1. All changes included in Ignition Launch 2.2.2.
 
 ### Ignition Launch 3.4.1 (2021-07-15)
 
@@ -107,6 +116,23 @@
     * [BitBucket pull request 64](https://osrf-migration.github.io/ignition-gh-pages/#!/ignitionrobotics/ign-launch/pull-requests/64)
 
 ## Ignition Launch 2.x
+
+### Ignition Launch 2.2.2 (2021-10-11)
+
+1. Master branch updates.
+    * [Pull request 98](https://github.com/ignitionrobotics/ign-launch/pull/98)
+
+1. Treat `IGN_LAUNCH_CONFIG_PATH` as a path list.
+    * [Pull request 93](https://github.com/ignitionrobotics/ign-launch/pull/93)
+
+1. Remove tools/code_check and update codecov.
+    * [Pull request 115](https://github.com/ignitionrobotics/ign-launch/pull/115)
+
+1. Update gtest for Windows compilation.
+    * [Pull request 122](https://github.com/ignitionrobotics/ign-launch/pull/122)
+
+1. Remove bitbucket-pipelines.yml.
+    * [Pull request 128](https://github.com/ignitionrobotics/ign-launch/pull/128)
 
 ### Ignition Launch 2.2.1 (2021-01-08)
 
