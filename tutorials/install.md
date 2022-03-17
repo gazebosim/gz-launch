@@ -19,7 +19,7 @@ We recommend following the [Binary Install](#binary-install) instructions to get
 
 The [Source Install](#source-install) instructions should be used if you need the very latest software improvements, you need to modify the code, or you plan to make a contribution.
 
-## Ubuntu 18.04 or above
+## Ubuntu 20.04 or above
 
 On Ubuntu systems, `apt` can be used to install `ignition-launch`:
 
@@ -49,14 +49,14 @@ which version you need.
 # Source Install
 
 
-## Ubuntu 18.04 or above
+## Ubuntu 20.04 or above
 
 Source installation can be performed in UNIX systems by first installing the
 necessary prerequisites followed by building from source.
 
 ### Prerequisites
 
-**[Ubuntu Bionic](http://releases.ubuntu.com/18.04/)**
+**[Ubuntu Focal](http://releases.ubuntu.com/20.04/)** or higher
 
 1. Install third-party libraries:
 
