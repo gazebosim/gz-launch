@@ -2,7 +2,7 @@
 
 ### Ignition Launch 5.X.X (20XX-XX-XX)
 
-### Ignition Launch 5.1.0 (2021-03-21)
+### Ignition Launch 5.1.0 (2022-03-21)
 1. Use exec instead of popen to run ign-launch binary
     * [Pull request #151](https://github.com/ignitionrobotics/ign-launch/pull/151)
 
