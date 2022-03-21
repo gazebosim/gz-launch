@@ -2,6 +2,16 @@
 
 ### Ignition Launch 5.X.X (20XX-XX-XX)
 
+### Ignition Launch 5.1.0 (2021-03-21)
+1. Use exec instead of popen to run ign-launch binary
+    * [Pull request #151](https://github.com/ignitionrobotics/ign-launch/pull/151)
+
+1. Expose headless_rendering sdf tag
+    * [Pull request #148](https://github.com/ignitionrobotics/ign-launch/pull/148)
+
+1. Remove spammy CMake message
+    * [Pull request #142](https://github.com/ignitionrobotics/ign-launch/pull/142)
+
 ### Ignition Launch 5.0.0 (2021-10-01)
 
 1. Port ign-launch to Windows
