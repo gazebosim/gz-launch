@@ -20,6 +20,6 @@ libwebsockets-dev
 libxi-dev
 libxmu-dev
 libyaml-dev
-python-yaml
+python3-yaml
 uuid-dev
 xvfb
