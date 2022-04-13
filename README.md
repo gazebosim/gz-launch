@@ -9,9 +9,9 @@
 
 Build | Status
 -- | --
-Test coverage | [![codecov](https://codecov.io/gh/ignitionrobotics/ign-launch/branch/ign-launch6/graph/badge.svg)](https://codecov.io/gh/ignitionrobotics/ign-launch)
-Ubuntu Focal | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-ign-launch6-focal-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-ign-launch6-focal-amd64)
-Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-ign-launch6-homebrew-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-ign-launch6-homebrew-amd64)
+Test coverage | [![codecov](https://codecov.io/gh/ignitionrobotics/ign-launch/branch/main/graph/badge.svg)](https://codecov.io/gh/ignitionrobotics/ign-launch)
+Ubuntu Focal | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-main-focal-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-main-focal-amd64)
+Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-main-homebrew-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-main-homebrew-amd64)
 Windows       | [![Build Status](https://build.osrfoundation.org/job/ign_launch-ign-5-win/badge/icon)](https://build.osrfoundation.org/job/ign_launch-ign-5-win/)
 
 Ignition Launch, a component of [Ignition
