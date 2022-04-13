@@ -9,7 +9,7 @@ libignition-math7-dev
 libignition-math7-eigen3-dev
 libignition-msgs9-dev
 libignition-physics6-dev
-libignition-plugin-dev
+libignition-plugin2-dev
 libignition-rendering7-dev
 libignition-sensors7-dev
 libignition-tools-dev

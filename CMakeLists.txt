@@ -38,13 +38,13 @@ set(IGN_COMMON_MAJOR_VER ${ignition-common5_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-utils
-ign_find_package(ignition-utils1 REQUIRED COMPONENTS cli)
-set(IGN_UTILS_VER ${ignition-utils1_VERSION_MAJOR})
+ign_find_package(ignition-utils2 REQUIRED COMPONENTS cli)
+set(IGN_UTILS_VER ${ignition-utils2_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-plugin
-ign_find_package(ignition-plugin1 REQUIRED_BY launch COMPONENTS loader register)
-set(IGN_PLUGIN_MAJOR_VER ${ignition-plugin1_VERSION_MAJOR})
+ign_find_package(ignition-plugin2 REQUIRED_BY launch COMPONENTS loader register)
+set(IGN_PLUGIN_MAJOR_VER ${ignition-plugin2_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-tools
