@@ -48,7 +48,7 @@ set(IGN_PLUGIN_MAJOR_VER ${ignition-plugin2_VERSION_MAJOR})
 
 #--------------------------------------
 # Find ignition-tools
-ign_find_package(ignition-tools
+ign_find_package(ignition-tools2
   REQUIRED
   PKGCONFIG "ignition-tools")
 
