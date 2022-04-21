@@ -334,6 +334,15 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     serverConfig.AddPlugin({entityName, entityType, file, name, sdf});
   }
 
+  // Set headless rendering
+  elem = _elem->FirstChildElement("headless_rendering");
+  if (elem)
+  {
+    std::string str = elem->GetText();
+    serverConfig.SetHeadlessRendering(str == "1" ||
+        common::lowercase(str) == "true");
+  }
+
   // Create and run the simulation server
   this->server.reset(new gazebo::Server(serverConfig));
   this->server->Run(false, 0, !run);
