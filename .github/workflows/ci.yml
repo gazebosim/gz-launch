@@ -24,4 +24,4 @@ jobs:
         uses: actions/checkout@v2
       - name: Compile and test
         id: ci
-        uses: ignition-tooling/action-ignition-ci@jammy
+        uses: ignition-tooling/action-ignition-ci@jrivero/update_gzdev_name
