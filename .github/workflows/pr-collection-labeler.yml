@@ -1,6 +1,6 @@
 name: PR Collection Labeler
 
-on: pull_request_target
+on: pull_request
 
 jobs:
   pr_collection_labeler:
