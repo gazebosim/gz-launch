@@ -7,7 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Add collection labels
-      if: github.event.action == 'opened'
       uses: ignition-tooling/pr-collection-labeler@chapulina/debug
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
