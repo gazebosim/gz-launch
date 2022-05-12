@@ -14,12 +14,12 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_PLUGIN_HH_
-#define IGNITION_LAUNCH_PLUGIN_HH_
+#ifndef GZ_LAUNCH_PLUGIN_HH_
+#define GZ_LAUNCH_PLUGIN_HH_
 
 #include <tinyxml2.h>
-#include <ignition/plugin/SpecializedPluginPtr.hh>
-#include <ignition/launch/Export.hh>
+#include <gz/plugin/SpecializedPluginPtr.hh>
+#include <gz/launch/Export.hh>
 
 namespace ignition
 {
