@@ -5,6 +5,7 @@ include_directories (
   ${PROJECT_BINARY_DIR}/include/
 )
 
+configure_file (test_config.hh.in ${PROJECT_BINARY_DIR}/include/gz/launch/test_config.hh)
 configure_file (test_config.hh.in ${PROJECT_BINARY_DIR}/include/ignition/launch/test_config.hh)
 
 # Build gtest
