@@ -25,7 +25,7 @@
 #include "MessageDefinitions.hh"
 #include "WebsocketServer.hh"
 
-using namespace ignition::launch;
+using namespace gz::launch;
 
 /// \brief Construct a websocket frame header.
 /// \param[in] _op The operation string.

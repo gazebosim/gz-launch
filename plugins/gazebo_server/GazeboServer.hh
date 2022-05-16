@@ -22,7 +22,7 @@
 #include <ignition/gazebo/Server.hh>
 #include "ignition/launch/Plugin.hh"
 
-namespace ignition
+namespace gz
 {
   namespace launch
   {

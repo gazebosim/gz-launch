@@ -27,7 +27,7 @@
 
 #include "Joystick.hh"
 
-using namespace ignition::launch;
+using namespace gz::launch;
 
 /////////////////////////////////////////////////
 Joystick::Joystick()

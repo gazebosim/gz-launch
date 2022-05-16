@@ -30,7 +30,7 @@
 
 #include "JoyToTwist.hh"
 
-using namespace ignition::launch;
+using namespace gz::launch;
 
 //////////////////////////////////////////////////
 // String to vector helper function.

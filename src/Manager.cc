@@ -61,7 +61,7 @@
 
 #include "vendor/backward.hpp"
 
-using namespace ignition::launch;
+using namespace gz::launch;
 using namespace std::chrono_literals;
 
 #ifdef _WIN32

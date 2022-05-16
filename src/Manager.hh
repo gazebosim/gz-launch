@@ -24,7 +24,7 @@
 
 #include <ignition/launch/Export.hh>
 
-namespace ignition
+namespace gz
 {
   namespace launch
   {

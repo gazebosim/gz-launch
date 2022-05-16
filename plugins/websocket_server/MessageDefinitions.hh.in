@@ -17,7 +17,7 @@
 #ifndef IGNITION_LAUNCH_WEBSOCKETSERVER_MESSAGEDEFINITIONS_HH_
 #define IGNITION_LAUNCH_WEBSOCKETSERVER_MESSAGEDEFINITIONS_HH_
 
-namespace ignition
+namespace gz
 {
   namespace launch
   {

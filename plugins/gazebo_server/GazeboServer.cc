@@ -19,8 +19,8 @@
 #include <sdf/sdf.hh>
 #include "GazeboServer.hh"
 
-using namespace ignition;
-using namespace ignition::launch;
+using namespace gz;
+using namespace gz::launch;
 
 /////////////////////////////////////////////////
 void copyElement(sdf::ElementPtr _sdf, const tinyxml2::XMLElement *_xml)

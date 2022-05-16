@@ -25,8 +25,8 @@
 
 #include "GazeboGui.hh"
 
-using namespace ignition;
-using namespace ignition::launch;
+using namespace gz;
+using namespace gz::launch;
 
 /////////////////////////////////////////////////
 GazeboGui::GazeboGui()

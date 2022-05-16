@@ -28,7 +28,7 @@
 #include <ignition/common/Util.hh>
 #include <libwebsockets.h>
 
-namespace ignition
+namespace gz
 {
   namespace launch
   {
