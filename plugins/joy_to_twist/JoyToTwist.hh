@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_JOYTOTWIST_HH_
-#define IGNITION_LAUNCH_JOYTOTWIST_HH_
+#ifndef GZ_LAUNCH_JOYTOTWIST_HH_
+#define GZ_LAUNCH_JOYTOTWIST_HH_
 
 #include <string>
 #include <thread>

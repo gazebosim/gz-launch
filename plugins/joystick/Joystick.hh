@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_JOYSTICK_HH_
-#define IGNITION_LAUNCH_JOYSTICK_HH_
+#ifndef GZ_LAUNCH_JOYSTICK_HH_
+#define GZ_LAUNCH_JOYSTICK_HH_
 
 #include <thread>
 #include <ignition/launch/Plugin.hh>

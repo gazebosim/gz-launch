@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_GAZEBOSERVER_HH_
-#define IGNITION_LAUNCH_GAZEBOSERVER_HH_
+#ifndef GZ_LAUNCH_GAZEBOSERVER_HH_
+#define GZ_LAUNCH_GAZEBOSERVER_HH_
 
 #include <memory>
 #include <ignition/plugin/Register.hh>

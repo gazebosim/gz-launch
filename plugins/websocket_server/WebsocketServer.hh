@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_WEBSOCKETSERVER_HH_
-#define IGNITION_LAUNCH_WEBSOCKETSERVER_HH_
+#ifndef GZ_LAUNCH_WEBSOCKETSERVER_HH_
+#define GZ_LAUNCH_WEBSOCKETSERVER_HH_
 
 #include <list>
 #include <map>
