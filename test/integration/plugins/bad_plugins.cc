@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-SegfaultOnLoad::SegfaultOnLoad(): ignition::launch::Plugin() {}
+SegfaultOnLoad::SegfaultOnLoad(): gz::launch::Plugin() {}
 
 bool SegfaultOnLoad::Load(const tinyxml2::XMLElement * /*_elem*/)
 {
@@ -31,4 +31,4 @@ bool SegfaultOnLoad::Load(const tinyxml2::XMLElement * /*_elem*/)
   return true;
 }
 
-IGNITION_ADD_PLUGIN(SegfaultOnLoad, ignition::launch::Plugin)
+IGNITION_ADD_PLUGIN(SegfaultOnLoad, gz::launch::Plugin)

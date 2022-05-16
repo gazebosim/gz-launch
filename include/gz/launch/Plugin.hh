@@ -38,8 +38,8 @@ namespace gz
     };
 
     /// \brief Pointer to a launch plugin.
-    using PluginPtr = ignition::plugin::SpecializedPluginPtr<
-      ignition::launch::Plugin>;
+    using PluginPtr = gz::plugin::SpecializedPluginPtr<
+      gz::launch::Plugin>;
     }
   }
 }

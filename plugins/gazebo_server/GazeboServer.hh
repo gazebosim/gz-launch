@@ -30,7 +30,7 @@ namespace gz
     ///
     /// # Example usage
     /// <!-- Run the gazebo server with a set of plugins -->
-    /// <plugin name="ignition::launch::GazeboServer"
+    /// <plugin name="gz::launch::GazeboServer"
     ///         filename="ignition-launch-gazebo">
     ///   <!-- The SDF file to run -->
     ///   <world_file>diff_drive.sdf</world_file>
@@ -44,7 +44,7 @@ namespace gz
     ///
     ///   <!-- Specify any other ignition gazebo plugins here. -->
     /// </plugin>
-    class GazeboServer : public ignition::launch::Plugin
+    class GazeboServer : public gz::launch::Plugin
     {
       /// \brief Constructor.
       public: GazeboServer();
@@ -63,6 +63,6 @@ namespace gz
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(ignition::launch::GazeboServer, ignition::launch::Plugin)
+IGNITION_ADD_PLUGIN(gz::launch::GazeboServer, gz::launch::Plugin)
 
 #endif

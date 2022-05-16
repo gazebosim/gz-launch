@@ -33,7 +33,7 @@ namespace gz
   namespace launch
   {
     /// \brief Reads from a USB joystick device and outputs
-    ///  ignition::msgs::WebsocketServer messages.
+    ///  gz::msgs::WebsocketServer messages.
     ///
     /// # Plugin parameters
     ///
@@ -130,8 +130,8 @@ namespace gz
     /// 1. Define a launch file by copying the following contents to a file
     ///    called `websocket.ign`.
     ///
-    /// <!-- Inform ignition::Launch about the JoyToTwist plugin -->
-    ///  <plugin name="ignition::launch::WebsocketServer"
+    /// <!-- Inform gz::Launch about the JoyToTwist plugin -->
+    ///  <plugin name="gz::launch::WebsocketServer"
     ///      filename="ignition-launch-joystick0">
     ///
     ///    <!-- Publication Hz -->
@@ -144,7 +144,7 @@ namespace gz
     ///
     /// 3. Open the [index.html](https://github.com/ignitionrobotics/ign-launch/blob/main/plugins/websocket_server/index.html) webpage.
     ///
-    class WebsocketServer : public ignition::launch::Plugin
+    class WebsocketServer : public gz::launch::Plugin
     {
       /// \brief Constructor
       public: WebsocketServer();
@@ -160,14 +160,14 @@ namespace gz
 
       private: void OnWebsocketSubscribedMessage(const char *_data,
                    const size_t _size,
-                   const ignition::transport::MessageInfo &_info);
+                   const gz::transport::MessageInfo &_info);
 
       /// \brief Callback when an image is received on a topic
       /// \param[in] _msg Image msg
       /// \param[in] _info ign transport message info
       private: void OnWebsocketSubscribedImageMessage(
-          const ignition::msgs::Image &_msg,
-          const ignition::transport::MessageInfo &_info);
+          const gz::msgs::Image &_msg,
+          const gz::transport::MessageInfo &_info);
 
       /// \brief Callback that is triggered when a new connection is
       /// established.
@@ -195,7 +195,7 @@ namespace gz
       public: bool UpdateMsgTypeSubscriptionCount(const std::string &_topic,
           int _socketId, bool _subscribe);
 
-      private: ignition::transport::Node node;
+      private: gz::transport::Node node;
 
       private: bool run = true;
       private: std::thread *thread = nullptr;
@@ -317,6 +317,6 @@ namespace gz
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(ignition::launch::WebsocketServer, ignition::launch::Plugin)
+IGNITION_ADD_PLUGIN(gz::launch::WebsocketServer, gz::launch::Plugin)
 
 #endif

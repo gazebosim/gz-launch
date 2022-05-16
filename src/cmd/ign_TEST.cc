@@ -54,7 +54,7 @@ std::string customExecStr(std::string _cmd)
 
 std::string get_config_path(const std::string filename)
 {
-  return(ignition::common::joinPaths(
+  return(gz::common::joinPaths(
     std::string(PROJECT_SOURCE_PATH), "test", "config", filename));
 }
 

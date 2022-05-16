@@ -18,7 +18,7 @@
 #include <ignition/plugin/Register.hh>
 #include "ignition/launch/Plugin.hh"
 
-class SegfaultOnLoad : public ignition::launch::Plugin
+class SegfaultOnLoad : public gz::launch::Plugin
 {
   public: SegfaultOnLoad();
   public: virtual bool Load(

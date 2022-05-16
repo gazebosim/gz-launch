@@ -38,7 +38,7 @@ namespace gz
     ///
     /// <!-- The GUI wants to be in its own process, so wrap the plugin -->
     /// <executable_wrapper>
-    ///   <plugin name="ignition::launch::GazeboGui"
+    ///   <plugin name="gz::launch::GazeboGui"
     ///           filename="ignition-launch-gazebogui">
     ///
     ///   <!-- Elements parsed by ign-launch -->
@@ -56,7 +56,7 @@ namespace gz
     ///
     ///   </plugin>
     /// </executable_wrapper>
-    class GazeboGui : public ignition::launch::Plugin
+    class GazeboGui : public gz::launch::Plugin
     {
       /// \brief Constructor.
       public: GazeboGui();
@@ -72,6 +72,6 @@ namespace gz
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(ignition::launch::GazeboGui, ignition::launch::Plugin)
+IGNITION_ADD_PLUGIN(gz::launch::GazeboGui, gz::launch::Plugin)
 
 #endif

@@ -36,12 +36,12 @@ extern "C" const char *configPath()
 //////////////////////////////////////////////////
 extern "C" void cmdVerbosity(const int _verbosity)
 {
-  ignition::common::Console::SetVerbosity(_verbosity);
+  gz::common::Console::SetVerbosity(_verbosity);
 }
 
 //////////////////////////////////////////////////
 extern "C" int run(const char *_config)
 {
-  ignition::launch::Manager mgr;
+  gz::launch::Manager mgr;
   return mgr.RunConfig(_config);
 }

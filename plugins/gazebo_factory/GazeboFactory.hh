@@ -29,7 +29,7 @@ namespace gz
     /// \brief Spawns entities into simulation.
     ///
     /// # Example usage
-    ///  <plugin name="ignition::launch::GazeboFactory"
+    ///  <plugin name="gz::launch::GazeboFactory"
     ///          filename="ignition-launch-gazebo-factory">
     ///
     ///   <spawn>
@@ -59,7 +59,7 @@ namespace gz
     ///   ...
     ///   </spawn>
     /// </plugin>
-    class GazeboFactory : public ignition::launch::Plugin
+    class GazeboFactory : public gz::launch::Plugin
     {
       /// \brief Constructor.
       public: GazeboFactory();
@@ -90,6 +90,6 @@ namespace gz
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(ignition::launch::GazeboFactory, ignition::launch::Plugin)
+IGNITION_ADD_PLUGIN(gz::launch::GazeboFactory, gz::launch::Plugin)
 
 #endif

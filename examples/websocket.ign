@@ -3,7 +3,7 @@
 
   <!-- Load a websocket server that provides access to Ignition Transport
        topics through websockets.-->
-  <plugin name="ignition::launch::WebsocketServer"
+  <plugin name="gz::launch::WebsocketServer"
           filename="ignition-launch-websocket-server">
     <publication_hz>30</publication_hz>
     <port>9002</port>
