@@ -50,7 +50,7 @@ namespace gz
     ///         <uri>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/X2 UGV/1</uri>
     ///         <!-- Publish robot state information -->
     ///         <plugin filename="ignition-gazebo-state-publisher-system"
-    ///              name="ignition::gazebo::systems::StatePublisher"></plugin>
+    ///              name="gz::sim::systems::StatePublisher"></plugin>
     ///       </include>
     ///     </sdf>
     ///   </spawn>

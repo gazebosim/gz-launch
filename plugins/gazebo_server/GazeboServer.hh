@@ -39,7 +39,7 @@ namespace gz
     ///   <plugin entity_name="<%= worldName %>"
     ///           entity_type="world"
     ///           filename="ignition-gazebo-physics-system"
-    ///           name="ignition::gazebo::systems::v0::Physics">
+    ///           name="gz::sim::systems::v0::Physics">
     ///   </plugin>
     ///
     ///   <!-- Specify any other ignition gazebo plugins here. -->
