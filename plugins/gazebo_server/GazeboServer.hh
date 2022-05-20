@@ -57,7 +57,7 @@ namespace gz
                   const tinyxml2::XMLElement *_elem) override final;
 
       /// \brief Private data pointer
-      private: std::unique_ptr<gazebo::Server> server;
+      private: std::unique_ptr<sim::Server> server;
     };
   }
 }
