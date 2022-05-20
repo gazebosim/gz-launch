@@ -20,16 +20,16 @@
 #include <memory>
 #include <string>
 
-// #include <ignition/common/SuppressWarning.hh>
+// #include <gz/common/SuppressWarning.hh>
 
-#include <ignition/launch/Export.hh>
+#include <gz/launch/Export.hh>
 
 namespace gz
 {
   namespace launch
   {
     // Inline bracket to help doxygen filtering.
-    inline namespace IGNITION_LAUNCH_VERSION_NAMESPACE {
+    inline namespace GZ_LAUNCH_VERSION_NAMESPACE {
     // Forward declaration of the private data class
     class ManagerPrivate;
 

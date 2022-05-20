@@ -21,9 +21,9 @@
 
 #include <string>
 
-#include <ignition/common/Filesystem.hh>
+#include <gz/common/Filesystem.hh>
 
-#include "ignition/launch/test_config.hh"  // NOLINT(build/include)
+#include "gz/launch/test_config.hh"  // NOLINT(build/include)
 
 #ifdef _WIN32
 #define popen _popen

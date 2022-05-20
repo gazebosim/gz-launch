@@ -18,9 +18,9 @@
 #define GZ_LAUNCH_GAZEBOGUI_HH_
 
 #include <memory>
-#include <ignition/gui/Application.hh>
-#include <ignition/plugin/Register.hh>
-#include <ignition/launch/Plugin.hh>
+#include <gz/gui/Application.hh>
+#include <gz/plugin/Register.hh>
+#include <gz/launch/Plugin.hh>
 
 namespace gz
 {

@@ -18,9 +18,9 @@
 #define GZ_LAUNCH_GAZEBOSERVER_HH_
 
 #include <memory>
-#include <ignition/plugin/Register.hh>
-#include <ignition/gazebo/Server.hh>
-#include "ignition/launch/Plugin.hh"
+#include <gz/plugin/Register.hh>
+#include <gz/sim/Server.hh>
+#include "gz/launch/Plugin.hh"
 
 namespace gz
 {

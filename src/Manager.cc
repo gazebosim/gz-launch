@@ -50,14 +50,14 @@
 #include <utility>
 #include <vector>
 
-#include <ignition/common/Console.hh>
-#include <ignition/common/SignalHandler.hh>
-#include <ignition/common/SystemPaths.hh>
-#include <ignition/math/Rand.hh>
-#include <ignition/plugin/Loader.hh>
+#include <gz/common/Console.hh>
+#include <gz/common/SignalHandler.hh>
+#include <gz/common/SystemPaths.hh>
+#include <gz/math/Rand.hh>
+#include <gz/plugin/Loader.hh>
 
-#include "ignition/launch/config.hh"
-#include "ignition/launch/Plugin.hh"
+#include "gz/launch/config.hh"
+#include "gz/launch/Plugin.hh"
 
 #include "vendor/backward.hpp"
 

@@ -15,8 +15,8 @@
  *
  */
 
-#include <ignition/plugin/Register.hh>
-#include "ignition/launch/Plugin.hh"
+#include <gz/plugin/Register.hh>
+#include "gz/launch/Plugin.hh"
 
 class SegfaultOnLoad : public gz::launch::Plugin
 {

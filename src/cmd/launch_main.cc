@@ -16,12 +16,12 @@
  *
  */
 
-#include <ignition/common/Console.hh>
-#include <ignition/common/Util.hh>
+#include <gz/common/Console.hh>
+#include <gz/common/Util.hh>
 
-#include <ignition/utils/cli/CLI.hpp>
+#include <gz/utils/cli/CLI.hpp>
 
-#include "ignition/launch/config.hh"
+#include "gz/launch/config.hh"
 #include "ign.hh"
 
 #ifdef _WIN32

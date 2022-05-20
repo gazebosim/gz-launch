@@ -17,11 +17,11 @@
 
 #include <fstream>
 
-#include <ignition/common/Console.hh>
-#include <ignition/common/Filesystem.hh>
-#include <ignition/gazebo/config.hh>
-#include <ignition/gui/MainWindow.hh>
-#include "ignition/gazebo/gui/Gui.hh"
+#include <gz/common/Console.hh>
+#include <gz/common/Filesystem.hh>
+#include <gz/sim/config.hh>
+#include <gz/gui/MainWindow.hh>
+#include "gz/sim/gui/Gui.hh"
 
 #include "GazeboGui.hh"
 

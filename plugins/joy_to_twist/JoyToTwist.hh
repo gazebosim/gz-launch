@@ -19,11 +19,11 @@
 
 #include <string>
 #include <thread>
-#include <ignition/launch/Plugin.hh>
-#include <ignition/math/Vector3.hh>
-#include <ignition/msgs.hh>
-#include <ignition/plugin/Register.hh>
-#include <ignition/transport/Node.hh>
+#include <gz/launch/Plugin.hh>
+#include <gz/math/Vector3.hh>
+#include <gz/msgs.hh>
+#include <gz/plugin/Register.hh>
+#include <gz/transport/Node.hh>
 
 namespace gz
 {
