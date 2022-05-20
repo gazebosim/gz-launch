@@ -38,7 +38,7 @@ namespace gz
     ///   <!-- The physics system -->
     ///   <plugin entity_name="<%= worldName %>"
     ///           entity_type="world"
-    ///           filename="gz-sim-physics-system"
+    ///           filename="ignition-gazebo-physics-system"
     ///           name="gz::sim::systems::v0::Physics">
     ///   </plugin>
     ///
