@@ -12,7 +12,10 @@ release will remove the deprecated code.
   a single path could be set here, and setting a path list would break the whole
   launch file lookup functionality.
 
-* The `ignition` namespace is deprecated and will be removed in future versions.
+- The `ignition` namespace is deprecated and will be removed in future versions.
   Use `gz` instead.
+
+- Header files under `ignition/...` are deprecated and will be removed in future versions.
+  Use `gz/...` instead.
 
 ## Ignition Launch 0.X to N.M
