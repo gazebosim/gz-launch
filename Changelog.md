@@ -97,7 +97,7 @@
 1. Image streaming over websocket.
     * [Pull request 97](https://github.com/ignitionrobotics/ign-launch/pull/97)
 
-1. Treat IGN_LAUNCH_CONFIG_PATH as a path list.
+1. Treat GZ_LAUNCH_CONFIG_PATH as a path list.
     * [Pull request 93](https://github.com/ignitionrobotics/ign-launch/pull/93)
 
 
@@ -132,7 +132,7 @@
 1. Master branch updates.
     * [Pull request 98](https://github.com/ignitionrobotics/ign-launch/pull/98)
 
-1. Treat `IGN_LAUNCH_CONFIG_PATH` as a path list.
+1. Treat `GZ_LAUNCH_CONFIG_PATH` as a path list.
     * [Pull request 93](https://github.com/ignitionrobotics/ign-launch/pull/93)
 
 1. Remove tools/code_check and update codecov.

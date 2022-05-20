@@ -34,7 +34,7 @@ namespace gz
     class ManagerPrivate;
 
     /// \brief Class for starting and managing programs and plugins.
-    class IGNITION_LAUNCH_VISIBLE Manager
+    class GZ_LAUNCH_VISIBLE Manager
     {
       /// \brief Constructor.
       public: Manager();

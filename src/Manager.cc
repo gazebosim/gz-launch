@@ -1082,8 +1082,8 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
   }
 
   gz::common::SystemPaths systemPaths;
-  systemPaths.SetPluginPathEnv("IGN_LAUNCH_PLUGIN_PATH");
-  systemPaths.AddPluginPaths(IGNITION_LAUNCH_PLUGIN_INSTALL_PATH);
+  systemPaths.SetPluginPathEnv("GZ_LAUNCH_PLUGIN_PATH");
+  systemPaths.AddPluginPaths(GZ_LAUNCH_PLUGIN_INSTALL_PATH);
 
   // Add LD_LIBRARY_PATH
 #ifdef __linux__
@@ -1107,7 +1107,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
   if (pathToLib.empty())
   {
     ignerr << "Failed to find the path to library[" << file << "]. "
-      << "Try adding the path to the IGN_LAUNCH_PLUGIN_PATH environment "
+      << "Try adding the path to the GZ_LAUNCH_PLUGIN_PATH environment "
       << "variable.\n";
     return;
   }

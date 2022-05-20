@@ -80,11 +80,11 @@ void runLaunchCommand(const LaunchOptions &_opt)
   if (!launchfile.empty())
   {
     // If the launch file is not a file, then look in the paths set by the
-    // IGN_LAUNCH_CONFIG_PATH environment variable.
+    // GZ_LAUNCH_CONFIG_PATH environment variable.
     if (!gz::common::isFile(launchfile))
     {
       std::string configPathEnv;
-      gz::common::env("IGN_LAUNCH_CONFIG_PATH", configPathEnv, true);
+      gz::common::env("GZ_LAUNCH_CONFIG_PATH", configPathEnv, true);
       if (!configPathEnv.empty())
       {
         std::vector<std::string> paths =

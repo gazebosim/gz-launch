@@ -24,13 +24,13 @@
 //////////////////////////////////////////////////
 extern "C" char *ignitionVersion()
 {
-  return strdup(IGNITION_LAUNCH_VERSION_FULL);
+  return strdup(GZ_LAUNCH_VERSION_FULL);
 }
 
 //////////////////////////////////////////////////
 extern "C" const char *configPath()
 {
-  return IGNITION_LAUNCH_INITIAL_CONFIG_PATH;
+  return GZ_LAUNCH_INITIAL_CONFIG_PATH;
 }
 
 //////////////////////////////////////////////////
