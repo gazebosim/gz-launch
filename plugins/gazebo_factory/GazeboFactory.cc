@@ -74,7 +74,7 @@ void GazeboFactory::ProcessSpawn(const tinyxml2::XMLElement *_elem)
     // Error if no world was found.
     if (worlds.empty())
     {
-      ignerr << "No simulation worlds were found. Unable to run the factory. "
+      gzerr << "No simulation worlds were found. Unable to run the factory. "
         << "Is Gazebo running?\n";
       return;
     }
@@ -82,7 +82,7 @@ void GazeboFactory::ProcessSpawn(const tinyxml2::XMLElement *_elem)
     // Warning if multiple worlds were found.
     if (worlds.size() > 1)
     {
-      ignwarn << "Multiple simulation worlds were found. Using the first, "
+      gzwarn << "Multiple simulation worlds were found. Using the first, "
         << " which has the name[" << *worlds.begin() << "]\n";
     }
 
@@ -192,17 +192,17 @@ bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
       {
         if (result && !rep.data())
         {
-          ignerr << "Factory service call completed, but returned a false value."
+          gzerr << "Factory service call completed, but returned a false value."
             << "You may have an invalid request. Check the configuration.\n";
         }
         else
         {
-          ignerr << "Factory service call failed.\n";
+          gzerr << "Factory service call failed.\n";
         }
       }
       else
       {
-        ignerr << "Factory service call timed out.\n";
+        gzerr << "Factory service call timed out.\n";
       }
     }
   }

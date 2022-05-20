@@ -307,9 +307,9 @@ Manager::Manager()
   gz::common::env(IGN_HOMEDIR, homePath);
 
   // Make sure to initialize logging.
-  ignLogInit(gz::common::joinPaths(homePath, ".ignition"), "launch.log");
+  gzLogInit(gz::common::joinPaths(homePath, ".ignition"), "launch.log");
   if (!this->dataPtr->sigHandler->Initialized())
-    ignerr << "signal(2) failed while setting up for SIGINT" << std::endl;
+    gzerr << "signal(2) failed while setting up for SIGINT" << std::endl;
 }
 
 /////////////////////////////////////////////////
@@ -396,7 +396,7 @@ ManagerPrivate::ManagerPrivate()
       0644, 1);
   if (this->stoppedChildSem == SEM_FAILED)
   {
-    ignerr << "Error initializing semaphore " << this->stoppedChildSemName
+    gzerr << "Error initializing semaphore " << this->stoppedChildSemName
            << ": " << strerror(errno) << std::endl;
   }
 #else
@@ -404,7 +404,7 @@ ManagerPrivate::ManagerPrivate()
     NULL, 0, LONG_MAX, this->stoppedChildSemName.c_str());
   if (this->stoppedChildSem == nullptr)
   {
-    ignerr << "Error initializing semaphore " << this->stoppedChildSemName
+    gzerr << "Error initializing semaphore " << this->stoppedChildSemName
            << ": " << GetLastErrorAsString() << std::endl;
   }
 #endif
@@ -412,7 +412,7 @@ ManagerPrivate::ManagerPrivate()
 #ifndef _WIN32
   // Register a signal handler to capture child process death events.
   if (signal(SIGCHLD, ManagerPrivate::OnSigChild) == SIG_ERR)
-    ignerr << "signal(2) failed while setting up for SIGCHLD" << std::endl;
+    gzerr << "signal(2) failed while setting up for SIGCHLD" << std::endl;
 
   // Register backward signal handler for other signals
   std::vector<int> signals =
@@ -444,20 +444,20 @@ ManagerPrivate::~ManagerPrivate()
 #ifndef _WIN32
     if (sem_close(this->stoppedChildSem) == -1)
     {
-      ignerr << "Failed to close semaphore " << this->stoppedChildSemName
+      gzerr << "Failed to close semaphore " << this->stoppedChildSemName
              << ": " << strerror(errno) << std::endl;
     }
 
     if (sem_unlink(this->stoppedChildSemName.c_str()) == -1)
     {
-      ignerr << "Failed to unlink semaphore " << this->stoppedChildSemName
+      gzerr << "Failed to unlink semaphore " << this->stoppedChildSemName
              << ": " << strerror(errno) << std::endl;
     }
 #else
     int retVal = CloseHandle(this->stoppedChildSem) ? 0 : -1;
     if (retVal == -1)
     {
-      ignerr << "Failed to close semaphore: " << strerror(errno)
+      gzerr << "Failed to close semaphore: " << strerror(errno)
              << std::endl;
     }
 #endif
@@ -484,7 +484,7 @@ bool ManagerPrivate::Stop()
     int retVal = ReleaseSemaphore(this->stoppedChildSem, 1, nullptr);
     if (retVal != 0)
     {
-      ignerr << "Error Releasing Semaphore "
+      gzerr << "Error Releasing Semaphore "
              << GetLastErrorAsString() << std::endl;
     }
 #endif
@@ -536,7 +536,7 @@ void ManagerPrivate::RestartLoop()
 
   if ((sigemptyset(&chldmask) == -1) || (sigaddset(&chldmask, SIGCHLD) == -1))
   {
-    ignerr << "Failed to initialize signal mask: "
+    gzerr << "Failed to initialize signal mask: "
       << strerror(errno) << std::endl;
     return;
   }
@@ -548,7 +548,7 @@ void ManagerPrivate::RestartLoop()
     if (s == -1)
     {
       if (errno != EINTR)
-        ignwarn << "sem_wait error: "
+        gzwarn << "sem_wait error: "
           << strerror(errno) << std::endl;
       continue;
     }
@@ -556,7 +556,7 @@ void ManagerPrivate::RestartLoop()
     // Block SIGCHLD while consuming queue.
     if (sigprocmask(SIG_BLOCK, &chldmask, NULL) == -1)
     {
-      ignerr << "Failed to setup block for SIGCHLD: "
+      gzerr << "Failed to setup block for SIGCHLD: "
         << strerror(errno) << std::endl;
       continue;
     }
@@ -602,7 +602,7 @@ void ManagerPrivate::RestartLoop()
     // Unblock SIGCHLD
     if (sigprocmask(SIG_UNBLOCK, &chldmask, NULL) == -1)
     {
-      ignerr << "Failed to unblock SIGCHLD: " << strerror(errno) << std::endl;
+      gzerr << "Failed to unblock SIGCHLD: " << strerror(errno) << std::endl;
       continue;
     }
   }
@@ -671,7 +671,7 @@ bool ManagerPrivate::ParseConfig(const std::string &_config)
   // Load the XML configuration file into TinyXML
   if (xmlDoc.Parse(_config.c_str()) != tinyxml2::XML_SUCCESS)
   {
-    ignerr << "Unable to parse configuration. Your XML might be invalid.\n";
+    gzerr << "Unable to parse configuration. Your XML might be invalid.\n";
     return false;
   }
 
@@ -679,7 +679,7 @@ bool ManagerPrivate::ParseConfig(const std::string &_config)
   tinyxml2::XMLElement *root = xmlDoc.FirstChildElement("ignition");
   if (!root)
   {
-    ignerr << "Invalid config file,m issing <ignition> element\n";
+    gzerr << "Invalid config file,m issing <ignition> element\n";
     return false;
   }
   // Keep the environment variables in memory. See manpage for putenv.
@@ -723,7 +723,7 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
   // Check for empty
   if (_cmd.empty())
   {
-    ignerr << "Empty command.\n";
+    gzerr << "Empty command.\n";
     return false;
   }
 #ifdef _WIN32
@@ -738,7 +738,7 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
                 sizeof(MYDATA));
   if (pDataArray == nullptr)
   {
-    ignerr << "allocation fails " << GetLastErrorAsString() << '\n';
+    gzerr << "allocation fails " << GetLastErrorAsString() << '\n';
     return false;
   }
 
@@ -768,7 +768,7 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
     // Run the command, replacing the current process image
     if (_spawnv(_P_WAIT , cstrings[0], &cstrings[0]) < 0)
     {
-      ignerr << "Unable to run command["
+      gzerr << "Unable to run command["
         << std::accumulate(
             pDataArray->_cmd.begin(),
             pDataArray->_cmd.end(),
@@ -779,7 +779,7 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
 
     if (!ReleaseSemaphore(pDataArray->stoppedChildSem, 1, nullptr))
     {
-      ignerr << "Error Releasing Semaphore "
+      gzerr << "Error Releasing Semaphore "
              << GetLastErrorAsString() << std::endl;
     }
 
@@ -796,7 +796,7 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
     nullptr, 0, dontThreadOnMe, pDataArray, 0, nullptr);
 
   if (thread == nullptr) {
-    ignerr << "Error creating thread on Windows "
+    gzerr << "Error creating thread on Windows "
            << GetLastErrorAsString() << '\n';
   }
   else
@@ -849,7 +849,7 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
     // Run the command, replacing the current process image
     if (execvp(cstrings[0], &cstrings[0]) < 0)
     {
-      ignerr << "Unable to run command["
+      gzerr << "Unable to run command["
              << std::accumulate(
                 _cmd.begin(),
                 _cmd.end(),
@@ -882,7 +882,7 @@ void ManagerPrivate::ShutdownExecutables()
       int retVal = ReleaseSemaphore(myself->stoppedChildSem, 1, nullptr);
       if (retVal != 0)
       {
-        ignerr << "Error Releasing Semaphore: "
+        gzerr << "Error Releasing Semaphore: "
                << GetLastErrorAsString() << std::endl;
       }
 #endif
@@ -900,7 +900,7 @@ void ManagerPrivate::ShutdownExecutables()
       int retVal = ReleaseSemaphore(myself->stoppedChildSem, 1, nullptr);
       if (retVal != 0)
       {
-        ignerr << "Error Releasing Semaphore: "
+        gzerr << "Error Releasing Semaphore: "
                << GetLastErrorAsString() << std::endl;
       }
     }));
@@ -960,7 +960,7 @@ void ManagerPrivate::ParseExecutables(const tinyxml2::XMLElement *_elem)
     if (nameStr.empty())
     {
       valid = false;
-      ignerr << "Invalid configuration file, "
+      gzerr << "Invalid configuration file, "
         << "missing name attribute for the " << i << " <executable> element."
         << std::endl;
     }
@@ -971,7 +971,7 @@ void ManagerPrivate::ParseExecutables(const tinyxml2::XMLElement *_elem)
     if (!cmdElem)
     {
       valid = false;
-      ignerr << "Invalid configuration file, "
+      gzerr << "Invalid configuration file, "
         << "missing <command> child element "
         << " of <executable name=\"" << nameStr << "\">\n";
     }
@@ -998,7 +998,7 @@ void ManagerPrivate::ParseExecutables(const tinyxml2::XMLElement *_elem)
     {
       if (!this->RunExecutable(nameStr, cmdParts, autoRestart, localEnvs))
       {
-        ignerr << "Unable to run executable named[" << nameStr << "] in "
+        gzerr << "Unable to run executable named[" << nameStr << "] in "
           << "configuration file.\n";
       }
     }
@@ -1048,7 +1048,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
   std::string name = nameStr == nullptr ? "" : nameStr;
   if (name.empty())
   {
-    ignerr << "Invalid config file, "
+    gzerr << "Invalid config file, "
       << "missing a name attribute for a plugin." << std::endl;
     return;
   }
@@ -1058,7 +1058,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
   std::string file = fileStr == nullptr ? "" : fileStr;
   if (file.empty())
   {
-    ignerr << "Invalid config file, "
+    gzerr << "Invalid config file, "
       << "missing filename attribute for plugin with name[" << name << "]"
       << std::endl;
     return;
@@ -1106,7 +1106,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
 
   if (pathToLib.empty())
   {
-    ignerr << "Failed to find the path to library[" << file << "]. "
+    gzerr << "Failed to find the path to library[" << file << "]. "
       << "Try adding the path to the GZ_LAUNCH_PLUGIN_PATH environment "
       << "variable.\n";
     return;
@@ -1116,7 +1116,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
   std::unordered_set<std::string> localPlugins = loader.LoadLib(pathToLib);
   if (localPlugins.empty())
   {
-    ignerr << "Failed to load plugin [" << pathToLib << "] library\n";
+    gzerr << "Failed to load plugin [" << pathToLib << "] library\n";
     return;
   }
 
@@ -1128,7 +1128,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
     for (const std::string &vp : validPlugins)
       availablePlugins += vp + " ";
 
-    ignerr << "Failed to find implementation with name[" << name << "] in "
+    gzerr << "Failed to find implementation with name[" << name << "] in "
       << file << ". Available implementations include: "
       << availablePlugins << std::endl;
     return;

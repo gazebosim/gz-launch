@@ -103,7 +103,7 @@ void runLaunchCommand(const LaunchOptions &_opt)
 
       if (!gz::common::isFile(launchfile))
       {
-        ignerr << "File [" + launchfile + "] does not exists"
+        gzerr << "File [" + launchfile + "] does not exists"
           << std::endl;
         exit(-1);
       }
@@ -119,7 +119,7 @@ void runLaunchCommand(const LaunchOptions &_opt)
       }
       else
       {
-        ignerr << "This argument [" << arg << "] is wrong for erb"
+        gzerr << "This argument [" << arg << "] is wrong for erb"
                << std::endl;
         exit(1);
       }

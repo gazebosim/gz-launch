@@ -86,11 +86,11 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
         "  </menus>\n" <<
         "</window>\n";
       configFile.close();
-      ignmsg << "Saved file [" << defaultConfigFile << "]" << std::endl;
+      gzmsg << "Saved file [" << defaultConfigFile << "]" << std::endl;
     }
     else
     {
-      ignerr << "Unable to open file [" << defaultConfigFile << "]"
+      gzerr << "Unable to open file [" << defaultConfigFile << "]"
              << std::endl;
     }
   }
@@ -122,7 +122,7 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
     std::string name = nameStr == nullptr ? "" : nameStr;
     if (name.empty())
     {
-      ignerr << "A GazeboGui plugin is missing the name attribute. "
+      gzerr << "A GazeboGui plugin is missing the name attribute. "
         << "Skipping this plugin.\n";
       continue;
     }
@@ -132,7 +132,7 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
     std::string file = fileStr == nullptr ? "" : fileStr;
     if (file.empty())
     {
-      ignerr << "A GazeboServer plugin with name[" << name << "] is "
+      gzerr << "A GazeboServer plugin with name[" << name << "] is "
         << "missing the filename attribute. Skipping this plugin.\n";
       continue;
     }

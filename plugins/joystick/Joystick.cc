@@ -76,7 +76,7 @@ bool Joystick::Load(const tinyxml2::XMLElement *_elem)
     }
     catch(...)
     {
-      ignerr << "<dead_zone> is not a valid floating point number, "
+      gzerr << "<dead_zone> is not a valid floating point number, "
         "using 0.05\n";
     }
   }
@@ -92,7 +92,7 @@ bool Joystick::Load(const tinyxml2::XMLElement *_elem)
     }
     catch(...)
     {
-      ignerr << "<rate> is not a valid floating point number, using 60Hz\n";
+      gzerr << "<rate> is not a valid floating point number, using 60Hz\n";
     }
   }
 
@@ -113,7 +113,7 @@ bool Joystick::Load(const tinyxml2::XMLElement *_elem)
     }
     catch(...)
     {
-      ignerr << "<accumulation_rate> is not a valid floating point number, "
+      gzerr << "<accumulation_rate> is not a valid floating point number, "
         << "using 1000Hz\n";
     }
   }
@@ -127,7 +127,7 @@ bool Joystick::Load(const tinyxml2::XMLElement *_elem)
   // not a critical error, but doesn't make a whole lot of sense.
   if (this->interval < this->accumulationInterval)
   {
-    ignwarn << "The publication rate of [" << 1.0 / this->interval
+    gzwarn << "The publication rate of [" << 1.0 / this->interval
       << " Hz] is greater than the accumulation rate of ["
       << 1.0 / this->accumulationInterval
       << " Hz]. Timing behavior is ill defined.\n";
@@ -149,7 +149,7 @@ bool Joystick::Load(const tinyxml2::XMLElement *_elem)
     }
     else
     {
-      ignerr << "Unable to open joystick at [" << deviceFilename
+      gzerr << "Unable to open joystick at [" << deviceFilename
         << "] Attempting again\n";
     }
 
@@ -222,7 +222,7 @@ void Joystick::Run()
     {
       if (read(this->joyFd, &event, sizeof(js_event)) == -1 && errno != EAGAIN)
       {
-        ignwarn << "Joystick read failed, might be closed\n";
+        gzwarn << "Joystick read failed, might be closed\n";
         return;
       }
 
@@ -277,7 +277,7 @@ void Joystick::Run()
           }
         default:
           {
-            ignwarn << "Unknown event type: time[" << event.time << "] "
+            gzwarn << "Unknown event type: time[" << event.time << "] "
               << "value[" << value << "] "
               << "type[" << event.type << "h] "
               << "number["<< event.number << "]" << std::endl;
