@@ -26,7 +26,7 @@ namespace gz
 {
   namespace launch
   {
-    /// \brief Runs the Ignition Gazebo server.
+    /// \brief Runs the Gazebo server.
     ///
     /// # Example usage
     /// <!-- Run the gazebo server with a set of plugins -->
@@ -38,7 +38,7 @@ namespace gz
     ///   <!-- The physics system -->
     ///   <plugin entity_name="<%= worldName %>"
     ///           entity_type="world"
-    ///           filename="ignition-gazebo-physics-system"
+    ///           filename="gz-sim-physics-system"
     ///           name="gz::sim::systems::v0::Physics">
     ///   </plugin>
     ///

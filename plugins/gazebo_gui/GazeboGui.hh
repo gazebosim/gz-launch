@@ -26,7 +26,7 @@ namespace gz
 {
   namespace launch
   {
-    /// \brief Runs the Ignition Gazebo GUI.
+    /// \brief Runs the Gazebo GUI.
     ///
     /// The plugin ignores GUI configuration coming from the SDF
     /// world file or saved in ~/.ignition/gazebo/gui.config. Instead,
@@ -52,7 +52,7 @@ namespace gz
     ///        Defaults to the Ignition logo. -->
     ///   <window_icon>full/path/to/window/icon.png</window_icon>
     ///
-    ///   <!-- Add Ignition GUI plugins here -->
+    ///   <!-- Add Gazebo GUI plugins here -->
     ///
     ///   </plugin>
     /// </executable_wrapper>

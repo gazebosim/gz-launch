@@ -90,7 +90,7 @@ namespace gz
     ///
     /// The `operation` component is mandatory and must be one of:
     ///     1. "sub": Subscribe to the topic in the `topic_name` component,
-    ///     2. "pub": Publish a message from the Ignition Transport topic in
+    ///     2. "pub": Publish a message from the Gazebo Transport topic in
     ///               the `topic_name` component,
     ///     3. "topics": Get the list of available topics,
     ///     4. "topics-types": Get the list of available topics and their
@@ -106,11 +106,11 @@ namespace gz
     /// Transport topic.
     ///
     /// The `message_type` component is mandatory for the "pub" operation. If
-    /// present it names the Ignition Message type, such as
+    /// present it names the Gazebo Message type, such as
     /// "ignition.msgs.Clock".
     ///
     /// The `payload` component is mandatory for the "pub" operation. If
-    /// present, it contains a serialized string of an Ignition Message.
+    /// present, it contains a serialized string of an Gazebo Message.
     ///
     /// ## Example frames
     ///

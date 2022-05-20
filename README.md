@@ -1,4 +1,4 @@
-# Ignition Launch : Run and manage programs and plugins
+# Gazebo Launch : Run and manage programs and plugins
 
 **Maintainer:** nate AT openrobotics DOT org
 
@@ -14,7 +14,7 @@ Ubuntu Focal | [![Build Status](https://build.osrfoundation.org/buildStatus/icon
 Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-main-homebrew-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-main-homebrew-amd64)
 Windows       | [![Build Status](https://build.osrfoundation.org/job/ign_launch-ign-5-win/badge/icon)](https://build.osrfoundation.org/job/ign_launch-ign-5-win/)
 
-Ignition Launch, a component of [Ignition
+Gazebo Launch, a component of [Ignition
 Robotics](https://ignitionrobotics.org), provides a command line interface
 to run and manager application and plugins.
 
@@ -42,7 +42,7 @@ to run and manager application and plugins.
 
 # Features
 
-Ignition Launch is used to run and manage plugins and programs. A
+Gazebo Launch is used to run and manage plugins and programs. A
 configuration script can be used to specify which programs and plugins to
 execute. Alternatively, individual programs and plugins can be run from the
 command line. Example configuration scripts are located in the `examples`
@@ -133,7 +133,7 @@ Please see
 
 # Versioning
 
-This library uses [Semantic Versioning](https://semver.org/). Additionally, this library is part of the [Ignition Robotics project](https://ignitionrobotics.org) which periodically releases a versioned set of compatible and complimentary libraries. See the [Ignition Robotics website](https://ignitionrobotics.org) for version and release information.
+This library uses [Semantic Versioning](https://semver.org/). Additionally, this library is part of the [Gazebo Robotics project](https://ignitionrobotics.org) which periodically releases a versioned set of compatible and complimentary libraries. See the [Gazebo Robotics website](https://ignitionrobotics.org) for version and release information.
 
 # License
 

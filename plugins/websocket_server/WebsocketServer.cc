@@ -651,7 +651,7 @@ void WebsocketServer::OnDisconnect(int _socketId)
   {
     iter->second.erase(_socketId);
 
-    // Unsubscribe from the Ignition Transport topic if there are no more
+    // Unsubscribe from the Gazebo Transport topic if there are no more
     // websocket connections.
     if (iter->second.empty())
       this->node.Unsubscribe(iter->first);
@@ -844,7 +844,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
     this->QueueMessage(this->connections[_socketId].get(),
         data.c_str(), data.length());
   }
-  /// \todo(nkoeng) Deprecate this in Ignition Fortress, and instruct users
+  /// \todo(nkoeng) Deprecate this in Gazebo Fortress, and instruct users
   /// to rely on the "scene" message.
   else if (frameParts[0] == "particle_emitters")
   {
@@ -956,11 +956,11 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
       // check and update subscription count
       this->UpdateMsgTypeSubscriptionCount(topic, _socketId, false);
 
-      // Only unsubscribe from the Ignition Transport topic if there are no
+      // Only unsubscribe from the Gazebo Transport topic if there are no
       // more websocket connections.
       if (topicConnectionIter->second.empty())
       {
-        igndbg << "Unsubscribing from Ignition Transport Topic["
+        igndbg << "Unsubscribing from Gazebo Transport Topic["
           << frameParts[1] << "]\n";
         this->node.Unsubscribe(frameParts[1]);
       }

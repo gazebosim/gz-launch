@@ -1,12 +1,12 @@
-## Ignition Launch 6.x
+## Gazebo Launch 6.x
 
-### Ignition Launch 6.X.X (202X-XX-XX)
+### Gazebo Launch 6.X.X (202X-XX-XX)
 
-## Ignition Launch 5.x
+## Gazebo Launch 5.x
 
-### Ignition Launch 5.X.X (20XX-XX-XX)
+### Gazebo Launch 5.X.X (20XX-XX-XX)
 
-### Ignition Launch 5.1.0 (2022-03-21)
+### Gazebo Launch 5.1.0 (2022-03-21)
 1. Use exec instead of popen to run ign-launch binary
     * [Pull request #151](https://github.com/gazebosim/gz-launch/pull/151)
 
@@ -16,7 +16,7 @@
 1. Remove spammy CMake message
     * [Pull request #142](https://github.com/gazebosim/gz-launch/pull/142)
 
-### Ignition Launch 5.0.0 (2021-10-01)
+### Gazebo Launch 5.0.0 (2021-10-01)
 
 1. Port ign-launch to Windows
     * [Pull request #120](https://github.com/gazebosim/gz-launch/pull/120)
@@ -35,15 +35,15 @@
     * [Pull request #113](https://github.com/gazebosim/gz-launch/pull/113)
     * [Pull request #106](https://github.com/gazebosim/gz-launch/pull/106)
 
-## Ignition Launch 4.x
+## Gazebo Launch 4.x
 
-### Ignition Launch 4.X.X (20XX-XX-XX)
+### Gazebo Launch 4.X.X (20XX-XX-XX)
 
-### Ignition Launch 4.1.0 (2021-10-14)
+### Gazebo Launch 4.1.0 (2021-10-14)
 
-1. All changes included in Ignition Launch 3.4.2.
+1. All changes included in Gazebo Launch 3.4.2.
 
-### Ignition Launch 4.0.0 (2021-03-30)
+### Gazebo Launch 4.0.0 (2021-03-30)
 
 1. Bump in edifice: ign-common4
     * [Pull request #90](https://github.com/gazebosim/gz-launch/pull/90)
@@ -57,33 +57,33 @@
 1. Bump in edifice: ign-rendering5
     * [Pull request #69](https://github.com/gazebosim/gz-launch/pull/69)
 
-## Ignition Launch 3.x
+## Gazebo Launch 3.x
 
-### Ignition Launch 3.4.2 (2021-10-14)
+### Gazebo Launch 3.4.2 (2021-10-14)
 
-1. All changes included in Ignition Launch 2.2.2.
+1. All changes included in Gazebo Launch 2.2.2.
 
-### Ignition Launch 3.4.1 (2021-07-15)
+### Gazebo Launch 3.4.1 (2021-07-15)
 
 1. Generate a better error websocket error code for `max_connections`.
     * [Pull request 123](https://github.com/gazebosim/gz-launch/pull/123)
 
-### Ignition Launch 3.4.0 (2021-06-09)
+### Gazebo Launch 3.4.0 (2021-06-09)
 
 1. Extend websocket server to support message limits and throttling.
     * [Pull request 116](https://github.com/gazebosim/gz-launch/pull/116)
 
-### Ignition Launch 3.3.0 (2021-05-06)
+### Gazebo Launch 3.3.0 (2021-05-06)
 
 1. Convert depth and thermal image data to RGB before sending over websockets
     * [Pull request 112](https://github.com/gazebosim/gz-launch/pull/112)
 
-### Ignition Launch 3.2.1 (2021-04-19)
+### Gazebo Launch 3.2.1 (2021-04-19)
 
 1. Add header to image msg.
     * [Pull request 109](https://github.com/gazebosim/gz-launch/pull/109)
 
-### Ignition Launch 3.2.0 (2021-04-12)
+### Gazebo Launch 3.2.0 (2021-04-12)
 
 1. Support unsubscribing from a topic in the websocket server.
     * [Pull request 107](https://github.com/gazebosim/gz-launch/pull/107)
@@ -101,15 +101,15 @@
     * [Pull request 93](https://github.com/gazebosim/gz-launch/pull/93)
 
 
-### Ignition Launch 3.1.1 (2021-01-08)
+### Gazebo Launch 3.1.1 (2021-01-08)
 
 1. All changes up to and including those in version 2.2.1.
 
-### Ignition Launch 3.1.0 (2020-12-10)
+### Gazebo Launch 3.1.0 (2020-12-10)
 
 1. All changes up to and including those in version 2.2.0.
 
-### Ignition Launch 3.0.0 (2020-09-30)
+### Gazebo Launch 3.0.0 (2020-09-30)
 
 1. Migration from BitBucket to GitHub
     * [Pull request 13](https://github.com/gazebosim/gz-launch/pull/13)
@@ -125,9 +125,9 @@
 1. Depend on ign-gazebo4, ign-gui4
     * [BitBucket pull request 64](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/64)
 
-## Ignition Launch 2.x
+## Gazebo Launch 2.x
 
-### Ignition Launch 2.2.2 (2021-10-11)
+### Gazebo Launch 2.2.2 (2021-10-11)
 
 1. Master branch updates.
     * [Pull request 98](https://github.com/gazebosim/gz-launch/pull/98)
@@ -144,27 +144,27 @@
 1. Remove bitbucket-pipelines.yml.
     * [Pull request 128](https://github.com/gazebosim/gz-launch/pull/128)
 
-### Ignition Launch 2.2.1 (2021-01-08)
+### Gazebo Launch 2.2.1 (2021-01-08)
 
 1.  Fix env parsing by placing it before executable parsing.
     * [Pull request 81](https://github.com/gazebosim/gz-launch/pull/81)
     * [Pull request 82](https://github.com/gazebosim/gz-launch/pull/82)
 
-### Ignition Launch 2.2.0 (2020-10-14)
+### Gazebo Launch 2.2.0 (2020-10-14)
 
 1. All changes up to and including those in version 1.10.0
 
 1. Added a tutorial.
     * [Pull request 48](https://github.com/gazebosim/gz-launch/pull/48)
 
-### Ignition Launch 2.1.0 (2020-05-21)
+### Gazebo Launch 2.1.0 (2020-05-21)
 
 1. Merged ign-launch1 forward.
     * [Pull request 41](https://github.com/gazebosim/gz-launch/pull/31)
 
-### Ignition Launch 2.0.0
+### Gazebo Launch 2.0.0
 
-1. Use Ignition Citadel dependencies.
+1. Use Gazebo Citadel dependencies.
     * [BitBucket pull request 47](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/47)
     * [BitBucket pull request 50](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/50)
     * [BitBucket pull request 53](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/53)
@@ -175,11 +175,11 @@
 1. Unversioned lib name for cmds
     * [BitBucket pull request 55](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/55)
 
-## Ignition Launch 1.x
+## Gazebo Launch 1.x
 
-### Ignition Launch 1.X.X (20XX-XX-XX)
+### Gazebo Launch 1.X.X (20XX-XX-XX)
 
-### Ignition Launch 1.10.0 (2020-09-25)
+### Gazebo Launch 1.10.0 (2020-09-25)
 
 * Modernize Github Actions CI.
     * [Pull request 42](https://github.com/gazebosim/gz-launch/pull/42)
@@ -199,30 +199,30 @@
 1. Fix race condition in websocket server.
    * [Pull Request 68](https://github.com/gazebosim/gz-launch/pull/68)
 
-### Ignition Launch 1.9.0 (2020-08-13)
+### Gazebo Launch 1.9.0 (2020-08-13)
 
 1. Added HTTP handling support to websocket server and a metrics HTTP endpoint
    to monitor websocket server status.
    * [Pull Request 49](https://github.com/gazebosim/gz-launch/pull/49)
 
-### Ignition Launch 1.8.0 (2020-07-28)
+### Gazebo Launch 1.8.0 (2020-07-28)
 
 1. Added `<max_connections>` to the websocket server that supports
    specifying the maximum allowed websocket connections.
     * [Pull Request 40](https://github.com/gazebosim/gz-launch/pull/40)
 
-### Ignition Launch 1.7.1 (2020-06-23)
+### Gazebo Launch 1.7.1 (2020-06-23)
 
 1. Improve websocket performance by throttling the busy loop, and fix empty SSL
    XML elements.
     * [Pull Request 37](https://github.com/gazebosim/gz-launch/pull/37)
 
-### Ignition Launch 1.7.0 (2020-06-16)
+### Gazebo Launch 1.7.0 (2020-06-16)
 
 1. Added SSL to websocket server.
     * [Pull Request 34](https://github.com/gazebosim/gz-launch/pull/34)
 
-### Ignition Launch 1.6.0 (2020-06-11)
+### Gazebo Launch 1.6.0 (2020-06-11)
 
 1. Improved websockets by: adding simple authentication, access to
    protobuf message definitions, access to scene and world information, and
@@ -232,27 +232,27 @@
     * [Pull Request 17](https://github.com/gazebosim/gz-launch/pull/17)
     * [Pull Request 33](https://github.com/gazebosim/gz-launch/pull/33)
 
-### Ignition Launch 1.5.0 (2020-05-20)
+### Gazebo Launch 1.5.0 (2020-05-20)
 
 1. Added support for spawning multiple entities in the same simulation step.
     * [Pull Request 30](https://github.com/gazebosim/gz-launch/pull/30)
 
-### Ignition Launch 1.4.2 (2020-05-18)
+### Gazebo Launch 1.4.2 (2020-05-18)
 
 1.  Use the new GUI API of ign-gazebo. This adds support for saving worlds to SDFormat from the GUI.
     * [Pull Request 19](https://github.com/gazebosim/gz-launch/pull/19)
 
-### Ignition Launch 1.4.1 (2019-12-05)
+### Gazebo Launch 1.4.1 (2019-12-05)
 
 1. Unversioned lib name for cmds
     * [BitBucket pull request 56](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/56)
 
-### Ignition Launch 1.4.0 (2019-11-26)
+### Gazebo Launch 1.4.0 (2019-11-26)
 
 1. Default GUI config for Launch
     * [BitBucket pull request 51](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/51)
 
-### Ignition Launch 1.3.0 (2019-11-13)
+### Gazebo Launch 1.3.0 (2019-11-13)
 
 1. Add filepath to ERB so that constants like `__FILE__` in `.ign` files work as expected
     * [BitBucket pull request 48](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/48)
@@ -260,12 +260,12 @@
 1.  Add backward support to ign-launch to capture backtraces.
     * [BitBucket pull request 41](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/41)
 
-### Ignition Launch 1.2.3 (2019-09-09)
+### Gazebo Launch 1.2.3 (2019-09-09)
 
 1. Add QML import path to IgnGazebo modules.
     * [BitBucket pull request 42](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/42)
 
-### Ignition Launch 1.2.2
+### Gazebo Launch 1.2.2
 
 1. Add support for console logging.
     * [BitBucket pull request 40](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/40)
@@ -273,12 +273,12 @@
 1. Support setting custom window icons.
     * [BitBucket pull request 39](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/39)
 
-### Ignition Launch 1.2.1
+### Gazebo Launch 1.2.1
 
 1. Eliminate potential deadlock from SIGCHLD signal handler
     * [BitBucket pull request 36](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/36)
 
-### Ignition Launch 1.2.0
+### Gazebo Launch 1.2.0
 
 1. Support for custom random seed in the GazeboServer plugin.
     * [BitBucket pull request 33](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/33)
@@ -286,17 +286,17 @@
 1. Allow specifying a custom window title
     * [BitBucket pull request 32](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/32)
 
-### Ignition Launch 1.1.0 (2019-06-11)
+### Gazebo Launch 1.1.0 (2019-06-11)
 
 1. Added command line parameters of the form <name>:=<value>. These parameters are passed to ERB.
     * [BitBucket pull request 27](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/27)
 
-### Ignition Launch 1.0.1 (2019-05-22)
+### Gazebo Launch 1.0.1 (2019-05-22)
 
 1. Fix GazeboFactory set performer topic
     * [BitBucket pull request 26](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/26)
 
-### Ignition Launch 1.0.0 (2019-05-21)
+### Gazebo Launch 1.0.0 (2019-05-21)
 
 1. Enable logging with `<record>` tag in ign launch file.
     * [BitBucket pull request 23](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/23)
@@ -320,9 +320,9 @@
     * [BitBucket pull request 15](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/15)
     * [BitBucket pull request 18](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/18)
 
-## Ignition Launch 0.x
+## Gazebo Launch 0.x
 
 1. Install examples folder.
     * [BitBucket pull request 14](https://osrf-migration.github.io/ignition-gh-pages/#!/gazebosim/gz-launch/pull-requests/14)
 
-### Ignition Launch 0.2.0
+### Gazebo Launch 0.2.0

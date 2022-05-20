@@ -5,7 +5,7 @@ Deprecated code produces compile-time warnings. These warning serve as
 notification to users that their code should be upgraded. The next major
 release will remove the deprecated code.
 
-## Ignition Launch 5.X to 6.X
+## Gazebo Launch 5.X to 6.X
 
 - The `ignition` namespace is deprecated and will be removed in future versions.
   Use `gz` instead.
@@ -13,11 +13,11 @@ release will remove the deprecated code.
 - Header files under `ignition/...` are deprecated and will be removed in future versions.
   Use `gz/...` instead.
 
-## Ignition Launch 2.2.2
+## Gazebo Launch 2.2.2
 
 - Environment variable `GZ_LAUNCH_CONFIG_PATH` started to be treated as a path
   list (colon-separated on Linux, semicolon-separated on Windows). Before, only
   a single path could be set here, and setting a path list would break the whole
   launch file lookup functionality.
 
-## Ignition Launch 0.X to N.M
+## Gazebo Launch 0.X to N.M

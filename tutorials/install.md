@@ -2,7 +2,7 @@
 
 # Install
 
-These instructions are for installing only Ignition Launch. If you're interested
+These instructions are for installing only Gazebo Launch. If you're interested
 in using all the Ignition libraries, not only Igniton Launch, check out this
 [Ignition installation](https://ignitionrobotics.org/docs/latest/install).
 
@@ -38,7 +38,7 @@ On macOS, add OSRF packages:
   brew tap osrf/simulation
   ```
 
-Install Ignition GUI:
+Install Gazebo GUI:
   ```
   brew install ignition-launch<#>
   ```
@@ -88,7 +88,7 @@ necessary prerequisites followed by building from source.
     cd ign-launch; mkdir build; cd build; cmake ..; make
     ```
 
-3. Optionally, install Ignition Launch
+3. Optionally, install Gazebo Launch
 
     ```sh
     sudo make install
