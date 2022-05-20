@@ -2,14 +2,14 @@
 
 **Maintainer:** nate AT openrobotics DOT org
 
-[![GitHub open issues](https://img.shields.io/github/issues-raw/ignitionrobotics/ign-launch.svg)](https://github.com/ignitionrobotics/ign-launch/issues)
-[![GitHub open pull requests](https://img.shields.io/github/issues-pr-raw/ignitionrobotics/ign-launch.svg)](https://github.com/ignitionrobotics/ign-launch/pulls)
+[![GitHub open issues](https://img.shields.io/github/issues-raw/gazebosim/gz-launch.svg)](https://github.com/gazebosim/gz-launch/issues)
+[![GitHub open pull requests](https://img.shields.io/github/issues-pr-raw/gazebosim/gz-launch.svg)](https://github.com/gazebosim/gz-launch/pulls)
 [![Discourse topics](https://img.shields.io/discourse/https/community.gazebosim.org/topics.svg)](https://community.gazebosim.org)
 [![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 Build | Status
 -- | --
-Test coverage | [![codecov](https://codecov.io/gh/ignitionrobotics/ign-launch/branch/main/graph/badge.svg)](https://codecov.io/gh/ignitionrobotics/ign-launch)
+Test coverage | [![codecov](https://codecov.io/gh/gazebosim/gz-launch/branch/main/graph/badge.svg)](https://codecov.io/gh/gazebosim/gz-launch)
 Ubuntu Focal | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-main-focal-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-main-focal-amd64)
 Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-main-homebrew-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-main-homebrew-amd64)
 Windows       | [![Build Status](https://build.osrfoundation.org/job/ign_launch-ign-5-win/badge/icon)](https://build.osrfoundation.org/job/ign_launch-ign-5-win/)
@@ -59,7 +59,7 @@ See the [installation tutorial](https://ignitionrobotics.org/api/launch/5.0/inst
 
 # Usage
 
-Sample launch configuration files are in the [examples directory](https://github.com/ignitionrobotics/ign-launch/blob/main/examples/).
+Sample launch configuration files are in the [examples directory](https://github.com/gazebosim/gz-launch/blob/main/examples/).
 
 **Example**
 
@@ -96,7 +96,7 @@ ln -s /usr/local/share/ignition/transportlog7.yaml .
 export GZ_CONFIG_PATH=$HOME/.ignition/tools/configs
 ```
 
-This issue is tracked [here](https://github.com/ignitionrobotics/ign-tools/issues/8).
+This issue is tracked [here](https://github.com/gazebosim/gz-tools/issues/8).
 
 # Documentation
 
@@ -129,7 +129,7 @@ Please see the [contribution guide](https://ignitionrobotics.org/docs/all/contri
 # Code of Conduct
 
 Please see
-[CODE_OF_CONDUCT.md](https://github.com/ignitionrobotics/ign-gazebo/blob/main/CODE_OF_CONDUCT.md).
+[CODE_OF_CONDUCT.md](https://github.com/gazebosim/gz-sim/blob/main/CODE_OF_CONDUCT.md).
 
 # Versioning
 
@@ -137,4 +137,4 @@ This library uses [Semantic Versioning](https://semver.org/). Additionally, this
 
 # License
 
-This library is licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0). See also the [LICENSE](https://github.com/ignitionrobotics/ign-launch/blob/main/LICENSE) file.
+This library is licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0). See also the [LICENSE](https://github.com/gazebosim/gz-launch/blob/main/LICENSE) file.

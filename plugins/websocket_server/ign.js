@@ -95,7 +95,7 @@ Ignition.prototype.connect = function(url, key) {
           // Request the list of worlds on start.
           // \todo Switch this to a service call when this issue is 
           // resolved:
-          // https://github.com/ignitionrobotics/ign-transport/issues/135
+          // https://github.com/gazebosim/gz-transport/issues/135
           that.socket.send(buildMsg(['worlds','','','']));
         }
       };

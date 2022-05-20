@@ -142,7 +142,7 @@ namespace gz
     ///
     /// `ign launch -v 4 websocket.ign`
     ///
-    /// 3. Open the [index.html](https://github.com/ignitionrobotics/ign-launch/blob/main/plugins/websocket_server/index.html) webpage.
+    /// 3. Open the [index.html](https://github.com/gazebosim/gz-launch/blob/main/plugins/websocket_server/index.html) webpage.
     ///
     class WebsocketServer : public gz::launch::Plugin
     {

@@ -79,7 +79,7 @@ necessary prerequisites followed by building from source.
 1. Clone the repository
 
     ```sh
-    git clone https://github.com/ignitionrobotics/ign-launch
+    git clone https://github.com/gazebosim/gz-launch
     ```
 
 2. Configure and build
@@ -98,7 +98,7 @@ necessary prerequisites followed by building from source.
 
 1. Clone the repository
   ```
-  git clone https://github.com/ignitionrobotics/ign-launch -b ign-launch<#>
+  git clone https://github.com/gazebosim/gz-launch -b ign-launch<#>
   ```
   Be sure to replace `<#>` with a number value, such as 4 or 5, depending on
   which version you need.
@@ -139,7 +139,7 @@ You can also generate the documentation from a clone of this repository by follo
 2. Clone the repository
 
     ```
-    git clone https://github.com/ignitionrobotics/ign-launch
+    git clone https://github.com/gazebosim/gz-launch
     ```
 
 3. Configure and build the documentation.
