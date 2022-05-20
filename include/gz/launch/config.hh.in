@@ -28,14 +28,10 @@
 #define GZ_LAUNCH_VERSION "${PROJECT_VERSION}"
 #define GZ_LAUNCH_VERSION_FULL "${PROJECT_VERSION_FULL}"
 
-#define GZ_LAUNCH_VERSION_HEADER "Gz Launch, version ${PROJECT_VERSION_FULL}\nCopyright (C) 2019 Open Source Robotics Foundation.\nReleased under the Apache 2.0 License.\n\n"
+#define GZ_LAUNCH_VERSION_HEADER "Gazebo Launch, version ${PROJECT_VERSION_FULL}\nCopyright (C) 2019 Open Source Robotics Foundation.\nReleased under the Apache 2.0 License.\n\n"
 
 #define GZ_LAUNCH_INITIAL_CONFIG_PATH "${CMAKE_INSTALL_PREFIX}/${IGN_DATA_INSTALL_DIR}/configs"
 
-#define GZ_LAUNCH_PLUGIN_INSTALL_PATH "${IGN_LAUNCH_PLUGIN_INSTALL_PATH}"
-
-#cmakedefine BUILD_TYPE_PROFILE 1
-#cmakedefine BUILD_TYPE_DEBUG 1
-#cmakedefine BUILD_TYPE_RELEASE 1
+#define GZ_LAUNCH_PLUGIN_INSTALL_PATH "${GZ_LAUNCH_PLUGIN_INSTALL_PATH}"
 
 #endif
