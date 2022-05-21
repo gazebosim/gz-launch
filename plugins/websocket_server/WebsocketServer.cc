@@ -716,7 +716,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
     igndbg << "Protos request received\n";
 
     std::string allProtos = "syntax = \"proto3\";\n";
-    allProtos += "package ignition.msgs;\n";
+    allProtos += "package gz.msgs;\n";
 
     std::vector<std::string> types;
     gz::msgs::Factory::Types(types);
@@ -760,7 +760,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
       msg.add_data(topic);
 
     std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
-        std::string("ignition.msgs.StringMsg_V"), msg.SerializeAsString());
+        std::string("gz.msgs.StringMsg_V"), msg.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
@@ -790,7 +790,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
     }
 
     std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
-        std::string("ignition.msgs.Publishers"), msg.SerializeAsString());
+        std::string("gz.msgs.Publishers"), msg.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
@@ -810,7 +810,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
         req, timeout, rep, result);
 
     std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
-        std::string("ignition.msgs.StringMsg_V"), rep.SerializeAsString());
+        std::string("gz.msgs.StringMsg_V"), rep.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
@@ -838,7 +838,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
     }
 
     std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
-        std::string("ignition.msgs.Scene"), rep.SerializeAsString());
+        std::string("gz.msgs.Scene"), rep.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
@@ -868,7 +868,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
     }
 
     std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
-        std::string("ignition.msgs.ParticleEmitter_V"),
+        std::string("gz.msgs.ParticleEmitter_V"),
         rep.SerializeAsString());
 
     // Queue the message for delivery.
@@ -916,7 +916,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
       this->node.TopicInfo(queryTopic, publishers);
       for (auto pub: publishers)
       {
-        if (pub.MsgTypeName() == "ignition.msgs.Image")
+        if (pub.MsgTypeName() == "gz.msgs.Image")
         {
           imageTopics.insert(queryTopic);
           break;

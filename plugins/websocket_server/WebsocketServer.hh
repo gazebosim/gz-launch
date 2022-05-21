@@ -107,7 +107,7 @@ namespace gz
     ///
     /// The `message_type` component is mandatory for the "pub" operation. If
     /// present it names the Gazebo Message type, such as
-    /// "ignition.msgs.Clock".
+    /// "gz.msgs.Clock".
     ///
     /// The `payload` component is mandatory for the "pub" operation. If
     /// present, it contains a serialized string of an Gazebo Message.
@@ -121,7 +121,7 @@ namespace gz
     /// 3. Subscribe to the "/clock" topic: `sub,/clock,,`
     ///
     /// 4. Websocket server publishing data on the "/clock" topic:
-    ///    `pub,/clock,ignition.msgs.Clock,<serialized_data>`
+    ///    `pub,/clock,gz.msgs.Clock,<serialized_data>`
     ///
     /// # Example usage
     ///
@@ -222,7 +222,7 @@ namespace gz
             std::chrono::time_point<std::chrono::steady_clock>> topicTimestamps;
 
         /// \brief The number of subscriptions of a msg type this connection
-        /// has. The key is the msg type, e.g. ignition.msgs.Image, and the
+        /// has. The key is the msg type, e.g. gz.msgs.Image, and the
         /// value is the subscription count
         public: std::map<std::string, int> msgTypeSubscriptionCount;
       };
@@ -246,7 +246,7 @@ namespace gz
 
       /// \brief The limit placed on the number of subscriptions per msg type
       /// for each connection. The key is the msg type, e.g.
-      /// ignition.msgs.Image, and the value is the subscription limit
+      /// gz.msgs.Image, and the value is the subscription limit
       public: std::map<std::string, int> msgTypeSubscriptionLimit;
 
       /// \brief Run loop mutex.
