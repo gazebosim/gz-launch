@@ -15,7 +15,7 @@ Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/ico
 Windows       | [![Build Status](https://build.osrfoundation.org/job/ign_launch-ign-5-win/badge/icon)](https://build.osrfoundation.org/job/ign_launch-ign-5-win/)
 
 Gazebo Launch, a component of [Ignition
-Robotics](https://ignitionrobotics.org), provides a command line interface
+Robotics](https://gazebosim.org), provides a command line interface
 to run and manager application and plugins.
 
 # Table of Contents
@@ -55,7 +55,7 @@ directory.
 
 # Install
 
-See the [installation tutorial](https://ignitionrobotics.org/api/launch/5.0/install.html).
+See the [installation tutorial](https://gazebosim.org/api/launch/5.0/install.html).
 
 # Usage
 
@@ -63,7 +63,7 @@ Sample launch configuration files are in the [examples directory](https://github
 
 **Example**
 
-1. Run a configuration that launches [Gazebo](https://ignitionrobotics.org/libs/gazebo).
+1. Run a configuration that launches [Gazebo](https://gazebosim.org/libs/gazebo).
 
     ```
     ign launch gazebo.ign
@@ -100,7 +100,7 @@ This issue is tracked [here](https://github.com/gazebosim/gz-tools/issues/8).
 
 # Documentation
 
-See the [installation tutorial](https://ignitionrobotics.org/api/launch/5.0/install.html).
+See the [installation tutorial](https://gazebosim.org/api/launch/5.0/install.html).
 
 # Folder Structure
 
@@ -124,7 +124,7 @@ ign-launch
 
 # Contributing
 
-Please see the [contribution guide](https://ignitionrobotics.org/docs/all/contributing).
+Please see the [contribution guide](https://gazebosim.org/docs/all/contributing).
 
 # Code of Conduct
 
@@ -133,7 +133,7 @@ Please see
 
 # Versioning
 
-This library uses [Semantic Versioning](https://semver.org/). Additionally, this library is part of the [Gazebo project](https://ignitionrobotics.org) which periodically releases a versioned set of compatible and complimentary libraries. See the [Gazebo website](https://ignitionrobotics.org) for version and release information.
+This library uses [Semantic Versioning](https://semver.org/). Additionally, this library is part of the [Gazebo project](https://gazebosim.org) which periodically releases a versioned set of compatible and complimentary libraries. See the [Gazebo website](https://gazebosim.org) for version and release information.
 
 # License
 

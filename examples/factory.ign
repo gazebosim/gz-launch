@@ -9,7 +9,7 @@
 
       <sdf version='1.6'>
         <include>
-          <uri>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/X2 UGV/1</uri>
+          <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/X2 UGV/1</uri>
           <plugin filename="ignition-gazebo-diff-drive-system"
                   name="gz::sim::systems::DiffDrive">
             <left_joint>front_left_wheel_joint</left_joint>

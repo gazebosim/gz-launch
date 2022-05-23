@@ -4,7 +4,7 @@
 
 These instructions are for installing only Gazebo Launch. If you're interested
 in using all the Ignition libraries, not only Igniton Launch, check out this
-[Ignition installation](https://ignitionrobotics.org/docs/latest/install).
+[Ignition installation](https://gazebosim.org/docs/latest/install).
 
 We recommend following the binary install instructions to get up and running as
 quickly and painlessly as possible.
@@ -126,7 +126,7 @@ necessary prerequisites followed by building from source.
 
 # Documentation
 
-API and tutorials can be found at [https://ignitionrobotics.org/libs/launch](https://ignitionrobotics.org/libs/launch).
+API and tutorials can be found at [https://gazebosim.org/libs/launch](https://gazebosim.org/libs/launch).
 
 You can also generate the documentation from a clone of this repository by following these steps.
 
