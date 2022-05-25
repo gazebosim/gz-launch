@@ -1095,14 +1095,28 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
   // Add in the gazebo plugin path for convenience
   std::string homePath;
   gz::common::env(IGN_HOMEDIR, homePath);
+
+  // TODO(CH3): Deprecated. Remove on ticktock.
   systemPaths.AddPluginPaths(
     gz::common::joinPaths(homePath, ".ignition", "gazebo", "plugins"));
+
+  systemPaths.AddPluginPaths(
+    gz::common::joinPaths(homePath, ".gz", "sim", "plugins"));
 
   std::string pathToLib;
   if (common::exists(file))
     pathToLib = file;
   else
     pathToLib = systemPaths.FindSharedLibrary(file);
+
+  if (pathToLib.empty())
+  {
+    // TODO(CH3): Deprecated. Remove on ticktock.
+    // This tries to find one more time with IGN_LAUNCH_PLUGIN_PATH instead of
+    // GZ_LAUNCH_PLUGIN_PATH
+    systemPaths.SetPluginPathEnv("IGN_LAUNCH_PLUGIN_PATH");
+    pathToLib = systemPaths.FindSharedLibrary(file);
+  }
 
   if (pathToLib.empty())
   {
