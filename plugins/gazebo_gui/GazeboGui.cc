@@ -139,7 +139,7 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
     app->LoadPlugin(file, elem);
   }
 
-  igndbg << "Running the GazeboGui plugin.\n";
+  gzdbg << "Running the GazeboGui plugin.\n";
   // This blocks until the window is closed or we receive a SIGINT
   app->exec();
 

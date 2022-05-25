@@ -109,7 +109,7 @@ bool JoyToTwist::Load(const tinyxml2::XMLElement *_elem)
   this->cmdVelPub = this->node.Advertise<gz::msgs::Twist>(
       this->outputTopic);
 
-  igndbg << "Loaded JoyToTwist plugin with the following parameters:\n"
+  gzdbg << "Loaded JoyToTwist plugin with the following parameters:\n"
     << "  input_topic: " << this->inputTopic << std::endl
     << "  output_topic: " << this->outputTopic << std::endl;
   this->running = true;

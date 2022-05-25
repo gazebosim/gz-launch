@@ -497,7 +497,7 @@ bool ManagerPrivate::Stop()
 /////////////////////////////////////////////////
 void ManagerPrivate::OnSigIntTerm(int _sig)
 {
-  igndbg << "OnSigIntTerm Received signal[" << _sig  << "]\n";
+  gzdbg << "OnSigIntTerm Received signal[" << _sig  << "]\n";
   this->Stop();
 }
 
@@ -578,7 +578,7 @@ void ManagerPrivate::RestartLoop()
       {
         if (iter->pid == p)
         {
-          igndbg << "Death of process[" << p << "] with name["
+          gzdbg << "Death of process[" << p << "] with name["
                  << iter->name << "].\n";
 
           // Restart if autoRestart is enabled
@@ -592,7 +592,7 @@ void ManagerPrivate::RestartLoop()
 
       if (!restartExec.name.empty() && !restartExec.command.empty())
       {
-        igndbg << "Restarting process with name[" << restartExec.name << "]\n";
+        gzdbg << "Restarting process with name[" << restartExec.name << "]\n";
         this->RunExecutable(restartExec);
       }
 
@@ -639,7 +639,7 @@ void ManagerPrivate::RestartLoop()
       {
         if (iter->pi == p)
         {
-          igndbg << "Death of process[" << p << "] with name ["
+          gzdbg << "Death of process[" << p << "] with name ["
                  << iter->name << "].\n";
 
           // Restart if autoRestart is enabled
@@ -653,7 +653,7 @@ void ManagerPrivate::RestartLoop()
 
       if (!restartExec.name.empty() && !restartExec.command.empty())
       {
-        igndbg << "Restarting process with name[" << restartExec.name << "]\n";
+        gzdbg << "Restarting process with name[" << restartExec.name << "]\n";
         this->RunExecutable(restartExec);
       }
 
@@ -815,7 +815,7 @@ bool ManagerPrivate::RunExecutable(const std::string &_name,
   // If parent process...
   if (pid)
   {
-    igndbg << "Forked a process for [" << _name << "] command["
+    gzdbg << "Forked a process for [" << _name << "] command["
       << std::accumulate(_cmd.begin(), _cmd.end(), std::string("")) << "]\n"
       << std::flush;
 
@@ -909,7 +909,7 @@ void ManagerPrivate::ShutdownExecutables()
   // Shutdown the processes
   for (const Executable &exec : this->executables)
   {
-    igndbg << "Killing the process[" << exec.name
+    gzdbg << "Killing the process[" << exec.name
 #ifndef _WIN32
       << "] with PID[" << exec.pid << "]\n";
     kill(exec.pid, SIGINT);
@@ -926,20 +926,20 @@ void ManagerPrivate::ShutdownExecutables()
 #endif
   {
 #ifndef _WIN32
-    igndbg << "Killing the wrapped plugin PID[" << pid << "]\n";
+    gzdbg << "Killing the wrapped plugin PID[" << pid << "]\n";
     kill(pid, SIGINT);
 #else
-    igndbg << "Killing the wrapped plugin PID[" << pid.dwProcessId << "]\n";
+    gzdbg << "Killing the wrapped plugin PID[" << pid.dwProcessId << "]\n";
     TerminateProcess(pid.hProcess, 0);
 #endif
   }
 
-  igndbg << "Waiting for each process to end\n";
+  gzdbg << "Waiting for each process to end\n";
 
   // Wait for all the monitors to stop
   for (std::thread &m : monitors)
     m.join();
-  igndbg << "All finished\n";
+  gzdbg << "All finished\n";
 }
 
 //////////////////////////////////////////////////
@@ -1134,7 +1134,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
     return;
   }
 
-  igndbg << "Loading plugin. Name[" << name
+  gzdbg << "Loading plugin. Name[" << name
     << "] File[" << file << "]" << std::endl;
 
   PluginPtr plugin = loader.Instantiate(name);

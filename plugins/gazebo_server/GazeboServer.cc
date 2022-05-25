@@ -347,6 +347,6 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
   this->server.reset(new sim::Server(serverConfig));
   this->server->Run(false, 0, !run);
 
-  igndbg << "Loaded GazeboServer plugin.\n";
+  gzdbg << "Loaded GazeboServer plugin.\n";
   return true;
 }

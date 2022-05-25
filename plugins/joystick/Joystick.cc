@@ -173,7 +173,7 @@ bool Joystick::Load(const tinyxml2::XMLElement *_elem)
   this->run = true;
   this->joyThread = new std::thread(std::bind(&Joystick::Run, this));
 
-  igndbg << "Loaded Joystick plugin with the following parameters:\n"
+  gzdbg << "Loaded Joystick plugin with the following parameters:\n"
     << "  device: " << deviceFilename << std::endl
     << "  sticky_buttons: " << this->stickyButtons << std::endl
     << "  dead_zone: " << deadzone << std::endl

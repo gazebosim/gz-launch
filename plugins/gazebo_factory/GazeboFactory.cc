@@ -162,7 +162,7 @@ bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
 
     if (executed && result && rep.data())
     {
-      igndbg << "Factory service call succeeded.\n";
+      gzdbg << "Factory service call succeeded.\n";
       if (!this->worldPerformers[msg.first].empty())
       {
         IGN_SLEEP_S(2);
