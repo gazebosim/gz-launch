@@ -110,7 +110,7 @@ namespace gz
     /// "gz.msgs.Clock".
     ///
     /// The `payload` component is mandatory for the "pub" operation. If
-    /// present, it contains a serialized string of an Gazebo Message.
+    /// present, it contains a serialized string of a Gazebo Message.
     ///
     /// ## Example frames
     ///
