@@ -101,7 +101,8 @@ namespace ignition
     ///                  definitions.
     ///     7. "unsub": Unsubscribe from the topic in the `topic_name` component
     ///     8. "asset": Get a file as a byte array from a running Gazebo
-    ///                 server.
+    ///                 server. Set the payload to the file URI that is
+    ///                 being requested.
     ///
     /// The `topic_name` component is mandatory for the "sub", "pub", and
     /// "unsub" operations. If present, it must be the name of an Ignition
@@ -180,6 +181,9 @@ namespace ignition
       /// \param[in] _socketId ID of the socket.
       public: void OnDisconnect(int _socketId);
 
+      /// \brief Handles incoming websocket messages
+      /// \brief _socketId Id of the socket associated with the message.
+      /// \brief _msg The incoming message.
       public: void OnMessage(int _socketId, const std::string _msg);
 
       public: void OnRequestMessage(int _socketId, const std::string &_msg);
