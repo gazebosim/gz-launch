@@ -996,49 +996,62 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   }
   else if (frameParts[0] == "asset")
   {
-    std::string assetUri = frameParts[1];
+    this->OnAsset(_socketId, frameParts);
+  }
+}
 
-    std::string resolvedPath;
+//////////////////////////////////////////////////
+void WebsocketServer::OnAsset(int _socketId,
+    const std::vector<std::string> &_frameParts)
+{
+  if (_frameParts.size() <= 1)
+  {
+    ignerr << "Asset requested, but asset URI is missing\n";
+    return;
+  }
 
-    // Short circuit the case where the assetURI is already a valid path.
-    if (common::exists(assetUri))
-    {
-      resolvedPath = assetUri;
-    }
-    else
-    {
-      ignition::msgs::StringMsg req, rep;
-      req.set_data(assetUri);
-      bool result;
-      unsigned int timeout = 2000;
+  std::string assetUri = _frameParts[1];
 
-      // Request the file path from Gazebo
-      bool executed = this->node.Request("/gazebo/resource_paths/resolve",
-          req, timeout, rep, result);
-      if (executed && result)
-        resolvedPath = rep.data();
-    }
+  std::string resolvedPath;
 
-    if (!resolvedPath.empty())
-    {
-      // Read the file
-      std::ifstream infile(resolvedPath, std::ios_base::binary);
-      std::string fileBuffer = std::string(
-          std::istreambuf_iterator<char>(infile),
-          std::istreambuf_iterator<char>());
+  // Short circuit the case where the assetURI is already a valid path.
+  if (common::exists(assetUri))
+  {
+    resolvedPath = assetUri;
+  }
+  else
+  {
+    ignition::msgs::StringMsg req, rep;
+    req.set_data(assetUri);
+    bool result;
+    unsigned int timeout = 2000;
 
-      // Store the file in a protobuf message
-      ignition::msgs::Bytes bytes;
-      bytes.set_data(fileBuffer);
+    // Request the file path from Gazebo
+    bool executed = this->node.Request("/gazebo/resource_paths/resolve",
+        req, timeout, rep, result);
+    if (executed && result)
+      resolvedPath = rep.data();
+  }
 
-      // Construct the response message
-      std::string data = BUILD_MSG(this->operations[ASSET], assetUri,
-          std::string("ignition.msgs.Bytes"), bytes.SerializeAsString());
+  if (!resolvedPath.empty())
+  {
+    // Read the file
+    std::ifstream infile(resolvedPath, std::ios_base::binary);
+    std::string fileBuffer = std::string(
+        std::istreambuf_iterator<char>(infile),
+        std::istreambuf_iterator<char>());
 
-      // Queue the message for delivery.
-      this->QueueMessage(this->connections[_socketId].get(),
-          data.c_str(), data.length());
-    }
+    // Store the file in a protobuf message
+    ignition::msgs::Bytes bytes;
+    bytes.set_data(fileBuffer);
+
+    // Construct the response message
+    std::string data = BUILD_MSG(this->operations[ASSET], assetUri,
+        std::string("ignition.msgs.Bytes"), bytes.SerializeAsString());
+
+    // Queue the message for delivery.
+    this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
   }
 }
 
