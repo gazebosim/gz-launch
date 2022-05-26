@@ -1096,10 +1096,6 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
   std::string homePath;
   gz::common::env(IGN_HOMEDIR, homePath);
 
-  // TODO(CH3): Deprecated. Remove on ticktock.
-  systemPaths.AddPluginPaths(
-    gz::common::joinPaths(homePath, ".ignition", "gazebo", "plugins"));
-
   systemPaths.AddPluginPaths(
     gz::common::joinPaths(homePath, ".gz", "sim", "plugins"));
 
@@ -1115,7 +1111,18 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
     // This tries to find one more time with IGN_LAUNCH_PLUGIN_PATH instead of
     // GZ_LAUNCH_PLUGIN_PATH
     systemPaths.SetPluginPathEnv("IGN_LAUNCH_PLUGIN_PATH");
+
+    systemPaths.AddPluginPaths(
+      gz::common::joinPaths(homePath, ".ignition", "gazebo", "plugins"));
+
     pathToLib = systemPaths.FindSharedLibrary(file);
+
+    if (!pathToLib.empty())
+    {
+      gzwarn << "Found plugin [" << pathToLib
+      << "] using deprecated environment variable [IGN_LAUNCH_PLUGIN_PATH]."
+         " Please use [GZ_LAUNCH_PLUGIN_PATH] instead." << std::endl;
+    }
   }
 
   if (pathToLib.empty())
@@ -1124,12 +1131,6 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
       << "Try adding the path to the GZ_LAUNCH_PLUGIN_PATH environment "
       << "variable.\n";
     return;
-  }
-  else
-  {
-    gzwarn << "Found plugin [" << pathToLib
-    << "] using deprecated environment variable [IGN_LAUNCH_PLUGIN_PATH]."
-       " Please use [GZ_LAUNCH_PLUGIN_PATH] instead." << std::endl;
   }
 
   plugin::Loader loader;
