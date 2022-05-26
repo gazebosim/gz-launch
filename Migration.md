@@ -13,6 +13,10 @@ release will remove the deprecated code.
 - Header files under `ignition/...` are deprecated and will be removed in future versions.
   Use `gz/...` instead.
 
+- Migrate `IGN_LAUNCH_PLUGIN_PATH` environment variable to `GZ_LAUNCH_PLUGIN_PATH` for finding
+  plugin.
+  With tick-tock.
+
 ## Gazebo Launch 2.2.2
 
 - Environment variable `GZ_LAUNCH_CONFIG_PATH` started to be treated as a path

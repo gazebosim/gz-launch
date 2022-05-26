@@ -1,10 +1,6 @@
 ## Gazebo Launch 6.x
 
 ### Gazebo Launch 6.X.X (202X-XX-XX)
-1. Migrate `IGN_LAUNCH_PLUGIN_PATH` environment variable to `GZ_LAUNCH_PLUGIN_PATH` for finding
-   plugin.
-   With tick-tock.
-    * [Pull request #163](https://github.com/gazebosim/gz-launch/pull/163)
 
 ## Gazebo Launch 5.x
 
