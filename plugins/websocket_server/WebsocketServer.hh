@@ -100,6 +100,8 @@ namespace ignition
     ///     6. "particle_emitters": Get the list of particle emitters.
     ///                  definitions.
     ///     7. "unsub": Unsubscribe from the topic in the `topic_name` component
+    ///     8. "asset": Get a file as a byte array from a running Gazebo
+    ///                 server.
     ///
     /// The `topic_name` component is mandatory for the "sub", "pub", and
     /// "unsub" operations. If present, it must be the name of an Ignition
@@ -178,7 +180,7 @@ namespace ignition
       /// \param[in] _socketId ID of the socket.
       public: void OnDisconnect(int _socketId);
 
-      public: void OnMessage(int _socketId, const std::string &_msg);
+      public: void OnMessage(int _socketId, const std::string _msg);
 
       public: void OnRequestMessage(int _socketId, const std::string &_msg);
 
@@ -289,13 +291,16 @@ namespace ignition
 
                  /// \brief Get the protobuf definitions.
                  PROTOS = 3,
+
+                 /// \brief Get an asset as a byte array.
+                 ASSET = 4,
                };
 
       /// \brief The set of valid operations, in string  form. These values
       /// can be sent in websocket message frames.
       /// These valus must align with the `Operation` enum.
       private: std::vector<std::string> operations{
-                 "sub", "pub", "topics", "protos"};
+                 "sub", "pub", "topics", "protos", "asset"};
 
       /// \brief Store publish headers for topics. This is here to improve
       /// performance. Keys are topic names and values are frame headers.
