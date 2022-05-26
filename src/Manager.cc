@@ -1125,6 +1125,12 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
       << "variable.\n";
     return;
   }
+  else
+  {
+    gzwarn << "Found plugin [" << pathToLib
+    << "] using deprecated environment variable [IGN_LAUNCH_PLUGIN_PATH]."
+       " Please use [GZ_LAUNCH_PLUGIN_PATH] instead." << std::endl;
+  }
 
   plugin::Loader loader;
   std::unordered_set<std::string> localPlugins = loader.LoadLib(pathToLib);
