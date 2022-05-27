@@ -202,7 +202,7 @@ namespace ignition
           int _socketId, bool _subscribe);
 
       /// \brief Handles asset requests.
-      /// \brief _socketId Id of the socket associated with the message.
+      /// \param[in] _socketId Id of the socket associated with the message.
       /// \param[in] _frameParts The request message in frame parts.
       private: void OnAsset(int _socketId,
                    const std::vector<std::string> &_frameParts);
