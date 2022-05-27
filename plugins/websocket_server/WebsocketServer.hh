@@ -182,8 +182,8 @@ namespace ignition
       public: void OnDisconnect(int _socketId);
 
       /// \brief Handles incoming websocket messages
-      /// \brief _socketId Id of the socket associated with the message.
-      /// \brief _msg The incoming message.
+      /// \param[in] _socketId Id of the socket associated with the message.
+      /// \param[in] _msg The incoming message.
       public: void OnMessage(int _socketId, const std::string _msg);
 
       public: void OnRequestMessage(int _socketId, const std::string &_msg);
