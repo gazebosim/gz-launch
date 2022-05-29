@@ -15,19 +15,19 @@
  *
 */
 
-#include <ignition/msgs/entity_factory.pb.h>
-#include <ignition/msgs/boolean.pb.h>
+#include <gz/msgs/entity_factory.pb.h>
+#include <gz/msgs/boolean.pb.h>
 
-#include <ignition/common/Util.hh>
-#include <ignition/common/Console.hh>
+#include <gz/common/Util.hh>
+#include <gz/common/Console.hh>
 #include "GazeboFactory.hh"
 
-using namespace ignition;
-using namespace ignition::launch;
+using namespace gz;
+using namespace gz::launch;
 
 /////////////////////////////////////////////////
 GazeboFactory::GazeboFactory()
-  : ignition::launch::Plugin()
+  : gz::launch::Plugin()
 {
 }
 
@@ -74,7 +74,7 @@ void GazeboFactory::ProcessSpawn(const tinyxml2::XMLElement *_elem)
     // Error if no world was found.
     if (worlds.empty())
     {
-      ignerr << "No simulation worlds were found. Unable to run the factory. "
+      gzerr << "No simulation worlds were found. Unable to run the factory. "
         << "Is Gazebo running?\n";
       return;
     }
@@ -82,7 +82,7 @@ void GazeboFactory::ProcessSpawn(const tinyxml2::XMLElement *_elem)
     // Warning if multiple worlds were found.
     if (worlds.size() > 1)
     {
-      ignwarn << "Multiple simulation worlds were found. Using the first, "
+      gzwarn << "Multiple simulation worlds were found. Using the first, "
         << " which has the name[" << *worlds.begin() << "]\n";
     }
 
@@ -123,7 +123,7 @@ void GazeboFactory::ProcessSpawn(const tinyxml2::XMLElement *_elem)
   elem = _elem->FirstChildElement("pose");
   if (elem)
   {
-    ignition::math::Pose3d pose;
+    gz::math::Pose3d pose;
     std::stringstream stream;
     stream << elem->GetText();
     stream >> pose;
@@ -162,7 +162,7 @@ bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
 
     if (executed && result && rep.data())
     {
-      igndbg << "Factory service call succeeded.\n";
+      gzdbg << "Factory service call succeeded.\n";
       if (!this->worldPerformers[msg.first].empty())
       {
         IGN_SLEEP_S(2);
@@ -192,17 +192,17 @@ bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
       {
         if (result && !rep.data())
         {
-          ignerr << "Factory service call completed, but returned a false value."
+          gzerr << "Factory service call completed, but returned a false value."
             << "You may have an invalid request. Check the configuration.\n";
         }
         else
         {
-          ignerr << "Factory service call failed.\n";
+          gzerr << "Factory service call failed.\n";
         }
       }
       else
       {
-        ignerr << "Factory service call timed out.\n";
+        gzerr << "Factory service call timed out.\n";
       }
     }
   }

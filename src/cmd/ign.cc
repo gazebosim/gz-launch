@@ -15,33 +15,33 @@
  *
 */
 #include <cstring>
-#include <ignition/common/Console.hh>
+#include <gz/common/Console.hh>
 
-#include "ignition/launch/config.hh"
+#include "gz/launch/config.hh"
 #include "ign.hh"
 #include "../Manager.hh"
 
 //////////////////////////////////////////////////
 extern "C" char *ignitionVersion()
 {
-  return strdup(IGNITION_LAUNCH_VERSION_FULL);
+  return strdup(GZ_LAUNCH_VERSION_FULL);
 }
 
 //////////////////////////////////////////////////
 extern "C" const char *configPath()
 {
-  return IGNITION_LAUNCH_INITIAL_CONFIG_PATH;
+  return GZ_LAUNCH_INITIAL_CONFIG_PATH;
 }
 
 //////////////////////////////////////////////////
 extern "C" void cmdVerbosity(const int _verbosity)
 {
-  ignition::common::Console::SetVerbosity(_verbosity);
+  gz::common::Console::SetVerbosity(_verbosity);
 }
 
 //////////////////////////////////////////////////
 extern "C" int run(const char *_config)
 {
-  ignition::launch::Manager mgr;
+  gz::launch::Manager mgr;
   return mgr.RunConfig(_config);
 }

@@ -11,4 +11,4 @@ target_link_libraries(${plugin}
     ignition-transport${IGN_TRANSPORT_MAJOR_VER}::core
 )
 
-install (TARGETS ${plugin} DESTINATION ${IGN_LAUNCH_PLUGIN_INSTALL_PATH})
+install (TARGETS ${plugin} DESTINATION ${GZ_LAUNCH_PLUGIN_INSTALL_PATH})

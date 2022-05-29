@@ -16,12 +16,12 @@
  *
  */
 
-#include <ignition/common/Console.hh>
-#include <ignition/common/Util.hh>
+#include <gz/common/Console.hh>
+#include <gz/common/Util.hh>
 
-#include <ignition/utils/cli/CLI.hpp>
+#include <gz/utils/cli/CLI.hpp>
 
-#include "ignition/launch/config.hh"
+#include "gz/launch/config.hh"
 #include "ign.hh"
 
 #ifdef _WIN32
@@ -80,20 +80,20 @@ void runLaunchCommand(const LaunchOptions &_opt)
   if (!launchfile.empty())
   {
     // If the launch file is not a file, then look in the paths set by the
-    // IGN_LAUNCH_CONFIG_PATH environment variable.
-    if (!ignition::common::isFile(launchfile))
+    // GZ_LAUNCH_CONFIG_PATH environment variable.
+    if (!gz::common::isFile(launchfile))
     {
       std::string configPathEnv;
-      ignition::common::env("IGN_LAUNCH_CONFIG_PATH", configPathEnv, true);
+      gz::common::env("GZ_LAUNCH_CONFIG_PATH", configPathEnv, true);
       if (!configPathEnv.empty())
       {
         std::vector<std::string> paths =
-          ignition::common::split(configPathEnv, ":");
+          gz::common::split(configPathEnv, ":");
         for (const std::string &path : paths)
         {
           std::string filePath =
-            ignition::common::joinPaths(path, launchfile);
-          if (ignition::common::isFile(filePath))
+            gz::common::joinPaths(path, launchfile);
+          if (gz::common::isFile(filePath))
           {
             launchfile = filePath;
             break;
@@ -101,9 +101,9 @@ void runLaunchCommand(const LaunchOptions &_opt)
         }
       }
 
-      if (!ignition::common::isFile(launchfile))
+      if (!gz::common::isFile(launchfile))
       {
-        ignerr << "File [" + launchfile + "] does not exists"
+        gzerr << "File [" + launchfile + "] does not exists"
           << std::endl;
         exit(-1);
       }
@@ -112,14 +112,14 @@ void runLaunchCommand(const LaunchOptions &_opt)
     std::string cmd = "erb ";
     for (auto & arg : _opt.more_comms)
     {
-      auto tokens = ignition::common::split(arg, ":=");
+      auto tokens = gz::common::split(arg, ":=");
       if (tokens.size() == 2)
       {
         cmd += " " + tokens[0] + "=" + tokens[1];
       }
       else
       {
-        ignerr << "This argument [" << arg << "] is wrong for erb"
+        gzerr << "This argument [" << arg << "] is wrong for erb"
                << std::endl;
         exit(1);
       }

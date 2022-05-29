@@ -14,27 +14,27 @@
  * limitations under the License.
  *
 */
-#ifndef IGNITION_LAUNCH_MANAGER_HH_
-#define IGNITION_LAUNCH_MANAGER_HH_
+#ifndef GZ_LAUNCH_MANAGER_HH_
+#define GZ_LAUNCH_MANAGER_HH_
 
 #include <memory>
 #include <string>
 
-// #include <ignition/common/SuppressWarning.hh>
+// #include <gz/common/SuppressWarning.hh>
 
-#include <ignition/launch/Export.hh>
+#include <gz/launch/Export.hh>
 
-namespace ignition
+namespace gz
 {
   namespace launch
   {
     // Inline bracket to help doxygen filtering.
-    inline namespace IGNITION_LAUNCH_VERSION_NAMESPACE {
+    inline namespace GZ_LAUNCH_VERSION_NAMESPACE {
     // Forward declaration of the private data class
     class ManagerPrivate;
 
     /// \brief Class for starting and managing programs and plugins.
-    class IGNITION_LAUNCH_VISIBLE Manager
+    class GZ_LAUNCH_VISIBLE Manager
     {
       /// \brief Constructor.
       public: Manager();

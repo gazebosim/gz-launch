@@ -21,12 +21,12 @@
 #include <gz/plugin/SpecializedPluginPtr.hh>
 #include <gz/launch/Export.hh>
 
-namespace ignition
+namespace gz
 {
   namespace launch
   {
     // Inline bracket to help doxygen filtering.
-    inline namespace IGNITION_LAUNCH_VERSION_NAMESPACE {
+    inline namespace GZ_LAUNCH_VERSION_NAMESPACE {
     /// \brief Base class for launch plugins.
     class Plugin
     {
@@ -38,8 +38,8 @@ namespace ignition
     };
 
     /// \brief Pointer to a launch plugin.
-    using PluginPtr = ignition::plugin::SpecializedPluginPtr<
-      ignition::launch::Plugin>;
+    using PluginPtr = gz::plugin::SpecializedPluginPtr<
+      gz::launch::Plugin>;
     }
   }
 }

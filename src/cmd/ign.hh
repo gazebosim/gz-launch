@@ -14,10 +14,10 @@
  * limitations under the License.
  *
 */
-#ifndef IGNITION_LAUNCH_IGN_HH_
-#define IGNITION_LAUNCH_IGN_HH_
+#ifndef GZ_LAUNCH_GZ_HH_
+#define GZ_LAUNCH_GZ_HH_
 
-#include "ignition/launch/Export.hh"
+#include "gz/launch/Export.hh"
 
 /// \brief External hook to read the library version.
 /// \return C-string representing the version. Ex.: 0.1.2

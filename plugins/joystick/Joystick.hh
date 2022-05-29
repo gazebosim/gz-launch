@@ -14,25 +14,25 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_JOYSTICK_HH_
-#define IGNITION_LAUNCH_JOYSTICK_HH_
+#ifndef GZ_LAUNCH_JOYSTICK_HH_
+#define GZ_LAUNCH_JOYSTICK_HH_
 
 #include <thread>
-#include <ignition/launch/Plugin.hh>
-#include <ignition/plugin/Register.hh>
-#include <ignition/transport/Node.hh>
+#include <gz/launch/Plugin.hh>
+#include <gz/plugin/Register.hh>
+#include <gz/transport/Node.hh>
 
-namespace ignition
+namespace gz
 {
   namespace launch
   {
     /// \brief Reads from a USB joystick device and outputs
-    ///  ignition::msgs::Joystick messages.
+    ///  gz::msgs::Joystick messages.
     ///
     /// # Example usage
     ///
-    /// <!-- Inform ignition::Launch about the JoyToTwist plugin -->
-    ///  <plugin name="ignition::launch::Joystick"
+    /// <!-- Inform gz::Launch about the JoyToTwist plugin -->
+    ///  <plugin name="gz::launch::Joystick"
     ///      filename="ignition-launch-joystick0">
     ///
     ///    <!-- Joystick device -->
@@ -49,7 +49,7 @@ namespace ignition
     ///    <accumulation_rate>1000</accumulation_rate>
     /// </plugin>
 
-    class Joystick : public ignition::launch::Plugin
+    class Joystick : public gz::launch::Plugin
     {
       /// \brief Constructor
       public: Joystick();
@@ -73,13 +73,13 @@ namespace ignition
       private: float accumulationInterval = 0.001f;
       private: std::thread *joyThread = nullptr;
 
-      private: ignition::transport::Node node;
-      private: ignition::transport::Node::Publisher pub;
+      private: gz::transport::Node node;
+      private: gz::transport::Node::Publisher pub;
     };
   }
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(ignition::launch::Joystick, ignition::launch::Plugin)
+IGNITION_ADD_PLUGIN(gz::launch::Joystick, gz::launch::Plugin)
 
 #endif

@@ -15,12 +15,12 @@
  *
 */
 
-#include <ignition/common/Console.hh>
+#include <gz/common/Console.hh>
 #include <sdf/sdf.hh>
 #include "GazeboServer.hh"
 
-using namespace ignition;
-using namespace ignition::launch;
+using namespace gz;
+using namespace gz::launch;
 
 /////////////////////////////////////////////////
 void copyElement(sdf::ElementPtr _sdf, const tinyxml2::XMLElement *_xml)
@@ -52,14 +52,14 @@ void copyElement(sdf::ElementPtr _sdf, const tinyxml2::XMLElement *_xml)
 
 /////////////////////////////////////////////////
 GazeboServer::GazeboServer()
-  : ignition::launch::Plugin()
+  : gz::launch::Plugin()
 {
 }
 
 /////////////////////////////////////////////////
 bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
 {
-  gazebo::ServerConfig serverConfig;
+  sim::ServerConfig serverConfig;
   const tinyxml2::XMLElement *elem;
 
   // Get the world file
@@ -116,7 +116,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
 
     // Update compressed file path to name of recording directory path
     std::string cmpPath = std::string(recordPathMod);
-    if (!std::string(1, cmpPath.back()).compare(ignition::common::separator("")))
+    if (!std::string(1, cmpPath.back()).compare(gz::common::separator("")))
       // Remove the separator at end of path
       cmpPath = cmpPath.substr(0, cmpPath.length() - 1);
     cmpPath += ".zip";
@@ -132,47 +132,47 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     {
       // Update compressed file path to name of recording directory path
       cmpPath = std::string(recordPathMod);
-      if (!std::string(1, cmpPath.back()).compare(ignition::common::separator(
+      if (!std::string(1, cmpPath.back()).compare(gz::common::separator(
         "")))
         // Remove the separator at end of path
         cmpPath = cmpPath.substr(0, cmpPath.length() - 1);
       cmpPath += ".zip";
 
       // Check if path or compressed file with same prefix exists
-      if (ignition::common::exists(recordPathMod) ||
-        ignition::common::exists(cmpPath))
+      if (gz::common::exists(recordPathMod) ||
+        gz::common::exists(cmpPath))
       {
         // Overwrite if flag specified
         if (overwrite)
         {
           bool recordMsg = false, cmpMsg = false;
           // Remove files before initializing console log files on top of them
-          if (ignition::common::exists(recordPathMod))
+          if (gz::common::exists(recordPathMod))
           {
             recordMsg = true;
-            ignition::common::removeAll(recordPathMod);
+            gz::common::removeAll(recordPathMod);
           }
-          if (ignition::common::exists(cmpPath))
+          if (gz::common::exists(cmpPath))
           {
             cmpMsg = true;
-            ignition::common::removeFile(cmpPath);
+            gz::common::removeFile(cmpPath);
           }
 
           // Create log file before printing any messages so they can be logged
-          ignLogInit(recordPathMod, "server_console.log");
+          gzLogInit(recordPathMod, "server_console.log");
 
           if (recordMsg)
           {
-            ignmsg << "Log path already exists on disk! Existing files will be "
+            gzmsg << "Log path already exists on disk! Existing files will be "
               << "overwritten." << std::endl;
-            ignmsg << "Removing existing path [" << recordPathMod << "]\n";
+            gzmsg << "Removing existing path [" << recordPathMod << "]\n";
           }
 
           if (cmpMsg)
           {
-            ignwarn << "Compressed log path already exists on disk! Existing "
+            gzwarn << "Compressed log path already exists on disk! Existing "
               << "files will be overwritten." << std::endl;
-            ignmsg << "Removing existing compressed file [" << cmpPath << "]\n";
+            gzmsg << "Removing existing compressed file [" << cmpPath << "]\n";
           }
         }
         // Otherwise rename to unique path
@@ -180,41 +180,41 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
         {
           // Remove the separator at end of path
           if (!std::string(1, recordPathMod.back()).compare(
-            ignition::common::separator("")))
+            gz::common::separator("")))
             recordPathMod = recordPathMod.substr(0, recordPathMod.length() - 1);
-          recordPathMod = ignition::common::uniqueDirectoryPath(recordPathMod);
+          recordPathMod = gz::common::uniqueDirectoryPath(recordPathMod);
 
           cmpPath = std::string(recordPathMod);
           // Remove the separator at end of path
           if (!std::string(1, cmpPath.back()).compare(
-            ignition::common::separator("")))
+            gz::common::separator("")))
             cmpPath = cmpPath.substr(0, cmpPath.length() - 1);
           cmpPath += ".zip";
 
           // If compressed file exists, rename again
-          if (ignition::common::exists(cmpPath))
+          if (gz::common::exists(cmpPath))
           {
-            cmpPath = ignition::common::uniqueFilePath(recordPathMod, "zip");
+            cmpPath = gz::common::uniqueFilePath(recordPathMod, "zip");
 
             size_t extIdx = cmpPath.find_last_of(".");
             recordPathMod = cmpPath.substr(0, extIdx);
           }
 
-          ignLogInit(recordPathMod, "server_console.log");
-          ignwarn << "Log path already exists on disk! "
+          gzLogInit(recordPathMod, "server_console.log");
+          gzwarn << "Log path already exists on disk! "
             << "Recording instead to [" << recordPathMod << "]" << std::endl;
-          ignwarn << "Compressed log path already exists on disk! "
+          gzwarn << "Compressed log path already exists on disk! "
             << "Recording instead to [" << cmpPath << "]" << std::endl;
         }
       }
       else
       {
-        ignLogInit(recordPathMod, "server_console.log");
+        gzLogInit(recordPathMod, "server_console.log");
       }
     }
     else
     {
-      ignLogInit(recordPathMod, "server_console.log");
+      gzLogInit(recordPathMod, "server_console.log");
     }
     serverConfig.SetLogRecordPath(recordPathMod);
 
@@ -229,11 +229,11 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
         serverConfig.SetLogRecordCompressPath(cmpPath);
     }
 
-    ignmsg << "Logging to [" << recordPathMod << "]" << std::endl;
+    gzmsg << "Logging to [" << recordPathMod << "]" << std::endl;
   }
 
   if (serverConfig.UseLogRecord())
-    ignmsg << "Recording to [" << recordPathMod << "]\n";
+    gzmsg << "Recording to [" << recordPathMod << "]\n";
 
   // Set whether to use a custom random seed
   elem = _elem->FirstChildElement("seed");
@@ -244,11 +244,11 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     if (result == tinyxml2::XML_SUCCESS)
     {
       serverConfig.SetSeed(seed);
-      ignmsg << "Using seed [" << seed << "]" << std::endl;
+      gzmsg << "Using seed [" << seed << "]" << std::endl;
     }
     else
     {
-      ignerr << "Unable to parse [" << elem->GetText() << "] as a seed."
+      gzerr << "Unable to parse [" << elem->GetText() << "] as a seed."
              << " Make sure it's an unsigned int" << std::endl;
     }
   }
@@ -262,11 +262,11 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     if (result == tinyxml2::XML_SUCCESS)
     {
       serverConfig.SetUpdateRate(updateRate);
-      ignmsg << "Using update rate [" << updateRate << "]" << std::endl;
+      gzmsg << "Using update rate [" << updateRate << "]" << std::endl;
     }
     else
     {
-      ignerr << "Unable to parse [" << elem->GetText() << "] as an update rate."
+      gzerr << "Unable to parse [" << elem->GetText() << "] as an update rate."
              << " Make sure it's an unsigned int" << std::endl;
     }
   }
@@ -289,7 +289,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     std::string name = nameStr == nullptr ? "" : nameStr;
     if (name.empty())
     {
-      ignerr << "A GazeboServer plugin is missing the name attribute. "
+      gzerr << "A GazeboServer plugin is missing the name attribute. "
         << "Skipping this plugin.\n";
       continue;
     }
@@ -299,7 +299,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     std::string file = fileStr == nullptr ? "" : fileStr;
     if (file.empty())
     {
-      ignerr << "A GazeboServer plugin with name[" << name << "] is "
+      gzerr << "A GazeboServer plugin with name[" << name << "] is "
         << "missing the filename attribute. Skipping this plugin.\n";
       continue;
     }
@@ -309,7 +309,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     std::string entityName = entityNameStr == nullptr ? "" : entityNameStr;
     if (entityName.empty())
     {
-      ignerr << "A GazeboServer plugin with name[" << name << "] and "
+      gzerr << "A GazeboServer plugin with name[" << name << "] and "
         << "filename[" << file << "] is missing the entity_name attribute. "
         << "Skipping this plugin.\n";
       continue;
@@ -320,7 +320,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     std::string entityType = entityTypeStr == nullptr ? "" : entityTypeStr;
     if (entityType.empty())
     {
-      ignerr << "A GazeboServer plugin with name[" << name << "] and "
+      gzerr << "A GazeboServer plugin with name[" << name << "] and "
         << "filename[" << file << "] is missing the entity_type attribute. "
         << "Skipping this plugin.\n";
       continue;
@@ -344,9 +344,9 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
   }
 
   // Create and run the simulation server
-  this->server.reset(new gazebo::Server(serverConfig));
+  this->server.reset(new sim::Server(serverConfig));
   this->server->Run(false, 0, !run);
 
-  igndbg << "Loaded GazeboServer plugin.\n";
+  gzdbg << "Loaded GazeboServer plugin.\n";
   return true;
 }

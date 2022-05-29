@@ -28,7 +28,7 @@
     ign.on('worlds', function(_worlds) {
       // \todo Switch this to a service call when this issue is 
       // resolved:
-      // https://github.com/ignitionrobotics/ign-transport/issues/135
+      // https://github.com/gazebosim/gz-transport/issues/135
       ign.once('scene', function(_sceneInfo) {
         // console.log(_sceneInfo);
         for (var i = 0; i < _sceneInfo.model.length; ++i) {
@@ -43,7 +43,7 @@
     var clockSub = new Topic({
       ign: ign,
       name: '/clock',
-      messageType : 'ignition.msgs.Clock',
+      messageType : 'gz.msgs.Clock',
       callback: function(msg) {
         var output = document.getElementById('output');
         output.innerHTML = 'Clock: ' + msg.sim.sec + '.' + msg.sim.nsec;
@@ -54,7 +54,7 @@
     var poseSub = new Topic({
       ign: ign,
       name: '/world/shapes/dynamic_pose/info',
-      messageType : 'ignition.msgs.Pose_V',
+      messageType : 'gz.msgs.Pose_V',
       callback: function(msg) {
         for (var i = 0; i < msg.pose.length; ++i) {
           var entity = scene.getByName(msg.pose[i].name);

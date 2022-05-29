@@ -16,10 +16,10 @@
 */
 
 #include <gtest/gtest.h>
-#include <ignition/common/Console.hh>
-#include <ignition/common/Filesystem.hh>
+#include <gz/common/Console.hh>
+#include <gz/common/Filesystem.hh>
 
-#include <ignition/utils/ExtraTestMacros.hh>
+#include <gz/utils/ExtraTestMacros.hh>
 
 #include <sys/stat.h>
 
@@ -41,9 +41,9 @@ class ManagerTest : public ::testing::Test
 bool RemoveTestScript(std::string _testScriptPath)
 {
   // Remove the file if it already exists
-  if (ignition::common::isFile(_testScriptPath))
+  if (gz::common::isFile(_testScriptPath))
   {
-    if (!ignition::common::removeFile(_testScriptPath))
+    if (!gz::common::removeFile(_testScriptPath))
     {
       return false;
     }
@@ -77,7 +77,7 @@ type nul > %TEST_VAR%
 /////////////////////////////////////////////////
 TEST_F(ManagerTest, RunEmptyConfig)
 {
-  ignition::launch::Manager mgr;
+  gz::launch::Manager mgr;
 
   // Expect false because no config file was set.
   EXPECT_FALSE(mgr.RunConfig(""));
@@ -91,7 +91,7 @@ TEST_F(ManagerTest, MissingIgnition)
     "  <command>ign-gazebo-server</command>"
     "</executable>";
 
-  ignition::launch::Manager mgr;
+  gz::launch::Manager mgr;
 
   // Stop the manager after a short pause.
   EXPECT_FALSE(mgr.RunConfig(config));
@@ -105,7 +105,7 @@ TEST_F(ManagerTest, RunBadXml)
     " executable></executable"
     "</ignition>";
 
-  ignition::launch::Manager mgr;
+  gz::launch::Manager mgr;
 
   // Stop the manager after a short pause.
   EXPECT_FALSE(mgr.RunConfig(config));
@@ -129,7 +129,7 @@ TEST_F(ManagerTest, RunLs)
     "  </executable>"
     "</ignition>)";
 
-  ignition::launch::Manager mgr;
+  gz::launch::Manager mgr;
 
   // We should be able to run the ls command. This does not check the
   // output.
@@ -147,9 +147,9 @@ TEST_F(ManagerTest, RunEnvPre)
     std::string(getenv("localappdata")) + "\\Temp\\ign-launch-env-test-pre";
   #endif
 
-  if (ignition::common::isFile(testPath))
+  if (gz::common::isFile(testPath))
   {
-    ASSERT_TRUE(ignition::common::removeFile(testPath));
+    ASSERT_TRUE(gz::common::removeFile(testPath));
   }
 
   ASSERT_TRUE(WriteTestScript(testScriptPath));
@@ -166,11 +166,11 @@ TEST_F(ManagerTest, RunEnvPre)
 </ignition>
 )";
 
-  ignition::launch::Manager mgr;
+  gz::launch::Manager mgr;
 
   EXPECT_TRUE(mgr.RunConfig(config));
-  EXPECT_TRUE(ignition::common::isFile(testPath));
-  EXPECT_TRUE(ignition::common::removeFile(testPath));
+  EXPECT_TRUE(gz::common::isFile(testPath));
+  EXPECT_TRUE(gz::common::removeFile(testPath));
   EXPECT_TRUE(RemoveTestScript(testScriptPath));
 }
 
@@ -185,9 +185,9 @@ TEST_F(ManagerTest, RunEnvPost)
     std::string(getenv("localappdata")) + "\\Temp\\ign-launch-env-test-post";
   #endif
 
-  if (ignition::common::isFile(testPath))
+  if (gz::common::isFile(testPath))
   {
-    ASSERT_TRUE(ignition::common::removeFile(testPath));
+    ASSERT_TRUE(gz::common::removeFile(testPath));
   }
 
   ASSERT_TRUE(WriteTestScript(testScriptPath));
@@ -204,18 +204,18 @@ TEST_F(ManagerTest, RunEnvPost)
 </ignition>
 )";
 
-  ignition::launch::Manager mgr;
+  gz::launch::Manager mgr;
 
   EXPECT_TRUE(mgr.RunConfig(config));
-  EXPECT_TRUE(ignition::common::isFile(testPath));
-  EXPECT_TRUE(ignition::common::removeFile(testPath));
+  EXPECT_TRUE(gz::common::isFile(testPath));
+  EXPECT_TRUE(gz::common::removeFile(testPath));
   EXPECT_TRUE(RemoveTestScript(testScriptPath));
 }
 
 /////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
-  ignition::common::Console::SetVerbosity(4);
+  gz::common::Console::SetVerbosity(4);
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

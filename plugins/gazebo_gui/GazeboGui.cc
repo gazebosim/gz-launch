@@ -17,20 +17,20 @@
 
 #include <fstream>
 
-#include <ignition/common/Console.hh>
-#include <ignition/common/Filesystem.hh>
-#include <ignition/gazebo/config.hh>
-#include <ignition/gui/MainWindow.hh>
-#include "ignition/gazebo/gui/Gui.hh"
+#include <gz/common/Console.hh>
+#include <gz/common/Filesystem.hh>
+#include <gz/sim/config.hh>
+#include <gz/gui/MainWindow.hh>
+#include "gz/sim/gui/Gui.hh"
 
 #include "GazeboGui.hh"
 
-using namespace ignition;
-using namespace ignition::launch;
+using namespace gz;
+using namespace gz::launch;
 
 /////////////////////////////////////////////////
 GazeboGui::GazeboGui()
-  : ignition::launch::Plugin()
+  : gz::launch::Plugin()
 {
 }
 
@@ -47,18 +47,18 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
 
   // Set default config file for Launch
   std::string defaultConfigPath;
-  ignition::common::env(IGN_HOMEDIR, defaultConfigPath);
-  defaultConfigPath = ignition::common::joinPaths(defaultConfigPath,
+  gz::common::env(IGN_HOMEDIR, defaultConfigPath);
+  defaultConfigPath = gz::common::joinPaths(defaultConfigPath,
       ".ignition", "launch");
 
-  auto defaultConfigFile = ignition::common::joinPaths(defaultConfigPath,
+  auto defaultConfigFile = gz::common::joinPaths(defaultConfigPath,
       "gui.config");
 
   // Check if there's a default config file under
   // ~/.ignition/launch and use that. If there isn't, create it
-  if (!ignition::common::exists(defaultConfigFile))
+  if (!gz::common::exists(defaultConfigFile))
   {
-    ignition::common::createDirectories(defaultConfigPath);
+    gz::common::createDirectories(defaultConfigPath);
 
     std::ofstream configFile(defaultConfigFile);
     if (configFile.is_open())
@@ -86,19 +86,19 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
         "  </menus>\n" <<
         "</window>\n";
       configFile.close();
-      ignmsg << "Saved file [" << defaultConfigFile << "]" << std::endl;
+      gzmsg << "Saved file [" << defaultConfigFile << "]" << std::endl;
     }
     else
     {
-      ignerr << "Unable to open file [" << defaultConfigFile << "]"
+      gzerr << "Unable to open file [" << defaultConfigFile << "]"
              << std::endl;
     }
   }
 
-  auto app = gazebo::gui::createGui(argc, argv, defaultConfigFile.c_str(),
+  auto app = sim::gui::createGui(argc, argv, defaultConfigFile.c_str(),
                                     defaultConfigFile.c_str(), false);
 
-  auto win = app->findChild<ignition::gui::MainWindow *>()->QuickWindow();
+  auto win = app->findChild<gz::gui::MainWindow *>()->QuickWindow();
 
   // Customize window
   std::string windowTitle{"Gazebo"};
@@ -122,7 +122,7 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
     std::string name = nameStr == nullptr ? "" : nameStr;
     if (name.empty())
     {
-      ignerr << "A GazeboGui plugin is missing the name attribute. "
+      gzerr << "A GazeboGui plugin is missing the name attribute. "
         << "Skipping this plugin.\n";
       continue;
     }
@@ -132,14 +132,14 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
     std::string file = fileStr == nullptr ? "" : fileStr;
     if (file.empty())
     {
-      ignerr << "A GazeboServer plugin with name[" << name << "] is "
+      gzerr << "A GazeboServer plugin with name[" << name << "] is "
         << "missing the filename attribute. Skipping this plugin.\n";
       continue;
     }
     app->LoadPlugin(file, elem);
   }
 
-  igndbg << "Running the GazeboGui plugin.\n";
+  gzdbg << "Running the GazeboGui plugin.\n";
   // This blocks until the window is closed or we receive a SIGINT
   app->exec();
 

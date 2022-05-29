@@ -26,7 +26,7 @@ function buildMsg(_frameParts) {
 }
 
 /// \brief The main interface to the Ignition websocket server and 
-/// data on Ignition Transport.
+/// data on Gazebo Transport.
 function Ignition(options) {
   options = options || {};
 
@@ -46,7 +46,7 @@ function Ignition(options) {
 Ignition.prototype.__proto__ = EventEmitter2.prototype;
 
 /// \brief Connect to the specified WebSocket.
-/// \param url - WebSocket URL for Ignition HTTPServer
+/// \param url - WebSocket URL for Gazebo HTTPServer
 Ignition.prototype.connect = function(url, key) {
   var that = this;
 
@@ -95,7 +95,7 @@ Ignition.prototype.connect = function(url, key) {
           // Request the list of worlds on start.
           // \todo Switch this to a service call when this issue is 
           // resolved:
-          // https://github.com/ignitionrobotics/ign-transport/issues/135
+          // https://github.com/gazebosim/gz-transport/issues/135
           that.socket.send(buildMsg(['worlds','','','']));
         }
       };
@@ -165,7 +165,7 @@ Ignition.prototype.sendMsg = function(_msg) {
   }
 };
 
-/// \brief Interface to Ignition Transport topics.
+/// \brief Interface to Gazebo Transport topics.
 function Topic(options) {
   options = options || {};
   this.ign = options.ign; 

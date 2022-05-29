@@ -21,9 +21,9 @@
 
 #include <string>
 
-#include <ignition/common/Filesystem.hh>
+#include <gz/common/Filesystem.hh>
 
-#include "ignition/launch/test_config.hh"  // NOLINT(build/include)
+#include "gz/launch/test_config.hh"  // NOLINT(build/include)
 
 #ifdef _WIN32
 #define popen _popen
@@ -54,7 +54,7 @@ std::string customExecStr(std::string _cmd)
 
 std::string get_config_path(const std::string filename)
 {
-  return(ignition::common::joinPaths(
+  return(gz::common::joinPaths(
     std::string(PROJECT_SOURCE_PATH), "test", "config", filename));
 }
 

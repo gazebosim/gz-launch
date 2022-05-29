@@ -19,19 +19,19 @@
 #include <linux/joystick.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <ignition/common/Console.hh>
-#include <ignition/common/Util.hh>
-#include <ignition/math/Helpers.hh>
-#include <ignition/msgs.hh>
-#include <ignition/transport/Node.hh>
+#include <gz/common/Console.hh>
+#include <gz/common/Util.hh>
+#include <gz/math/Helpers.hh>
+#include <gz/msgs.hh>
+#include <gz/transport/Node.hh>
 
 #include "Joystick.hh"
 
-using namespace ignition::launch;
+using namespace gz::launch;
 
 /////////////////////////////////////////////////
 Joystick::Joystick()
-  : ignition::launch::Plugin()
+  : gz::launch::Plugin()
 {
 }
 
@@ -72,11 +72,11 @@ bool Joystick::Load(const tinyxml2::XMLElement *_elem)
   {
     try
     {
-      deadzone = ignition::math::clamp(std::stof(elem->GetText()), 0.0f, 0.9f);
+      deadzone = gz::math::clamp(std::stof(elem->GetText()), 0.0f, 0.9f);
     }
     catch(...)
     {
-      ignerr << "<dead_zone> is not a valid floating point number, "
+      gzerr << "<dead_zone> is not a valid floating point number, "
         "using 0.05\n";
     }
   }
@@ -92,7 +92,7 @@ bool Joystick::Load(const tinyxml2::XMLElement *_elem)
     }
     catch(...)
     {
-      ignerr << "<rate> is not a valid floating point number, using 60Hz\n";
+      gzerr << "<rate> is not a valid floating point number, using 60Hz\n";
     }
   }
 
@@ -113,7 +113,7 @@ bool Joystick::Load(const tinyxml2::XMLElement *_elem)
     }
     catch(...)
     {
-      ignerr << "<accumulation_rate> is not a valid floating point number, "
+      gzerr << "<accumulation_rate> is not a valid floating point number, "
         << "using 1000Hz\n";
     }
   }
@@ -127,7 +127,7 @@ bool Joystick::Load(const tinyxml2::XMLElement *_elem)
   // not a critical error, but doesn't make a whole lot of sense.
   if (this->interval < this->accumulationInterval)
   {
-    ignwarn << "The publication rate of [" << 1.0 / this->interval
+    gzwarn << "The publication rate of [" << 1.0 / this->interval
       << " Hz] is greater than the accumulation rate of ["
       << 1.0 / this->accumulationInterval
       << " Hz]. Timing behavior is ill defined.\n";
@@ -149,7 +149,7 @@ bool Joystick::Load(const tinyxml2::XMLElement *_elem)
     }
     else
     {
-      ignerr << "Unable to open joystick at [" << deviceFilename
+      gzerr << "Unable to open joystick at [" << deviceFilename
         << "] Attempting again\n";
     }
 
@@ -168,12 +168,12 @@ bool Joystick::Load(const tinyxml2::XMLElement *_elem)
   this->axisScale = -1.0f / (1.0f - deadzone) / 32767.0f;
 
   // Create the publisher of joy messages
-  this->pub = this->node.Advertise<ignition::msgs::Joy>("/joy");
+  this->pub = this->node.Advertise<gz::msgs::Joy>("/joy");
 
   this->run = true;
   this->joyThread = new std::thread(std::bind(&Joystick::Run, this));
 
-  igndbg << "Loaded Joystick plugin with the following parameters:\n"
+  gzdbg << "Loaded Joystick plugin with the following parameters:\n"
     << "  device: " << deviceFilename << std::endl
     << "  sticky_buttons: " << this->stickyButtons << std::endl
     << "  dead_zone: " << deadzone << std::endl
@@ -192,9 +192,9 @@ void Joystick::Run()
   bool accumulate = false;
   bool accumulating = false;
 
-  ignition::msgs::Joy joyMsg;
-  ignition::msgs::Joy lastJoyMsg;
-  ignition::msgs::Joy stickyButtonsJoyMsg;
+  gz::msgs::Joy joyMsg;
+  gz::msgs::Joy lastJoyMsg;
+  gz::msgs::Joy stickyButtonsJoyMsg;
 
   while (this->run)
   {
@@ -222,7 +222,7 @@ void Joystick::Run()
     {
       if (read(this->joyFd, &event, sizeof(js_event)) == -1 && errno != EAGAIN)
       {
-        ignwarn << "Joystick read failed, might be closed\n";
+        gzwarn << "Joystick read failed, might be closed\n";
         return;
       }
 
@@ -243,7 +243,7 @@ void Joystick::Run()
 
             // Update the button
             joyMsg.set_buttons(event.number,
-                !ignition::math::equal(value, 0.0f) ? 1 : 0);
+                !gz::math::equal(value, 0.0f) ? 1 : 0);
 
             // For initial events, wait a bit before sending to try to catch
             // all the initial events.
@@ -277,7 +277,7 @@ void Joystick::Run()
           }
         default:
           {
-            ignwarn << "Unknown event type: time[" << event.time << "] "
+            gzwarn << "Unknown event type: time[" << event.time << "] "
               << "value[" << value << "] "
               << "type[" << event.type << "h] "
               << "number["<< event.number << "]" << std::endl;

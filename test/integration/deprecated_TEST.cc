@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Open Source Robotics Foundation
+ * Copyright (C) 2022 Open Source Robotics Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,19 @@
  * limitations under the License.
  *
 */
-#ifndef GZ_LAUNCH_TEST_CONFIG_HH_
-#define GZ_LAUNCH_TEST_CONFIG_HH_
 
-#define PROJECT_SOURCE_PATH "${PROJECT_SOURCE_DIR}"
-#define PROJECT_BINARY_PATH "${CMAKE_BINARY_DIR}"
-#define TEST_PATH "${PROJECT_SOURCE_DIR}/test"
-#define TEST_INTEGRATION_PATH "${PROJECT_SOURCE_DIR}/test/integration"
-#define TEST_REGRESSION_PATH "${PROJECT_SOURCE_DIR}/test/regression"
-#endif
+#include <gtest/gtest.h>
+
+#define SUPPRESS_IGNITION_HEADER_DEPRECATION
+
+#include <ignition/launch/Plugin.hh>
+#include <ignition/utils/SuppressWarning.hh>
+
+/////////////////////////////////////////////////
+// Make sure the ignition namespace still works
+TEST(Deprecated, IgnitionNamespace)
+{
+  ignition::launch::Plugin plugin;
+}
+
+#undef SUPPRESS_IGNITION_HEADER_DEPRECATION

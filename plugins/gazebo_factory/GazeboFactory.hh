@@ -14,22 +14,22 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_GAZEBOFACTORY_HH_
-#define IGNITION_LAUNCH_GAZEBOFACTORY_HH_
+#ifndef GZ_LAUNCH_GAZEBOFACTORY_HH_
+#define GZ_LAUNCH_GAZEBOFACTORY_HH_
 
 #include <memory>
-#include <ignition/plugin/Register.hh>
-#include <ignition/transport/Node.hh>
-#include "ignition/launch/Plugin.hh"
+#include <gz/plugin/Register.hh>
+#include <gz/transport/Node.hh>
+#include "gz/launch/Plugin.hh"
 
-namespace ignition
+namespace gz
 {
   namespace launch
   {
     /// \brief Spawns entities into simulation.
     ///
     /// # Example usage
-    ///  <plugin name="ignition::launch::GazeboFactory"
+    ///  <plugin name="gz::launch::GazeboFactory"
     ///          filename="ignition-launch-gazebo-factory">
     ///
     ///   <spawn>
@@ -50,7 +50,7 @@ namespace ignition
     ///         <uri>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/X2 UGV/1</uri>
     ///         <!-- Publish robot state information -->
     ///         <plugin filename="ignition-gazebo-state-publisher-system"
-    ///              name="ignition::gazebo::systems::StatePublisher"></plugin>
+    ///              name="gz::sim::systems::StatePublisher"></plugin>
     ///       </include>
     ///     </sdf>
     ///   </spawn>
@@ -59,7 +59,7 @@ namespace ignition
     ///   ...
     ///   </spawn>
     /// </plugin>
-    class GazeboFactory : public ignition::launch::Plugin
+    class GazeboFactory : public gz::launch::Plugin
     {
       /// \brief Constructor.
       public: GazeboFactory();
@@ -90,6 +90,6 @@ namespace ignition
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(ignition::launch::GazeboFactory, ignition::launch::Plugin)
+IGNITION_ADD_PLUGIN(gz::launch::GazeboFactory, gz::launch::Plugin)
 
 #endif

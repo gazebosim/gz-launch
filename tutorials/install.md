@@ -2,9 +2,9 @@
 
 # Install
 
-These instructions are for installing only Ignition Launch. If you're interested
+These instructions are for installing only Gazebo Launch. If you're interested
 in using all the Ignition libraries, not only Igniton Launch, check out this
-[Ignition installation](https://ignitionrobotics.org/docs/latest/install).
+[Ignition installation](https://gazebosim.org/docs/latest/install).
 
 We recommend following the binary install instructions to get up and running as
 quickly and painlessly as possible.
@@ -38,7 +38,7 @@ On macOS, add OSRF packages:
   brew tap osrf/simulation
   ```
 
-Install Ignition GUI:
+Install Gazebo GUI:
   ```
   brew install ignition-launch<#>
   ```
@@ -79,7 +79,7 @@ necessary prerequisites followed by building from source.
 1. Clone the repository
 
     ```sh
-    git clone https://github.com/ignitionrobotics/ign-launch
+    git clone https://github.com/gazebosim/gz-launch
     ```
 
 2. Configure and build
@@ -88,7 +88,7 @@ necessary prerequisites followed by building from source.
     cd ign-launch; mkdir build; cd build; cmake ..; make
     ```
 
-3. Optionally, install Ignition Launch
+3. Optionally, install Gazebo Launch
 
     ```sh
     sudo make install
@@ -98,7 +98,7 @@ necessary prerequisites followed by building from source.
 
 1. Clone the repository
   ```
-  git clone https://github.com/ignitionrobotics/ign-launch -b ign-launch<#>
+  git clone https://github.com/gazebosim/gz-launch -b ign-launch<#>
   ```
   Be sure to replace `<#>` with a number value, such as 4 or 5, depending on
   which version you need.
@@ -126,7 +126,7 @@ necessary prerequisites followed by building from source.
 
 # Documentation
 
-API and tutorials can be found at [https://ignitionrobotics.org/libs/launch](https://ignitionrobotics.org/libs/launch).
+API and tutorials can be found at [https://gazebosim.org/libs/launch](https://gazebosim.org/libs/launch).
 
 You can also generate the documentation from a clone of this repository by following these steps.
 
@@ -139,7 +139,7 @@ You can also generate the documentation from a clone of this repository by follo
 2. Clone the repository
 
     ```
-    git clone https://github.com/ignitionrobotics/ign-launch
+    git clone https://github.com/gazebosim/gz-launch
     ```
 
 3. Configure and build the documentation.
