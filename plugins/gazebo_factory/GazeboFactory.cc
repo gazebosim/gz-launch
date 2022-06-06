@@ -165,7 +165,7 @@ bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
       gzdbg << "Factory service call succeeded.\n";
       if (!this->worldPerformers[msg.first].empty())
       {
-        IGN_SLEEP_S(2);
+        GZ_SLEEP_S(2);
         topic = std::string("/world/") + msg.first + "/level/set_performer";
 
         for (const auto &perf : this->worldPerformers[msg.first])

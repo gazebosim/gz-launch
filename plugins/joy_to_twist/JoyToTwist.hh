@@ -114,6 +114,6 @@ namespace gz
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(gz::launch::JoyToTwist, gz::launch::Plugin)
+GZ_ADD_PLUGIN(gz::launch::JoyToTwist, gz::launch::Plugin)
 
 #endif

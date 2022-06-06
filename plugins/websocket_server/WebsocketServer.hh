@@ -317,6 +317,6 @@ namespace gz
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(gz::launch::WebsocketServer, gz::launch::Plugin)
+GZ_ADD_PLUGIN(gz::launch::WebsocketServer, gz::launch::Plugin)
 
 #endif

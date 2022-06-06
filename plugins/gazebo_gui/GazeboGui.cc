@@ -47,7 +47,7 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
 
   // Set default config file for Launch
   std::string defaultConfigPath;
-  gz::common::env(IGN_HOMEDIR, defaultConfigPath);
+  gz::common::env(GZ_HOMEDIR, defaultConfigPath);
   defaultConfigPath = gz::common::joinPaths(defaultConfigPath,
       ".ignition", "launch");
 
