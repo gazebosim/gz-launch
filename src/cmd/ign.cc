@@ -28,7 +28,7 @@ extern "C" char *gzVersion()
 }
 
 
-extern "C" char GZ_DEPRECATED(2) *ignitionVersion()
+extern "C" char *ignitionVersion()
 {
   return gzVersion();
 }
