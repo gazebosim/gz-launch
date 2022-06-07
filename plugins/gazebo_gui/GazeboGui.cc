@@ -49,21 +49,43 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
   std::string defaultConfigPath;
   gz::common::env(GZ_HOMEDIR, defaultConfigPath);
   defaultConfigPath = gz::common::joinPaths(defaultConfigPath,
-      ".ignition", "launch");
+      ".gz", "launch");
 
   auto defaultConfigFile = gz::common::joinPaths(defaultConfigPath,
       "gui.config");
 
+  // TODO(CH3): Deprecated. Remove on tock.
+  std::string defaultConfigPathDeprecated;
+  defaultConfigPathDeprecated = gz::common::joinPaths(defaultConfigPath,
+      ".ignition", "launch");
+
+  auto defaultConfigFileDeprecated = gz::common::joinPaths(
+      defaultConfigPathDeprecated, "gui.config");
+
   // Check if there's a default config file under
-  // ~/.ignition/launch and use that. If there isn't, create it
+  // ~/.gz/launch and use that. If there isn't, create it
   if (!gz::common::exists(defaultConfigFile))
   {
-    gz::common::createDirectories(defaultConfigPath);
-
-    std::ofstream configFile(defaultConfigFile);
-    if (configFile.is_open())
+    // TODO(CH3): Deprecated. Remove on tock.
+    // Also undent the else block, and remove the else conditional
+    if (gz::common::exists(defaultConfigFileDeprecated))
     {
-      configFile <<
+      gzwarn << "Found config in deprecated path ["
+             << defaultConfigPathDeprecated << "]. Please use ["
+             << defaultConfigPath << "] instead!"
+             << std::endl;
+
+      defaultConfigFile = defaultConfigFileDeprecated;
+      defaultConfigPath = defaultConfigPathDeprecated;
+    }
+    else
+    {
+      gz::common::createDirectories(defaultConfigPath);
+
+      std::ofstream configFile(defaultConfigFile);
+      if (configFile.is_open())
+      {
+        configFile <<
         "<window>\n" <<
         "  <width>1000</width>\n" <<
         "  <height>845</height>\n" <<
@@ -85,13 +107,14 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
         "    </drawer>\n" <<
         "  </menus>\n" <<
         "</window>\n";
-      configFile.close();
-      gzmsg << "Saved file [" << defaultConfigFile << "]" << std::endl;
-    }
-    else
-    {
-      gzerr << "Unable to open file [" << defaultConfigFile << "]"
-             << std::endl;
+        configFile.close();
+        gzmsg << "Saved file [" << defaultConfigFile << "]" << std::endl;
+      }
+      else
+      {
+        gzerr << "Unable to open file [" << defaultConfigFile << "]"
+        << std::endl;
+      }
     }
   }
 
