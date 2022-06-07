@@ -155,7 +155,7 @@ class Executable
   public: std::list<std::string> envs;
 };
 
-/// \brief Private data variables for the Ignition class.
+/// \brief Private data variables for the Gazebo class.
 class gz::launch::ManagerPrivate
 {
   /// \brief Constructor.

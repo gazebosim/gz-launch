@@ -102,7 +102,7 @@ namespace gz
     ///     7. "unsub": Unsubscribe from the topic in the `topic_name` component
     ///
     /// The `topic_name` component is mandatory for the "sub", "pub", and
-    /// "unsub" operations. If present, it must be the name of an Ignition
+    /// "unsub" operations. If present, it must be the name of an Gazebo
     /// Transport topic.
     ///
     /// The `message_type` component is mandatory for the "pub" operation. If
@@ -239,7 +239,7 @@ namespace gz
       /// \brief All of the websocket connections.
       public: std::map<int, std::unique_ptr<Connection>> connections;
 
-      /// \brief All of the subscribed Ignition topics.
+      /// \brief All of the subscribed Gazebo topics.
       /// The key is the topic name, and the value is the set of websocket
       /// connections that have subscribed to the topic.
       public: std::map<std::string, std::set<int>> topicConnections;

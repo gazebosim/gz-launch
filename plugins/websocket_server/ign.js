@@ -25,7 +25,7 @@ function buildMsg(_frameParts) {
   return _frameParts.join(',');
 }
 
-/// \brief The main interface to the Ignition websocket server and 
+/// \brief The main interface to the Gazebo websocket server and
 /// data on Gazebo Transport.
 function Ignition(options) {
   options = options || {};
@@ -35,7 +35,7 @@ function Ignition(options) {
   this.worlds = [];
   this.isConnected = false;
 
-  // Start with a null root protobuf object. This object will be 
+  // Start with a null root protobuf object. This object will be
   // created when we get the set of protobuf definitions from the server.
   this.root = null;
 
@@ -69,9 +69,9 @@ Ignition.prototype.connect = function(url, key) {
     that.emit('error', event);
   }
 
-  /// \brief Parses message responses from ignition and sends to the
+  /// \brief Parses message responses from Gazebo and sends to the
   /// appropriate topic.
-  // \param message - the JSON message from the Ignition
+  // \param message - the JSON message from the Gazebo
   // httpserver.
   function onMessage(_message) {
     if (that.root === undefined || that.root === null) {
@@ -93,7 +93,7 @@ Ignition.prototype.connect = function(url, key) {
           that.socket.send(buildMsg(['topics','','','']));
 
           // Request the list of worlds on start.
-          // \todo Switch this to a service call when this issue is 
+          // \todo Switch this to a service call when this issue is
           // resolved:
           // https://github.com/gazebosim/gz-transport/issues/135
           that.socket.send(buildMsg(['worlds','','','']));
@@ -168,7 +168,7 @@ Ignition.prototype.sendMsg = function(_msg) {
 /// \brief Interface to Gazebo Transport topics.
 function Topic(options) {
   options = options || {};
-  this.ign = options.ign; 
+  this.ign = options.ign;
   this.name = options.name;
   this.messageType = options.messageType;
   this.isAdvertised = false;

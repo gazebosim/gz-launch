@@ -42,7 +42,7 @@ namespace gz
     ///           name="gz::sim::systems::v0::Physics">
     ///   </plugin>
     ///
-    ///   <!-- Specify any other ignition gazebo plugins here. -->
+    ///   <!-- Specify any other Gazebo sim plugins here. -->
     /// </plugin>
     class GazeboServer : public gz::launch::Plugin
     {
