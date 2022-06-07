@@ -92,7 +92,7 @@ void runLaunchCommand(const LaunchOptions &_opt)
         gz::common::env("IGN_LAUNCH_CONFIG_PATH", configPathEnv, true);
         if (!configPathEnv.empty())
         {
-          gzwarn << "Found config using deprecated environment variable "
+          gzwarn << "Finding config using deprecated environment variable "
                  << "[IGN_LAUNCH_CONFIG_PATH]. Please use "
                  << "[GZ_LAUNCH_CONFIG_PATH] instead." << std::endl;
         }
