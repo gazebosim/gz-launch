@@ -102,7 +102,7 @@ namespace gz
     ///     7. "unsub": Unsubscribe from the topic in the `topic_name` component
     ///
     /// The `topic_name` component is mandatory for the "sub", "pub", and
-    /// "unsub" operations. If present, it must be the name of an Gazebo
+    /// "unsub" operations. If present, it must be the name of a Gazebo
     /// Transport topic.
     ///
     /// The `message_type` component is mandatory for the "pub" operation. If
