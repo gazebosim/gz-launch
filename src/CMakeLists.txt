@@ -94,3 +94,16 @@ set(ign_library_path "${CMAKE_BINARY_DIR}/test/lib/ruby/ignition/cmdlaunch${PROJ
 configure_file(
   "launch.yaml.in"
     "${CMAKE_BINARY_DIR}/test/conf/launch${PROJECT_VERSION_MAJOR}.yaml" @ONLY)
+
+#===============================================================================
+# Bash completion
+
+# Tack version onto and install the bash completion script
+configure_file(
+  "launch.bash_completion.sh"
+    "${CMAKE_CURRENT_BINARY_DIR}/launch${PROJECT_VERSION_MAJOR}.bash_completion.sh" @ONLY)
+install(
+  FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/launch${PROJECT_VERSION_MAJOR}.bash_completion.sh
+  DESTINATION
+    ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/gz/gz${IGN_TOOLS_VER}.completion.d)
