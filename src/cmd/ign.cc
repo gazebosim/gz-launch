@@ -22,9 +22,15 @@
 #include "../Manager.hh"
 
 //////////////////////////////////////////////////
-extern "C" char *ignitionVersion()
+extern "C" char *gzVersion()
 {
   return strdup(GZ_LAUNCH_VERSION_FULL);
+}
+
+
+extern "C" char GZ_DEPRECATED(2) *ignitionVersion()
+{
+  return gzVersion();
 }
 
 //////////////////////////////////////////////////
