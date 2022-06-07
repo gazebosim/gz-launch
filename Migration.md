@@ -21,6 +21,8 @@ release will remove the deprecated code.
   configs.
   With tick-tock.
   
+- The default config file path has been hard-tocked to `~/.gz/launch/gui.config`.
+  `~/.ignition/launch/gui.config` will no longer work.
 
 ## Gazebo Launch 2.2.2
 

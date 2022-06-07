@@ -54,72 +54,49 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
   auto defaultConfigFile = gz::common::joinPaths(defaultConfigPath,
       "gui.config");
 
-  // TODO(CH3): Deprecated. Remove on tock.
-  std::string defaultConfigPathDeprecated;
-  defaultConfigPathDeprecated = gz::common::joinPaths(defaultConfigPath,
-      ".ignition", "launch");
-
-  auto defaultConfigFileDeprecated = gz::common::joinPaths(
-      defaultConfigPathDeprecated, "gui.config");
-
   // Check if there's a default config file under
   // ~/.gz/launch and use that. If there isn't, create it
   if (!gz::common::exists(defaultConfigFile))
   {
-    // TODO(CH3): Deprecated. Remove on tock.
-    // Also undent the else block, and remove the else conditional
-    if (gz::common::exists(defaultConfigFileDeprecated))
-    {
-      gzwarn << "Found config in deprecated path ["
-             << defaultConfigPathDeprecated << "]. Please use ["
-             << defaultConfigPath << "] instead!"
-             << std::endl;
+    gz::common::createDirectories(defaultConfigPath);
 
-      defaultConfigFile = defaultConfigFileDeprecated;
-      defaultConfigPath = defaultConfigPathDeprecated;
+    std::ofstream configFile(defaultConfigFile);
+    if (configFile.is_open())
+    {
+      configFile <<
+      "<window>\n" <<
+      "  <width>1000</width>\n" <<
+      "  <height>845</height>\n" <<
+      "  <style\n" <<
+      "    material_theme='Light'\n" <<
+      "    material_primary='DeepOrange'\n" <<
+      "    material_accent='LightBlue'\n" <<
+      "    toolbar_color_light='#f3f3f3'\n" <<
+      "    toolbar_text_color_light='#111111'\n" <<
+      "    toolbar_color_dark='#414141'\n" <<
+      "    toolbar_text_color_dark='#f3f3f3'\n" <<
+      "    plugin_toolbar_color_light='#bbdefb'\n" <<
+      "    plugin_toolbar_text_color_light='#111111'\n" <<
+      "    plugin_toolbar_color_dark='#607d8b'\n" <<
+      "    plugin_toolbar_text_color_dark='#eeeeee'\n" <<
+      "  />\n" <<
+      "  <menus>\n" <<
+      "    <drawer default='false'>\n" <<
+      "    </drawer>\n" <<
+      "  </menus>\n" <<
+      "</window>\n";
+      configFile.close();
+      gzmsg << "Saved file [" << defaultConfigFile << "]" << std::endl;
     }
     else
     {
-      gz::common::createDirectories(defaultConfigPath);
-
-      std::ofstream configFile(defaultConfigFile);
-      if (configFile.is_open())
-      {
-        configFile <<
-        "<window>\n" <<
-        "  <width>1000</width>\n" <<
-        "  <height>845</height>\n" <<
-        "  <style\n" <<
-        "    material_theme='Light'\n" <<
-        "    material_primary='DeepOrange'\n" <<
-        "    material_accent='LightBlue'\n" <<
-        "    toolbar_color_light='#f3f3f3'\n" <<
-        "    toolbar_text_color_light='#111111'\n" <<
-        "    toolbar_color_dark='#414141'\n" <<
-        "    toolbar_text_color_dark='#f3f3f3'\n" <<
-        "    plugin_toolbar_color_light='#bbdefb'\n" <<
-        "    plugin_toolbar_text_color_light='#111111'\n" <<
-        "    plugin_toolbar_color_dark='#607d8b'\n" <<
-        "    plugin_toolbar_text_color_dark='#eeeeee'\n" <<
-        "  />\n" <<
-        "  <menus>\n" <<
-        "    <drawer default='false'>\n" <<
-        "    </drawer>\n" <<
-        "  </menus>\n" <<
-        "</window>\n";
-        configFile.close();
-        gzmsg << "Saved file [" << defaultConfigFile << "]" << std::endl;
-      }
-      else
-      {
-        gzerr << "Unable to open file [" << defaultConfigFile << "]"
-        << std::endl;
-      }
+      gzerr << "Unable to open file [" << defaultConfigFile << "]"
+      << std::endl;
     }
   }
 
   auto app = sim::gui::createGui(argc, argv, defaultConfigFile.c_str(),
-                                    defaultConfigFile.c_str(), false);
+                                 defaultConfigFile.c_str(), false);
 
   auto win = app->findChild<gz::gui::MainWindow *>()->QuickWindow();
 
