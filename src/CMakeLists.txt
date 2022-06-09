@@ -14,12 +14,12 @@ gz_create_core_library(SOURCES ${sources} CXX_STANDARD 17)
 # Link the libraries that we always need.
 target_link_libraries(${PROJECT_LIBRARY_TARGET_NAME}
   PUBLIC
-    ignition-plugin${IGN_PLUGIN_MAJOR_VER}::loader
-    ignition-plugin${IGN_PLUGIN_MAJOR_VER}::register
+    gz-plugin${GZ_PLUGIN_VER}::loader
+    gz-plugin${GZ_PLUGIN_VER}::register
     TINYXML2::TINYXML2
   PRIVATE
-    ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
-    ignition-math${IGN_MATH_MAJOR_VER}::ignition-math${IGN_MATH_MAJOR_VER}
+    gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
+    gz-math${GZ_MATH_VER}::gz-math${GZ_MATH_VER}
     ${BACKWARD_LIBRARIES}
 )
 
@@ -30,7 +30,7 @@ gz_build_tests(TYPE UNIT SOURCES ${gtest_sources}
                 EXCLUDE_PROJECT_LIB
                 LIB_DEPS
                   ${PROJECT_LIBRARY_TARGET_NAME}
-                  ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
+                  gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
 )
 
 add_subdirectory(cmd)

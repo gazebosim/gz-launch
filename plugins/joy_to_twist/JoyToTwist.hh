@@ -36,7 +36,7 @@ namespace gz
     ///
     /// <!-- Inform gz::Launch about the JoyToTwist plugin -->
     /// <plugin name="gz::launch::JoyToTwist"
-    ///         filename=ignition-launch-joytotwist0">
+    ///         filename=gz-launch-joytotwist0">
     ///   <!-- Incoming topic that publishes
     ///         gz::msgs::Joystick messages -->
     ///   <input_topic>/joy</input_topic>

@@ -11,15 +11,15 @@ add_library(gz STATIC gz.cc)
 target_include_directories(gz PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(gz PUBLIC
   ${PROJECT_LIBRARY_TARGET_NAME}
-  ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
+  gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
 )
 
 set(launch_executable ign-launch)
 add_executable(${launch_executable} launch_main.cc)
 target_link_libraries(${launch_executable}
   gz
-  ignition-utils${IGN_UTILS_VER}::cli
-  ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
+  gz-utils${GZ_UTILS_VER}::cli
+  gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
 )
 
 install(

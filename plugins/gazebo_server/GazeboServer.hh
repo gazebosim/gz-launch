@@ -31,14 +31,14 @@ namespace gz
     /// # Example usage
     /// <!-- Run the gazebo server with a set of plugins -->
     /// <plugin name="gz::launch::GazeboServer"
-    ///         filename="ignition-launch-gazebo">
+    ///         filename="gz-launch-gazebo">
     ///   <!-- The SDF file to run -->
     ///   <world_file>diff_drive.sdf</world_file>
     ///
     ///   <!-- The physics system -->
     ///   <plugin entity_name="<%= worldName %>"
     ///           entity_type="world"
-    ///           filename="ignition-gazebo-physics-system"
+    ///           filename="gz-sim-physics-system"
     ///           name="gz::sim::systems::v0::Physics">
     ///   </plugin>
     ///

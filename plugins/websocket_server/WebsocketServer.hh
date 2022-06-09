@@ -132,7 +132,7 @@ namespace gz
     ///
     /// <!-- Inform gz::Launch about the JoyToTwist plugin -->
     ///  <plugin name="gz::launch::WebsocketServer"
-    ///      filename="ignition-launch-joystick0">
+    ///      filename="gz-launch-joystick0">
     ///
     ///    <!-- Publication Hz -->
     ///    <publication_hz>30</publication_hz>
