@@ -27,12 +27,6 @@ extern "C" char *gzVersion()
   return strdup(GZ_LAUNCH_VERSION_FULL);
 }
 
-
-extern "C" char *ignitionVersion()
-{
-  return gzVersion();
-}
-
 //////////////////////////////////////////////////
 extern "C" const char *configPath()
 {

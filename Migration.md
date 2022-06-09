@@ -24,9 +24,6 @@ release will remove the deprecated code.
 - The default config file path has been hard-tocked to `~/.gz/launch/gui.config`.
   `~/.ignition/launch/gui.config` will no longer work.
 
-- `ignitionVersion()` is deprecated and will be removed in future versions.
-  Use `gzVersion()` instead.
-
 ## Gazebo Launch 2.2.2
 
 - Environment variable `GZ_LAUNCH_CONFIG_PATH` started to be treated as a path

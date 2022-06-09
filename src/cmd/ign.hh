@@ -22,7 +22,6 @@
 /// \brief External hook to read the library version.
 /// \return C-string representing the version. Ex.: 0.1.2
 extern "C" char *gzVersion();
-extern "C" char GZ_DEPRECATED(6) *ignitionVersion();
 
 /// \brief Set verbosity level
 /// \param[in] _verbosity 0 to 4
