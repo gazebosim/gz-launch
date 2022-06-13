@@ -1,11 +1,11 @@
 <?xml version='1.0'?>
 <ignition version='1.0'>
   <executable name='gazebo-server'>
-    <command>ign gazebo -s</command>
+    <command>gz sim -s</command>
   </executable>
 
   <executable name='gazebo-client'>
-    <command>ign gazebo -g</command>
+    <command>gz sim -g</command>
     <auto_restart>true</auto_restart>
   </executable>
 

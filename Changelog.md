@@ -187,7 +187,7 @@
 1. Add PKGCONFIG information to ignition-tools ign_find_package
    * [Pull Request 44](https://github.com/gazebosim/gz-launch/pull/44)
 
-1. Fix factory.ign launch file
+1. Fix factory.gz launch file
    * [Pull Request 55](https://github.com/gazebosim/gz-launch/pull/55)
 
 1. Use random name for manager semaphore
@@ -298,13 +298,13 @@
 
 ### Gazebo Launch 1.0.0 (2019-05-21)
 
-1. Enable logging with `<record>` tag in ign launch file.
+1. Enable logging with `<record>` tag in gz launch file.
     * [BitBucket pull request 23](https://osrf-migration.github.io/ignition-gh-pages/#!/ignitionrobotics/ign-launch/pull-requests/23)
 
 1. Fix gazebo gui to use GuiRunner.
     * [BitBucket pull request 22](https://osrf-migration.github.io/ignition-gh-pages/#!/ignitionrobotics/ign-launch/pull-requests/22)
 
-1. Fix parsing positional argument to ign tool.
+1. Fix parsing positional argument to gz tool.
     * [BitBucket pull request 21](https://osrf-migration.github.io/ignition-gh-pages/#!/ignitionrobotics/ign-launch/pull-requests/21)
 
 1. Added world stats to Websocket server.

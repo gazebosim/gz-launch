@@ -11,7 +11,7 @@ We can do many things:
 
 To run a script use
 
-`ign launch LAUNCH_FILE_NAME`
+`gz launch LAUNCH_FILE_NAME`
 
 ## Launch files
 
@@ -30,7 +30,7 @@ Take a look at the [gazebo.ign](../examples/gazebo.ign) launch file. This script
 
 ```xml
 <executable name='gazebo-server'>
-    <command>ign gazebo -s</command>
+    <command>gz sim -s</command>
 </executable>
 ```
 
@@ -48,13 +48,13 @@ plugin also launches into a separate process and transforms a `joystick` message
 
 The script can take a world as an argument. To run this script.
 
-`ign launch gazebo_plugins.ign [worldName:=<worldName>]`
+`gz launch gazebo_plugins.ign [worldName:=<worldName>]`
 
 The [worldName] command line argument is optional. If left blank, or not specified, then "diff_drive" is used for the world name.
 
 Example to load `the shapes.sdf`:
 
-`ign launch gazebo_plugins.ign worldName:=shapes`
+`gz launch gazebo_plugins.ign worldName:=shapes`
 
 ## Launch file lookup
 
