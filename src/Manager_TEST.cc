@@ -87,7 +87,7 @@ TEST_F(ManagerTest, RunEmptyConfig)
 TEST_F(ManagerTest, MissingIgnition)
 {
   std::string config =
-    "<executable name='gazebo'>"
+    "<executable name='sim'>"
     "  <command>ign-gazebo-server</command>"
     "</executable>";
 

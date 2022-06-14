@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <ignition version='1.0'>
-  <plugin name="gz::launch::GazeboFactory"
-    filename="ignition-launch-gazebo-factory">
+  <plugin name="gz::launch::SimFactory"
+    filename="gz-launch-sim-factory">
     <spawn>
       <name>x2</name>
       <allow_renaming>true</allow_renaming>

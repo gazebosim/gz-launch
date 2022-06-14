@@ -1064,7 +1064,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
     return;
   }
 
-  if (name == "gz::launch::GazeboServer")
+  if (name == "gz::launch::SimServer")
   {
 #ifdef _WIN32
     _putenv_s("RMT_PORT", "1500");
@@ -1072,7 +1072,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
     setenv("RMT_PORT", "1500", 1);
 #endif
   }
-  else if (name == "gz::launch::GazeboGui")
+  else if (name == "gz::launch::SimGui")
   {
 #ifdef _WIN32
     _putenv_s("RMT_PORT", "1501");

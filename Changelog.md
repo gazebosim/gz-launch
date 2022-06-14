@@ -280,7 +280,7 @@
 
 ### Gazebo Launch 1.2.0
 
-1. Support for custom random seed in the GazeboServer plugin.
+1. Support for custom random seed in the SimServer plugin.
     * [BitBucket pull request 33](https://osrf-migration.github.io/ignition-gh-pages/#!/ignitionrobotics/ign-launch/pull-requests/33)
 
 1. Allow specifying a custom window title
@@ -293,7 +293,7 @@
 
 ### Gazebo Launch 1.0.1 (2019-05-22)
 
-1. Fix GazeboFactory set performer topic
+1. Fix SimFactory set performer topic
     * [BitBucket pull request 26](https://osrf-migration.github.io/ignition-gh-pages/#!/ignitionrobotics/ign-launch/pull-requests/26)
 
 ### Gazebo Launch 1.0.0 (2019-05-21)

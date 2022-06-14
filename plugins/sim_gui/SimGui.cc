@@ -23,24 +23,24 @@
 #include <gz/gui/MainWindow.hh>
 #include "gz/sim/gui/Gui.hh"
 
-#include "GazeboGui.hh"
+#include "SimGui.hh"
 
 using namespace gz;
 using namespace gz::launch;
 
 /////////////////////////////////////////////////
-GazeboGui::GazeboGui()
+SimGui::SimGui()
   : gz::launch::Plugin()
 {
 }
 
 /////////////////////////////////////////////////
-GazeboGui::~GazeboGui()
+SimGui::~SimGui()
 {
 }
 
 /////////////////////////////////////////////////
-bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
+bool SimGui::Load(const tinyxml2::XMLElement *_elem)
 {
   int argc;
   char **argv = nullptr;
@@ -122,7 +122,7 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
     std::string name = nameStr == nullptr ? "" : nameStr;
     if (name.empty())
     {
-      gzerr << "A GazeboGui plugin is missing the name attribute. "
+      gzerr << "A SimGui plugin is missing the name attribute. "
         << "Skipping this plugin.\n";
       continue;
     }
@@ -132,14 +132,14 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
     std::string file = fileStr == nullptr ? "" : fileStr;
     if (file.empty())
     {
-      gzerr << "A GazeboServer plugin with name[" << name << "] is "
+      gzerr << "A SimServer plugin with name[" << name << "] is "
         << "missing the filename attribute. Skipping this plugin.\n";
       continue;
     }
     app->LoadPlugin(file, elem);
   }
 
-  gzdbg << "Running the GazeboGui plugin.\n";
+  gzdbg << "Running the SimGui plugin.\n";
   // This blocks until the window is closed or we receive a SIGINT
   app->exec();
 

@@ -30,8 +30,8 @@ namespace gz
     ///
     /// # Example usage
     /// <!-- Run the gazebo server with a set of plugins -->
-    /// <plugin name="gz::launch::GazeboServer"
-    ///         filename="gz-launch-gazebo">
+    /// <plugin name="gz::launch::SimServer"
+    ///         filename="gz-launch-sim">
     ///   <!-- The SDF file to run -->
     ///   <world_file>diff_drive.sdf</world_file>
     ///
@@ -44,13 +44,13 @@ namespace gz
     ///
     ///   <!-- Specify any other Gazebo sim plugins here. -->
     /// </plugin>
-    class GazeboServer : public gz::launch::Plugin
+    class SimServer : public gz::launch::Plugin
     {
       /// \brief Constructor.
-      public: GazeboServer();
+      public: SimServer();
 
       /// \brief Destructor.
-      public: virtual ~GazeboServer() = default;
+      public: virtual ~SimServer() = default;
 
       // Documentation inherited.
       public: virtual bool Load(
@@ -63,6 +63,6 @@ namespace gz
 }
 
 // Register the plugin
-GZ_ADD_PLUGIN(gz::launch::GazeboServer, gz::launch::Plugin)
+GZ_ADD_PLUGIN(gz::launch::SimServer, gz::launch::Plugin)
 
 #endif

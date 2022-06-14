@@ -4,7 +4,7 @@
   <!-- Load a joystick plugin that will read from a device and output to a
        topic -->
   <plugin name="gz::launch::Joystick"
-          filename="ignition-launch-joystick">
+          filename="gz-launch-joystick">
     <device>/dev/input/js0</device>
     <sticky_buttons>false</sticky_buttons>
     <dead_zone>0.05</dead_zone>
@@ -15,7 +15,7 @@
   <!-- Load a plugin that transforms a joystick message to a
        twist message -->
   <plugin name="gz::launch::JoyToTwist"
-          filename="ignition-launch-joytotwist">
+          filename="gz-launch-joytotwist">
     <input_topic>/joy</input_topic>
     <output_topic>/model/vehicle_green/cmd_vel</output_topic>
   </plugin>
@@ -23,7 +23,7 @@
   <!-- Load a plugin that transforms a joystick message to a
        twist message -->
   <plugin name="gz::launch::JoyToTwist"
-          filename="ignition-launch-joytotwist">
+          filename="gz-launch-joytotwist">
     <!-- Incoming topic that publishes gz::msgs::Joystick messages -->
     <input_topic>/joy</input_topic>
 
@@ -56,7 +56,7 @@
     <enable_turbo_button>4</enable_turbo_button>
   </plugin>
 
-  <executable name='gazebo'>
+  <executable name='sim'>
     <command>gz sim diff_drive.sdf</command>
   </executable>
 

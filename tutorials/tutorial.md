@@ -26,17 +26,17 @@ Every script starts with these two tags, which specify the `xml` version and `ig
 
 We can run multiple commands from one file.
 
-Take a look at the [gazebo.ign](../examples/gazebo.ign) launch file. This script runs the Gazebo `server` and Gazebo `client`. We need to just write the command in the `command` tag.
+Take a look at the [sim.ign](../examples/sim.ign) launch file. This script runs the Gazebo `server` and Gazebo `client`. We need to just write the command in the `command` tag.
 
 ```xml
-<executable name='gazebo-server'>
+<executable name='sim-server'>
     <command>gz sim -s</command>
 </executable>
 ```
 
 ## Spawn a robot into simulation with plugins
 
-Now take a look at the [factory.ign](../examples/factory.ign) launch file. We defined a `GazeboFactory` plugin under which we included an `X2 UGV` robot and added the `DiffDrive` plugin to control the robot. We also added the `StatePublisher` plugin which publishes the the robot state information.
+Now take a look at the [factory.ign](../examples/factory.ign) launch file. We defined a `SimFactory` plugin under which we included an `X2 UGV` robot and added the `DiffDrive` plugin to control the robot. We also added the `StatePublisher` plugin which publishes the the robot state information.
 
 ## Launch simulation with plugins in separate processes
 
@@ -44,7 +44,7 @@ The [gazebo_plugins.ign](../examples/gazebo_plugins.ign) launch file loads some 
 and also starts simulation. The `joystick` plugin will be launched in its own process
 and will read from a joystick device and output data onto a topic. The `JoyToTwist`
 plugin also launches into a separate process and transforms a `joystick` message to a
-`twist` message. Finally, The `GazeboServer` plugin launches the Gazebo server.
+`twist` message. Finally, The `SimServer` plugin launches the Gazebo server.
 
 The script can take a world as an argument. To run this script.
 

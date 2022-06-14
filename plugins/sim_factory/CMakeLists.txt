@@ -1,5 +1,5 @@
-set (plugin gz-launch-gazebo-factory)
-set (sources GazeboFactory.cc)
+set (plugin gz-launch-sim-factory)
+set (sources SimFactory.cc)
 
 string (TOLOWER ${plugin} plugin_lower)
 

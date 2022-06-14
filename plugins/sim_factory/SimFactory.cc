@@ -20,19 +20,19 @@
 
 #include <gz/common/Util.hh>
 #include <gz/common/Console.hh>
-#include "GazeboFactory.hh"
+#include "SimFactory.hh"
 
 using namespace gz;
 using namespace gz::launch;
 
 /////////////////////////////////////////////////
-GazeboFactory::GazeboFactory()
+SimFactory::SimFactory()
   : gz::launch::Plugin()
 {
 }
 
 /////////////////////////////////////////////////
-void GazeboFactory::ProcessSpawn(const tinyxml2::XMLElement *_elem)
+void SimFactory::ProcessSpawn(const tinyxml2::XMLElement *_elem)
 {
   const tinyxml2::XMLElement *elem;
 
@@ -132,7 +132,7 @@ void GazeboFactory::ProcessSpawn(const tinyxml2::XMLElement *_elem)
 }
 
 /////////////////////////////////////////////////
-bool GazeboFactory::Load(const tinyxml2::XMLElement *_elem)
+bool SimFactory::Load(const tinyxml2::XMLElement *_elem)
 {
   const tinyxml2::XMLElement *elem;
 
