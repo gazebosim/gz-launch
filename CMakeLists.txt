@@ -48,6 +48,7 @@ ign_find_package(ignition-tools
   PKGCONFIG "ignition-tools")
 # Note that CLI files are installed regardless of whether the dependency is
 # available during build time
+find_program(HAVE_IGN_TOOLS ign)
 set(IGN_TOOLS_VER 1)
 
 #--------------------------------------
