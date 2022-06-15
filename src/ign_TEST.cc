@@ -21,7 +21,12 @@
 
 #include <string>
 
+#include <ignition/common/Filesystem.hh>
 #include "ignition/launch/test_config.hh"  // NOLINT(build/include)
+
+static const std::string kIgnCommand(
+    std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH + " " +
+    std::string(BREW_RUBY) + std::string(IGN_PATH) + " launch ");
 
 /////////////////////////////////////////////////
 std::string customExecStr(std::string _cmd)
@@ -48,8 +53,7 @@ std::string customExecStr(std::string _cmd)
 /////////////////////////////////////////////////
 TEST(CmdLine, Ls)
 {
-  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
-    " ign launch " +
+  std::string cmd = kIgnCommand +
     std::string(PROJECT_SOURCE_PATH) + "/test/config/ls.ign";
 
   std::cout << "Running command [" << cmd << "]" << std::endl;
@@ -66,9 +70,39 @@ TEST(CmdLine, EchoSelf)
   std::string filePath =
       std::string(PROJECT_SOURCE_PATH) + "/test/config/echo.ign";
 
-  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
-    " ign launch " + filePath;
+  std::string cmd = kIgnCommand + filePath;
 
   std::string output = customExecStr(cmd);
   EXPECT_EQ(filePath, output) << output;
+}
+
+//////////////////////////////////////////////////
+/// \brief Check --help message and bash completion script for consistent flags
+TEST(CmdLine, HelpVsCompletionFlags)
+{
+  // Flags in help message
+  std::string helpOutput = customExecStr(kIgnCommand + "--help");
+
+  // Call the output function in the bash completion script
+  std::string scriptPath = ignition::common::joinPaths(
+    std::string(PROJECT_SOURCE_PATH),
+    "src", "launch.bash_completion.sh");
+
+  // Equivalent to:
+  // sh -c "bash -c \". /path/to/launch.bash_completion.sh; _gz_launch_flags\""
+  std::string cmd = "bash -c \". " + scriptPath + "; _gz_launch_flags\"";
+  std::string scriptOutput = customExecStr(cmd);
+
+  // Tokenize script output
+  std::istringstream iss(scriptOutput);
+  std::vector<std::string> flags((std::istream_iterator<std::string>(iss)),
+    std::istream_iterator<std::string>());
+
+  EXPECT_GT(flags.size(), 0u);
+
+  // Match each flag in script output with help message
+  for (const auto &flag : flags)
+  {
+    EXPECT_NE(std::string::npos, helpOutput.find(flag)) << helpOutput;
+  }
 }
