@@ -70,8 +70,7 @@ TEST(CmdLine, EchoSelf)
   std::string filePath =
       std::string(PROJECT_SOURCE_PATH) + "/test/config/echo.ign";
 
-  std::string cmd = std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH +
-    " ign launch " + filePath;
+  std::string cmd = kIgnCommand + filePath;
 
   std::string output = customExecStr(cmd);
   EXPECT_EQ(filePath, output) << output;
@@ -82,7 +81,7 @@ TEST(CmdLine, EchoSelf)
 TEST(CmdLine, HelpVsCompletionFlags)
 {
   // Flags in help message
-  std::string helpOutput = customExecStr("ign launch --help");
+  std::string helpOutput = customExecStr(kIgnCommand + "--help");
 
   // Call the output function in the bash completion script
   std::string scriptPath = ignition::common::joinPaths(
