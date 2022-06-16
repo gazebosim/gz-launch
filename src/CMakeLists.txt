@@ -9,7 +9,7 @@ set (gtest_sources
 )
 
 # Create the library target.
-ign_create_core_library(SOURCES ${sources} CXX_STANDARD 17)
+gz_create_core_library(SOURCES ${sources} CXX_STANDARD 17)
 
 # Link the libraries that we always need.
 target_link_libraries(${PROJECT_LIBRARY_TARGET_NAME}
@@ -26,7 +26,7 @@ target_link_libraries(${PROJECT_LIBRARY_TARGET_NAME}
 target_compile_definitions(${PROJECT_LIBRARY_TARGET_NAME} PRIVATE ${BACKWARD_DEFINITIONS})
 
 # Build the unit tests.
-ign_build_tests(TYPE UNIT SOURCES ${gtest_sources}
+gz_build_tests(TYPE UNIT SOURCES ${gtest_sources}
                 EXCLUDE_PROJECT_LIB
                 LIB_DEPS
                   ${PROJECT_LIBRARY_TARGET_NAME}
