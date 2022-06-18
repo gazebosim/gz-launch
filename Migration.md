@@ -16,11 +16,13 @@ release will remove the deprecated code.
 - Migrate `IGN_LAUNCH_PLUGIN_PATH` environment variable to `GZ_LAUNCH_PLUGIN_PATH` for finding
   plugin.
   With tick-tock.
-  
+
 - Migrate `IGN_LAUNCH_CONFIG_PATH` environment variable to `GZ_LAUNCH_CONFIG_PATH` for finding
   configs.
   With tick-tock.
-  
+
+- The default config file path has been hard-tocked to `~/.gz/launch/gui.config`.
+  `~/.ignition/launch/gui.config` will no longer work.
 
 ## Gazebo Launch 2.2.2
 

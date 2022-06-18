@@ -47,15 +47,15 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
 
   // Set default config file for Launch
   std::string defaultConfigPath;
-  gz::common::env(IGN_HOMEDIR, defaultConfigPath);
+  gz::common::env(GZ_HOMEDIR, defaultConfigPath);
   defaultConfigPath = gz::common::joinPaths(defaultConfigPath,
-      ".ignition", "launch");
+      ".gz", "launch");
 
   auto defaultConfigFile = gz::common::joinPaths(defaultConfigPath,
       "gui.config");
 
   // Check if there's a default config file under
-  // ~/.ignition/launch and use that. If there isn't, create it
+  // ~/.gz/launch and use that. If there isn't, create it
   if (!gz::common::exists(defaultConfigFile))
   {
     gz::common::createDirectories(defaultConfigPath);
@@ -64,39 +64,39 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
     if (configFile.is_open())
     {
       configFile <<
-        "<window>\n" <<
-        "  <width>1000</width>\n" <<
-        "  <height>845</height>\n" <<
-        "  <style\n" <<
-        "    material_theme='Light'\n" <<
-        "    material_primary='DeepOrange'\n" <<
-        "    material_accent='LightBlue'\n" <<
-        "    toolbar_color_light='#f3f3f3'\n" <<
-        "    toolbar_text_color_light='#111111'\n" <<
-        "    toolbar_color_dark='#414141'\n" <<
-        "    toolbar_text_color_dark='#f3f3f3'\n" <<
-        "    plugin_toolbar_color_light='#bbdefb'\n" <<
-        "    plugin_toolbar_text_color_light='#111111'\n" <<
-        "    plugin_toolbar_color_dark='#607d8b'\n" <<
-        "    plugin_toolbar_text_color_dark='#eeeeee'\n" <<
-        "  />\n" <<
-        "  <menus>\n" <<
-        "    <drawer default='false'>\n" <<
-        "    </drawer>\n" <<
-        "  </menus>\n" <<
-        "</window>\n";
+      "<window>\n" <<
+      "  <width>1000</width>\n" <<
+      "  <height>845</height>\n" <<
+      "  <style\n" <<
+      "    material_theme='Light'\n" <<
+      "    material_primary='DeepOrange'\n" <<
+      "    material_accent='LightBlue'\n" <<
+      "    toolbar_color_light='#f3f3f3'\n" <<
+      "    toolbar_text_color_light='#111111'\n" <<
+      "    toolbar_color_dark='#414141'\n" <<
+      "    toolbar_text_color_dark='#f3f3f3'\n" <<
+      "    plugin_toolbar_color_light='#bbdefb'\n" <<
+      "    plugin_toolbar_text_color_light='#111111'\n" <<
+      "    plugin_toolbar_color_dark='#607d8b'\n" <<
+      "    plugin_toolbar_text_color_dark='#eeeeee'\n" <<
+      "  />\n" <<
+      "  <menus>\n" <<
+      "    <drawer default='false'>\n" <<
+      "    </drawer>\n" <<
+      "  </menus>\n" <<
+      "</window>\n";
       configFile.close();
       gzmsg << "Saved file [" << defaultConfigFile << "]" << std::endl;
     }
     else
     {
       gzerr << "Unable to open file [" << defaultConfigFile << "]"
-             << std::endl;
+      << std::endl;
     }
   }
 
   auto app = sim::gui::createGui(argc, argv, defaultConfigFile.c_str(),
-                                    defaultConfigFile.c_str(), false);
+                                 defaultConfigFile.c_str(), false);
 
   auto win = app->findChild<gz::gui::MainWindow *>()->QuickWindow();
 

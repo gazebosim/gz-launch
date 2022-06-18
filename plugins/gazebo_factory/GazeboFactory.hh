@@ -90,6 +90,6 @@ namespace gz
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(gz::launch::GazeboFactory, gz::launch::Plugin)
+GZ_ADD_PLUGIN(gz::launch::GazeboFactory, gz::launch::Plugin)
 
 #endif

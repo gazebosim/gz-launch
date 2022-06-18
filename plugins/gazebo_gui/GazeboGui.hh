@@ -29,8 +29,8 @@ namespace gz
     /// \brief Runs the Gazebo GUI.
     ///
     /// The plugin ignores GUI configuration coming from the SDF
-    /// world file or saved in ~/.ignition/gazebo/gui.config. Instead,
-    /// it loads a GUI config from ~/.ignition/launch/gui.config.
+    /// world file or saved in ~/.gz/sim/gui.config. Instead,
+    /// it loads a GUI config from ~/.gz/launch/gui.config.
     /// If that file doesn't exist, it will be created and populated
     /// with default values. Delete that file to restore default values.
     ///
@@ -49,7 +49,7 @@ namespace gz
     ///   <!-- Set window icon.
     ///        This can be a full path to a local file, or a path to a resource
     ///        file prefixed by ":".
-    ///        Defaults to the Ignition logo. -->
+    ///        Defaults to the Gazebo logo. -->
     ///   <window_icon>full/path/to/window/icon.png</window_icon>
     ///
     ///   <!-- Add Gazebo GUI plugins here -->
@@ -72,6 +72,6 @@ namespace gz
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(gz::launch::GazeboGui, gz::launch::Plugin)
+GZ_ADD_PLUGIN(gz::launch::GazeboGui, gz::launch::Plugin)
 
 #endif

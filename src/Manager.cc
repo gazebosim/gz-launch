@@ -155,7 +155,7 @@ class Executable
   public: std::list<std::string> envs;
 };
 
-/// \brief Private data variables for the Ignition class.
+/// \brief Private data variables for the Gazebo class.
 class gz::launch::ManagerPrivate
 {
   /// \brief Constructor.
@@ -304,7 +304,7 @@ Manager::Manager()
   this->dataPtr->myself = this->dataPtr.get();
 
   std::string homePath;
-  gz::common::env(IGN_HOMEDIR, homePath);
+  gz::common::env(GZ_HOMEDIR, homePath);
 
   // Make sure to initialize logging.
   gzLogInit(gz::common::joinPaths(homePath, ".ignition"), "launch.log");
@@ -1094,7 +1094,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
 
   // Add in the gazebo plugin path for convenience
   std::string homePath;
-  gz::common::env(IGN_HOMEDIR, homePath);
+  gz::common::env(GZ_HOMEDIR, homePath);
 
   systemPaths.AddPluginPaths(
     gz::common::joinPaths(homePath, ".gz", "sim", "plugins"));

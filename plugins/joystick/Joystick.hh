@@ -80,6 +80,6 @@ namespace gz
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(gz::launch::Joystick, gz::launch::Plugin)
+GZ_ADD_PLUGIN(gz::launch::Joystick, gz::launch::Plugin)
 
 #endif

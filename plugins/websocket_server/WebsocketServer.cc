@@ -626,7 +626,7 @@ void WebsocketServer::Run()
 void WebsocketServer::OnConnect(int _socketId)
 {
   std::unique_ptr<Connection> c(new Connection);
-  c->creationTime = IGN_SYSTEM_TIME();
+  c->creationTime = GZ_SYSTEM_TIME();
 
   // No authorization key means the server is publically accessible
   c->authorized = this->authorizationKey.empty() &&
