@@ -57,7 +57,7 @@
   </plugin>
 
   <executable name='gazebo'>
-    <command>ign gazebo diff_drive.sdf</command>
+    <command>gz sim diff_drive.sdf</command>
   </executable>
 
 </ignition>

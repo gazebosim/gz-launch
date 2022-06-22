@@ -140,7 +140,7 @@ namespace gz
     ///
     /// 2. Run the launch file
     ///
-    /// `ign launch -v 4 websocket.ign`
+    /// `gz launch -v 4 websocket.ign`
     ///
     /// 3. Open the [index.html](https://github.com/gazebosim/gz-launch/blob/main/plugins/websocket_server/index.html) webpage.
     ///
@@ -164,7 +164,7 @@ namespace gz
 
       /// \brief Callback when an image is received on a topic
       /// \param[in] _msg Image msg
-      /// \param[in] _info ign transport message info
+      /// \param[in] _info gz transport message info
       private: void OnWebsocketSubscribedImageMessage(
           const gz::msgs::Image &_msg,
           const gz::transport::MessageInfo &_info);

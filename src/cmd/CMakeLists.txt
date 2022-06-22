@@ -2,9 +2,9 @@
 # "gtest_sources" variable.
 gz_get_libsources_and_unittests(sources gtest_sources)
 
-add_library(ign STATIC ign.cc)
-target_include_directories(ign PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(ign PUBLIC
+add_library(gz STATIC gz.cc)
+target_include_directories(gz PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(gz PUBLIC
   ${PROJECT_LIBRARY_TARGET_NAME}
   ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
 )
@@ -12,7 +12,7 @@ target_link_libraries(ign PUBLIC
 set(launch_executable ign-launch)
 add_executable(${launch_executable} launch_main.cc)
 target_link_libraries(${launch_executable}
-  ign
+  gz
   ignition-utils${IGN_UTILS_VER}::cli
   ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
 )
@@ -30,7 +30,7 @@ gz_build_tests(TYPE UNIT SOURCES ${gtest_sources}
   LIB_DEPS ${EXTRA_TEST_LIB_DEPS})
 
 foreach(test ${test_list})
-  target_link_libraries(${test} ign)
+  target_link_libraries(${test} gz)
 
   # Inform each test of its output directory so it knows where to call the
   # auxiliary files from. Using a generator expression here is useful for
@@ -41,9 +41,9 @@ foreach(test ${test_list})
 
 endforeach()
 
-if (TARGET UNIT_ign_TEST)
+if (TARGET UNIT_gz_TEST)
   set_tests_properties(
-    UNIT_ign_TEST
+    UNIT_gz_TEST
     PROPERTIES
     ENVIRONMENT
       "GZ_CONFIG_PATH=${CMAKE_BINARY_DIR}/test/conf/$<CONFIG>"
@@ -55,7 +55,7 @@ endif()
 # Note that the major version of the library is included in the name.
 # Ex: cmdlaunch6.rb
 
-set(cmd_script_generated_test "${CMAKE_BINARY_DIR}/test/lib/$<CONFIG>/ruby/ignition/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb")
+set(cmd_script_generated_test "${CMAKE_BINARY_DIR}/test/lib/$<CONFIG>/ruby/gz/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb")
 set(cmd_script_configured_test "${CMAKE_CURRENT_BINARY_DIR}/test_cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb.configured")
 
 # Set the library_location variable to the full path of the library file within
@@ -94,7 +94,7 @@ file(GENERATE
   OUTPUT "${cmd_script_generated}"
   INPUT  "${cmd_script_configured}")
 
-set(gz_library_path "${CMAKE_BINARY_DIR}/test/lib/$<CONFIG>/ruby/ignition/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}")
+set(gz_library_path "${CMAKE_BINARY_DIR}/test/lib/$<CONFIG>/ruby/gz/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}")
 
 # Generate a configuration file for internal testing.
 # Note that the major version of the library is included in the name.
@@ -108,7 +108,7 @@ file(GENERATE
   INPUT "${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml.configured")
 
 # Used for the installed version.
-set(gz_library_path "${CMAKE_INSTALL_PREFIX}/lib/ruby/ignition/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}")
+set(gz_library_path "${CMAKE_INSTALL_PREFIX}/lib/ruby/gz/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}")
 
 # Generate the configuration file that is installed.
 # Note that the major version of the library is included in the name.
@@ -122,4 +122,4 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MA
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/ignition/)
 
 # Install the ruby command line library in an unversioned location.
-install(FILES ${cmd_script_generated} DESTINATION lib/ruby/ignition)
+install(FILES ${cmd_script_generated} DESTINATION lib/ruby/gz)

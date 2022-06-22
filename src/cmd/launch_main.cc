@@ -22,7 +22,7 @@
 #include <gz/utils/cli/CLI.hpp>
 
 #include "gz/launch/config.hh"
-#include "ign.hh"
+#include "gz.hh"
 
 #ifdef _WIN32
 #define popen _popen

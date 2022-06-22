@@ -18,7 +18,7 @@
 #include <gz/common/Console.hh>
 
 #include "gz/launch/config.hh"
-#include "ign.hh"
+#include "gz.hh"
 #include "../Manager.hh"
 
 //////////////////////////////////////////////////

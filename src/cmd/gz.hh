@@ -28,7 +28,7 @@ extern "C" char *gzVersion();
 extern "C" void cmdVerbosity(
     const int _verbosity);
 
-/// \brief External hook to execute 'ign fuel list -t model' from the command
+/// \brief External hook to execute 'gz fuel list -t model' from the command
 /// line.
 /// \param[in] _config Config file to run.
 /// \return 1 if successful, 0 if not.
