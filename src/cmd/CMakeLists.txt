@@ -2,6 +2,11 @@
 # "gtest_sources" variable.
 gz_get_libsources_and_unittests(sources gtest_sources)
 
+# Disable tests that need CLI if gz-tools is not found
+if (MSVC OR NOT GZ_TOOLS_PROGRAM)
+  list(REMOVE_ITEM gtest_sources gz_TEST.cc)
+endif()
+
 add_library(gz STATIC gz.cc)
 target_include_directories(gz PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(gz PUBLIC

@@ -49,10 +49,13 @@ gz_find_package(ignition-plugin2 REQUIRED_BY launch COMPONENTS loader register)
 set(IGN_PLUGIN_MAJOR_VER ${ignition-plugin2_VERSION_MAJOR})
 
 #--------------------------------------
-# Find ignition-tools
-gz_find_package(ignition-tools2
-  REQUIRED
-  PKGCONFIG "ignition-tools")
+# Find if gz command is available
+find_program(GZ_TOOLS_PROGRAM gz)
+if (GZ_TOOLS_PROGRAM)
+  message (STATUS "Searching for gz program - found. CLI tests can be built.")
+else()
+  message (STATUS "Searching for gz program - not found. CLI tests are skipped.")
+endif()
 
 #--------------------------------------
 # Find ignition-transport
