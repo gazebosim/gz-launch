@@ -33,7 +33,7 @@ namespace gz
     ///
     /// <!-- Inform gz::Launch about the JoyToTwist plugin -->
     ///  <plugin name="gz::launch::Joystick"
-    ///      filename="ignition-launch-joystick0">
+    ///      filename="gz-launch-joystick0">
     ///
     ///    <!-- Joystick device -->
     ///    <device>/dev/input/js0</device>

@@ -3,13 +3,13 @@ cmake_minimum_required(VERSION 3.5.1 FATAL_ERROR)
 #============================================================================
 # Initialize the project
 #============================================================================
-project(ignition-launch6 VERSION 6.0.0)
+project(gz-launch6 VERSION 6.0.0)
 
 #============================================================================
-# Find ignition-cmake
+# Find gz-cmake
 #============================================================================
-find_package(ignition-cmake3 REQUIRED)
-set(IGN_CMAKE_VER ${ignition-cmake3_VERSION_MAJOR})
+find_package(gz-cmake3 REQUIRED)
+set(GZ_CMAKE_VER ${gz-cmake3_VERSION_MAJOR})
 
 #============================================================================
 # Configure the project
@@ -34,19 +34,19 @@ message(STATUS "\n\n-- ====== Finding Dependencies ======")
 gz_find_package(TINYXML2 REQUIRED PRIVATE PRETTY tinyxml2)
 
 #--------------------------------------
-# Find ignition-common
-gz_find_package(ignition-common5 REQUIRED PRIVATE)
-set(IGN_COMMON_MAJOR_VER ${ignition-common5_VERSION_MAJOR})
+# Find gz-common
+gz_find_package(gz-common5 REQUIRED PRIVATE)
+set(GZ_COMMON_VER ${gz-common5_VERSION_MAJOR})
 
 #--------------------------------------
-# Find ignition-utils
-gz_find_package(ignition-utils2 REQUIRED COMPONENTS cli)
-set(IGN_UTILS_VER ${ignition-utils2_VERSION_MAJOR})
+# Find gz-utils
+gz_find_package(gz-utils2 REQUIRED COMPONENTS cli)
+set(GZ_UTILS_VER ${gz-utils2_VERSION_MAJOR})
 
 #--------------------------------------
-# Find ignition-plugin
-gz_find_package(ignition-plugin2 REQUIRED_BY launch COMPONENTS loader register)
-set(IGN_PLUGIN_MAJOR_VER ${ignition-plugin2_VERSION_MAJOR})
+# Find gz-plugin
+gz_find_package(gz-plugin2 REQUIRED_BY launch COMPONENTS loader register)
+set(GZ_PLUGIN_VER ${gz-plugin2_VERSION_MAJOR})
 
 #--------------------------------------
 # Find if gz command is available
@@ -58,24 +58,24 @@ else()
 endif()
 
 #--------------------------------------
-# Find ignition-transport
-gz_find_package(ignition-transport12 REQUIRED)
-set(IGN_TRANSPORT_MAJOR_VER ${ignition-transport12_VERSION_MAJOR})
+# Find gz-transport
+gz_find_package(gz-transport12 REQUIRED)
+set(GZ_TRANSPORT_VER ${gz-transport12_VERSION_MAJOR})
 
 #--------------------------------------
-# Find ignition-msgs
-gz_find_package(ignition-msgs9 REQUIRED)
-set(IGN_MSGS_MAJOR_VER ${ignition-msgs9_VERSION_MAJOR})
+# Find gz-msgs
+gz_find_package(gz-msgs9 REQUIRED)
+set(GZ_MSGS_VER ${gz-msgs9_VERSION_MAJOR})
 
 #--------------------------------------
-# Find ignition-math
-gz_find_package(ignition-math7 REQUIRED)
-set(IGN_MATH_MAJOR_VER ${ignition-math7_VERSION_MAJOR})
+# Find gz-math
+gz_find_package(gz-math7 REQUIRED)
+set(GZ_MATH_VER ${gz-math7_VERSION_MAJOR})
 
 #--------------------------------------
-# Find ignition-gui
-gz_find_package(ignition-gui7 REQUIRED)
-set(IGN_GUI_MAJOR_VER ${ignition-gui7_VERSION_MAJOR})
+# Find gz-gui
+gz_find_package(gz-gui7 REQUIRED)
+set(GZ_GUI_VER ${gz-gui7_VERSION_MAJOR})
 gz_find_package (Qt5
   COMPONENTS
     Core
@@ -85,9 +85,9 @@ gz_find_package (Qt5
   PKGCONFIG "Qt5Core Qt5Quick Qt5QuickControls2")
 
 #--------------------------------------
-# Find ignition-gazebo
-gz_find_package(ignition-gazebo7 REQUIRED PRIVATE COMPONENTS gui)
-set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo7_VERSION_MAJOR})
+# Find gz-sim
+gz_find_package(gz-sim7 REQUIRED PRIVATE COMPONENTS gui)
+set(GZ_SIM_VER ${gz-sim7_VERSION_MAJOR})
 
 gz_pkg_check_modules(websockets libwebsockets)
 if (NOT websockets_FOUND)
@@ -128,13 +128,13 @@ gz_create_docs(
   API_MAINPAGE_MD "${CMAKE_BINARY_DIR}/api.md"
   TUTORIALS_MAINPAGE_MD "${CMAKE_BINARY_DIR}/tutorials.md"
   TAGFILES
-   "${IGNITION-MATH_DOXYGEN_TAGFILE} = ${IGNITION-MATH_API_URL}"
-   "${IGNITION-MSGS_DOXYGEN_TAGFILE} = ${IGNITION-MSGS_API_URL}"
-   "${IGNITION-PHYSICS_DOXYGEN_TAGFILE} = ${IGNITION-PHYSICS_API_URL}"
-   "${IGNITION-PLUGIN_DOXYGEN_TAGFILE} = ${IGNITION-PLUGIN_API_URL}"
-   "${IGNITION-TRANSPORT_DOXYGEN_TAGFILE} = ${IGNITION-TRANSPORT_API_URL}"
-   "${IGNITION-SENSORS_DOXYGEN_TAGFILE} = ${IGNITION-SENSORS_API_URL}"
-   "${IGNITION-COMMON_DOXYGEN_TAGFILE} = ${IGNITION-COMMON_API_URL}"
-   "${IGNITION-GAZEBO_DOXYGEN_TAGFILE} = ${IGNITION-GAZEBO_API_URL}"
-   "${IGNITION-GUI_DOXYGEN_TAGFILE} = ${IGNITION-GUI_API_URL}"
+   "${GZ-MATH_DOXYGEN_TAGFILE} = ${GZ-MATH_API_URL}"
+   "${GZ-MSGS_DOXYGEN_TAGFILE} = ${GZ-MSGS_API_URL}"
+   "${GZ-PHYSICS_DOXYGEN_TAGFILE} = ${GZ-PHYSICS_API_URL}"
+   "${GZ-PLUGIN_DOXYGEN_TAGFILE} = ${GZ-PLUGIN_API_URL}"
+   "${GZ-TRANSPORT_DOXYGEN_TAGFILE} = ${GZ-TRANSPORT_API_URL}"
+   "${GZ-SENSORS_DOXYGEN_TAGFILE} = ${GZ-SENSORS_API_URL}"
+   "${GZ-COMMON_DOXYGEN_TAGFILE} = ${GZ-COMMON_API_URL}"
+   "${GZ-GAZEBO_DOXYGEN_TAGFILE} = ${GZ-GAZEBO_API_URL}"
+   "${GZ-GUI_DOXYGEN_TAGFILE} = ${GZ-GUI_API_URL}"
 )

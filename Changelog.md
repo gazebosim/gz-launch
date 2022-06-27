@@ -116,7 +116,7 @@
     * [Pull request 16](https://github.com/gazebosim/gz-launch/pull/16)
     * [Pull request 28](https://github.com/gazebosim/gz-launch/pull/28)
 
-1. Add PKGCONFIG information to ignition-tools ign_find_package
+1. Add PKGCONFIG information to ignition-tools gz_find_package
     * [Pull request 44](https://github.com/gazebosim/gz-launch/pull/44)
 
 1. Depend on ign-msgs6, ign-transport9
@@ -184,7 +184,7 @@
 * Modernize Github Actions CI.
     * [Pull request 42](https://github.com/gazebosim/gz-launch/pull/42)
 
-1. Add PKGCONFIG information to ignition-tools ign_find_package
+1. Add PKGCONFIG information to ignition-tools gz_find_package
    * [Pull Request 44](https://github.com/gazebosim/gz-launch/pull/44)
 
 1. Fix factory.gz launch file

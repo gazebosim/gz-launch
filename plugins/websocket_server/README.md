@@ -1,6 +1,6 @@
 # Get Started
 
-1. [Install ignition-acropolis](https://gazebosim.org/docs/acropolis/install).
+1. [Install gz-acropolis](https://gazebosim.org/docs/acropolis/install).
 
 2. Compile and install ign-launch from source. You will have to `sudo make
    install` so that `ign-tools` find the launch.yaml files.

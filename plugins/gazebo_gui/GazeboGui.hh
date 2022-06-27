@@ -39,7 +39,7 @@ namespace gz
     /// <!-- The GUI wants to be in its own process, so wrap the plugin -->
     /// <executable_wrapper>
     ///   <plugin name="gz::launch::GazeboGui"
-    ///           filename="ignition-launch-gazebogui">
+    ///           filename="gz-launch-gazebogui">
     ///
     ///   <!-- Elements parsed by ign-launch -->
     ///
