@@ -1,4 +1,4 @@
-\page basics Ignition launch tutorial
+\page basics Gazebo launch tutorial
 
 Gazebo Launch is used to run and manage plugins and programs. A configuration script can be used to specify which programs and plugins to execute. Alternatively, individual programs and plugins can be run from the command line.
 

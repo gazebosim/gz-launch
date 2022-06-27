@@ -22,7 +22,7 @@ gz_configure_project(
 # Set project-specific options
 #============================================================================
 
-set(GZ_LAUNCH_PLUGIN_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/${IGN_LIB_INSTALL_DIR}/ign-${IGN_DESIGNATION}-${PROJECT_VERSION_MAJOR}/plugins/")
+set(GZ_LAUNCH_PLUGIN_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/${IGN_LIB_INSTALL_DIR}/gz-${IGN_DESIGNATION}-${PROJECT_VERSION_MAJOR}/plugins/")
 
 #============================================================================
 # Search for project-specific dependencies
@@ -135,6 +135,6 @@ gz_create_docs(
    "${GZ-TRANSPORT_DOXYGEN_TAGFILE} = ${GZ-TRANSPORT_API_URL}"
    "${GZ-SENSORS_DOXYGEN_TAGFILE} = ${GZ-SENSORS_API_URL}"
    "${GZ-COMMON_DOXYGEN_TAGFILE} = ${GZ-COMMON_API_URL}"
-   "${GZ-GAZEBO_DOXYGEN_TAGFILE} = ${GZ-GAZEBO_API_URL}"
+   "${GZ-SIM_DOXYGEN_TAGFILE} = ${GZ-SIM_API_URL}"
    "${GZ-GUI_DOXYGEN_TAGFILE} = ${GZ-GUI_API_URL}"
 )

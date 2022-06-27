@@ -239,7 +239,7 @@
 
 ### Gazebo Launch 1.4.2 (2020-05-18)
 
-1.  Use the new GUI API of ign-gazebo. This adds support for saving worlds to SDFormat from the GUI.
+1.  Use the new GUI API of gz-sim. This adds support for saving worlds to SDFormat from the GUI.
     * [Pull Request 19](https://github.com/gazebosim/gz-launch/pull/19)
 
 ### Gazebo Launch 1.4.1 (2019-12-05)
