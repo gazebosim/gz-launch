@@ -122,7 +122,7 @@
 1. Depend on ign-msgs6, ign-transport9
     * [Pull request 39](https://github.com/gazebosim/gz-launch/pull/39)
 
-1. Depend on ign-gazebo4, ign-gui4
+1. Depend on gz-sim4, ign-gui4
     * [BitBucket pull request 64](https://osrf-migration.github.io/ignition-gh-pages/#!/ignitionrobotics/ign-launch/pull-requests/64)
 
 ## Gazebo Launch 2.x
