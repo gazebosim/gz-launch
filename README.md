@@ -14,8 +14,7 @@ Ubuntu Focal | [![Build Status](https://build.osrfoundation.org/buildStatus/icon
 Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-main-homebrew-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-main-homebrew-amd64)
 Windows       | [![Build Status](https://build.osrfoundation.org/job/ign_launch-ign-5-win/badge/icon)](https://build.osrfoundation.org/job/ign_launch-ign-5-win/)
 
-Gazebo Launch, a component of [Gazebo
-Robotics](https://gazebosim.org), provides a command line interface
+Gazebo Launch, a component of [Gazebo](https://gazebosim.org), provides a command line interface
 to run and manager application and plugins.
 
 # Table of Contents
