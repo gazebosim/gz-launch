@@ -45,16 +45,16 @@
 
 ### Gazebo Launch 4.0.0 (2021-03-30)
 
-1. Bump in edifice: ign-common4
+1. Bump in edifice: gz-common4
     * [Pull request #90](https://github.com/gazebosim/gz-launch/pull/90)
 
 1. Bump in edifice: sdformat11
     * [Pull request #87](https://github.com/gazebosim/gz-launch/pull/87)
 
-1. Bump in edifice: ign-msgs7
+1. Bump in edifice: gz-msgs7
     * [Pull request #86](https://github.com/gazebosim/gz-launch/pull/86)
 
-1. Bump in edifice: ign-rendering5
+1. Bump in edifice: gz-rendering5
     * [Pull request #69](https://github.com/gazebosim/gz-launch/pull/69)
 
 ## Gazebo Launch 3.x
@@ -119,10 +119,10 @@
 1. Add PKGCONFIG information to ignition-tools gz_find_package
     * [Pull request 44](https://github.com/gazebosim/gz-launch/pull/44)
 
-1. Depend on ign-msgs6, ign-transport9
+1. Depend on gz-msgs6, gz-transport9
     * [Pull request 39](https://github.com/gazebosim/gz-launch/pull/39)
 
-1. Depend on gz-sim4, ign-gui4
+1. Depend on gz-sim4, gz-gui4
     * [BitBucket pull request 64](https://osrf-migration.github.io/ignition-gh-pages/#!/ignitionrobotics/ign-launch/pull-requests/64)
 
 ## Gazebo Launch 2.x
@@ -159,7 +159,7 @@
 
 ### Gazebo Launch 2.1.0 (2020-05-21)
 
-1. Merged ign-launch1 forward.
+1. Merged gz-launch1 forward.
     * [Pull request 41](https://github.com/gazebosim/gz-launch/pull/31)
 
 ### Gazebo Launch 2.0.0
