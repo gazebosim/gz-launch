@@ -107,7 +107,7 @@ See the [installation tutorial](https://gazebosim.org/api/launch/5.0/install.htm
 Refer to the following table for information about important directories and files in this repository.
 
 ```
-ign-launch
+gz-launch
 ├── examples                 Example launch configurations.
 ├── include/ignition/launch  Header files.
 ├── plugins                  Launch plugins, one per subdirectory.

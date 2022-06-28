@@ -7,7 +7,7 @@
 ### Gazebo Launch 5.X.X (20XX-XX-XX)
 
 ### Gazebo Launch 5.1.0 (2022-03-21)
-1. Use exec instead of popen to run ign-launch binary
+1. Use exec instead of popen to run gz-launch binary
     * [Pull request #151](https://github.com/gazebosim/gz-launch/pull/151)
 
 1. Expose headless_rendering sdf tag
@@ -18,7 +18,7 @@
 
 ### Gazebo Launch 5.0.0 (2021-10-01)
 
-1. Port ign-launch to Windows
+1. Port gz-launch to Windows
     * [Pull request #120](https://github.com/gazebosim/gz-launch/pull/120)
 
 1. Add standalone executables
@@ -116,7 +116,7 @@
     * [Pull request 16](https://github.com/gazebosim/gz-launch/pull/16)
     * [Pull request 28](https://github.com/gazebosim/gz-launch/pull/28)
 
-1. Add PKGCONFIG information to ignition-tools gz_find_package
+1. Add PKGCONFIG information to gz-tools gz_find_package
     * [Pull request 44](https://github.com/gazebosim/gz-launch/pull/44)
 
 1. Depend on gz-msgs6, gz-transport9
@@ -184,7 +184,7 @@
 * Modernize Github Actions CI.
     * [Pull request 42](https://github.com/gazebosim/gz-launch/pull/42)
 
-1. Add PKGCONFIG information to ignition-tools gz_find_package
+1. Add PKGCONFIG information to gz-tools gz_find_package
    * [Pull Request 44](https://github.com/gazebosim/gz-launch/pull/44)
 
 1. Fix factory.gz launch file
@@ -257,7 +257,7 @@
 1. Add filepath to ERB so that constants like `__FILE__` in `.ign` files work as expected
     * [BitBucket pull request 48](https://osrf-migration.github.io/ignition-gh-pages/#!/ignitionrobotics/ign-launch/pull-requests/48)
 
-1.  Add backward support to ign-launch to capture backtraces.
+1.  Add backward support to gz-launch to capture backtraces.
     * [BitBucket pull request 41](https://osrf-migration.github.io/ignition-gh-pages/#!/ignitionrobotics/ign-launch/pull-requests/41)
 
 ### Gazebo Launch 1.2.3 (2019-09-09)
