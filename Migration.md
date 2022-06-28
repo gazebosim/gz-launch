@@ -24,6 +24,10 @@ release will remove the deprecated code.
 - The default config file path has been hard-tocked to `~/.gz/launch/gui.config`.
   `~/.ignition/launch/gui.config` will no longer work.
 
+- The shared libraries have `gz` where there used to be `ignition`, and also have their `lib` and `.so` prefixes and suffixes removed.
+  E.g. `libignition-XXX-system.so` -> `gz-XXX-system`.
+  - Using the un-migrated version is still possible due to tick-tocks, but will be removed in future versions.
+
 ## Gazebo Launch 2.2.2
 
 - Environment variable `GZ_LAUNCH_CONFIG_PATH` started to be treated as a path
