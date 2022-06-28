@@ -16,7 +16,7 @@
 %>
 
 <!-- Requires gz-sim branch support_loading_plugins_programmatically -->
-<ignition version='1.0'>
+<gz version='1.0'>
   <!-- Load a joystick plugin that will read from a device and output to a
        topic -->
   <plugin name="gz::launch::Joystick"
@@ -194,4 +194,4 @@
     </plugin>
   </executable_wrapper>
 
-</ignition>
+</gz>

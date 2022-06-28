@@ -307,7 +307,7 @@ Manager::Manager()
   gz::common::env(GZ_HOMEDIR, homePath);
 
   // Make sure to initialize logging.
-  gzLogInit(gz::common::joinPaths(homePath, ".ignition"), "launch.log");
+  gzLogInit(gz::common::joinPaths(homePath, ".gz"), "launch.log");
   if (!this->dataPtr->sigHandler->Initialized())
     gzerr << "signal(2) failed while setting up for SIGINT" << std::endl;
 }
@@ -389,7 +389,7 @@ ManagerPrivate::ManagerPrivate()
       std::numeric_limits<int32_t>::max());
 
   // Initialize semaphore
-  this->stoppedChildSemName = std::string("ign-launch-") +
+  this->stoppedChildSemName = std::string("gz-launch-") +
       std::to_string(semRandomId);
 #ifndef _WIN32
   this->stoppedChildSem = sem_open(this->stoppedChildSemName.c_str(), O_CREAT,
@@ -676,11 +676,17 @@ bool ManagerPrivate::ParseConfig(const std::string &_config)
   }
 
   // Get the root element.
-  tinyxml2::XMLElement *root = xmlDoc.FirstChildElement("ignition");
+  tinyxml2::XMLElement *root = xmlDoc.FirstChildElement("gz");
   if (!root)
   {
-    gzerr << "Invalid config file,m issing <ignition> element\n";
-    return false;
+    root = xmlDoc.FirstChildElement("ignition");
+    if (!root)
+    {
+      gzerr << "Invalid config file, missing `<gz>` element\n";
+      return false;
+    }
+    gzwarn << "The `<ignition>` element is deprecated and will be removed. "
+           << "Please use `<gz>` instead." << std::endl;
   }
   // Keep the environment variables in memory. See manpage for putenv.
   this->envs = this->ParseEnvs(root);

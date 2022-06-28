@@ -15,11 +15,11 @@ To run a script use
 
 ## Launch files
 
-Every script starts with these two tags, which specify the `xml` version and `ignition` version.
+Every script starts with these two tags, which specify the `xml` version and `gz` version.
 
 ```xml
 <?xml version="1.0"?>
-<ignition version='1.0'>
+<gz version='1.0'>
 ```
 
 ## Multiple executable commands

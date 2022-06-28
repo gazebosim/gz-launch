@@ -1,5 +1,5 @@
 <?xml version='1.0'?>
-<ignition version='1.0'>
+<gz version='1.0'>
 
   <!-- Load a joystick plugin that will read from a device and output to a
        topic -->
@@ -60,4 +60,4 @@
     <command>gz sim diff_drive.sdf</command>
   </executable>
 
-</ignition>
+</gz>

@@ -1,5 +1,5 @@
 <?xml version='1.0'?>
-<ignition version='1.0'>
+<gz version='1.0'>
 
   <!-- Load a websocket server that provides access to Gazebo Transport
        topics through websockets.-->
@@ -28,4 +28,4 @@
     </ssl> -->
   </plugin>
 
-</ignition>
+</gz>
