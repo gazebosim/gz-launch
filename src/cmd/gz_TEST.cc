@@ -23,7 +23,7 @@
 
 #include <gz/common/Filesystem.hh>
 
-#include "gz/launch/test_config.hh"  // NOLINT(build/include)
+#include "test_config.hh"
 
 #ifdef _WIN32
 #define popen _popen
