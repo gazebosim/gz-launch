@@ -3,8 +3,8 @@
 # Install
 
 These instructions are for installing only Gazebo Launch. If you're interested
-in using all the Ignition libraries, not only Igniton Launch, check out this
-[Ignition installation](https://gazebosim.org/docs/latest/install).
+in using all the Gazebo libraries, not only Igniton Launch, check out this
+[Gazebo installation](https://gazebosim.org/docs/latest/install).
 
 We recommend following the binary install instructions to get up and running as
 quickly and painlessly as possible.
@@ -21,7 +21,7 @@ The [Source Install](#source-install) instructions should be used if you need th
 
 ## Ubuntu 20.04 or above
 
-On Ubuntu systems, `apt` can be used to install `ignition-launch`:
+On Ubuntu systems, `apt` can be used to install `gz-launch`:
 
 ```
 sudo apt install libignition-launch<#>
@@ -65,7 +65,7 @@ necessary prerequisites followed by building from source.
       $(sort -u $(find . -iname 'packages-'`lsb_release -cs`'.apt' -o -iname 'packages.apt' | grep -v '/\.git/') | sed '/ignition\|sdf/d' | tr '\n' ' ')
     ```
 
-1. Install required Ignition libraries
+1. Install required Gazebo libraries
 
     ```sh
     sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
@@ -85,7 +85,7 @@ necessary prerequisites followed by building from source.
 2. Configure and build
 
     ```sh
-    cd ign-launch; mkdir build; cd build; cmake ..; make
+    cd gz-launch; mkdir build; cd build; cmake ..; make
     ```
 
 3. Optionally, install Gazebo Launch
@@ -112,7 +112,7 @@ necessary prerequisites followed by building from source.
 
 3. Configure and build
   ```
-  cd ign-launch
+  cd gz-launch
   mkdir build
   cd build
   cmake ..
@@ -145,7 +145,7 @@ You can also generate the documentation from a clone of this repository by follo
 3. Configure and build the documentation.
 
     ```
-    cd ign-launch; mkdir build; cd build; cmake ../; make doc
+    cd gz-launch; mkdir build; cd build; cmake ../; make doc
     ```
 
 4. View the documentation by running the following command from the build directory.

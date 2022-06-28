@@ -14,8 +14,7 @@ Ubuntu Focal | [![Build Status](https://build.osrfoundation.org/buildStatus/icon
 Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-main-homebrew-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-main-homebrew-amd64)
 Windows       | [![Build Status](https://build.osrfoundation.org/job/ign_launch-ign-5-win/badge/icon)](https://build.osrfoundation.org/job/ign_launch-ign-5-win/)
 
-Gazebo Launch, a component of [Ignition
-Robotics](https://gazebosim.org), provides a command line interface
+Gazebo Launch, a component of [Gazebo](https://gazebosim.org), provides a command line interface
 to run and manager application and plugins.
 
 # Table of Contents
@@ -72,10 +71,10 @@ Sample launch configuration files are in the [examples directory](https://github
 ## Known issue of command line tools
 
 In the event that the installation is a mix of Debian and from source, command
-line tools from `ign-tools` may not work correctly.
+line tools from `gz-tools` may not work correctly.
 
 A workaround for a single package is to define the environment variable
-`GZ_CONFIG_PATH` to point to the location of the Ignition library installation,
+`GZ_CONFIG_PATH` to point to the location of the Gazebo library installation,
 where the YAML file for the package is found, such as
 ```
 export GZ_CONFIG_PATH=/usr/local/share/gz
@@ -84,7 +83,7 @@ export GZ_CONFIG_PATH=/usr/local/share/gz
 However, that environment variable only takes a single path, which means if the
 installations from source are in different locations, only one can be specified.
 
-Another workaround for working with multiple Ignition libraries on the command
+Another workaround for working with multiple Gazebo libraries on the command
 line is using symbolic links to each library's YAML file.
 ```
 mkdir ~/.ignition/tools/configs -p
@@ -107,7 +106,7 @@ See the [installation tutorial](https://gazebosim.org/api/launch/5.0/install.htm
 Refer to the following table for information about important directories and files in this repository.
 
 ```
-ign-launch
+gz-launch
 ├── examples                 Example launch configurations.
 ├── include/ignition/launch  Header files.
 ├── plugins                  Launch plugins, one per subdirectory.

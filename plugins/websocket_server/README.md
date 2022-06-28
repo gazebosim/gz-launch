@@ -2,8 +2,8 @@
 
 1. [Install gz-acropolis](https://gazebosim.org/docs/acropolis/install).
 
-2. Compile and install ign-launch from source. You will have to `sudo make
-   install` so that `ign-tools` find the launch.yaml files.
+2. Compile and install gz-launch from source. You will have to `sudo make
+   install` so that `gz-tools` find the launch.yaml files.
 
 ```
 sudo apt-get install libwebsockets-dev
@@ -14,10 +14,10 @@ make
 sudo make install
 ```
 
-3. Run ign-gazebo.
+3. Run gz-sim.
 
 ```
-ign-gazebo -v 4
+gz sim -v 4
 ```
 
 4. Run the websocket server. The follow assumes you are in the root of the
