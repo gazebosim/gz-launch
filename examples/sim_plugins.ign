@@ -78,18 +78,18 @@
          necessary plugin
     <plugin entity_name="<%= worldName %>"
             entity_type="world"
-            filename="gz-sim1-physics-system"
+            filename="gz-sim-physics-system"
             name="gz::sim::systems::Physics">
     </plugin>
     <plugin entity_name="<%= worldName %>"
             entity_type="world"
-            filename="gz-sim1-scene-broadcaster-system"
+            filename="gz-sim-scene-broadcaster-system"
             name="gz::sim::systems::SceneBroadcaster">
     </plugin>
 
     <plugin entity_name="vehicle_green"
             entity_type="model"
-            filename="gz-sim1-diff-drive-system"
+            filename="gz-sim-diff-drive-system"
             name="gz::sim::systems::DiffDrive">
       <left_joint>left_wheel_joint</left_joint>
       <right_joint>right_wheel_joint</right_joint>
@@ -99,7 +99,7 @@
 
     <plugin entity_name="vehicle_blue"
             entity_type="model"
-            filename="gz-sim1-diff-drive-system"
+            filename="gz-sim-diff-drive-system"
             name="gz::sim::systems::DiffDrive">
       <left_joint>left_wheel_joint</left_joint>
       <right_joint>right_wheel_joint</right_joint>
