@@ -14,7 +14,7 @@ target_link_libraries(gz PUBLIC
   gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
 )
 
-set(launch_executable ign-launch)
+set(launch_executable gz-launch)
 add_executable(${launch_executable} launch_main.cc)
 target_link_libraries(${launch_executable}
   gz

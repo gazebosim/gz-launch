@@ -30,10 +30,10 @@ class ManagerTest : public ::testing::Test
  public:
    ManagerTest(){}
 #ifndef _WIN32
-   std::string testScriptPath = "/tmp/ign-launch.sh";
+   std::string testScriptPath = "/tmp/gz-launch.sh";
 #else
    std::string testScriptPath =
-     std::string(getenv("localappdata")) + "\\Temp\\ign-launch.bat";
+     std::string(getenv("localappdata")) + "\\Temp\\gz-launch.bat";
 #endif
 };
 
@@ -141,10 +141,10 @@ TEST_F(ManagerTest, RunEnvPre)
 {
   // Test that environment is applied regardless of order
   #ifndef _WIN32
-  std::string testPath = "/tmp/ign-launch-env-test-pre";
+  std::string testPath = "/tmp/gz-launch-env-test-pre";
   #else
   std::string testPath =
-    std::string(getenv("localappdata")) + "\\Temp\\ign-launch-env-test-pre";
+    std::string(getenv("localappdata")) + "\\Temp\\gz-launch-env-test-pre";
   #endif
 
   if (gz::common::isFile(testPath))
@@ -179,10 +179,10 @@ TEST_F(ManagerTest, RunEnvPost)
 {
   // Test that environment is applied regardless of order
   #ifndef _WIN32
-  std::string testPath = "/tmp/ign-launch-env-test-post";
+  std::string testPath = "/tmp/gz-launch-env-test-post";
   #else
   std::string testPath =
-    std::string(getenv("localappdata")) + "\\Temp\\ign-launch-env-test-post";
+    std::string(getenv("localappdata")) + "\\Temp\\gz-launch-env-test-post";
   #endif
 
   if (gz::common::isFile(testPath))

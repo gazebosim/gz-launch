@@ -18,7 +18,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 gz_configure_project(
-  REPLACE_GZ_INCLUDE_PATH gz/launch
+  REPLACE_INCLUDE_PATH gz/launch
   VERSION_SUFFIX)
 
 #============================================================================
