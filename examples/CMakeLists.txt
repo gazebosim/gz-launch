@@ -1,3 +1,3 @@
-file(GLOB files "*.ign")
+file(GLOB files "*.gzlaunch")
 install(FILES ${files}
-  DESTINATION ${IGN_DATA_INSTALL_DIR}/configs)
+  DESTINATION ${GZ_DATA_INSTALL_DIR}/configs)

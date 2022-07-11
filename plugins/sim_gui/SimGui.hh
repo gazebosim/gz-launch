@@ -41,7 +41,7 @@ namespace gz
     ///   <plugin name="gz::launch::SimGui"
     ///           filename="gz-launch-simgui">
     ///
-    ///   <!-- Elements parsed by ign-launch -->
+    ///   <!-- Elements parsed by gz-launch -->
     ///
     ///   <!-- Set window title. Defaults to "Gazebo" -->
     ///   <window_title>Custom window title</window_title>

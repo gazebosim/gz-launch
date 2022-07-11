@@ -187,7 +187,7 @@
 1. Add PKGCONFIG information to gz-tools gz_find_package
    * [Pull Request 44](https://github.com/gazebosim/gz-launch/pull/44)
 
-1. Fix factory.gz launch file
+1. Fix factory.gzlaunch launch file
    * [Pull Request 55](https://github.com/gazebosim/gz-launch/pull/55)
 
 1. Use random name for manager semaphore
@@ -254,7 +254,7 @@
 
 ### Gazebo Launch 1.3.0 (2019-11-13)
 
-1. Add filepath to ERB so that constants like `__FILE__` in `.ign` files work as expected
+1. Add filepath to ERB so that constants like `__FILE__` in `.gzlaunch` files work as expected
     * [BitBucket pull request 48](https://osrf-migration.github.io/ignition-gh-pages/#!/ignitionrobotics/ign-launch/pull-requests/48)
 
 1.  Add backward support to gz-launch to capture backtraces.

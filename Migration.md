@@ -26,6 +26,7 @@ release will remove the deprecated code.
 
 - The shared libraries have `gz` where there used to be `ignition`.
   - Using the un-migrated version is still possible due to tick-tocks, but will be removed in future versions.
+- Launch files have been hard-tocked to the `.gzlaunch` extension instead of `.ign`.
 
 ## Gazebo Launch 2.2.2
 

@@ -128,7 +128,7 @@ namespace gz
     /// ## Websocket Server
     ///
     /// 1. Define a launch file by copying the following contents to a file
-    ///    called `websocket.ign`.
+    ///    called `websocket.gzlaunch`.
     ///
     /// <!-- Inform gz::Launch about the JoyToTwist plugin -->
     ///  <plugin name="gz::launch::WebsocketServer"
@@ -140,7 +140,7 @@ namespace gz
     ///
     /// 2. Run the launch file
     ///
-    /// `gz launch -v 4 websocket.ign`
+    /// `gz launch -v 4 websocket.gzlaunch`
     ///
     /// 3. Open the [index.html](https://github.com/gazebosim/gz-launch/blob/main/plugins/websocket_server/index.html) webpage.
     ///

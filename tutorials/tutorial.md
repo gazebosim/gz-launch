@@ -26,7 +26,7 @@ Every script starts with these two tags, which specify the `xml` version and `gz
 
 We can run multiple commands from one file.
 
-Take a look at the [sim.ign](../examples/sim.ign) launch file. This script runs the Gazebo `server` and Gazebo `client`. We need to just write the command in the `command` tag.
+Take a look at the [sim.gzlaunch](../examples/sim.gzlaunch) launch file. This script runs the Gazebo `server` and Gazebo `client`. We need to just write the command in the `command` tag.
 
 ```xml
 <executable name='sim-server'>
@@ -36,11 +36,11 @@ Take a look at the [sim.ign](../examples/sim.ign) launch file. This script runs 
 
 ## Spawn a robot into simulation with plugins
 
-Now take a look at the [factory.ign](../examples/factory.ign) launch file. We defined a `SimFactory` plugin under which we included an `X2 UGV` robot and added the `DiffDrive` plugin to control the robot. We also added the `StatePublisher` plugin which publishes the the robot state information.
+Now take a look at the [factory.gzlaunch](../examples/factory.gzlaunch) launch file. We defined a `SimFactory` plugin under which we included an `X2 UGV` robot and added the `DiffDrive` plugin to control the robot. We also added the `StatePublisher` plugin which publishes the the robot state information.
 
 ## Launch simulation with plugins in separate processes
 
-The [gazebo_plugins.ign](../examples/gazebo_plugins.ign) launch file loads some plugins
+The [sim_plugins.gzlaunch](../examples/sim_plugins.gzlaunch) launch file loads some plugins
 and also starts simulation. The `joystick` plugin will be launched in its own process
 and will read from a joystick device and output data onto a topic. The `JoyToTwist`
 plugin also launches into a separate process and transforms a `joystick` message to a
@@ -48,13 +48,13 @@ plugin also launches into a separate process and transforms a `joystick` message
 
 The script can take a world as an argument. To run this script.
 
-`gz launch gazebo_plugins.ign [worldName:=<worldName>]`
+`gz launch sim_plugins.gzlaunch [worldName:=<worldName>]`
 
 The [worldName] command line argument is optional. If left blank, or not specified, then "diff_drive" is used for the world name.
 
 Example to load `the shapes.sdf`:
 
-`gz launch gazebo_plugins.ign worldName:=shapes`
+`gz launch sim_plugins.gzlaunch worldName:=shapes`
 
 ## Launch file lookup
 
@@ -64,7 +64,7 @@ path. It searches for a file with the given name in paths as follows:
 1. current directory
 1. all paths specified in environment variable `GZ_LAUNCH_CONFIG_PATH`
 1. a hardcoded install location (usually
-   `/usr/share/ignition/ignition-launchN/configs/`)
+   `/usr/share/gz/gz-launchN/configs/`)
 
 The `GZ_LAUNCH_CONFIG_PATH` environment variable can contain either a single
 path or a path list (_new since 2.2.2_). Path list is a colon-separated (on
