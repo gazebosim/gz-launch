@@ -24,7 +24,7 @@ gz sim -v 4
    source tree.
 
 ```
-gz launch -f examples/websocket.ign -v 4
+gz launch -f examples/websocket.gzlaunch -v 4
 ```
 
 5. Open the `plugins/websocket_server/index.html` in a web browser.

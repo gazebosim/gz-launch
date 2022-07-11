@@ -24,7 +24,7 @@ The [Source Install](#source-install) instructions should be used if you need th
 On Ubuntu systems, `apt` can be used to install `gz-launch`:
 
 ```
-sudo apt install libignition-launch<#>
+sudo apt install libgz-launch<#>
 ```
 
 Be sure to replace `<#>` with a number value, such as 1 or 2, depending on
@@ -40,7 +40,7 @@ On macOS, add OSRF packages:
 
 Install Gazebo GUI:
   ```
-  brew install ignition-launch<#>
+  brew install gz-launch<#>
   ```
 
 Be sure to replace `<#>` with a number value, such as 4 or 5, depending on
@@ -71,7 +71,7 @@ necessary prerequisites followed by building from source.
     sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
     wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
     sudo apt-get update
-    sudo apt-get -y install libignition-cmake3-dev libignition-gazebo2-dev
+    sudo apt-get -y install libgz-cmake3-dev libgz-sim2-dev
     ```
 
 ### Building from source

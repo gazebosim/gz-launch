@@ -61,7 +61,7 @@ std::string get_config_path(const std::string filename)
 /////////////////////////////////////////////////
 TEST(CmdLine, Ls)
 {
-  std::string cmd = "gz launch " + get_config_path("ls.ign");
+  std::string cmd = "gz launch " + get_config_path("ls.gzlaunch");
   std::string output = customExecStr(cmd);
   EXPECT_TRUE(output.find("CMakeFiles") != std::string::npos) << output;
   EXPECT_TRUE(output.find("Makefile") != std::string::npos) << output;
@@ -70,7 +70,7 @@ TEST(CmdLine, Ls)
 /////////////////////////////////////////////////
 TEST(CmdLine, EchoSelf)
 {
-  std::string filePath = get_config_path("echo.ign");
+  std::string filePath = get_config_path("echo.gzlaunch");
   std::string cmd = "gz launch " + filePath;
   std::string output = customExecStr(cmd);
   EXPECT_EQ(filePath, output) << output;
@@ -81,13 +81,13 @@ TEST(CmdLine, HelpSelf)
 {
   std::string output = customExecStr("gz launch --help");
   EXPECT_NE(std::string::npos,
-    output.find("Introspect Ignition launch")) << output;
+    output.find("Introspect Gazebo launch")) << output;
 }
 
 /////////////////////////////////////////////////
 TEST(CmdLine, EchoErb)
 {
-  std::string filePath = get_config_path("erb.ign");
+  std::string filePath = get_config_path("erb.gzlaunch");
   std::string cmd = "gz launch " + filePath + " testVar:=erb1234";
   std::string output = customExecStr(cmd);
   EXPECT_EQ("erb1234", output) << output;
@@ -96,7 +96,7 @@ TEST(CmdLine, EchoErb)
 /////////////////////////////////////////////////
 TEST(CmdLine, EchoBadErb)
 {
-  std::string filePath = get_config_path("erb.ign");
+  std::string filePath = get_config_path("erb.gzlaunch");
   std::string cmd = " gz launch " + filePath + " badargument";
   std::string output = customExecStr(cmd);
   EXPECT_NE(std::string::npos, output.find("is wrong for erb")) << output;

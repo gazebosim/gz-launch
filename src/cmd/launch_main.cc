@@ -168,7 +168,7 @@ void addLaunchFlags(CLI::App &_app)
 //////////////////////////////////////////////////
 int main(int argc, char** argv)
 {
-  CLI::App app{"Introspect Ignition launch"};
+  CLI::App app{"Introspect Gazebo launch"};
 
   app.set_help_all_flag("--help-all", "Show all help");
 

@@ -65,7 +65,7 @@ Sample launch configuration files are in the [examples directory](https://github
 1. Run a configuration that launches [Gazebo](https://gazebosim.org/libs/gazebo).
 
     ```
-    gz launch sim.ign
+    gz launch sim.gzlaunch
     ```
 
 ## Known issue of command line tools
@@ -108,7 +108,7 @@ Refer to the following table for information about important directories and fil
 ```
 gz-launch
 ├── examples                 Example launch configurations.
-├── include/ignition/launch  Header files.
+├── include/gz/launch  Header files.
 ├── plugins                  Launch plugins, one per subdirectory.
 ├── src                      Source files and unit tests.
 ├── test
