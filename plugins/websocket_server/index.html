@@ -5,7 +5,7 @@
     <title>WebSocket Test</title>
   <script src='https://cdn.rawgit.com/dcodeIO/protobuf.js/6.8.8/dist/protobuf.min.js'></script>
   <script src='eventemitter2.min.js'></script>
-  <script src='ign.js'></script>
+  <script src='gz.js'></script>
   <script src='gz3d.js'></script>
 
   <script>
@@ -14,34 +14,34 @@
     // by replacing `wss://` with `ws://` and remove the `key` parameter.
     // Make sure to also disable SSL and authentication in the
     // websocket_server plugin.
-    var ign = new Ignition({
+    var gz = new Gazebo({
       url: 'ws://localhost:9002',
       key: "auth_key"
     });
 
     // Listen for the 'connection' event.
-    ign.on('connection', function() {
+    gz.on('connection', function() {
       var output = document.getElementById('status');
       output.innerHTML = 'Status: connected';
     });
 
-    ign.on('worlds', function(_worlds) {
+    gz.on('worlds', function(_worlds) {
       // \todo Switch this to a service call when this issue is
       // resolved:
       // https://github.com/gazebosim/gz-transport/issues/135
-      ign.once('scene', function(_sceneInfo) {
+      gz.once('scene', function(_sceneInfo) {
         // console.log(_sceneInfo);
         for (var i = 0; i < _sceneInfo.model.length; ++i) {
           var modelObj = createModelFromMsg(_sceneInfo.model[i]);
           scene.add(modelObj);
         }
       });
-      ign.socket.send(buildMsg(['scene','shapes','','']));
+      gz.socket.send(buildMsg(['scene','shapes','','']));
     });
 
     // Create the clock subscriber
     var clockSub = new Topic({
-      ign: ign,
+      gz: gz,
       name: '/clock',
       messageType : 'gz.msgs.Clock',
       callback: function(msg) {
@@ -52,7 +52,7 @@
 
     // Create the pos subscriber
     var poseSub = new Topic({
-      ign: ign,
+      gz: gz,
       name: '/world/shapes/dynamic_pose/info',
       messageType : 'gz.msgs.Pose_V',
       callback: function(msg) {

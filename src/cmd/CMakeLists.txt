@@ -14,7 +14,7 @@ target_link_libraries(gz PUBLIC
   gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
 )
 
-set(launch_executable ign-launch)
+set(launch_executable gz-launch)
 add_executable(${launch_executable} launch_main.cc)
 target_link_libraries(${launch_executable}
   gz
@@ -26,7 +26,7 @@ install(
   TARGETS
   ${launch_executable}
   DESTINATION
-  ${IGN_LIB_INSTALL_DIR}/ignition/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}/
+  ${GZ_LIB_INSTALL_DIR}/gz/${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}/
 )
 
 # Build the unit tests.
@@ -60,15 +60,15 @@ endif()
 # Note that the major version of the library is included in the name.
 # Ex: cmdlaunch6.rb
 
-set(cmd_script_generated_test "${CMAKE_BINARY_DIR}/test/lib/$<CONFIG>/ruby/gz/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb")
-set(cmd_script_configured_test "${CMAKE_CURRENT_BINARY_DIR}/test_cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb.configured")
+set(cmd_script_generated_test "${CMAKE_BINARY_DIR}/test/lib/$<CONFIG>/ruby/gz/cmd${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb")
+set(cmd_script_configured_test "${CMAKE_CURRENT_BINARY_DIR}/test_cmd${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb.configured")
 
 # Set the library_location variable to the full path of the library file within
 # the build directory.
 set(launch_exe_location "$<TARGET_FILE:${launch_executable}>")
 
 configure_file(
-  "cmd${IGN_DESIGNATION}.rb.in"
+  "cmd${GZ_DESIGNATION}.rb.in"
   "${cmd_script_configured_test}"
   @ONLY
 )
@@ -83,15 +83,15 @@ file(GENERATE
 # Generate the ruby script that gets installed.
 # Note that the major version of the library is included in the name.
 # Ex: cmdlaunch6.rb
-set(cmd_script_generated "${CMAKE_CURRENT_BINARY_DIR}/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb")
+set(cmd_script_generated "${CMAKE_CURRENT_BINARY_DIR}/cmd${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb")
 set(cmd_script_configured "${cmd_script_generated}.configured")
 
 # Set the library_location variable to the relative path to the library file
 # within the install directory structure.
-set(launch_exe_location "../../../${CMAKE_INSTALL_LIBDIR}/ignition/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}/$<TARGET_FILE_NAME:${launch_executable}>")
+set(launch_exe_location "../../../${CMAKE_INSTALL_LIBDIR}/gz/${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}/$<TARGET_FILE_NAME:${launch_executable}>")
 
 configure_file(
-  "cmd${IGN_DESIGNATION}.rb.in"
+  "cmd${GZ_DESIGNATION}.rb.in"
   "${cmd_script_configured}"
   @ONLY)
 
@@ -99,32 +99,32 @@ file(GENERATE
   OUTPUT "${cmd_script_generated}"
   INPUT  "${cmd_script_configured}")
 
-set(gz_library_path "${CMAKE_BINARY_DIR}/test/lib/$<CONFIG>/ruby/gz/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}")
+set(gz_library_path "${CMAKE_BINARY_DIR}/test/lib/$<CONFIG>/ruby/gz/cmd${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}")
 
 # Generate a configuration file for internal testing.
 # Note that the major version of the library is included in the name.
 # Ex: launch6.yaml
 configure_file(
-  "${IGN_DESIGNATION}.yaml.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml.configured" @ONLY)
+  "${GZ_DESIGNATION}.yaml.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml.configured" @ONLY)
 
 file(GENERATE
-  OUTPUT "${CMAKE_BINARY_DIR}/test/conf/$<CONFIG>/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml"
-  INPUT "${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml.configured")
+  OUTPUT "${CMAKE_BINARY_DIR}/test/conf/$<CONFIG>/${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml"
+  INPUT "${CMAKE_CURRENT_BINARY_DIR}/${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml.configured")
 
 # Used for the installed version.
-set(gz_library_path "${CMAKE_INSTALL_PREFIX}/lib/ruby/gz/cmd${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}")
+set(gz_library_path "${CMAKE_INSTALL_PREFIX}/lib/ruby/gz/cmd${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}")
 
 # Generate the configuration file that is installed.
 # Note that the major version of the library is included in the name.
 # Ex: launch6.yaml
 configure_file(
-  "${IGN_DESIGNATION}.yaml.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml" @ONLY)
+  "${GZ_DESIGNATION}.yaml.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml" @ONLY)
 
 # Install the yaml configuration files in an unversioned location.
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${IGN_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/ignition/)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml
+DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/gz/)
 
 # Install the ruby command line library in an unversioned location.
 install(FILES ${cmd_script_generated} DESTINATION lib/ruby/gz)

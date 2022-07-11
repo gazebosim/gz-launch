@@ -17,15 +17,13 @@ set(GZ_CMAKE_VER ${gz-cmake3_VERSION_MAJOR})
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-gz_configure_project(
-  REPLACE_IGNITION_INCLUDE_PATH gz/launch
-  VERSION_SUFFIX)
+gz_configure_project(VERSION_SUFFIX)
 
 #============================================================================
 # Set project-specific options
 #============================================================================
 
-set(GZ_LAUNCH_PLUGIN_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/${IGN_LIB_INSTALL_DIR}/gz-${IGN_DESIGNATION}-${PROJECT_VERSION_MAJOR}/plugins/")
+set(GZ_LAUNCH_PLUGIN_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/${GZ_LIB_INSTALL_DIR}/gz-${GZ_DESIGNATION}-${PROJECT_VERSION_MAJOR}/plugins/")
 
 #============================================================================
 # Search for project-specific dependencies
@@ -112,7 +110,7 @@ add_subdirectory(plugins)
 gz_configure_build(QUIT_IF_BUILD_ERRORS)
 
 #============================================================================
-# install example .ign files
+# install example .gzlaunch files
 #============================================================================
 add_subdirectory(examples)
 

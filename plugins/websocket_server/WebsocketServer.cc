@@ -806,7 +806,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
     bool result;
     unsigned int timeout = 2000;
 
-    bool executed = this->node.Request("/gazebo/worlds",
+    bool executed = this->node.Request("/sim/worlds",
         req, timeout, rep, result);
 
     std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
