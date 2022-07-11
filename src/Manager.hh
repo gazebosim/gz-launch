@@ -52,9 +52,9 @@ namespace gz
       public: bool Stop();
 
       /// \brief Private data pointer.
-      // IGN_COMMON_WARN_IGNORE__DLL_INTERFACE_MISSING
+      // GZ_COMMON_WARN_IGNORE__DLL_INTERFACE_MISSING
       private: std::unique_ptr<ManagerPrivate> dataPtr;
-      // IGN_COMMON_WARN_RESUME__DLL_INTERFACE_MISSING
+      // GZ_COMMON_WARN_RESUME__DLL_INTERFACE_MISSING
     };
     }
   }

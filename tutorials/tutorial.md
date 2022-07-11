@@ -64,7 +64,7 @@ path. It searches for a file with the given name in paths as follows:
 1. current directory
 1. all paths specified in environment variable `GZ_LAUNCH_CONFIG_PATH`
 1. a hardcoded install location (usually
-   `/usr/share/ignition/ignition-launchN/configs/`)
+   `/usr/share/gz/gz-launchN/configs/`)
 
 The `GZ_LAUNCH_CONFIG_PATH` environment variable can contain either a single
 path or a path list (_new since 2.2.2_). Path list is a colon-separated (on
