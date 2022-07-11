@@ -65,7 +65,7 @@ Sample launch configuration files are in the [examples directory](https://github
 1. Run a configuration that launches [Gazebo](https://gazebosim.org/libs/gazebo).
 
     ```
-    gz launch sim.ign
+    gz launch sim.gzlaunch
     ```
 
 ## Known issue of command line tools

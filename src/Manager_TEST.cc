@@ -88,7 +88,7 @@ TEST_F(ManagerTest, MissingIgnition)
 {
   std::string config =
     "<executable name='sim'>"
-    "  <command>ign-gazebo-server</command>"
+    "  <command>gz-sim-server</command>"
     "</executable>";
 
   gz::launch::Manager mgr;

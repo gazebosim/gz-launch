@@ -27,7 +27,7 @@ function buildMsg(_frameParts) {
 
 /// \brief The main interface to the Gazebo websocket server and
 /// data on Gazebo Transport.
-function Ignition(options) {
+function Gazebo(options) {
   options = options || {};
 
   this.socket = null;
@@ -43,11 +43,11 @@ function Ignition(options) {
     this.connect(options.url, options.key);
   }
 }
-Ignition.prototype.__proto__ = EventEmitter2.prototype;
+Gazebo.prototype.__proto__ = EventEmitter2.prototype;
 
 /// \brief Connect to the specified WebSocket.
 /// \param url - WebSocket URL for Gazebo HTTPServer
-Ignition.prototype.connect = function(url, key) {
+Gazebo.prototype.connect = function(url, key) {
   var that = this;
 
   /// \brief Emits a 'connection' event on WebSocket connection.
@@ -148,7 +148,7 @@ Ignition.prototype.connect = function(url, key) {
 
 /// \brief Send a message to the websocket server
 /// \param[in] _msg Message to send
-Ignition.prototype.sendMsg = function(_msg) {
+Gazebo.prototype.sendMsg = function(_msg) {
   var that = this;
 
   var emitter = function(msg){
@@ -168,7 +168,7 @@ Ignition.prototype.sendMsg = function(_msg) {
 /// \brief Interface to Gazebo Transport topics.
 function Topic(options) {
   options = options || {};
-  this.ign = options.ign;
+  this.gz = options.gz;
   this.name = options.name;
   this.messageType = options.messageType;
   this.isAdvertised = false;
@@ -189,14 +189,14 @@ Topic.prototype.subscribe = function(_callback) {
 
   var emitter = function(_cb) {
     // Register the callback with the topic name
-    that.ign.on(that.name, _cb);
+    that.gz.on(that.name, _cb);
 
     // Send the subscription message over the websocket.
-    that.ign.sendMsg(buildMsg(['sub', that.name, '', '']));
+    that.gz.sendMsg(buildMsg(['sub', that.name, '', '']));
   }
 
-  if (!this.ign.isConnected) {
-    this.ign.on('connection', function() {
+  if (!this.gz.isConnected) {
+    this.gz.on('connection', function() {
       emitter(_callback);
     });
   } else {

@@ -1,12 +1,12 @@
 <?xml version='1.0'?>
-<!-- Usage: gz launch gazebo_plugins.ign [worldName:=<worldName>]
+<!-- Usage: gz launch sim_plugins.gzlaunch [worldName:=<worldName>]
 
      The [worldName] command line argument is optional. If left blank, or not
      specified, then "diff_drive" is used for the world name.
 
     Example that loads the shapes.sdf world instead of diff_drive:
 
-      gz launch gazebo_plugins.ign worldName:=shapes
+      gz launch sim_plugins.gzlaunch worldName:=shapes
 -->
 <%
   # Check if worldName is not defined or is empty/nil
@@ -56,8 +56,8 @@
       <enabled>true</enabled>
       <!-- Use the <path> element to specify where to create the log file on
            disk. Leaving this empty will cause Gazebo to log into the default
-           location of ~/.ignition/gazebo/log -->
-      <path>/tmp/ign-launch-demo</path>
+           location of ~/.gz/sim/log -->
+      <path>/tmp/gz-launch-demo</path>
 
       <!-- Use the <overwrite> element to overwrite <path> in case it already
            exists. Otherwise, logs will be recorded to a new path that has a

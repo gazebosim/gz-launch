@@ -187,7 +187,7 @@
 1. Add PKGCONFIG information to gz-tools gz_find_package
    * [Pull Request 44](https://github.com/gazebosim/gz-launch/pull/44)
 
-1. Fix factory.gz launch file
+1. Fix factory.gzlaunch launch file
    * [Pull Request 55](https://github.com/gazebosim/gz-launch/pull/55)
 
 1. Use random name for manager semaphore
