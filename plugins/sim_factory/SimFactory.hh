@@ -29,8 +29,8 @@ namespace gz
     /// \brief Spawns entities into simulation.
     ///
     /// # Example usage
-    ///  <plugin name="gz::launch::GazeboFactory"
-    ///          filename="gz-launch-gazebo-factory">
+    ///  <plugin name="gz::launch::SimFactory"
+    ///          filename="gz-launch-sim-factory">
     ///
     ///   <spawn>
     ///     <!-- Name to give the model -->
@@ -59,13 +59,13 @@ namespace gz
     ///   ...
     ///   </spawn>
     /// </plugin>
-    class GazeboFactory : public gz::launch::Plugin
+    class SimFactory : public gz::launch::Plugin
     {
       /// \brief Constructor.
-      public: GazeboFactory();
+      public: SimFactory();
 
       /// \brief Destructor.
-      public: virtual ~GazeboFactory() = default;
+      public: virtual ~SimFactory() = default;
 
       // Documentation inherited.
       public: virtual bool Load(
@@ -90,6 +90,6 @@ namespace gz
 }
 
 // Register the plugin
-GZ_ADD_PLUGIN(gz::launch::GazeboFactory, gz::launch::Plugin)
+GZ_ADD_PLUGIN(gz::launch::SimFactory, gz::launch::Plugin)
 
 #endif

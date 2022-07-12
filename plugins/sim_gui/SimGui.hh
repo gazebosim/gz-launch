@@ -38,8 +38,8 @@ namespace gz
     ///
     /// <!-- The GUI wants to be in its own process, so wrap the plugin -->
     /// <executable_wrapper>
-    ///   <plugin name="gz::launch::GazeboGui"
-    ///           filename="gz-launch-gazebogui">
+    ///   <plugin name="gz::launch::SimGui"
+    ///           filename="gz-launch-simgui">
     ///
     ///   <!-- Elements parsed by ign-launch -->
     ///
@@ -56,13 +56,13 @@ namespace gz
     ///
     ///   </plugin>
     /// </executable_wrapper>
-    class GazeboGui : public gz::launch::Plugin
+    class SimGui : public gz::launch::Plugin
     {
       /// \brief Constructor.
-      public: GazeboGui();
+      public: SimGui();
 
       /// \brief Destructor.
-      public: virtual ~GazeboGui();
+      public: virtual ~SimGui();
 
       // Documentation inherited.
       public: virtual bool Load(
@@ -72,6 +72,6 @@ namespace gz
 }
 
 // Register the plugin
-GZ_ADD_PLUGIN(gz::launch::GazeboGui, gz::launch::Plugin)
+GZ_ADD_PLUGIN(gz::launch::SimGui, gz::launch::Plugin)
 
 #endif

@@ -87,7 +87,7 @@ TEST_F(ManagerTest, RunEmptyConfig)
 TEST_F(ManagerTest, MissingIgnition)
 {
   std::string config =
-    "<executable name='gazebo'>"
+    "<executable name='sim'>"
     "  <command>ign-gazebo-server</command>"
     "</executable>";
 
@@ -101,9 +101,9 @@ TEST_F(ManagerTest, MissingIgnition)
 TEST_F(ManagerTest, RunBadXml)
 {
   std::string config =
-    "<ignition version='1.0'>"
+    "<gz version='1.0'>"
     " executable></executable"
-    "</ignition>";
+    "</gz>";
 
   gz::launch::Manager mgr;
 
@@ -123,11 +123,11 @@ TEST_F(ManagerTest, RunLs)
 #endif
 
   std::string config =
-    R"(<ignition version='1.0'>"
+    R"(<gz version='1.0'>"
     "  <executable name='listDirectory'>"
     "    <command>)" + cmd + R"(</command>"
     "  </executable>"
-    "</ignition>)";
+    "</gz>)";
 
   gz::launch::Manager mgr;
 
@@ -155,7 +155,7 @@ TEST_F(ManagerTest, RunEnvPre)
   ASSERT_TRUE(WriteTestScript(testScriptPath));
 
   std::string config = R"(
-<ignition version='1.0'>
+<gz version='1.0'>
   <env>
     <name>TEST_VAR</name>
     <value>)" + testPath + R"(</value>
@@ -163,7 +163,7 @@ TEST_F(ManagerTest, RunEnvPre)
   <executable name='touch'>
     <command>)" + std::string(testScriptPath) + R"(</command>
   </executable>
-</ignition>
+</gz>
 )";
 
   gz::launch::Manager mgr;
@@ -193,7 +193,7 @@ TEST_F(ManagerTest, RunEnvPost)
   ASSERT_TRUE(WriteTestScript(testScriptPath));
 
   std::string config = R"(
-<ignition version='1.0'>
+<gz version='1.0'>
   <executable name='touch'>
     <command>)" + std::string(testScriptPath) + R"(</command>
   </executable>
@@ -201,7 +201,7 @@ TEST_F(ManagerTest, RunEnvPost)
     <name>TEST_VAR</name>
     <value>)" + testPath + R"(</value>
   </env>
-</ignition>
+</gz>
 )";
 
   gz::launch::Manager mgr;

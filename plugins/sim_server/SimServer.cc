@@ -17,7 +17,7 @@
 
 #include <gz/common/Console.hh>
 #include <sdf/sdf.hh>
-#include "GazeboServer.hh"
+#include "SimServer.hh"
 
 using namespace gz;
 using namespace gz::launch;
@@ -51,13 +51,13 @@ void copyElement(sdf::ElementPtr _sdf, const tinyxml2::XMLElement *_xml)
 }
 
 /////////////////////////////////////////////////
-GazeboServer::GazeboServer()
+SimServer::SimServer()
   : gz::launch::Plugin()
 {
 }
 
 /////////////////////////////////////////////////
-bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
+bool SimServer::Load(const tinyxml2::XMLElement *_elem)
 {
   sim::ServerConfig serverConfig;
   const tinyxml2::XMLElement *elem;
@@ -289,7 +289,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     std::string name = nameStr == nullptr ? "" : nameStr;
     if (name.empty())
     {
-      gzerr << "A GazeboServer plugin is missing the name attribute. "
+      gzerr << "A SimServer plugin is missing the name attribute. "
         << "Skipping this plugin.\n";
       continue;
     }
@@ -299,7 +299,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     std::string file = fileStr == nullptr ? "" : fileStr;
     if (file.empty())
     {
-      gzerr << "A GazeboServer plugin with name[" << name << "] is "
+      gzerr << "A SimServer plugin with name[" << name << "] is "
         << "missing the filename attribute. Skipping this plugin.\n";
       continue;
     }
@@ -309,7 +309,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     std::string entityName = entityNameStr == nullptr ? "" : entityNameStr;
     if (entityName.empty())
     {
-      gzerr << "A GazeboServer plugin with name[" << name << "] and "
+      gzerr << "A SimServer plugin with name[" << name << "] and "
         << "filename[" << file << "] is missing the entity_name attribute. "
         << "Skipping this plugin.\n";
       continue;
@@ -320,7 +320,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
     std::string entityType = entityTypeStr == nullptr ? "" : entityTypeStr;
     if (entityType.empty())
     {
-      gzerr << "A GazeboServer plugin with name[" << name << "] and "
+      gzerr << "A SimServer plugin with name[" << name << "] and "
         << "filename[" << file << "] is missing the entity_type attribute. "
         << "Skipping this plugin.\n";
       continue;
@@ -347,6 +347,6 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
   this->server.reset(new sim::Server(serverConfig));
   this->server->Run(false, 0, !run);
 
-  gzdbg << "Loaded GazeboServer plugin.\n";
+  gzdbg << "Loaded SimServer plugin.\n";
   return true;
 }

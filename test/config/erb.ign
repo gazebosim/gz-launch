@@ -5,8 +5,8 @@
     testVar = ""
   end
 %>
-<ignition version='1.0'>
+<gz version='1.0'>
   <executable name='ls'>
     <command>echo -n <%= testVar %></command>
   </executable>
-</ignition>
+</gz>

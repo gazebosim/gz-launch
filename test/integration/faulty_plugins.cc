@@ -23,11 +23,11 @@
 std::string getConfig(const std::string &_pluginName)
 {
   return
-    "<ignition version='1.0'>"
+    "<gz version='1.0'>"
     "  <plugin name='"  + _pluginName + "'"
     "          filename='" + std::string(bad_plugins_LIB) + "'>"
     "  </plugin>"
-    "</ignition>";
+    "</gz>";
 }
 
 bool runConfig(const std::string &_config)

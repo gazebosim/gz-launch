@@ -16,11 +16,11 @@
 %>
 
 <!-- Requires gz-sim branch support_loading_plugins_programmatically -->
-<ignition version='1.0'>
+<gz version='1.0'>
   <!-- Load a joystick plugin that will read from a device and output to a
        topic -->
   <plugin name="gz::launch::Joystick"
-          filename="ignition-launch-joystick">
+          filename="gz-launch-joystick">
     <device>/dev/input/js0</device>
     <sticky_buttons>false</sticky_buttons>
     <dead_zone>0.05</dead_zone>
@@ -31,7 +31,7 @@
   <!-- Load a plugin that transforms a joystick message to a
        twist message -->
   <plugin name="gz::launch::JoyToTwist"
-          filename="ignition-launch-joytotwist">
+          filename="gz-launch-joytotwist">
     <input_topic>/joy</input_topic>
     <output_topic>/model/vehicle_green/cmd_vel</output_topic>
   </plugin>
@@ -39,14 +39,14 @@
   <!-- Load a plugin that transforms a joystick message to a
        twist message -->
   <plugin name="gz::launch::JoyToTwist"
-          filename="ignition-launch-joytotwist">
+          filename="gz-launch-joytotwist">
     <input_topic>/joy</input_topic>
     <output_topic>/model/vehicle_blue/cmd_vel</output_topic>
   </plugin>
 
   <!-- Run the gazebo server with a set of plugins -->
-  <plugin name="gz::launch::GazeboServer"
-          filename="ignition-launch-gazebo">
+  <plugin name="gz::launch::SimServer"
+          filename="gz-launch-sim">
     <world_file><%= worldName %>.sdf</world_file>
     <run>true</run>
     <!-- 3000 Hz == 300% RTF == 3x real time -->
@@ -78,18 +78,18 @@
          necessary plugin
     <plugin entity_name="<%= worldName %>"
             entity_type="world"
-            filename="ignition-gazebo1-physics-system"
+            filename="gz-sim-physics-system"
             name="gz::sim::systems::Physics">
     </plugin>
     <plugin entity_name="<%= worldName %>"
             entity_type="world"
-            filename="ignition-gazebo1-scene-broadcaster-system"
+            filename="gz-sim-scene-broadcaster-system"
             name="gz::sim::systems::SceneBroadcaster">
     </plugin>
 
     <plugin entity_name="vehicle_green"
             entity_type="model"
-            filename="ignition-gazebo1-diff-drive-system"
+            filename="gz-sim-diff-drive-system"
             name="gz::sim::systems::DiffDrive">
       <left_joint>left_wheel_joint</left_joint>
       <right_joint>right_wheel_joint</right_joint>
@@ -99,7 +99,7 @@
 
     <plugin entity_name="vehicle_blue"
             entity_type="model"
-            filename="ignition-gazebo1-diff-drive-system"
+            filename="gz-sim-diff-drive-system"
             name="gz::sim::systems::DiffDrive">
       <left_joint>left_wheel_joint</left_joint>
       <right_joint>right_wheel_joint</right_joint>
@@ -111,8 +111,8 @@
   </plugin>
 
   <executable_wrapper>
-    <plugin name="gz::launch::GazeboGui"
-          filename="ignition-launch-gazebogui">
+    <plugin name="gz::launch::SimGui"
+          filename="gz-launch-simgui">
 
       <!-- Override default window title (Gazebo) -->
       <window_title>Gazebo Launch</window_title>
@@ -194,4 +194,4 @@
     </plugin>
   </executable_wrapper>
 
-</ignition>
+</gz>

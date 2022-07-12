@@ -1,10 +1,10 @@
 <?xml version='1.0'?>
-<ignition version='1.0'>
+<gz version='1.0'>
 
   <!-- Load a websocket server that provides access to Gazebo Transport
        topics through websockets.-->
   <plugin name="gz::launch::WebsocketServer"
-          filename="ignition-launch-websocket-server">
+          filename="gz-launch-websocket-server">
     <publication_hz>30</publication_hz>
     <port>9002</port>
 
@@ -28,4 +28,4 @@
     </ssl> -->
   </plugin>
 
-</ignition>
+</gz>

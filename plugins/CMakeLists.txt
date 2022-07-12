@@ -1,8 +1,8 @@
 set (plugins
   joy_to_twist
-  gazebo_gui
-  gazebo_factory
-  gazebo_server
+  sim_gui
+  sim_factory
+  sim_server
   websocket_server
 )
 

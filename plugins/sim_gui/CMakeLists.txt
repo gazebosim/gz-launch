@@ -1,5 +1,5 @@
-set (plugin gz-launch-gazebogui)
-set (sources GazeboGui.cc)
+set (plugin gz-launch-simgui)
+set (sources SimGui.cc)
 
 string (TOLOWER ${plugin} plugin_lower)
 
