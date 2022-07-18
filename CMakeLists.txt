@@ -51,6 +51,10 @@ set(IGN_PLUGIN_MAJOR_VER ${ignition-plugin1_VERSION_MAJOR})
 ign_find_package(ignition-tools
   REQUIRED
   PKGCONFIG "ignition-tools")
+# Note that CLI files are installed regardless of whether the dependency is
+# available during build time
+find_program(HAVE_IGN_TOOLS ign)
+set(IGN_TOOLS_VER 1)
 
 #--------------------------------------
 # Find ignition-transport
