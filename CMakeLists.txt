@@ -104,6 +104,8 @@ add_subdirectory(plugins)
 # Configure the build
 #============================================================================
 ign_configure_build(QUIT_IF_BUILD_ERRORS)
+configure_file("${PROJECT_SOURCE_DIR}/coverage.ignore.in"
+               ${PROJECT_BINARY_DIR}/coverage.ignore)
 
 #============================================================================
 # install example .ign files
