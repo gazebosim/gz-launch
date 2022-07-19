@@ -31,7 +31,6 @@
 #endif
 
 static const std::string kIgnCommand(
-    std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH + " " +
     std::string(BREW_RUBY) + std::string(IGN_PATH) + " launch ");
 
 /////////////////////////////////////////////////
@@ -66,7 +65,7 @@ std::string get_config_path(const std::string filename)
 /////////////////////////////////////////////////
 TEST(CmdLine, Ls)
 {
-  std::string cmd = kIgnCommand + get_config_path("ls.ign");
+  std::string cmd = "ign launch " + get_config_path("ls.ign");
   std::string output = customExecStr(cmd);
   EXPECT_TRUE(output.find("CMakeFiles") != std::string::npos) << output;
   EXPECT_TRUE(output.find("Makefile") != std::string::npos) << output;
@@ -117,7 +116,7 @@ TEST(CmdLine, HelpVsCompletionFlags)
   // Call the output function in the bash completion script
   std::string scriptPath = ignition::common::joinPaths(
     std::string(PROJECT_SOURCE_PATH),
-    "src", "launch.bash_completion.sh");
+    "src", "cmd", "launch.bash_completion.sh");
 
   // Equivalent to:
   // sh -c "bash -c \". /path/to/launch.bash_completion.sh; _gz_launch_flags\""

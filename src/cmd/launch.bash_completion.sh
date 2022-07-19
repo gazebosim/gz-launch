@@ -21,10 +21,10 @@
 # top-level entry point in ign-tools.
 
 GZ_LAUNCH_COMPLETION_LIST="
-  -v --verbose
   -h --help
-  --force-version
-  --versions
+  --help-all
+  --version
+  -v --verbose
 "
 
 function _gz_launch
