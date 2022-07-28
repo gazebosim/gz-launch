@@ -713,7 +713,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   }
 
   // Handle the case where the client requests the message definitions.
-  if (frameParts[0] == "protos")
+  if (frameParts[0] == this->operations[PROTOS])
   {
     igndbg << "Protos request received\n";
 
@@ -761,8 +761,9 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
     for (const std::string &topic : topics)
       msg.add_data(topic);
 
-    std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
-        std::string("ignition.msgs.StringMsg_V"), msg.SerializeAsString());
+    std::string data = BUILD_MSG(this->operations[PUBLISH_OUTBOUND],
+        frameParts[0], std::string("ignition.msgs.StringMsg_V"),
+        msg.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
@@ -791,8 +792,9 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
       }
     }
 
-    std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
-        std::string("ignition.msgs.Publishers"), msg.SerializeAsString());
+    std::string data = BUILD_MSG(this->operations[PUBLISH_OUTBOUND],
+        frameParts[0], std::string("ignition.msgs.Publishers"),
+        msg.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
@@ -811,8 +813,9 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
     bool executed = this->node.Request("/gazebo/worlds",
         req, timeout, rep, result);
 
-    std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
-        std::string("ignition.msgs.StringMsg_V"), rep.SerializeAsString());
+    std::string data = BUILD_MSG(this->operations[PUBLISH_OUTBOUND],
+        frameParts[0], std::string("ignition.msgs.StringMsg_V"),
+        rep.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
@@ -839,8 +842,9 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
         << " world.\n";
     }
 
-    std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
-        std::string("ignition.msgs.Scene"), rep.SerializeAsString());
+    std::string data = BUILD_MSG(this->operations[PUBLISH_OUTBOUND],
+        frameParts[0], std::string("ignition.msgs.Scene"),
+        rep.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
@@ -869,15 +873,15 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
         << frameParts[1] << " world.\n";
     }
 
-    std::string data = BUILD_MSG(this->operations[PUBLISH], frameParts[0],
-        std::string("ignition.msgs.ParticleEmitter_V"),
+    std::string data = BUILD_MSG(this->operations[PUBLISH_OUTBOUND],
+        frameParts[0], std::string("ignition.msgs.ParticleEmitter_V"),
         rep.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
         data.c_str(), data.length());
   }
-  else if (frameParts[0] == "sub")
+  else if (frameParts[0] == this->operations[SUBSCRIBE])
   {
     std::string topic = frameParts[1];
 
@@ -994,9 +998,55 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
       }
     }
   }
-  else if (frameParts[0] == "asset")
+  else if (frameParts[0] == this->operations[ASSET])
   {
     this->OnAsset(_socketId, frameParts);
+  }
+  else if (frameParts[0] == this->operations[ADVERTISE])
+  {
+    this->OnAdvertise(_socketId, frameParts);
+  }
+  else if (frameParts[0] == this->operations[PUBLISH_INBOUND])
+  {
+    this->OnPublishInbound(_socketId, frameParts);
+  }
+}
+
+//////////////////////////////////////////////////
+void WebsocketServer::OnAdvertise(int _socketId,
+    const std::vector<std::string> &_frameParts)
+{
+  std::string topic = _frameParts[1];
+  std::string msgTypeName = _frameParts[2];
+  std::pair<std::string, std::string> key = std::make_pair(topic, msgTypeName);
+
+  if (this->inboundPublishers.find(key) == this->inboundPublishers.end())
+  {
+    igndbg << "Advertising topic[" << topic << "] with message type["
+      << msgTypeName << "]\n";
+    transport::Node::Publisher pub = this->node.Advertise(topic, msgTypeName);
+    this->inboundPublishers.emplace(key, pub);
+  }
+}
+
+//////////////////////////////////////////////////
+void WebsocketServer::OnPublishInbound(int _socketId,
+    const std::vector<std::string> &_frameParts)
+{
+  std::string topic = _frameParts[1];
+  std::string msgTypeName = _frameParts[2];
+  std::string msg = _frameParts[3];
+
+  std::pair<std::string, std::string> key = std::make_pair(topic, msgTypeName);
+  auto iter = this->inboundPublishers.find(key);
+  if ( iter != this->inboundPublishers.end())
+  {
+    iter->second.PublishRaw(msg, msgTypeName);
+  }
+  else
+  {
+    ignerr << "Topic[" << topic << "] with message type[" << msgTypeName << "] "
+      << "has not been advertised\n";
   }
 }
 
@@ -1100,7 +1150,7 @@ void WebsocketServer::OnWebsocketSubscribedMessage(
       if (header == this->publishHeaders.end())
       {
         this->publishHeaders[_info.Topic()] = BUILD_HEADER(
-          this->operations[PUBLISH], _info.Topic(), _info.Type());
+          this->operations[PUBLISH_OUTBOUND], _info.Topic(), _info.Type());
         header = this->publishHeaders.find(_info.Topic());
       }
 
@@ -1155,7 +1205,7 @@ void WebsocketServer::OnWebsocketSubscribedImageMessage(
       if (header == this->publishHeaders.end())
       {
         this->publishHeaders[_info.Topic()] = BUILD_HEADER(
-          this->operations[PUBLISH], _info.Topic(), _info.Type());
+          this->operations[PUBLISH_OUTBOUND], _info.Topic(), _info.Type());
         header = this->publishHeaders.find(_info.Topic());
       }
 

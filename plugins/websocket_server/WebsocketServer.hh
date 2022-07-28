@@ -207,6 +207,20 @@ namespace ignition
       private: void OnAsset(int _socketId,
                    const std::vector<std::string> &_frameParts);
 
+      /// \brief Advertise a topic on the local Gazebo transport from
+      /// a websocket connection.
+      /// \param[in] _socketId Id of the socket associated with the message.
+      /// \param[in] _frameParts The request message in frame parts.
+      private: void OnAdvertise(int _socketId,
+                   const std::vector<std::string> &_frameParts);
+
+      /// \brief Publish a message on a local Gazebo transport topic from
+      /// a websocket connection.
+      /// \param[in] _socketId Id of the socket associated with the message.
+      /// \param[in] _frameParts The request message in frame parts.
+      private: void OnPublishInbound(int _socketId,
+                   const std::vector<std::string> &_frameParts);
+
       private: ignition::transport::Node node;
 
       private: bool run = true;
@@ -293,8 +307,9 @@ namespace ignition
                  /// \brief Subscribe to a topic.
                  SUBSCRIBE = 0,
 
-                 /// \brief Publish a message from a topic.
-                 PUBLISH = 1,
+                 /// \brief Publish a message from a local topic over the
+                 /// websocket server.
+                 PUBLISH_OUTBOUND = 1,
 
                  /// \brief Get the list of topics.
                  TOPICS = 2,
@@ -304,13 +319,20 @@ namespace ignition
 
                  /// \brief Get an asset as a byte array.
                  ASSET = 4,
+
+                 /// \brief Advertise a topic.
+                 ADVERTISE = 5,
+
+                 /// \brief Publish to a local topic from a remote
+                 /// websocket connection.
+                 PUBLISH_INBOUND = 6,
                };
 
       /// \brief The set of valid operations, in string  form. These values
       /// can be sent in websocket message frames.
       /// These valus must align with the `Operation` enum.
       private: std::vector<std::string> operations{
-                 "sub", "pub", "topics", "protos", "asset"};
+                 "sub", "pub", "topics", "protos", "asset", "adv", "pub_in"};
 
       /// \brief Store publish headers for topics. This is here to improve
       /// performance. Keys are topic names and values are frame headers.
@@ -327,6 +349,9 @@ namespace ignition
       /// \brief Administrator authorization key used to validate a web-socket
       /// connection.
       private: std::string adminAuthorizationKey;
+
+      private: std::map<std::pair<std::string, std::string>,
+                        transport::Node::Publisher> inboundPublishers;
     };
   }
 }
