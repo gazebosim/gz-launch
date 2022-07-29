@@ -8,7 +8,7 @@ project(ignition-launch5 VERSION 5.1.0)
 #============================================================================
 # Find ignition-cmake
 #============================================================================
-find_package(ignition-cmake2 2.8.0 REQUIRED)
+find_package(ignition-cmake2 2.14.0 REQUIRED)
 set(IGN_CMAKE_VER ${ignition-cmake2_VERSION_MAJOR})
 
 #============================================================================
@@ -20,7 +20,7 @@ ign_configure_project(VERSION_SUFFIX)
 # Set project-specific options
 #============================================================================
 
-set(IGN_LAUNCH_PLUGIN_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/${IGN_LIB_INSTALL_DIR}/ign-${IGN_DESIGNATION}-${PROJECT_VERSION_MAJOR}/plugins/")
+set(IGN_LAUNCH_PLUGIN_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/${IGN_LIB_INSTALL_DIR}/ign-${GZ_DESIGNATION}-${PROJECT_VERSION_MAJOR}/plugins/")
 
 #============================================================================
 # Search for project-specific dependencies
