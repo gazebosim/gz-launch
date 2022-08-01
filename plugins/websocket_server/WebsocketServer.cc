@@ -19,7 +19,7 @@
 #include <gz/common/Console.hh>
 #include <gz/common/Image.hh>
 #include <gz/common/Util.hh>
-#include <gz/msgs.hh>
+#include <gz/msgs/Factory.hh>
 #include <gz/transport/Publisher.hh>
 
 #include "MessageDefinitions.hh"
@@ -749,7 +749,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   }
   else if (frameParts[0] == "topics")
   {
-    gzdbg << "Topic list request recieved\n";
+    gzdbg << "Topic list request received\n";
     gz::msgs::StringMsg_V msg;
 
     std::vector<std::string> topics;
@@ -770,7 +770,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   }
   else if (frameParts[0] == "topics-types")
   {
-    gzdbg << "Topic and message type list request recieved\n";
+    gzdbg << "Topic and message type list request received\n";
     gz::msgs::Publishers msg;
 
     std::vector<std::string> topics;
@@ -800,7 +800,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   }
   else if (frameParts[0] == "worlds")
   {
-    gzdbg << "World info request recieved\n";
+    gzdbg << "World info request received\n";
     gz::msgs::Empty req;
     req.set_unused(true);
 
@@ -820,8 +820,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   }
   else if (frameParts[0] == "scene")
   {
-    gzdbg << "Scene info request recieved for world["
-      << frameParts[1] << "]\n";
+    gzdbg << "Scene info request received for world[" << frameParts[1] << "]\n";
     gz::msgs::Empty req;
     req.set_unused(true);
 
@@ -1006,7 +1005,7 @@ void WebsocketServer::OnAsset(int _socketId,
 {
   if (_frameParts.size() <= 1)
   {
-    ignerr << "Asset requested, but asset URI is missing\n";
+    gzerr << "Asset requested, but asset URI is missing\n";
     return;
   }
 
