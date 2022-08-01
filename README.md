@@ -12,7 +12,7 @@ Build | Status
 Test coverage | [![codecov](https://codecov.io/gh/gazebosim/gz-launch/branch/main/graph/badge.svg)](https://codecov.io/gh/gazebosim/gz-launch)
 Ubuntu Focal | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-main-focal-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-main-focal-amd64)
 Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=ignition_launch-ci-main-homebrew-amd64)](https://build.osrfoundation.org/job/ignition_launch-ci-main-homebrew-amd64)
-Windows       | [![Build Status](https://build.osrfoundation.org/job/ign_launch-ign-5-win/badge/icon)](https://build.osrfoundation.org/job/ign_launch-ign-5-win/)
+Windows       | [![Build Status](https://build.osrfoundation.org/job/ign_launch-ign-ci-win/badge/icon)](https://build.osrfoundation.org/job/ign_launch-ign-ci-win/)
 
 Gazebo Launch, a component of [Gazebo](https://gazebosim.org), provides a command line interface
 to run and manager application and plugins.
@@ -49,7 +49,7 @@ directory.
 
 1. Automatic ERB parsing of configuration files.
 1. Pass arguments to launch files from the command line.
-1. Plugins to launch Gazebo, joystick interface, and a websocket server for
+1. Plugins to launch Gazebo Sim, joystick interface, and a websocket server for
    simulation.
 
 # Install

@@ -53,7 +53,33 @@ if (TARGET UNIT_gz_TEST)
     ENVIRONMENT
       "GZ_CONFIG_PATH=${CMAKE_BINARY_DIR}/test/conf/$<CONFIG>"
   )
+
+  # Running `gz launch` on macOS has problems when run with /usr/bin/ruby
+  # due to System Integrity Protection (SIP). Try to find ruby from
+  # homebrew as a workaround.
+  if (APPLE)
+    find_program(BREW_RUBY ruby HINTS /usr/local/opt/ruby/bin)
+  endif()
+
+  target_compile_definitions(UNIT_gz_TEST PRIVATE
+      "BREW_RUBY=\"${BREW_RUBY} \"")
+
+  target_compile_definitions(UNIT_gz_TEST PRIVATE
+      "GZ_PATH=\"${GZ_TOOLS_PROGRAM}\"")
 endif()
+
+#===============================================================================
+# Bash completion
+
+# Tack version onto and install the bash completion script
+configure_file(
+  "launch.bash_completion.sh"
+    "${CMAKE_CURRENT_BINARY_DIR}/launch${PROJECT_VERSION_MAJOR}.bash_completion.sh" @ONLY)
+install(
+  FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/launch${PROJECT_VERSION_MAJOR}.bash_completion.sh
+  DESTINATION
+    ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/gz/gz${GZ_TOOLS_VER}.completion.d)
 
 #===============================================================================
 # Generate the ruby script for internal testing.
