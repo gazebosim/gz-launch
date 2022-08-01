@@ -19,7 +19,7 @@
 #include <gz/common/Console.hh>
 #include <gz/common/Image.hh>
 #include <gz/common/Util.hh>
-#include <gz/msgs.hh>
+#include <gz/msgs/Factory.hh>
 #include <gz/transport/Publisher.hh>
 
 #include "MessageDefinitions.hh"
@@ -286,26 +286,28 @@ int rootCallback(struct lws *_wsi,
 
     // Handle incoming messages
     case LWS_CALLBACK_RECEIVE:
-      gzdbg << "LWS_CALLBACK_RECEIVE\n";
-
-      // Prevent too many connections.
-      if (self->maxConnections >= 0 &&
-          self->connections.size()+1 > self->maxConnections)
       {
-        gzerr << "Skipping new connection, limit of "
-          << self->maxConnections << " has been reached\n";
+        gzdbg << "LWS_CALLBACK_RECEIVE\n";
 
-        // This will return an error code of 1008 with a reason of
-        // "max_connections".
-        std::string reason = "max_connections";
-        lws_close_reason(_wsi, LWS_CLOSE_STATUS_POLICY_VIOLATION,
-          reinterpret_cast<unsigned char *>(reason.data()), reason.size());
+        // Prevent too many connections.
+        if (self->maxConnections >= 0 &&
+            self->connections.size()+1 > self->maxConnections)
+        {
+          gzerr << "Skipping new connection, limit of "
+            << self->maxConnections << " has been reached\n";
 
-        // Return non-zero to close the connection.
-        return -1;
+          // This will return an error code of 1008 with a reason of
+          // "max_connections".
+          std::string reason = "max_connections";
+          lws_close_reason(_wsi, LWS_CLOSE_STATUS_POLICY_VIOLATION,
+            reinterpret_cast<unsigned char *>(reason.data()), reason.size());
+
+          // Return non-zero to close the connection.
+          return -1;
+        }
+        self->OnMessage(fd, std::string((const char *)_in).substr(0, _len));
+        break;
       }
-      self->OnMessage(fd, std::string((const char *)_in));
-      break;
 
     default:
       // Do nothing on default.
@@ -659,7 +661,7 @@ void WebsocketServer::OnDisconnect(int _socketId)
 }
 
 //////////////////////////////////////////////////
-void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
+void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
 {
   // Skip invalid sockets
   if (this->connections.find(_socketId) == this->connections.end())
@@ -673,7 +675,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
       // Count the number of commas to handle a frame like "sub,,,"
       std::count(_msg.begin(), _msg.end(), ',') != 3)
   {
-    gzerr << "Received an invalid frame with " << frameParts.size()
+    gzerr << "Received an invalid frame[" << _msg << "] with " << frameParts.size()
       << "components when 4 is expected.\n";
     return;
   }
@@ -747,7 +749,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   }
   else if (frameParts[0] == "topics")
   {
-    gzdbg << "Topic list request recieved\n";
+    gzdbg << "Topic list request received\n";
     gz::msgs::StringMsg_V msg;
 
     std::vector<std::string> topics;
@@ -768,7 +770,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   }
   else if (frameParts[0] == "topics-types")
   {
-    gzdbg << "Topic and message type list request recieved\n";
+    gzdbg << "Topic and message type list request received\n";
     gz::msgs::Publishers msg;
 
     std::vector<std::string> topics;
@@ -798,7 +800,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   }
   else if (frameParts[0] == "worlds")
   {
-    gzdbg << "World info request recieved\n";
+    gzdbg << "World info request received\n";
     gz::msgs::Empty req;
     req.set_unused(true);
 
@@ -818,8 +820,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   }
   else if (frameParts[0] == "scene")
   {
-    gzdbg << "Scene info request recieved for world["
-      << frameParts[1] << "]\n";
+    gzdbg << "Scene info request received for world[" << frameParts[1] << "]\n";
     gz::msgs::Empty req;
     req.set_unused(true);
 
@@ -991,6 +992,65 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
                 << "]" << std::endl;
       }
     }
+  }
+  else if (frameParts[0] == "asset")
+  {
+    this->OnAsset(_socketId, frameParts);
+  }
+}
+
+//////////////////////////////////////////////////
+void WebsocketServer::OnAsset(int _socketId,
+    const std::vector<std::string> &_frameParts)
+{
+  if (_frameParts.size() <= 1)
+  {
+    gzerr << "Asset requested, but asset URI is missing\n";
+    return;
+  }
+
+  std::string assetUri = _frameParts[1];
+
+  std::string resolvedPath;
+
+  // Short circuit the case where the assetURI is already a valid path.
+  if (common::exists(assetUri))
+  {
+    resolvedPath = assetUri;
+  }
+  else
+  {
+    gz::msgs::StringMsg req, rep;
+    req.set_data(assetUri);
+    bool result;
+    unsigned int timeout = 2000;
+
+    // Request the file path from Gazebo
+    bool executed = this->node.Request("/gazebo/resource_paths/resolve",
+        req, timeout, rep, result);
+    if (executed && result)
+      resolvedPath = rep.data();
+  }
+
+  if (!resolvedPath.empty())
+  {
+    // Read the file
+    std::ifstream infile(resolvedPath, std::ios_base::binary);
+    std::string fileBuffer = std::string(
+        std::istreambuf_iterator<char>(infile),
+        std::istreambuf_iterator<char>());
+
+    // Store the file in a protobuf message
+    gz::msgs::Bytes bytes;
+    bytes.set_data(fileBuffer);
+
+    // Construct the response message
+    std::string data = BUILD_MSG(this->operations[ASSET], assetUri,
+        std::string("gz.msgs.Bytes"), bytes.SerializeAsString());
+
+    // Queue the message for delivery.
+    this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
   }
 }
 

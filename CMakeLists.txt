@@ -57,6 +57,7 @@ if (GZ_TOOLS_PROGRAM)
 else()
   message (STATUS "Searching for gz program - not found. CLI tests are skipped.")
 endif()
+set(GZ_TOOLS_VER 2)
 
 #--------------------------------------
 # Find gz-transport

@@ -100,6 +100,9 @@ namespace gz
     ///     6. "particle_emitters": Get the list of particle emitters.
     ///                  definitions.
     ///     7. "unsub": Unsubscribe from the topic in the `topic_name` component
+    ///     8. "asset": Get a file as a byte array from a running Gazebo
+    ///                 server. Set the payload to the file URI that is
+    ///                 being requested.
     ///
     /// The `topic_name` component is mandatory for the "sub", "pub", and
     /// "unsub" operations. If present, it must be the name of a Gazebo
@@ -178,7 +181,10 @@ namespace gz
       /// \param[in] _socketId ID of the socket.
       public: void OnDisconnect(int _socketId);
 
-      public: void OnMessage(int _socketId, const std::string &_msg);
+      /// \brief Handles incoming websocket messages
+      /// \param[in] _socketId Id of the socket associated with the message.
+      /// \param[in] _msg The incoming message.
+      public: void OnMessage(int _socketId, const std::string _msg);
 
       public: void OnRequestMessage(int _socketId, const std::string &_msg);
 
@@ -194,6 +200,12 @@ namespace gz
       /// and false to indicate the subcription limit has reached.
       public: bool UpdateMsgTypeSubscriptionCount(const std::string &_topic,
           int _socketId, bool _subscribe);
+
+      /// \brief Handles asset requests.
+      /// \param[in] _socketId Id of the socket associated with the message.
+      /// \param[in] _frameParts The request message in frame parts.
+      private: void OnAsset(int _socketId,
+                   const std::vector<std::string> &_frameParts);
 
       private: gz::transport::Node node;
 
@@ -289,13 +301,16 @@ namespace gz
 
                  /// \brief Get the protobuf definitions.
                  PROTOS = 3,
+
+                 /// \brief Get an asset as a byte array.
+                 ASSET = 4,
                };
 
       /// \brief The set of valid operations, in string  form. These values
       /// can be sent in websocket message frames.
       /// These valus must align with the `Operation` enum.
       private: std::vector<std::string> operations{
-                 "sub", "pub", "topics", "protos"};
+                 "sub", "pub", "topics", "protos", "asset"};
 
       /// \brief Store publish headers for topics. This is here to improve
       /// performance. Keys are topic names and values are frame headers.
