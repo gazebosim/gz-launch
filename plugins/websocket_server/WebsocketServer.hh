@@ -103,14 +103,24 @@ namespace ignition
     ///     8. "asset": Get a file as a byte array from a running Gazebo
     ///                 server. Set the payload to the file URI that is
     ///                 being requested.
+    ///     9. "worlds": Get world info.
+    ///     10. "scene": Get scene info.
+    ///     11. "image": Subscribe to an image in the `topic_name` component.
+    ///     12. "throttle": Throttle a topic in the `topic_name` component by
+    ///                 the rate in the `payload` component.
+    ///     13. "sim": Pause, play, or stop the simulation.
     ///
     /// The `topic_name` component is mandatory for the "sub", "pub", and
-    /// "unsub" operations. If present, it must be the name of an Ignition
-    /// Transport topic.
+    /// "unsub" operations.
+    /// It is also mandatory for the "sim" operation when used with "pause" and
+    /// "play" types. When used with "stop", a default topic will be used if
+    /// none supplied.
+    /// If present, it must be the name of an Ignition Transport topic.
     ///
     /// The `message_type` component is mandatory for the "pub" operation. If
     /// present it names the Ignition Message type, such as
-    /// "ignition.msgs.Clock".
+    /// "ignition.msgs.Clock". It is also mandatory for the "sim" operation and
+    /// must be one of "play", "pause", or "stop".
     ///
     /// The `payload` component is mandatory for the "pub" operation. If
     /// present, it contains a serialized string of an Ignition Message.

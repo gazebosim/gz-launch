@@ -998,6 +998,65 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   {
     this->OnAsset(_socketId, frameParts);
   }
+  else if (frameParts[0] == "sim")
+  {
+    std::string topic = frameParts[1];
+    std::string action = frameParts[2];
+
+    // Terminate simulation
+    if (action == "stop")
+    {
+      igndbg << "Stopping simulation per request via websocket\n";
+
+      // Default topic if not supplied
+      if (topic.empty())
+      {
+        topic = "/server_control";
+      }
+
+      ignition::msgs::ServerControl req;
+      req.set_stop(true);
+      ignition::msgs::Boolean rep;
+
+      bool result;
+      unsigned int timeout = 2000;
+
+      bool executed = this->node.Request(topic, req, timeout, rep,
+          result);
+      if (!executed || !result || !rep.data())
+      {
+        ignerr << "Unable to perform sim operation [" << action  << "]\n";
+      }
+    }
+    // Pause or play simulation
+    else if (action == "pause" || action == "play")
+    {
+      bool pause = (action == "pause");
+      igndbg << "Pausing/playing (pause == " << pause
+             << ") simulation per request via websocket\n";
+
+      ignition::msgs::WorldControl req;
+      req.set_pause(pause);
+      ignition::msgs::Boolean rep;
+
+      bool result;
+      unsigned int timeout = 2000;
+
+      // Topic should look like /world/empty/control, where empty is the world
+      // name
+      bool executed = this->node.Request(topic, req, timeout, rep,
+          result);
+      if (!executed || !result || !rep.data())
+      {
+        ignerr << "Unable to perform sim operation [" << action  << "]\n";
+      }
+    }
+    else
+    {
+      ignwarn << "Unknown sim operation [" << action << "] received on "
+              << "websocket." << std::endl;
+    }
+  }
 }
 
 //////////////////////////////////////////////////
