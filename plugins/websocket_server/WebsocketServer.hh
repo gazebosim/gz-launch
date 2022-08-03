@@ -111,11 +111,13 @@ namespace ignition
     ///     13. "sim": Pause, play, or stop the simulation.
     ///
     /// The `topic_name` component is mandatory for the "sub", "pub", and
-    /// "unsub" operations.
-    /// It is also mandatory for the "sim" operation when used with "pause" and
-    /// "play" types. When used with "stop", a default topic will be used if
-    /// none supplied.
-    /// If present, it must be the name of an Ignition Transport topic.
+    /// "unsub" operations. If present, it must be the name of an Ignition
+    /// Transport topic.
+    /// `topic_name` is also mandatory for the "sim" operation when used with
+    /// "pause" and "play" types. It should be the name of a service that takes
+    /// ignition.msgs.WorldControl. When used with "stop" type, it should be
+    /// the name of a service that takes ignition.msgs.ServerControl. A default
+    /// topic "/server_control" will be used if none supplied.
     ///
     /// The `message_type` component is mandatory for the "pub" operation. If
     /// present it names the Ignition Message type, such as
