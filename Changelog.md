@@ -1,3 +1,7 @@
+## Gazebo Launch 7.x
+
+### Gazebo Launch 7.X.X (202X-XX-XX)
+
 ## Gazebo Launch 6.x
 
 ### Gazebo Launch 6.X.X (202X-XX-XX)
