@@ -45,7 +45,7 @@ void setVectorFromString(const std::string &_str,
 
 /////////////////////////////////////////////////
 JoyToTwist::JoyToTwist()
-  : ignition::launch::Plugin()
+  : Plugin()
 {
 }
 
