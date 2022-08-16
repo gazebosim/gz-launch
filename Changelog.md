@@ -1,6 +1,31 @@
-## Ignition Launch 5.x
+## Gazebo Launch 5.x
 
-### Ignition Launch 5.X.X (20XX-XX-XX)
+### Gazebo Launch 5.2.0 (2022-08-16)
+
+1. Add code coverage ignore file
+    * [Pull request #179](https://github.com/gazebosim/gz-launch/pull/179)
+
+1. Change `IGN_DESIGNATION` to `GZ_DESIGNATION`
+    * [Pull request #181](https://github.com/gazebosim/gz-launch/pull/181)
+    * [Pull request #182](https://github.com/gazebosim/gz-launch/pull/182)
+
+1. fix `ign_TEST` for Fortress
+    * [Pull request #180](https://github.com/gazebosim/gz-launch/pull/180)
+
+1. Ignition -> Gazebo
+    * [Pull request #178](https://github.com/gazebosim/gz-launch/pull/178)
+
+1. Bash completion for flags
+    * [Pull request #167](https://github.com/gazebosim/gz-launch/pull/167)
+
+1. Adds ability to get a file from a running Gazebo instance
+    * [Pull request #164](https://github.com/gazebosim/gz-launch/pull/164)
+
+1. Add Ubuntu Jammy CI
+    * [Pull request #154](https://github.com/gazebosim/gz-launch/pull/154)
+
+1. Depend on `python3-yaml` instead of `python-yaml`
+    * [Pull request #153](https://github.com/gazebosim/gz-launch/pull/153)
 
 ### Ignition Launch 5.1.0 (2022-03-21)
 1. Use exec instead of popen to run ign-launch binary
