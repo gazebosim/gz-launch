@@ -88,8 +88,8 @@ gz_find_package (Qt5
 
 #--------------------------------------
 # Find gz-sim
-gz_find_package(gz-sim7 REQUIRED PRIVATE COMPONENTS gui)
-set(GZ_SIM_VER ${gz-sim7_VERSION_MAJOR})
+gz_find_package(gz-sim8 REQUIRED PRIVATE COMPONENTS gui)
+set(GZ_SIM_VER ${gz-sim8_VERSION_MAJOR})
 
 gz_pkg_check_modules(websockets libwebsockets)
 if (NOT websockets_FOUND)
