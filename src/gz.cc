@@ -18,7 +18,7 @@
 #include <ignition/common/Console.hh>
 
 #include "ignition/launch/config.hh"
-#include "ign.hh"
+#include "gz.hh"
 #include "Manager.hh"
 
 //////////////////////////////////////////////////
