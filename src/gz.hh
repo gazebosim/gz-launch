@@ -14,8 +14,8 @@
  * limitations under the License.
  *
 */
-#ifndef IGNITION_LAUNCH_IGN_HH_
-#define IGNITION_LAUNCH_IGN_HH_
+#ifndef GZ_LAUNCH_IGN_HH_
+#define GZ_LAUNCH_IGN_HH_
 
 #include "ignition/launch/Export.hh"
 

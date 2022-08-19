@@ -14,15 +14,15 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_GAZEBOSERVER_HH_
-#define IGNITION_LAUNCH_GAZEBOSERVER_HH_
+#ifndef GZ_LAUNCH_GAZEBOSERVER_HH_
+#define GZ_LAUNCH_GAZEBOSERVER_HH_
 
 #include <memory>
 #include <ignition/plugin/Register.hh>
 #include <ignition/gazebo/Server.hh>
 #include "ignition/launch/Plugin.hh"
 
-namespace ignition
+namespace gz
 {
   namespace launch
   {
@@ -30,7 +30,7 @@ namespace ignition
     ///
     /// # Example usage
     /// <!-- Run the gazebo server with a set of plugins -->
-    /// <plugin name="ignition::launch::GazeboServer"
+    /// <plugin name="gz::launch::GazeboServer"
     ///         filename="ignition-launch-gazebo">
     ///   <!-- The SDF file to run -->
     ///   <world_file>diff_drive.sdf</world_file>
@@ -39,12 +39,12 @@ namespace ignition
     ///   <plugin entity_name="<%= worldName %>"
     ///           entity_type="world"
     ///           filename="ignition-gazebo-physics-system"
-    ///           name="ignition::gazebo::systems::v0::Physics">
+    ///           name="gz::sim::systems::v0::Physics">
     ///   </plugin>
     ///
     ///   <!-- Specify any other ignition gazebo plugins here. -->
     /// </plugin>
-    class GazeboServer : public ignition::launch::Plugin
+    class GazeboServer : public gz::launch::Plugin
     {
       /// \brief Constructor.
       public: GazeboServer();
@@ -57,12 +57,12 @@ namespace ignition
                   const tinyxml2::XMLElement *_elem) override final;
 
       /// \brief Private data pointer
-      private: std::unique_ptr<gazebo::Server> server;
+      private: std::unique_ptr<sim::Server> server;
     };
   }
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(ignition::launch::GazeboServer, ignition::launch::Plugin)
+IGNITION_ADD_PLUGIN(gz::launch::GazeboServer, gz::launch::Plugin)
 
 #endif

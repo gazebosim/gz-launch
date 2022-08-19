@@ -19,8 +19,8 @@
 #include <sdf/sdf.hh>
 #include "GazeboServer.hh"
 
-using namespace ignition;
-using namespace ignition::launch;
+using namespace gz;
+using namespace gz::launch;
 
 /////////////////////////////////////////////////
 void copyElement(sdf::ElementPtr _sdf, const tinyxml2::XMLElement *_xml)
@@ -59,7 +59,7 @@ GazeboServer::GazeboServer()
 /////////////////////////////////////////////////
 bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
 {
-  gazebo::ServerConfig serverConfig;
+  sim::ServerConfig serverConfig;
   const tinyxml2::XMLElement *elem;
 
   // Get the world file
@@ -342,7 +342,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
   }
 
   // Create and run the simulation server
-  this->server.reset(new gazebo::Server(serverConfig));
+  this->server.reset(new sim::Server(serverConfig));
   this->server->Run(false, 0, !run);
 
   igndbg << "Loaded GazeboServer plugin.\n";

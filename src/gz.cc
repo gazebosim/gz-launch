@@ -37,12 +37,12 @@ extern "C" IGNITION_LAUNCH_VISIBLE const char *configPath()
 extern "C" IGNITION_LAUNCH_VISIBLE void cmdVerbosity(
     const char *_verbosity)
 {
-  ignition::common::Console::SetVerbosity(std::atoi(_verbosity));
+  gz::common::Console::SetVerbosity(std::atoi(_verbosity));
 }
 
 //////////////////////////////////////////////////
 extern "C" IGNITION_LAUNCH_VISIBLE int run(const char *_config)
 {
-  ignition::launch::Manager mgr;
+  gz::launch::Manager mgr;
   return mgr.RunConfig(_config);
 }

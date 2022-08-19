@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_JOYTOTWIST_HH_
-#define IGNITION_LAUNCH_JOYTOTWIST_HH_
+#ifndef GZ_LAUNCH_JOYTOTWIST_HH_
+#define GZ_LAUNCH_JOYTOTWIST_HH_
 
 #include <string>
 #include <thread>
@@ -25,23 +25,23 @@
 #include <ignition/plugin/Register.hh>
 #include <ignition/transport/Node.hh>
 
-namespace ignition
+namespace gz
 {
   namespace launch
   {
-    /// \brief Converts ignition::msgs::Joystick messages to
-    /// ignition::msgs::Twist.
+    /// \brief Converts gz::msgs::Joystick messages to
+    /// gz::msgs::Twist.
     ///
     /// # Example usage
     ///
-    /// <!-- Inform ignition::Launch about the JoyToTwist plugin -->
-    /// <plugin name="ignition::launch::JoyToTwist"
+    /// <!-- Inform gz::Launch about the JoyToTwist plugin -->
+    /// <plugin name="gz::launch::JoyToTwist"
     ///         filename=ignition-launch-joytotwist0">
     ///   <!-- Incoming topic that publishes
-    ///         ignition::msgs::Joystick messages -->
+    ///         gz::msgs::Joystick messages -->
     ///   <input_topic>/joy</input_topic>
     ///
-    ///   <!-- Outgoing topic that publishes ignition::msgs::Twist messages -->
+    ///   <!-- Outgoing topic that publishes gz::msgs::Twist messages -->
     ///   <output_topic>/model/vehicle_blue/cmd_vel</output_topic>
     ///
     ///   <!-- Button which must be pressed to enable publishing,
@@ -71,7 +71,7 @@ namespace ignition
     ///        defaults to invalid (-1) -->
     ///   <enable_turbo_button>4</enable_turbo_button>
     /// </plugin>
-    class JoyToTwist : public ignition::launch::Plugin
+    class JoyToTwist : public gz::launch::Plugin
     {
       /// \brief Constructor
       public: JoyToTwist();
@@ -88,24 +88,24 @@ namespace ignition
 
       /// \brief Handle joystick messages.
       /// \param[in] _msg Joystick message.
-      private: void OnJoy(const ignition::msgs::Joy &_msg);
+      private: void OnJoy(const gz::msgs::Joy &_msg);
 
       private: int enableButton = 0;
       private: int enableTurboButton = -1;
-      private: ignition::math::Vector3d axisLinear{1.0, 0.0, 0.0};
-      private: ignition::math::Vector3d scaleLinear{0.5, 0.0, 0.0};
-      private: ignition::math::Vector3d scaleLinearTurbo{0.5, 0.0, 0.0};
+      private: gz::math::Vector3d axisLinear{1.0, 0.0, 0.0};
+      private: gz::math::Vector3d scaleLinear{0.5, 0.0, 0.0};
+      private: gz::math::Vector3d scaleLinearTurbo{0.5, 0.0, 0.0};
 
-      private: ignition::math::Vector3d axisAngular{0.0, 0.0, 0.0};
-      private: ignition::math::Vector3d scaleAngular{0.0, 0.0, 0.5};
-      private: ignition::math::Vector3d scaleAngularTurbo{0.0, 0.0, 0.5};
+      private: gz::math::Vector3d axisAngular{0.0, 0.0, 0.0};
+      private: gz::math::Vector3d scaleAngular{0.0, 0.0, 0.5};
+      private: gz::math::Vector3d scaleAngularTurbo{0.0, 0.0, 0.5};
       private: bool sentDisableMsg = false;
 
       private: bool running = false;
       private: std::thread *joyThread = nullptr;
 
-      private: ignition::transport::Node node;
-      private: ignition::transport::Node::Publisher cmdVelPub;
+      private: gz::transport::Node node;
+      private: gz::transport::Node::Publisher cmdVelPub;
 
       private: std::string inputTopic = "/joy";
       private: std::string outputTopic = "/cmd_vel";
@@ -114,6 +114,6 @@ namespace ignition
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(ignition::launch::JoyToTwist, ignition::launch::Plugin)
+IGNITION_ADD_PLUGIN(gz::launch::JoyToTwist, gz::launch::Plugin)
 
 #endif

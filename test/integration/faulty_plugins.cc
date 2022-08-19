@@ -32,7 +32,7 @@ std::string getConfig(const std::string &_pluginName)
 
 bool runConfig(const std::string &_config)
 {
-  ignition::launch::Manager mgr;
+  gz::launch::Manager mgr;
   return mgr.RunConfig(_config);
 }
 

@@ -27,7 +27,7 @@
 
 #include "Joystick.hh"
 
-using namespace ignition::launch;
+using namespace gz::launch;
 
 /////////////////////////////////////////////////
 Joystick::Joystick()
@@ -72,7 +72,7 @@ bool Joystick::Load(const tinyxml2::XMLElement *_elem)
   {
     try
     {
-      deadzone = ignition::math::clamp(std::stof(elem->GetText()), 0.0f, 0.9f);
+      deadzone = gz::math::clamp(std::stof(elem->GetText()), 0.0f, 0.9f);
     }
     catch(...)
     {
@@ -168,7 +168,7 @@ bool Joystick::Load(const tinyxml2::XMLElement *_elem)
   this->axisScale = -1.0f / (1.0f - deadzone) / 32767.0f;
 
   // Create the publisher of joy messages
-  this->pub = this->node.Advertise<ignition::msgs::Joy>("/joy");
+  this->pub = this->node.Advertise<gz::msgs::Joy>("/joy");
 
   this->run = true;
   this->joyThread = new std::thread(std::bind(&Joystick::Run, this));
@@ -192,9 +192,9 @@ void Joystick::Run()
   bool accumulate = false;
   bool accumulating = false;
 
-  ignition::msgs::Joy joyMsg;
-  ignition::msgs::Joy lastJoyMsg;
-  ignition::msgs::Joy stickyButtonsJoyMsg;
+  gz::msgs::Joy joyMsg;
+  gz::msgs::Joy lastJoyMsg;
+  gz::msgs::Joy stickyButtonsJoyMsg;
 
   while (this->run)
   {
@@ -243,7 +243,7 @@ void Joystick::Run()
 
             // Update the button
             joyMsg.set_buttons(event.number,
-                !ignition::math::equal(value, 0.0f) ? 1 : 0);
+                !gz::math::equal(value, 0.0f) ? 1 : 0);
 
             // For initial events, wait a bit before sending to try to catch
             // all the initial events.

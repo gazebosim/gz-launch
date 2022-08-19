@@ -84,7 +84,7 @@ TEST(CmdLine, HelpVsCompletionFlags)
   std::string helpOutput = customExecStr(kIgnCommand + "--help");
 
   // Call the output function in the bash completion script
-  std::string scriptPath = ignition::common::joinPaths(
+  std::string scriptPath = gz::common::joinPaths(
     std::string(PROJECT_SOURCE_PATH),
     "src", "launch.bash_completion.sh");
 

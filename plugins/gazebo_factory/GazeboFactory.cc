@@ -22,8 +22,8 @@
 #include <ignition/common/Console.hh>
 #include "GazeboFactory.hh"
 
-using namespace ignition;
-using namespace ignition::launch;
+using namespace gz;
+using namespace gz::launch;
 
 /////////////////////////////////////////////////
 GazeboFactory::GazeboFactory()

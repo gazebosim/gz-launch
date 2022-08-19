@@ -1,13 +1,13 @@
 # add_subdirectory(plugins)
 
 set (sources
-  ign.cc
+  gz.cc
   Manager.cc
 )
 
 set (gtest_sources
   Manager_TEST.cc
-  ign_TEST.cc
+  gz_TEST.cc
 )
 
 # Create the library target.
@@ -35,7 +35,7 @@ ign_build_tests(TYPE UNIT SOURCES ${gtest_sources}
                   ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
 )
 
-if(TARGET UNIT_ign_TEST)
+if(TARGET UNIT_gz_TEST)
   # Running `ign launch` on macOS has problems when run with /usr/bin/ruby
   # due to System Integrity Protection (SIP). Try to find ruby from
   # homebrew as a workaround.
@@ -43,10 +43,10 @@ if(TARGET UNIT_ign_TEST)
     find_program(BREW_RUBY ruby HINTS /usr/local/opt/ruby/bin)
   endif()
 
-  target_compile_definitions(UNIT_ign_TEST PRIVATE
+  target_compile_definitions(UNIT_gz_TEST PRIVATE
       "BREW_RUBY=\"${BREW_RUBY} \"")
 
-  target_compile_definitions(UNIT_ign_TEST PRIVATE
+  target_compile_definitions(UNIT_gz_TEST PRIVATE
       "IGN_PATH=\"${HAVE_IGN_TOOLS}\"")
 endif()
 

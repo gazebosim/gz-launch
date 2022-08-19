@@ -14,14 +14,14 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_PLUGIN_HH_
-#define IGNITION_LAUNCH_PLUGIN_HH_
+#ifndef GZ_LAUNCH_PLUGIN_HH_
+#define GZ_LAUNCH_PLUGIN_HH_
 
 #include <tinyxml2.h>
 #include <ignition/plugin/SpecializedPluginPtr.hh>
 #include <ignition/launch/Export.hh>
 
-namespace ignition
+namespace gz
 {
   namespace launch
   {
@@ -38,8 +38,8 @@ namespace ignition
     };
 
     /// \brief Pointer to a launch plugin.
-    using PluginPtr = ignition::plugin::SpecializedPluginPtr<
-      ignition::launch::Plugin>;
+    using PluginPtr = gz::plugin::SpecializedPluginPtr<
+      gz::launch::Plugin>;
     }
   }
 }

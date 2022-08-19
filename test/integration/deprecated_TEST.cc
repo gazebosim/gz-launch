@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Open Source Robotics Foundation
+ * Copyright (C) 2022 Open Source Robotics Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- */
+*/
 
-#include <ignition/plugin/Register.hh>
-#include "ignition/launch/Plugin.hh"
+#include <gtest/gtest.h>
+#include <ignition/launch/Plugin.hh>
 
-class SegfaultOnLoad : public gz::launch::Plugin
+/////////////////////////////////////////////////
+// Make sure the ignition namespace still works
+TEST(Deprecated, IgnitionNamespace)
 {
-  public: SegfaultOnLoad();
-  public: virtual bool Load(
-              const tinyxml2::XMLElement * /*_elem*/) final;
-};
+  ignition::launch::Plugin plugin;
+}

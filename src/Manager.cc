@@ -50,7 +50,7 @@
 
 #include "vendor/backward.hpp"
 
-using namespace ignition::launch;
+using namespace gz::launch;
 using namespace std::chrono_literals;
 
 /// \brief A class to encapsulate an executable (program) to run.
@@ -95,7 +95,7 @@ class Executable
 };
 
 /// \brief Private data variables for the Ignition class.
-class ignition::launch::ManagerPrivate
+class gz::launch::ManagerPrivate
 {
   /// \brief Constructor.
   public: ManagerPrivate();
@@ -233,7 +233,7 @@ Manager::Manager()
   this->dataPtr->myself = this->dataPtr.get();
 
   std::string homePath;
-  ignition::common::env(IGN_HOMEDIR, homePath);
+  gz::common::env(IGN_HOMEDIR, homePath);
 
   // Make sure to initialize logging.
   ignLogInit(homePath + "/.ignition", "launch.log");
@@ -689,7 +689,7 @@ void ManagerPrivate::ParseExecutables(const tinyxml2::XMLElement *_elem)
     else
     {
       std::vector<std::string> parts =
-        ignition::common::split(cmdElem->GetText(), " ");
+        gz::common::split(cmdElem->GetText(), " ");
       std::move(parts.begin(), parts.end(), std::back_inserter(cmdParts));
     }
 
@@ -699,7 +699,7 @@ void ManagerPrivate::ParseExecutables(const tinyxml2::XMLElement *_elem)
         "auto_restart");
     if (restartElem && restartElem->GetText())
     {
-      std::string txt = ignition::common::lowercase(restartElem->GetText());
+      std::string txt = gz::common::lowercase(restartElem->GetText());
       autoRestart = txt == "true" || txt == "1" || txt == "t";
     }
 
@@ -739,7 +739,7 @@ std::list<std::string> ManagerPrivate::ParseEnvs(
       // Expand env var contents, such as $LD_LIBRARY_PATH
       if (!value.empty() && value.at(0) == '$')
       {
-        ignition::common::env(value.substr(1), value);
+        gz::common::env(value.substr(1), value);
       }
 
       result.push_back(name + "=" + value);
@@ -775,29 +775,29 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
     return;
   }
 
-  if (name == "ignition::launch::GazeboServer")
+  if (name == "gz::launch::GazeboServer")
   {
     setenv("RMT_PORT", "1500", 1);
   }
-  else if (name == "ignition::launch::GazeboGui")
+  else if (name == "gz::launch::GazeboGui")
   {
     setenv("RMT_PORT", "1501", 1);
   }
 
-  ignition::common::SystemPaths systemPaths;
+  gz::common::SystemPaths systemPaths;
   systemPaths.SetPluginPathEnv("IGN_LAUNCH_PLUGIN_PATH");
   systemPaths.AddPluginPaths(IGNITION_LAUNCH_PLUGIN_INSTALL_PATH);
 
   // Add LD_LIBRARY_PATH
 #ifdef __linux__
   std::string libPath;
-  ignition::common::env("LD_LIBRARY_PATH", libPath);
+  gz::common::env("LD_LIBRARY_PATH", libPath);
   systemPaths.AddPluginPaths(libPath);
 #endif
 
   // Add in the gazebo plugin path for convenience
   std::string homePath;
-  ignition::common::env(IGN_HOMEDIR, homePath);
+  gz::common::env(IGN_HOMEDIR, homePath);
   systemPaths.AddPluginPaths(homePath + "/.ignition/gazebo/plugins");
 
   std::string pathToLib;
@@ -823,7 +823,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
   }
 
   std::unordered_set<std::string> validPlugins =
-    loader.PluginsImplementing<ignition::launch::Plugin>();
+    loader.PluginsImplementing<gz::launch::Plugin>();
   if (validPlugins.count(name) == 0)
   {
     std::string availablePlugins;

@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_WEBSOCKETSERVER_HH_
-#define IGNITION_LAUNCH_WEBSOCKETSERVER_HH_
+#ifndef GZ_LAUNCH_WEBSOCKETSERVER_HH_
+#define GZ_LAUNCH_WEBSOCKETSERVER_HH_
 
 #include <list>
 #include <map>
@@ -28,12 +28,12 @@
 #include <ignition/common/Util.hh>
 #include <libwebsockets.h>
 
-namespace ignition
+namespace gz
 {
   namespace launch
   {
     /// \brief Reads from a USB joystick device and outputs
-    ///  ignition::msgs::WebsocketServer messages.
+    ///  gz::msgs::WebsocketServer messages.
     ///
     /// # Plugin parameters
     ///
@@ -95,7 +95,7 @@ namespace ignition
     ///
     /// The `message_type` component is mandatory for the "pub" operation. If
     /// present it names the Ignition Message type, such as
-    /// "ignition.msgs.Clock".
+    /// "gz.msgs.Clock".
     ///
     /// The `payload` component is mandatory for the "pub" operation. If
     /// present, it contains a serialized string of an Ignition Message.
@@ -109,7 +109,7 @@ namespace ignition
     /// 3. Subscribe to the "/clock" topic: `sub,/clock,,`
     ///
     /// 4. Websocket server publishing data on the "/clock" topic:
-    ///    `pub,/clock,ignition.msgs.Clock,<serialized_data>`
+    ///    `pub,/clock,gz.msgs.Clock,<serialized_data>`
     ///
     /// # Example usage
     ///
@@ -118,8 +118,8 @@ namespace ignition
     /// 1. Define a launch file by copying the following contents to a file
     ///    called `websocket.ign`.
     ///
-    /// <!-- Inform ignition::Launch about the JoyToTwist plugin -->
-    ///  <plugin name="ignition::launch::WebsocketServer"
+    /// <!-- Inform gz::Launch about the JoyToTwist plugin -->
+    ///  <plugin name="gz::launch::WebsocketServer"
     ///      filename="ignition-launch-joystick0">
     ///
     ///    <!-- Publication Hz -->
@@ -132,7 +132,7 @@ namespace ignition
     ///
     /// 3. Open the [index.html](https://github.com/ignitionrobotics/ign-launch/blob/ign-launch2/plugins/websocket_server/index.html) webpage.
     ///
-    class WebsocketServer : public ignition::launch::Plugin
+    class WebsocketServer : public gz::launch::Plugin
     {
       /// \brief Constructor
       public: WebsocketServer();
@@ -148,7 +148,7 @@ namespace ignition
 
       private: void OnWebsocketSubscribedMessage(const char *_data,
                    const size_t _size,
-                   const ignition::transport::MessageInfo &_info);
+                   const gz::transport::MessageInfo &_info);
 
       /// \brief Callback that is triggered when a new connection is
       /// established.
@@ -163,7 +163,7 @@ namespace ignition
 
       public: void OnRequestMessage(int _socketId, const std::string &_msg);
 
-      private: ignition::transport::Node node;
+      private: gz::transport::Node node;
 
       private: bool run = true;
       private: std::thread *thread = nullptr;
@@ -261,6 +261,6 @@ namespace ignition
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(ignition::launch::WebsocketServer, ignition::launch::Plugin)
+IGNITION_ADD_PLUGIN(gz::launch::WebsocketServer, gz::launch::Plugin)
 
 #endif

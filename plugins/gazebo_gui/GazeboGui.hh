@@ -14,15 +14,15 @@
  * limitations under the License.
  *
  */
-#ifndef IGNITION_LAUNCH_GAZEBOGUI_HH_
-#define IGNITION_LAUNCH_GAZEBOGUI_HH_
+#ifndef GZ_LAUNCH_GAZEBOGUI_HH_
+#define GZ_LAUNCH_GAZEBOGUI_HH_
 
 #include <memory>
 #include <ignition/gui/Application.hh>
 #include <ignition/plugin/Register.hh>
 #include <ignition/launch/Plugin.hh>
 
-namespace ignition
+namespace gz
 {
   namespace launch
   {
@@ -38,7 +38,7 @@ namespace ignition
     ///
     /// <!-- The GUI wants to be in its own process, so wrap the plugin -->
     /// <executable_wrapper>
-    ///   <plugin name="ignition::launch::GazeboGui"
+    ///   <plugin name="gz::launch::GazeboGui"
     ///           filename="ignition-launch-gazebogui">
     ///
     ///   <!-- Elements parsed by ign-launch -->
@@ -56,7 +56,7 @@ namespace ignition
     ///
     ///   </plugin>
     /// </executable_wrapper>
-    class GazeboGui : public ignition::launch::Plugin
+    class GazeboGui : public gz::launch::Plugin
     {
       /// \brief Constructor.
       public: GazeboGui();
@@ -72,6 +72,6 @@ namespace ignition
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(ignition::launch::GazeboGui, ignition::launch::Plugin)
+IGNITION_ADD_PLUGIN(gz::launch::GazeboGui, gz::launch::Plugin)
 
 #endif

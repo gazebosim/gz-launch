@@ -25,16 +25,16 @@
 
 #include "JoyToTwist.hh"
 
-using namespace ignition::launch;
+using namespace gz::launch;
 
 //////////////////////////////////////////////////
 // String to vector helper function.
 void setVectorFromString(const std::string &_str,
-                         ignition::math::Vector3d &_v)
+                         gz::math::Vector3d &_v)
 {
-  std::string str = ignition::common::trimmed(_str);
+  std::string str = gz::common::trimmed(_str);
 
-  std::vector<std::string> parts = ignition::common::split(str, " ");
+  std::vector<std::string> parts = gz::common::split(str, " ");
   if (parts.size() == 3)
   {
     _v.X(std::stod(parts[0]));
@@ -101,7 +101,7 @@ bool JoyToTwist::Load(const tinyxml2::XMLElement *_elem)
   if (elem)
     setVectorFromString(elem->GetText(), this->scaleAngularTurbo);
 
-  this->cmdVelPub = this->node.Advertise<ignition::msgs::Twist>(
+  this->cmdVelPub = this->node.Advertise<gz::msgs::Twist>(
       this->outputTopic);
 
   igndbg << "Loaded JoyToTwist plugin with the following parameters:\n"
@@ -114,12 +114,12 @@ bool JoyToTwist::Load(const tinyxml2::XMLElement *_elem)
 }
 
 //////////////////////////////////////////////////
-void JoyToTwist::OnJoy(const ignition::msgs::Joy &_msg)
+void JoyToTwist::OnJoy(const gz::msgs::Joy &_msg)
 {
   if (!this->running)
     return;
 
-  ignition::msgs::Twist cmdVelMsg;
+  gz::msgs::Twist cmdVelMsg;
   // Turbo mode
   if (this->enableTurboButton >= 0 && _msg.buttons(this->enableTurboButton))
   {
