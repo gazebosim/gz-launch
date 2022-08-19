@@ -18,9 +18,9 @@
 #define GZ_LAUNCH_GAZEBOFACTORY_HH_
 
 #include <memory>
-#include <ignition/plugin/Register.hh>
-#include <ignition/transport/Node.hh>
-#include "ignition/launch/Plugin.hh"
+#include <gz/plugin/Register.hh>
+#include <gz/transport/Node.hh>
+#include "gz/launch/Plugin.hh"
 
 namespace gz
 {

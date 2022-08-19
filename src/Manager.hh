@@ -19,7 +19,7 @@
 
 #include <memory>
 #include <string>
-#include <ignition/launch/Export.hh>
+#include <gz/launch/Export.hh>
 
 namespace gz
 {

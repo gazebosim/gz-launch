@@ -15,9 +15,9 @@
  *
 */
 #include <cstring>
-#include <ignition/common/Console.hh>
+#include <gz/common/Console.hh>
 
-#include "ignition/launch/config.hh"
+#include "gz/launch/config.hh"
 #include "gz.hh"
 #include "Manager.hh"
 

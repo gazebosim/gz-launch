@@ -21,8 +21,8 @@
 
 #include <string>
 
-#include <ignition/common/Filesystem.hh>
-#include "ignition/launch/test_config.hh"  // NOLINT(build/include)
+#include <gz/common/Filesystem.hh>
+#include "gz/launch/test_config.hh"  // NOLINT(build/include)
 
 static const std::string kIgnCommand(
     std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH + " " +

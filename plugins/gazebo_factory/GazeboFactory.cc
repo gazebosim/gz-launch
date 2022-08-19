@@ -15,11 +15,11 @@
  *
 */
 
-#include <ignition/msgs/entity_factory.pb.h>
-#include <ignition/msgs/boolean.pb.h>
+#include <gz/msgs/entity_factory.pb.h>
+#include <gz/msgs/boolean.pb.h>
 
-#include <ignition/common/Util.hh>
-#include <ignition/common/Console.hh>
+#include <gz/common/Util.hh>
+#include <gz/common/Console.hh>
 #include "GazeboFactory.hh"
 
 using namespace gz;

@@ -16,7 +16,7 @@
  */
 
 #include "bad_plugins.hh"
-#include <ignition/plugin/Register.hh>
+#include <gz/plugin/Register.hh>
 
 #include <iostream>
 

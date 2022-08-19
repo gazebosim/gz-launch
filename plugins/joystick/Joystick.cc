@@ -19,11 +19,11 @@
 #include <linux/joystick.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <ignition/common/Console.hh>
-#include <ignition/common/Util.hh>
-#include <ignition/math/Helpers.hh>
-#include <ignition/msgs.hh>
-#include <ignition/transport/Node.hh>
+#include <gz/common/Console.hh>
+#include <gz/common/Util.hh>
+#include <gz/math/Helpers.hh>
+#include <gz/msgs.hh>
+#include <gz/transport/Node.hh>
 
 #include "Joystick.hh"
 

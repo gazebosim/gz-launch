@@ -18,9 +18,9 @@
 #define GZ_LAUNCH_JOYSTICK_HH_
 
 #include <thread>
-#include <ignition/launch/Plugin.hh>
-#include <ignition/plugin/Register.hh>
-#include <ignition/transport/Node.hh>
+#include <gz/launch/Plugin.hh>
+#include <gz/plugin/Register.hh>
+#include <gz/transport/Node.hh>
 
 namespace gz
 {
