@@ -749,7 +749,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   }
   else if (frameParts[0] == "topics")
   {
-    igndbg << "Topic list request recieved\n";
+    igndbg << "Topic list request received\n";
     ignition::msgs::StringMsg_V msg;
 
     std::vector<std::string> topics;
@@ -770,7 +770,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   }
   else if (frameParts[0] == "topics-types")
   {
-    igndbg << "Topic and message type list request recieved\n";
+    igndbg << "Topic and message type list request received\n";
     ignition::msgs::Publishers msg;
 
     std::vector<std::string> topics;
@@ -800,7 +800,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   }
   else if (frameParts[0] == "worlds")
   {
-    igndbg << "World info request recieved\n";
+    igndbg << "World info request received\n";
     ignition::msgs::Empty req;
     req.set_unused(true);
 
@@ -820,7 +820,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   }
   else if (frameParts[0] == "scene")
   {
-    igndbg << "Scene info request recieved for world["
+    igndbg << "Scene info request received for world["
       << frameParts[1] << "]\n";
     ignition::msgs::Empty req;
     req.set_unused(true);
@@ -998,63 +998,34 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   {
     this->OnAsset(_socketId, frameParts);
   }
-  else if (frameParts[0] == "sim")
+  else if (frameParts[0] == "service")
   {
     std::string topic = frameParts[1];
-    std::string action = frameParts[2];
+    std::string type = frameParts[2];
+    std::string msgStr = frameParts[3];
 
-    // Terminate simulation
-    if (action == "stop")
+    ignition::transport::ProtoMsgPtr req =
+        ignition::msgs::Factory::New(type, msgStr);
+    if (!req)
     {
-      igndbg << "Stopping simulation per request via websocket\n";
-
-      // Default topic if not supplied
-      if (topic.empty())
-      {
-        topic = "/server_control";
-      }
-
-      ignition::msgs::ServerControl req;
-      req.set_stop(true);
-      ignition::msgs::Boolean rep;
-
-      bool result;
-      unsigned int timeout = 2000;
-
-      bool executed = this->node.Request(topic, req, timeout, rep,
-          result);
-      if (!executed || !result || !rep.data())
-      {
-        ignerr << "Unable to perform sim operation [" << action  << "]\n";
-      }
+      ignerr << "Unable to create message of type [" << type
+             << "] with data [" << msgStr << "] when calling service on"
+             << " topic " << topic << ".\n";
+      return;
     }
-    // Pause or play simulation
-    else if (action == "pause" || action == "play")
+
+    igndbg << "Calling service [" << topic << "]\n";
+
+    bool result;
+    unsigned int timeout = 2000;
+    ignition::transport::ProtoMsgPtr rep =
+      ignition::msgs::Factory::New("ignition.msgs.Boolean");
+
+    bool executed = this->node.Request(topic, *req, timeout, *rep,
+        result);
+    if (!executed || !result)
     {
-      bool pause = (action == "pause");
-      igndbg << "Pausing/playing (pause == " << pause
-             << ") simulation per request via websocket\n";
-
-      ignition::msgs::WorldControl req;
-      req.set_pause(pause);
-      ignition::msgs::Boolean rep;
-
-      bool result;
-      unsigned int timeout = 2000;
-
-      // Topic should look like /world/empty/control, where empty is the world
-      // name
-      bool executed = this->node.Request(topic, req, timeout, rep,
-          result);
-      if (!executed || !result || !rep.data())
-      {
-        ignerr << "Unable to perform sim operation [" << action  << "]\n";
-      }
-    }
-    else
-    {
-      ignwarn << "Unknown sim operation [" << action << "] received on "
-              << "websocket." << std::endl;
+      ignerr << "Unable to call service [" << topic  << "]\n";
     }
   }
 }

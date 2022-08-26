@@ -108,24 +108,20 @@ namespace ignition
     ///     11. "image": Subscribe to an image in the `topic_name` component.
     ///     12. "throttle": Throttle a topic in the `topic_name` component by
     ///                 the rate in the `payload` component.
-    ///     13. "sim": Pause, play, or stop the simulation.
+    ///     13. "service": Call a service, passing in the optional request
+    ///                    message.
     ///
-    /// The `topic_name` component is mandatory for the "sub", "pub", and
-    /// "unsub" operations. If present, it must be the name of an Ignition
+    /// The `topic_name` component is mandatory for the "sub", "pub", "unsub",
+    /// and "service" operations. If present, it must be the name of an Ignition
     /// Transport topic.
-    /// `topic_name` is also mandatory for the "sim" operation when used with
-    /// "pause" and "play" types. It should be the name of a service that takes
-    /// ignition.msgs.WorldControl. When used with "stop" type, it should be
-    /// the name of a service that takes ignition.msgs.ServerControl. A default
-    /// topic "/server_control" will be used if none supplied.
     ///
-    /// The `message_type` component is mandatory for the "pub" operation. If
-    /// present it names the Ignition Message type, such as
-    /// "ignition.msgs.Clock". It is also mandatory for the "sim" operation and
-    /// must be one of "play", "pause", or "stop".
+    /// The `message_type` component is mandatory for the "pub" and "service"
+    /// operations. If present it names the Ignition Message type, such as
+    /// "ignition.msgs.Clock".
     ///
-    /// The `payload` component is mandatory for the "pub" operation. If
-    /// present, it contains a serialized string of an Ignition Message.
+    /// The `payload` component is mandatory for the "pub" operation and
+    /// optional for the "service" operation. If present, it contains a
+    /// serialized string of an Ignition Message.
     ///
     /// ## Example frames
     ///
@@ -316,13 +312,16 @@ namespace ignition
 
                  /// \brief Get an asset as a byte array.
                  ASSET = 4,
+
+                 /// \brief Call a service
+                 SERVICE = 5,
                };
 
-      /// \brief The set of valid operations, in string  form. These values
+      /// \brief The set of valid operations, in string form. These values
       /// can be sent in websocket message frames.
       /// These valus must align with the `Operation` enum.
       private: std::vector<std::string> operations{
-                 "sub", "pub", "topics", "protos", "asset"};
+                 "sub", "pub", "topics", "protos", "asset", "service"};
 
       /// \brief Store publish headers for topics. This is here to improve
       /// performance. Keys are topic names and values are frame headers.
