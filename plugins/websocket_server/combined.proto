@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package gz.msgs;
+package ignition.msgs;
 
 message Time {
   int64 sec = 1;

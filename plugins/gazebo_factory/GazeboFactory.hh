@@ -22,7 +22,7 @@
 #include <gz/transport/Node.hh>
 #include "gz/launch/Plugin.hh"
 
-namespace gz
+namespace ignition
 {
   namespace launch
   {

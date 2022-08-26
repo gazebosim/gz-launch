@@ -21,7 +21,7 @@
 #include <gz/plugin/SpecializedPluginPtr.hh>
 #include <gz/launch/Export.hh>
 
-namespace gz
+namespace ignition
 {
   namespace launch
   {

@@ -43,7 +43,7 @@
     var clockSub = new Topic({
       ign: ign,
       name: '/clock',
-      messageType : 'gz.msgs.Clock',
+      messageType : 'ignition.msgs.Clock',
       callback: function(msg) {
         var output = document.getElementById('output');
         output.innerHTML = 'Clock: ' + msg.sim.sec + '.' + msg.sim.nsec;
@@ -54,7 +54,7 @@
     var poseSub = new Topic({
       ign: ign,
       name: '/world/shapes/dynamic_pose/info',
-      messageType : 'gz.msgs.Pose_V',
+      messageType : 'ignition.msgs.Pose_V',
       callback: function(msg) {
         for (var i = 0; i < msg.pose.length; ++i) {
           var entity = scene.getByName(msg.pose[i].name);

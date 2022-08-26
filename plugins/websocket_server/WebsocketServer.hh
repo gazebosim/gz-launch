@@ -28,7 +28,7 @@
 #include <gz/common/Util.hh>
 #include <libwebsockets.h>
 
-namespace gz
+namespace ignition
 {
   namespace launch
   {
@@ -95,7 +95,7 @@ namespace gz
     ///
     /// The `message_type` component is mandatory for the "pub" operation. If
     /// present it names the Ignition Message type, such as
-    /// "gz.msgs.Clock".
+    /// "ignition.msgs.Clock".
     ///
     /// The `payload` component is mandatory for the "pub" operation. If
     /// present, it contains a serialized string of an Ignition Message.
@@ -109,7 +109,7 @@ namespace gz
     /// 3. Subscribe to the "/clock" topic: `sub,/clock,,`
     ///
     /// 4. Websocket server publishing data on the "/clock" topic:
-    ///    `pub,/clock,gz.msgs.Clock,<serialized_data>`
+    ///    `pub,/clock,ignition.msgs.Clock,<serialized_data>`
     ///
     /// # Example usage
     ///

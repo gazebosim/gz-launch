@@ -38,14 +38,4 @@
 /* #undef BUILD_TYPE_DEBUG */
 /* #undef BUILD_TYPE_RELEASE */
 
-namespace gz
-{
-}
-
-namespace ignition
-{
-  using namespace gz;
-}
-
-
 #endif

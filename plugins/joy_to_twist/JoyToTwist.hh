@@ -21,11 +21,11 @@
 #include <thread>
 #include <gz/launch/Plugin.hh>
 #include <gz/math/Vector3.hh>
-#include <gz/msgs.hh>
+#include <ignition/msgs.hh>
 #include <gz/plugin/Register.hh>
 #include <gz/transport/Node.hh>
 
-namespace gz
+namespace ignition
 {
   namespace launch
   {
