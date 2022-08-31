@@ -19,10 +19,12 @@
 #include <linux/joystick.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include <gz/msgs/joy.pb.h>
+
 #include <gz/common/Console.hh>
 #include <gz/common/Util.hh>
 #include <gz/math/Helpers.hh>
-#include <gz/msgs.hh>
 #include <gz/transport/Node.hh>
 
 #include "Joystick.hh"
