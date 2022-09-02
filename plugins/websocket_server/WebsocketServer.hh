@@ -108,22 +108,22 @@ namespace ignition
     ///     11. "image": Subscribe to an image in the `topic_name` component.
     ///     12. "throttle": Throttle a topic in the `topic_name` component by
     ///                 the rate in the `payload` component.
-    ///     13. "service": Call a service, passing in the optional request
-    ///                    message. The payload should be a serialized
-    ///                    protobuf message. The response payload holds the
-    ///                    serialized protobuf response, if any.
+    ///     13. "req": Request a service, passing in the optional request
+    ///                message. The payload should be a serialized
+    ///                protobuf message. The response payload holds the
+    ///                serialized protobuf response, if any.
     ///
     /// The `topic_name` component is mandatory for the "sub", "pub", "unsub",
-    /// and "service" operations. If present, it must be the name of an Ignition
+    /// and "req" operations. If present, it must be the name of an Ignition
     /// Transport topic.
     ///
-    /// The `message_type` component is mandatory for the "pub" and "service"
+    /// The `message_type` component is mandatory for the "pub" and "req"
     /// operations. If present it names the Ignition Message type, such as
     /// "ignition.msgs.Clock".
     ///
-    /// The `payload` component is mandatory for the "pub" operation and
-    /// optional for the "service" operation. If present, it contains a
-    /// serialized string of an Ignition Message.
+    /// The `payload` component is mandatory for the "pub" and "req"
+    /// operations. If present, it contains a serialized string of an
+    /// Ignition Message.
     ///
     /// ## Example frames
     ///
@@ -196,8 +196,6 @@ namespace ignition
       /// \param[in] _msg The incoming message.
       public: void OnMessage(int _socketId, const std::string _msg);
 
-      public: void OnRequestMessage(int _socketId, const std::string &_msg);
-
       /// \brief Check and update subscription count for a message type. If
       /// a client has more subscriptions to a topic of a specified type than
       /// the subscription limit, this will block subscription. On the other
@@ -220,7 +218,7 @@ namespace ignition
       /// \brief Handles service requests.
       /// \param[in] _socketId Id of the socket associated with the message.
       /// \param[in] _frameParts The request message in frame parts.
-      private: void OnService(int _socketId,
+      private: void OnRequest(int _socketId,
                    const std::vector<std::string> &_frameParts);
 
       private: ignition::transport::Node node;
@@ -321,15 +319,15 @@ namespace ignition
                  /// \brief Get an asset as a byte array.
                  ASSET = 4,
 
-                 /// \brief Call a service
-                 SERVICE = 5,
+                 /// \brief Request a service
+                 REQUEST = 5,
                };
 
       /// \brief The set of valid operations, in string form. These values
       /// can be sent in websocket message frames.
       /// These valus must align with the `Operation` enum.
       private: std::vector<std::string> operations{
-                 "sub", "pub", "topics", "protos", "asset", "service"};
+                 "sub", "pub", "topics", "protos", "asset", "req"};
 
       /// \brief Store publish headers for topics. This is here to improve
       /// performance. Keys are topic names and values are frame headers.

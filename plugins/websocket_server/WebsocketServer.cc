@@ -998,14 +998,14 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   {
     this->OnAsset(_socketId, frameParts);
   }
-  else if (frameParts[0] == this->operations[SERVICE])
+  else if (frameParts[0] == this->operations[REQUEST])
   {
-    this->OnService(_socketId, frameParts);
+    this->OnRequest(_socketId, frameParts);
   }
 }
 
 //////////////////////////////////////////////////
-void WebsocketServer::OnService(int _socketId,
+void WebsocketServer::OnRequest(int _socketId,
     const std::vector<std::string> &_frameParts)
 {
   std::string service = _frameParts[1];
@@ -1026,7 +1026,7 @@ void WebsocketServer::OnService(int _socketId,
   }
 
   // Construct the response message
-  std::string data = BUILD_MSG(this->operations[SERVICE], service,
+  std::string data = BUILD_MSG(this->operations[REQUEST], service,
       repTypeName, repStr);
 
   // Queue the message for delivery.
