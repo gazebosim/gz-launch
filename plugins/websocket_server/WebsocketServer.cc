@@ -998,36 +998,40 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   {
     this->OnAsset(_socketId, frameParts);
   }
-  else if (frameParts[0] == "service")
+  else if (frameParts[0] == this->operations[SERVICE])
   {
-    std::string topic = frameParts[1];
-    std::string type = frameParts[2];
-    std::string msgStr = frameParts[3];
-
-    ignition::transport::ProtoMsgPtr req =
-        ignition::msgs::Factory::New(type, msgStr);
-    if (!req)
-    {
-      ignerr << "Unable to create message of type [" << type
-             << "] with data [" << msgStr << "] when calling service on"
-             << " topic " << topic << ".\n";
-      return;
-    }
-
-    igndbg << "Calling service [" << topic << "]\n";
-
-    bool result;
-    unsigned int timeout = 2000;
-    ignition::transport::ProtoMsgPtr rep =
-      ignition::msgs::Factory::New("ignition.msgs.Boolean");
-
-    bool executed = this->node.Request(topic, *req, timeout, *rep,
-        result);
-    if (!executed || !result)
-    {
-      ignerr << "Unable to call service [" << topic  << "]\n";
-    }
+    this->OnService(_socketId, frameParts);
   }
+}
+
+//////////////////////////////////////////////////
+void WebsocketServer::OnService(int _socketId,
+    const std::vector<std::string> &_frameParts)
+{
+  std::string service = _frameParts[1];
+  std::string msgTypeName = _frameParts[2];
+  std::string msgData = _frameParts[3];
+
+  igndbg << "Calling service [" << service << "]\n";
+  bool result;
+  unsigned int timeout = 2000;
+
+  std::string repStr;
+  std::string repTypeName;
+  bool executed = this->node.RequestRaw(service, msgData, msgTypeName,
+                                        timeout, repStr, repTypeName, result);
+  if (!executed)
+  {
+    ignerr << "Unable to call service [" << service  << "]\n";
+  }
+
+  // Construct the response message
+  std::string data = BUILD_MSG(this->operations[SERVICE], service,
+      repTypeName, repStr);
+
+  // Queue the message for delivery.
+  this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
 }
 
 //////////////////////////////////////////////////

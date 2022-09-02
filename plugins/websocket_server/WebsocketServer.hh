@@ -109,7 +109,9 @@ namespace ignition
     ///     12. "throttle": Throttle a topic in the `topic_name` component by
     ///                 the rate in the `payload` component.
     ///     13. "service": Call a service, passing in the optional request
-    ///                    message.
+    ///                    message. The payload should be a serialized
+    ///                    protobuf message. The response payload holds the
+    ///                    serialized protobuf response, if any.
     ///
     /// The `topic_name` component is mandatory for the "sub", "pub", "unsub",
     /// and "service" operations. If present, it must be the name of an Ignition
@@ -213,6 +215,12 @@ namespace ignition
       /// \param[in] _socketId Id of the socket associated with the message.
       /// \param[in] _frameParts The request message in frame parts.
       private: void OnAsset(int _socketId,
+                   const std::vector<std::string> &_frameParts);
+
+      /// \brief Handles service requests.
+      /// \param[in] _socketId Id of the socket associated with the message.
+      /// \param[in] _frameParts The request message in frame parts.
+      private: void OnService(int _socketId,
                    const std::vector<std::string> &_frameParts);
 
       private: ignition::transport::Node node;
