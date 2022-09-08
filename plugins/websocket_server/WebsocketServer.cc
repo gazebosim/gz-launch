@@ -1007,6 +1007,16 @@ void WebsocketServer::OnAsset(int _socketId,
   if (_frameParts.size() <= 1)
   {
     ignerr << "Asset requested, but asset URI is missing\n";
+
+    ignition::msgs::StringMsg msg;
+    msg.set_data("asset_uri_missing");
+    std::string data = BUILD_MSG(this->operations[ASSET], "",
+        msg.GetTypeName(), msg.SerializeAsString());
+
+    // Queue the message for delivery.
+    this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
+
     return;
   }
 
@@ -1047,12 +1057,20 @@ void WebsocketServer::OnAsset(int _socketId,
 
     // Construct the response message
     std::string data = BUILD_MSG(this->operations[ASSET], assetUri,
-        std::string("ignition.msgs.Bytes"), bytes.SerializeAsString());
+        bytes.GetTypeName(), bytes.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
         data.c_str(), data.length());
   }
+
+   ignition::msgs::StringMsg msg;
+   msg.set_data("asset_not_found");
+   std::string data = BUILD_MSG(this->operations[ASSET], assetUri,
+       msg.GetTypeName(), msg.SerializeAsString());
+   // Queue the message for delivery.
+   this->QueueMessage(this->connections[_socketId].get(),
+       data.c_str(), data.length());
 }
 
 //////////////////////////////////////////////////
