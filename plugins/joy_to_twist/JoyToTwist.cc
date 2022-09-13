@@ -48,6 +48,22 @@ void setVectorFromString(const std::string &_str,
   }
 }
 
+//////////////////////////////////////////////////
+// String to vector helper function.
+void setVectorFromString(const std::string &_str,
+                         gz::math::Vector3i &_v)
+{
+  std::string str = gz::common::trimmed(_str);
+
+  std::vector<std::string> parts = gz::common::split(str, " ");
+  if (parts.size() == 3)
+  {
+    _v.X(std::stoi(parts[0]));
+    _v.Y(std::stoi(parts[1]));
+    _v.Z(std::stoi(parts[2]));
+  }
+}
+
 /////////////////////////////////////////////////
 JoyToTwist::JoyToTwist()
   : gz::launch::Plugin()
