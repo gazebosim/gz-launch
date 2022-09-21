@@ -1,6 +1,35 @@
 ## Gazebo Launch 6.x
 
-### Gazebo Launch 6.X.X (202X-XX-XX)
+### Gazebo Launch 6.0.0
+
+1. Fix macOs compiler error.
+    * [Pull request #161](https://github.com/gazebosim/gz-launch/pull/161)
+
+1. Update to latest gtest.
+    * [Pull request #174](https://github.com/gazebosim/gz-launch/pull/174)
+
+1. Ignition to Gazebo renaming
+    * [Pull request #162](https://github.com/gazebosim/gz-launch/pull/162)
+    * [Pull request #163](https://github.com/gazebosim/gz-launch/pull/163)
+    * [Pull request #165](https://github.com/gazebosim/gz-launch/pull/165)
+    * [Pull request #166](https://github.com/gazebosim/gz-launch/pull/166)
+    * [Pull request #168](https://github.com/gazebosim/gz-launch/pull/168)
+    * [Pull request #169](https://github.com/gazebosim/gz-launch/pull/169)
+    * [Pull request #170](https://github.com/gazebosim/gz-launch/pull/170)
+    * [Pull request #171](https://github.com/gazebosim/gz-launch/pull/171)
+    * [Pull request #172](https://github.com/gazebosim/gz-launch/pull/172)
+    * [Pull request #173](https://github.com/gazebosim/gz-launch/pull/173)
+    * [Pull request #176](https://github.com/gazebosim/gz-launch/pull/176)
+    * [Pull request #188](https://github.com/gazebosim/gz-launch/pull/188)
+
+1. Fix `msgs` header usage.
+    * [Pull request #196](https://github.com/gazebosim/gz-launch/pull/196)
+
+1. Version bumps and removal of deprecations
+    * [Pull request #144](https://github.com/gazebosim/gz-launch/pull/144)
+    * [Pull request #145](https://github.com/gazebosim/gz-launch/pull/145)
+    * [Pull request #150](https://github.com/gazebosim/gz-launch/pull/150)
+    * [Pull request #156](https://github.com/gazebosim/gz-launch/pull/156)
 
 ## Gazebo Launch 5.x
 
