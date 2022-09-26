@@ -744,6 +744,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
       }
     }
 
+    std::cout << allProtos << std::endl;
     this->QueueMessage(this->connections[_socketId].get(),
         allProtos.c_str(), allProtos.length());
   }
@@ -1063,14 +1064,17 @@ void WebsocketServer::OnAsset(int _socketId,
     this->QueueMessage(this->connections[_socketId].get(),
         data.c_str(), data.length());
   }
+  else
+  {
 
-   ignition::msgs::StringMsg msg;
-   msg.set_data("asset_not_found");
-   std::string data = BUILD_MSG(this->operations[ASSET], assetUri,
-       msg.GetTypeName(), msg.SerializeAsString());
-   // Queue the message for delivery.
-   this->QueueMessage(this->connections[_socketId].get(),
-       data.c_str(), data.length());
+    ignition::msgs::StringMsg msg;
+    msg.set_data("asset_not_found");
+    std::string data = BUILD_MSG(this->operations[ASSET], assetUri,
+        msg.GetTypeName(), msg.SerializeAsString());
+    // Queue the message for delivery.
+    this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
+  }
 }
 
 //////////////////////////////////////////////////
