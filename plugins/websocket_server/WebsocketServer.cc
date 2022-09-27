@@ -1016,6 +1016,15 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
 void WebsocketServer::OnAdvertise(int _socketId,
     const std::vector<std::string> &_frameParts)
 {
+  if (_frameParts.size() < 3)
+  {
+    // We need at least 3 items in the frameParts; the adv, the topic name, and the type.
+    // If we get a message with less parts than that (like 'adv,,,'), it's a valid message
+    // but we can't act on it, so log it and get out.
+    ignwarn << "Invalid advertise message (no topic or type name), ignoring\n";
+    return;
+  }
+
   std::string topic = _frameParts[1];
   std::string msgTypeName = _frameParts[2];
   std::pair<std::string, std::string> key = std::make_pair(topic, msgTypeName);
