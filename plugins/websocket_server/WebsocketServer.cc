@@ -744,7 +744,6 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
       }
     }
 
-    std::cout << allProtos << std::endl;
     this->QueueMessage(this->connections[_socketId].get(),
         allProtos.c_str(), allProtos.length());
   }
