@@ -68,7 +68,7 @@ TEST(CmdLine, Ls)
   std::string cmd = "gz launch " + get_config_path("ls.gzlaunch");
   std::string output = customExecStr(cmd);
   EXPECT_TRUE(output.find("CMakeFiles") != std::string::npos) << output;
-  EXPECT_TRUE(output.find("Makefile") != std::string::npos) << output;
+  EXPECT_TRUE(output.find("cmake_install.cmake") != std::string::npos) << output;
 }
 
 /////////////////////////////////////////////////
