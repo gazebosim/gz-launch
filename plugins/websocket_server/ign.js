@@ -25,9 +25,9 @@ function buildMsg(_frameParts) {
   return _frameParts.join(',');
 }
 
-/// \brief The main interface to the Ignition websocket server and 
-/// data on Ignition Transport.
-function Ignition(options) {
+/// \brief The main interface to the Gazebo websocket server and 
+/// data on Gazebo Transport.
+function Gazebo(options) {
   options = options || {};
 
   this.socket = null;
@@ -43,11 +43,11 @@ function Ignition(options) {
     this.connect(options.url, options.key);
   }
 }
-Ignition.prototype.__proto__ = EventEmitter2.prototype;
+Gazebo.prototype.__proto__ = EventEmitter2.prototype;
 
 /// \brief Connect to the specified WebSocket.
-/// \param url - WebSocket URL for Ignition HTTPServer
-Ignition.prototype.connect = function(url, key) {
+/// \param url - WebSocket URL for Gazebo HTTPServer
+Gazebo.prototype.connect = function(url, key) {
   var that = this;
 
   /// \brief Emits a 'connection' event on WebSocket connection.
@@ -69,9 +69,9 @@ Ignition.prototype.connect = function(url, key) {
     that.emit('error', event);
   }
 
-  /// \brief Parses message responses from ignition and sends to the
+  /// \brief Parses message responses from gazebo and sends to the
   /// appropriate topic.
-  // \param message - the JSON message from the Ignition
+  // \param message - the JSON message from the Gazebo
   // httpserver.
   function onMessage(_message) {
     if (that.root === undefined || that.root === null) {
@@ -95,7 +95,7 @@ Ignition.prototype.connect = function(url, key) {
           // Request the list of worlds on start.
           // \todo Switch this to a service call when this issue is 
           // resolved:
-          // https://github.com/ignitionrobotics/ign-transport/issues/135
+          // https://github.com/gazebosim/gz-transport/issues/135
           that.socket.send(buildMsg(['worlds','','','']));
         }
       };
@@ -148,7 +148,7 @@ Ignition.prototype.connect = function(url, key) {
 
 /// \brief Send a message to the websocket server
 /// \param[in] _msg Message to send
-Ignition.prototype.sendMsg = function(_msg) {
+Gazebo.prototype.sendMsg = function(_msg) {
   var that = this;
 
   var emitter = function(msg){
@@ -165,10 +165,10 @@ Ignition.prototype.sendMsg = function(_msg) {
   }
 };
 
-/// \brief Interface to Ignition Transport topics.
+/// \brief Interface to Gazebo Transport topics.
 function Topic(options) {
   options = options || {};
-  this.ign = options.ign; 
+  this.gz = options.gz; 
   this.name = options.name;
   this.messageType = options.messageType;
   this.isAdvertised = false;
@@ -189,14 +189,14 @@ Topic.prototype.subscribe = function(_callback) {
 
   var emitter = function(_cb) {
     // Register the callback with the topic name
-    that.ign.on(that.name, _cb);
+    that.gz.on(that.name, _cb);
 
     // Send the subscription message over the websocket.
-    that.ign.sendMsg(buildMsg(['sub', that.name, '', '']));
+    that.gz.sendMsg(buildMsg(['sub', that.name, '', '']));
   }
 
-  if (!this.ign.isConnected) {
-    this.ign.on('connection', function() {
+  if (!this.gz.isConnected) {
+    this.gz.on('connection', function() {
       emitter(_callback);
     });
   } else {

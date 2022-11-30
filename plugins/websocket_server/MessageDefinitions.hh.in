@@ -25,7 +25,7 @@ namespace ignition
     /// server.
     ///
     /// \todo Get this information from a running simulation. The problem
-    /// right now is that Ignition Transport does not show subscribers.
+    /// right now is that Gazebo Transport does not show subscribers.
     static const std::string kWebSocketServerMessageDefinitions =
       R"protos(@WEBSOCKETSERVER_MESSAGE_DEFINITIONS@)protos";
   }

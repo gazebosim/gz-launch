@@ -18,15 +18,15 @@
 #define IGNITION_LAUNCH_GAZEBOSERVER_HH_
 
 #include <memory>
-#include <ignition/plugin/Register.hh>
-#include <ignition/gazebo/Server.hh>
-#include "ignition/launch/Plugin.hh"
+#include <gz/plugin/Register.hh>
+#include <gz/gazebo/Server.hh>
+#include "gz/launch/Plugin.hh"
 
 namespace ignition
 {
   namespace launch
   {
-    /// \brief Runs the Ignition Gazebo server.
+    /// \brief Runs the Gazebo Sim server.
     ///
     /// # Example usage
     /// <!-- Run the gazebo server with a set of plugins -->

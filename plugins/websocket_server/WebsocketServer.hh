@@ -21,11 +21,11 @@
 #include <map>
 #include <memory>
 #include <thread>
-#include <ignition/launch/Plugin.hh>
-#include <ignition/plugin/Register.hh>
-#include <ignition/transport/MessageInfo.hh>
-#include <ignition/transport/Node.hh>
-#include <ignition/common/Util.hh>
+#include <gz/launch/Plugin.hh>
+#include <gz/plugin/Register.hh>
+#include <gz/transport/MessageInfo.hh>
+#include <gz/transport/Node.hh>
+#include <gz/common/Util.hh>
 #include <libwebsockets.h>
 
 namespace ignition
@@ -33,7 +33,7 @@ namespace ignition
   namespace launch
   {
     /// \brief Reads from a USB joystick device and outputs
-    ///  ignition::msgs::WebsocketServer messages.
+    ///  msgs::WebsocketServer messages.
     ///
     /// # Plugin parameters
     ///
@@ -83,22 +83,22 @@ namespace ignition
     ///
     /// The `operation` component is mandatory and must be one of:
     ///     1. "sub": Subscribe to the topic in the `topic_name` component,
-    ///     2. "pub": Publish a message from the Ignition Transport topic in
+    ///     2. "pub": Publish a message from the Gazebo Transport topic in
     ///               the `topic_name` component,
     ///     3. "topics": Get the list of available topics, and
     ///     4. "protos": Get a string containing all the protobuf
     ///                  definitions.
     ///
     /// The `topic_name` component is mandatory for the "sub" and "pub"
-    /// operations. If present, it must be the name of an Ignition Transport
+    /// operations. If present, it must be the name of an Gazebo Transport
     /// topic.
     ///
     /// The `message_type` component is mandatory for the "pub" operation. If
-    /// present it names the Ignition Message type, such as
+    /// present it names the Gazebo Message type, such as
     /// "ignition.msgs.Clock".
     ///
     /// The `payload` component is mandatory for the "pub" operation. If
-    /// present, it contains a serialized string of an Ignition Message.
+    /// present, it contains a serialized string of an Gazebo Message.
     ///
     /// ## Example frames
     ///
@@ -130,7 +130,7 @@ namespace ignition
     ///
     /// `ign launch -v 4 websocket.ign`
     ///
-    /// 3. Open the [index.html](https://github.com/ignitionrobotics/ign-launch/blob/ign-launch2/plugins/websocket_server/index.html) webpage.
+    /// 3. Open the [index.html](https://github.com/gazebosim/gz-launch/blob/ign-launch2/plugins/websocket_server/index.html) webpage.
     ///
     class WebsocketServer : public ignition::launch::Plugin
     {
@@ -148,7 +148,7 @@ namespace ignition
 
       private: void OnWebsocketSubscribedMessage(const char *_data,
                    const size_t _size,
-                   const ignition::transport::MessageInfo &_info);
+                   const transport::MessageInfo &_info);
 
       /// \brief Callback that is triggered when a new connection is
       /// established.
@@ -163,7 +163,7 @@ namespace ignition
 
       public: void OnRequestMessage(int _socketId, const std::string &_msg);
 
-      private: ignition::transport::Node node;
+      private: transport::Node node;
 
       private: bool run = true;
       private: std::thread *thread = nullptr;
@@ -192,7 +192,7 @@ namespace ignition
       /// \brief All of the websocket connections.
       public: std::map<int, std::unique_ptr<Connection>> connections;
 
-      /// \brief All of the subscribed Ignition topics.
+      /// \brief All of the subscribed Gazebo topics.
       /// The key is the topic name, and the value is the set of websocket
       /// connections that have subscribed to the topic.
       public: std::map<std::string, std::set<int>> topicConnections;
@@ -261,6 +261,6 @@ namespace ignition
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(ignition::launch::WebsocketServer, ignition::launch::Plugin)
+IGNITION_ADD_PLUGIN(launch::WebsocketServer, launch::Plugin)
 
 #endif

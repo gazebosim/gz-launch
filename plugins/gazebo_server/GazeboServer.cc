@@ -15,7 +15,7 @@
  *
 */
 
-#include <ignition/common/Console.hh>
+#include <gz/common/Console.hh>
 #include <sdf/sdf.hh>
 #include "GazeboServer.hh"
 
@@ -211,7 +211,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
       {
         ignLogInit(recordPathMod, "server_console.log");
       }
-      // TODO(anyone) In Ignition-D, to be moved to outside and after this
+      // TODO(anyone) In Gazebo-D, to be moved to outside and after this
       //   if-else statement, after all ignLogInit() calls have been finalized,
       //   so that <path> in SDF will always be ignored in favor of logging both
       //   console logs and LogRecord recordings to common::ignLogDirectory().

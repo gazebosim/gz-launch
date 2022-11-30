@@ -115,10 +115,10 @@
           filename="ignition-launch-gazebogui">
 
       <!-- Override default window title (Gazebo) -->
-      <window_title>Ignition Launch</window_title>
+      <window_title>Gazebo Launch</window_title>
 
       <!-- Override default icon.
-           In this example, setting to a resource file shipped with Ignition GUI -->
+           In this example, setting to a resource file shipped with Gazebo GUI -->
       <window_icon>:/qml/images/drawer.png</window_icon>
       <plugin filename="GzScene3D" name="3D View">
         <ignition-gui>

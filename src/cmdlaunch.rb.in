@@ -53,7 +53,7 @@ COMMANDS = { 'launch' =>
 }
 
 #
-# Class for the Ignition Fuel command line tools.
+# Class for the Gazebo Fuel command line tools.
 #
 class Cmd
   # Command-line variable bindings.
