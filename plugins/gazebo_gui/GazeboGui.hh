@@ -18,15 +18,15 @@
 #define IGNITION_LAUNCH_GAZEBOGUI_HH_
 
 #include <memory>
-#include <gz/gui/Application.hh>
-#include <gz/plugin/Register.hh>
-#include <gz/launch/Plugin.hh>
+#include <ignition/gui/Application.hh>
+#include <ignition/plugin/Register.hh>
+#include <ignition/launch/Plugin.hh>
 
 namespace ignition
 {
   namespace launch
   {
-    /// \brief Runs the Gazebo Sim GUI.
+    /// \brief Runs the Ignition Gazebo GUI.
     ///
     /// The plugin ignores GUI configuration coming from the SDF
     /// world file or saved in ~/.ignition/gazebo/gui.config. Instead,
@@ -49,14 +49,14 @@ namespace ignition
     ///   <!-- Set window icon.
     ///        This can be a full path to a local file, or a path to a resource
     ///        file prefixed by ":".
-    ///        Defaults to the Gazebo logo. -->
+    ///        Defaults to the Ignition logo. -->
     ///   <window_icon>full/path/to/window/icon.png</window_icon>
     ///
-    ///   <!-- Add Gazebo GUI plugins here -->
+    ///   <!-- Add Ignition GUI plugins here -->
     ///
     ///   </plugin>
     /// </executable_wrapper>
-    class GazeboGui : public launch::Plugin
+    class GazeboGui : public ignition::launch::Plugin
     {
       /// \brief Constructor.
       public: GazeboGui();
@@ -72,6 +72,6 @@ namespace ignition
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(launch::GazeboGui, launch::Plugin)
+IGNITION_ADD_PLUGIN(ignition::launch::GazeboGui, ignition::launch::Plugin)
 
 #endif

@@ -9,39 +9,39 @@
   <script src='gz3d.js'></script>
 
   <script>
-    // Create the Connection to the Gazebo websocket server
+    // Create the Connection to the Ignition websocket server
     // This configuration uses SSL and authentication. You can disable both
     // by replacing `wss://` with `ws://` and remove the `key` parameter.
     // Make sure to also disable SSL and authentication in the
     // websocket_server plugin.
-    var gz = new Gazebo({
+    var ign = new Ignition({
       url: 'ws://localhost:9002',
       key: "auth_key"
     });
 
     // Listen for the 'connection' event.
-    gz.on('connection', function() {
+    ign.on('connection', function() {
       var output = document.getElementById('status');
       output.innerHTML = 'Status: connected';
     });
 
-    gz.on('worlds', function(_worlds) {
+    ign.on('worlds', function(_worlds) {
       // \todo Switch this to a service call when this issue is 
       // resolved:
-      // https://github.com/gazebosim/gz-transport/issues/135
-      gz.once('scene', function(_sceneInfo) {
+      // https://github.com/ignitionrobotics/ign-transport/issues/135
+      ign.once('scene', function(_sceneInfo) {
         // console.log(_sceneInfo);
         for (var i = 0; i < _sceneInfo.model.length; ++i) {
           var modelObj = createModelFromMsg(_sceneInfo.model[i]);
           scene.add(modelObj);
         }
       });
-      gz.socket.send(buildMsg(['scene','shapes','','']));
+      ign.socket.send(buildMsg(['scene','shapes','','']));
     });
 
     // Create the clock subscriber
     var clockSub = new Topic({
-      gz: gz,
+      ign: ign,
       name: '/clock',
       messageType : 'ignition.msgs.Clock',
       callback: function(msg) {
@@ -52,7 +52,7 @@
 
     // Create the pos subscriber
     var poseSub = new Topic({
-      gz: gz,
+      ign: ign,
       name: '/world/shapes/dynamic_pose/info',
       messageType : 'ignition.msgs.Pose_V',
       callback: function(msg) {

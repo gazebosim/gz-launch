@@ -18,9 +18,9 @@
 #define IGNITION_LAUNCH_GAZEBOFACTORY_HH_
 
 #include <memory>
-#include <gz/plugin/Register.hh>
-#include <gz/transport/Node.hh>
-#include "gz/launch/Plugin.hh"
+#include <ignition/plugin/Register.hh>
+#include <ignition/transport/Node.hh>
+#include "ignition/launch/Plugin.hh"
 
 namespace ignition
 {
@@ -47,7 +47,7 @@ namespace ignition
     ///          spawned -->
     ///     <sdf version='1.6'>
     ///       <include>
-    ///         <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/X2 UGV/1</uri>
+    ///         <uri>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/X2 UGV/1</uri>
     ///         <!-- Publish robot state information -->
     ///         <plugin filename="ignition-gazebo-state-publisher-system"
     ///              name="ignition::gazebo::systems::StatePublisher"></plugin>
@@ -59,7 +59,7 @@ namespace ignition
     ///   ...
     ///   </spawn>
     /// </plugin>
-    class GazeboFactory : public launch::Plugin
+    class GazeboFactory : public ignition::launch::Plugin
     {
       /// \brief Constructor.
       public: GazeboFactory();
@@ -90,6 +90,6 @@ namespace ignition
 }
 
 // Register the plugin
-IGNITION_ADD_PLUGIN(launch::GazeboFactory, launch::Plugin)
+IGNITION_ADD_PLUGIN(ignition::launch::GazeboFactory, ignition::launch::Plugin)
 
 #endif

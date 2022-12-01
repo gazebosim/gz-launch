@@ -1,6 +1,6 @@
-\page basics Gazebo launch tutorial
+\page basics Ignition launch tutorial
 
-Gazebo Launch is used to run and manage plugins and programs. A configuration script can be used to specify which programs and plugins to execute. Alternatively, individual programs and plugins can be run from the command line.
+Ignition Launch is used to run and manage plugins and programs. A configuration script can be used to specify which programs and plugins to execute. Alternatively, individual programs and plugins can be run from the command line.
 
 In this tutorial we will explain the configuration scripts in the `examples` directory.
 
@@ -15,7 +15,7 @@ To run a script use
 
 ## Launch files
 
-Every script starts with these two tags, which specify the `xml` version and `gazebo` version.
+Every script starts with these two tags, which specify the `xml` version and `ignition` version.
 
 ```xml
 <?xml version="1.0"?>

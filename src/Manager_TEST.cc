@@ -16,10 +16,10 @@
 */
 
 #include <gtest/gtest.h>
-#include <gz/common/Console.hh>
-#include <gz/common/Filesystem.hh>
+#include <ignition/common/Console.hh>
+#include <ignition/common/Filesystem.hh>
 
-#include <gz/utilities/ExtraTestMacros.hh>
+#include <ignition/utilities/ExtraTestMacros.hh>
 
 #include <sys/stat.h>
 
@@ -27,15 +27,13 @@
 
 static constexpr char kTestScriptPath[] = "/tmp/ign-launch.sh";
 
-using namespace ignition;
-
 /////////////////////////////////////////////////
 bool RemoveTestScript()
 {
   // Remove the file if it already exists
-  if (common::isFile(kTestScriptPath))
+  if (ignition::common::isFile(kTestScriptPath))
   {
-    if (!common::removeFile(kTestScriptPath))
+    if (!ignition::common::removeFile(kTestScriptPath))
     {
       return false;
     }
@@ -60,44 +58,44 @@ touch $TEST_VAR
 }
 
 /////////////////////////////////////////////////
-TEST(Gazebo_TEST, RunEmptyConfig)
+TEST(Ignition_TEST, RunEmptyConfig)
 {
-  launch::Manager mgr;
+  ignition::launch::Manager mgr;
 
   // Expect false because no config file was set.
   EXPECT_FALSE(mgr.RunConfig(""));
 }
 
 /////////////////////////////////////////////////
-TEST(Gazebo_TEST, MissingGazebo)
+TEST(Ignition_TEST, MissingIgnition)
 {
   std::string config =
     "<executable name='gazebo'>"
     "  <command>ign-gazebo-server</command>"
     "</executable>";
 
-  launch::Manager mgr;
+  ignition::launch::Manager mgr;
 
   // Stop the manager after a short pause.
   EXPECT_FALSE(mgr.RunConfig(config));
 }
 
 /////////////////////////////////////////////////
-TEST(Gazebo_TEST, RunBadXml)
+TEST(Ignition_TEST, RunBadXml)
 {
   std::string config =
     "<ignition version='1.0'>"
     " executable></executable"
     "</ignition>";
 
-  launch::Manager mgr;
+  ignition::launch::Manager mgr;
 
   // Stop the manager after a short pause.
   EXPECT_FALSE(mgr.RunConfig(config));
 }
 
 /////////////////////////////////////////////////
-TEST(Gazebo_TEST, RunLs)
+TEST(Ignition_TEST, RunLs)
 {
   std::string cmd;
 
@@ -114,7 +112,7 @@ TEST(Gazebo_TEST, RunLs)
     "  </executable>"
     "</ignition>";
 
-  launch::Manager mgr;
+  ignition::launch::Manager mgr;
 
   // We should be able to run the ls command. This does not check the
   // output.
@@ -123,14 +121,14 @@ TEST(Gazebo_TEST, RunLs)
 
 
 /////////////////////////////////////////////////
-TEST(Gazebo_TEST, IGN_UTILS_TEST_DISABLED_ON_WIN32(RunEnvPre))
+TEST(Ignition_TEST, IGN_UTILS_TEST_DISABLED_ON_WIN32(RunEnvPre))
 {
   // Test that environment is applied regardless of order
   std::string testPath = "/tmp/ign-launch-env-test-pre";
 
-  if (common::isFile(testPath))
+  if (ignition::common::isFile(testPath))
   {
-    ASSERT_TRUE(common::removeFile(testPath));
+    ASSERT_TRUE(ignition::common::removeFile(testPath));
   }
 
   ASSERT_TRUE(WriteTestScript());
@@ -147,23 +145,23 @@ TEST(Gazebo_TEST, IGN_UTILS_TEST_DISABLED_ON_WIN32(RunEnvPre))
 </ignition>
 )";
 
-  launch::Manager mgr;
+  ignition::launch::Manager mgr;
 
   EXPECT_TRUE(mgr.RunConfig(config));
-  EXPECT_TRUE(common::isFile(testPath));
-  EXPECT_TRUE(common::removeFile(testPath));
+  EXPECT_TRUE(ignition::common::isFile(testPath));
+  EXPECT_TRUE(ignition::common::removeFile(testPath));
   EXPECT_TRUE(RemoveTestScript());
 }
 
 /////////////////////////////////////////////////
-TEST(Gazebo_TEST, IGN_UTILS_TEST_DISABLED_ON_WIN32(RunEnvPost))
+TEST(Ignition_TEST, IGN_UTILS_TEST_DISABLED_ON_WIN32(RunEnvPost))
 {
   // Test that environment is applied regardless of order
   std::string testPath = "/tmp/ign-launch-env-test-post";
 
-  if (common::isFile(testPath))
+  if (ignition::common::isFile(testPath))
   {
-    ASSERT_TRUE(common::removeFile(testPath));
+    ASSERT_TRUE(ignition::common::removeFile(testPath));
   }
 
   ASSERT_TRUE(WriteTestScript());
@@ -180,18 +178,18 @@ TEST(Gazebo_TEST, IGN_UTILS_TEST_DISABLED_ON_WIN32(RunEnvPost))
 </ignition>
 )";
 
-  launch::Manager mgr;
+  ignition::launch::Manager mgr;
 
   EXPECT_TRUE(mgr.RunConfig(config));
-  EXPECT_TRUE(common::isFile(testPath));
-  EXPECT_TRUE(common::removeFile(testPath));
+  EXPECT_TRUE(ignition::common::isFile(testPath));
+  EXPECT_TRUE(ignition::common::removeFile(testPath));
   EXPECT_TRUE(RemoveTestScript());
 }
 
 /////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
-  common::Console::SetVerbosity(4);
+  ignition::common::Console::SetVerbosity(4);
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
