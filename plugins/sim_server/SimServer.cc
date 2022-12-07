@@ -327,11 +327,16 @@ bool SimServer::Load(const tinyxml2::XMLElement *_elem)
     }
 
     // Create an SDF element of the plugin
+    sdf::Plugin plugin;
+    plugin.SetFilename(file);
+    plugin.SetName(name);
+
     sdf::ElementPtr sdf(new sdf::Element);
     copyElement(sdf, elem);
+    plugin.InsertContent(sdf);
 
     // Add the plugin to the server config
-    serverConfig.AddPlugin({entityName, entityType, file, name, sdf});
+    serverConfig.AddPlugin({entityName, entityType, plugin});
   }
 
   // Set headless rendering

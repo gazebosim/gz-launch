@@ -16,6 +16,17 @@
 */
 
 #include <algorithm>
+
+#include <gz/msgs/bytes.pb.h>
+#include <gz/msgs/empty.pb.h>
+#include <gz/msgs/image.pb.h>
+#include <gz/msgs/particle_emitter_v.pb.h>
+#include <gz/msgs/publish.pb.h>
+#include <gz/msgs/publishers.pb.h>
+#include <gz/msgs/scene.pb.h>
+#include <gz/msgs/stringmsg.pb.h>
+#include <gz/msgs/stringmsg_v.pb.h>
+
 #include <gz/common/Console.hh>
 #include <gz/common/Image.hh>
 #include <gz/common/Util.hh>
