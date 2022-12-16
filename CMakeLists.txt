@@ -76,8 +76,8 @@ set(GZ_MATH_VER ${gz-math7_VERSION_MAJOR})
 
 #--------------------------------------
 # Find gz-gui
-gz_find_package(gz-gui7 REQUIRED)
-set(GZ_GUI_VER ${gz-gui7_VERSION_MAJOR})
+gz_find_package(gz-gui8 REQUIRED)
+set(GZ_GUI_VER ${gz-gui8_VERSION_MAJOR})
 gz_find_package (Qt5
   COMPONENTS
     Core
@@ -88,8 +88,8 @@ gz_find_package (Qt5
 
 #--------------------------------------
 # Find gz-sim
-gz_find_package(gz-sim7 REQUIRED PRIVATE COMPONENTS gui)
-set(GZ_SIM_VER ${gz-sim7_VERSION_MAJOR})
+gz_find_package(gz-sim8 REQUIRED PRIVATE COMPONENTS gui)
+set(GZ_SIM_VER ${gz-sim8_VERSION_MAJOR})
 
 gz_pkg_check_modules(websockets libwebsockets)
 if (NOT websockets_FOUND)
