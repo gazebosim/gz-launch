@@ -19,9 +19,10 @@
 #include <sys/stat.h>
 #ifndef _WIN32
   #include <unistd.h>
-#else
-
 #endif
+
+#include <gz/msgs/joy.pb.h>
+#include <gz/msgs/twist.pb.h>
 
 #include <gz/common/Console.hh>
 #include <gz/common/Util.hh>

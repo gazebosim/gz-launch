@@ -15,11 +15,13 @@
  *
 */
 
-#include <gz/msgs/entity_factory.pb.h>
 #include <gz/msgs/boolean.pb.h>
+#include <gz/msgs/entity_factory.pb.h>
+#include <gz/msgs/stringmsg.pb.h>
 
 #include <gz/common/Util.hh>
 #include <gz/common/Console.hh>
+#include <gz/msgs/Utility.hh>
 #include "SimFactory.hh"
 
 using namespace gz;
