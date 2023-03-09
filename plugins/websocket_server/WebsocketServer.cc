@@ -1016,10 +1016,31 @@ void WebsocketServer::OnRequest(int _socketId,
   bool result;
   unsigned int timeout = 2000;
 
+  std::vector<transport::ServicePublisher> publishers;
+  this->node.ServiceInfo(service, publishers);
+
+  if (publishers.empty())
+  {
+    std::cerr << "Node::RequestRaw(): Error getting response type for "
+      << "service [" << service << "]\n";
+
+    ignition::msgs::StringMsg msg;
+    msg.set_data("service_not_found");
+    std::string data = BUILD_MSG(this->operations[REQUEST], service,
+        msg.GetTypeName(), msg.SerializeAsString());
+
+    // Queue the message for delivery.
+    this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
+
+    return;
+  }
+
+  std::string repTypeName = publishers.front().RepTypeName();
+
   std::string repStr;
-  std::string repTypeName;
   bool executed = this->node.RequestRaw(service, msgData, msgTypeName,
-                                        timeout, repStr, repTypeName, result);
+                                        repTypeName, timeout, repStr, result);
   if (!executed)
   {
     ignerr << "Unable to call service [" << service  << "]\n";
