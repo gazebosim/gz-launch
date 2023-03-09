@@ -749,7 +749,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   }
   else if (frameParts[0] == "topics")
   {
-    igndbg << "Topic list request recieved\n";
+    igndbg << "Topic list request received\n";
     ignition::msgs::StringMsg_V msg;
 
     std::vector<std::string> topics;
@@ -770,7 +770,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   }
   else if (frameParts[0] == "topics-types")
   {
-    igndbg << "Topic and message type list request recieved\n";
+    igndbg << "Topic and message type list request received\n";
     ignition::msgs::Publishers msg;
 
     std::vector<std::string> topics;
@@ -800,7 +800,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   }
   else if (frameParts[0] == "worlds")
   {
-    igndbg << "World info request recieved\n";
+    igndbg << "World info request received\n";
     ignition::msgs::Empty req;
     req.set_unused(true);
 
@@ -820,7 +820,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   }
   else if (frameParts[0] == "scene")
   {
-    igndbg << "Scene info request recieved for world["
+    igndbg << "Scene info request received for world["
       << frameParts[1] << "]\n";
     ignition::msgs::Empty req;
     req.set_unused(true);
@@ -998,6 +998,61 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   {
     this->OnAsset(_socketId, frameParts);
   }
+  else if (frameParts[0] == this->operations[REQUEST])
+  {
+    this->OnRequest(_socketId, frameParts);
+  }
+}
+
+//////////////////////////////////////////////////
+void WebsocketServer::OnRequest(int _socketId,
+    const std::vector<std::string> &_frameParts)
+{
+  std::string service = _frameParts[1];
+  std::string msgTypeName = _frameParts[2];
+  std::string msgData = _frameParts[3];
+
+  igndbg << "Calling service [" << service << "]\n";
+  bool result;
+  unsigned int timeout = 2000;
+
+  std::vector<transport::ServicePublisher> publishers;
+  this->node.ServiceInfo(service, publishers);
+
+  if (publishers.empty())
+  {
+    std::cerr << "Node::RequestRaw(): Error getting response type for "
+      << "service [" << service << "]\n";
+
+    ignition::msgs::StringMsg msg;
+    msg.set_data("service_not_found");
+    std::string data = BUILD_MSG(this->operations[REQUEST], service,
+        msg.GetTypeName(), msg.SerializeAsString());
+
+    // Queue the message for delivery.
+    this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
+
+    return;
+  }
+
+  std::string repTypeName = publishers.front().RepTypeName();
+
+  std::string repStr;
+  bool executed = this->node.RequestRaw(service, msgData, msgTypeName,
+                                        repTypeName, timeout, repStr, result);
+  if (!executed)
+  {
+    ignerr << "Unable to call service [" << service  << "]\n";
+  }
+
+  // Construct the response message
+  std::string data = BUILD_MSG(this->operations[REQUEST], service,
+      repTypeName, repStr);
+
+  // Queue the message for delivery.
+  this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
 }
 
 //////////////////////////////////////////////////
