@@ -793,7 +793,8 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
     for (const std::string &topic : topics)
     {
       std::vector<transport::MessagePublisher> publishers;
-      this->node.TopicInfo(topic, publishers);
+      std::vector<transport::MessagePublisher> subscribers;
+      this->node.TopicInfo(topic, publishers, subscribers);
       for (const transport::MessagePublisher &publisher : publishers)
       {
         msgs::Publish *pubMsg = msg.add_publisher();
@@ -925,7 +926,8 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
     for (auto queryTopic: allTopics)
     {
       std::vector<transport::MessagePublisher> publishers;
-      this->node.TopicInfo(queryTopic, publishers);
+      std::vector<transport::MessagePublisher> subscribers;
+      this->node.TopicInfo(queryTopic, publishers, subscribers);
       for (auto pub: publishers)
       {
         if (pub.MsgTypeName() == "gz.msgs.Image")
@@ -1205,7 +1207,8 @@ bool WebsocketServer::UpdateMsgTypeSubscriptionCount(const std::string &_topic,
   // check if limit reached for the subscribed msg type
   // if not, update subscription count
   std::vector<transport::MessagePublisher> publishers;
-  this->node.TopicInfo(_topic, publishers);
+  std::vector<transport::MessagePublisher> subscribers;
+  this->node.TopicInfo(_topic, publishers, subscribers);
   if (!publishers.empty())
   {
     std::string msgType = publishers.begin()->MsgTypeName();
