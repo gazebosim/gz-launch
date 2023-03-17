@@ -31,7 +31,7 @@ namespace ignition
     class Plugin
     {
       // Default destructor
-      public virtual ~Plugin() {};
+      public: virtual ~Plugin() {};
 
       /// \brief Load function that each launch plugin must implement.
       /// \param[in] _elem Pointer to the XML for this plugin.
