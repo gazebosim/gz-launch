@@ -27,7 +27,7 @@ using namespace ignition::launch;
 
 /////////////////////////////////////////////////
 GazeboFactory::GazeboFactory()
-  : ignition::launch::Plugin()
+  : launch::Plugin()
 {
 }
 
@@ -123,7 +123,7 @@ void GazeboFactory::ProcessSpawn(const tinyxml2::XMLElement *_elem)
   elem = _elem->FirstChildElement("pose");
   if (elem)
   {
-    ignition::math::Pose3d pose;
+    math::Pose3d pose;
     std::stringstream stream;
     stream << elem->GetText();
     stream >> pose;

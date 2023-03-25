@@ -30,7 +30,7 @@ using namespace ignition::launch;
 
 /////////////////////////////////////////////////
 GazeboGui::GazeboGui()
-  : ignition::launch::Plugin()
+  : launch::Plugin()
 {
 }
 
@@ -47,18 +47,18 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
 
   // Set default config file for Launch
   std::string defaultConfigPath;
-  ignition::common::env(IGN_HOMEDIR, defaultConfigPath);
-  defaultConfigPath = ignition::common::joinPaths(defaultConfigPath,
+  common::env(IGN_HOMEDIR, defaultConfigPath);
+  defaultConfigPath = common::joinPaths(defaultConfigPath,
       ".ignition", "launch");
 
-  auto defaultConfigFile = ignition::common::joinPaths(defaultConfigPath,
+  auto defaultConfigFile = common::joinPaths(defaultConfigPath,
       "gui.config");
 
   // Check if there's a default config file under
   // ~/.ignition/launch and use that. If there isn't, create it
-  if (!ignition::common::exists(defaultConfigFile))
+  if (!common::exists(defaultConfigFile))
   {
-    ignition::common::createDirectories(defaultConfigPath);
+    common::createDirectories(defaultConfigPath);
 
     std::ofstream configFile(defaultConfigFile);
     if (configFile.is_open())
@@ -98,7 +98,7 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
   auto app = gazebo::gui::createGui(argc, argv, defaultConfigFile.c_str(),
                                     defaultConfigFile.c_str(), false);
 
-  auto win = app->findChild<ignition::gui::MainWindow *>()->QuickWindow();
+  auto win = app->findChild<gui::MainWindow *>()->QuickWindow();
 
   // Customize window
   std::string windowTitle{"Gazebo"};
