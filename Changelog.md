@@ -146,7 +146,25 @@
 1. Depend on ign-gazebo4, ign-gui4
     * [BitBucket pull request 64](https://osrf-migration.github.io/ignition-gh-pages/#!/ignitionrobotics/ign-launch/pull-requests/64)
 
-## Ignition Launch 2.x
+## Gazebo Launch 2.x
+
+### Gazebo Launch 2.3.0 (2022-08-15)
+
+1. Remove redundant namespace references
+    * [Pull request #190](https://github.com/gazebosim/gz-launch/pull/190)
+
+1. Add code coverage ignore file
+    * [Pull request #179](https://github.com/gazebosim/gz-launch/pull/179)
+
+1. Change `IGN_DESIGNATION` to `GZ_DESIGNATION`
+    * [Pull request #181](https://github.com/gazebosim/gz-launch/pull/181)
+    * [Pull request #182](https://github.com/gazebosim/gz-launch/pull/182)
+
+1. Ignition -> Gazebo
+    * [Pull request #178](https://github.com/gazebosim/gz-launch/pull/178)
+
+1. Bash completion for flags
+    * [Pull request #167](https://github.com/gazebosim/gz-launch/pull/167)
 
 ### Ignition Launch 2.2.2 (2021-10-11)
 
@@ -209,8 +227,8 @@
 
 ### Ignition Launch 1.10.0 (2020-09-25)
 
-* Modernize Github Actions CI.
-    * [Pull request 42](https://github.com/ignitionrobotics/ign-launch/pull/42)
+1. Modernize Github Actions CI.
+   * [Pull request 42](https://github.com/ignitionrobotics/ign-launch/pull/42)
 
 1. Add PKGCONFIG information to ignition-tools ign_find_package
    * [Pull Request 44](https://github.com/ignitionrobotics/ign-launch/pull/44)
