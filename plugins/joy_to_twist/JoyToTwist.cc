@@ -51,7 +51,7 @@ void setVectorFromString(const std::string &_str,
 
 /////////////////////////////////////////////////
 JoyToTwist::JoyToTwist()
-  : gz::launch::Plugin()
+  : Plugin()
 {
 }
 

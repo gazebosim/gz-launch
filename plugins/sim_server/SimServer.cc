@@ -52,7 +52,7 @@ void copyElement(sdf::ElementPtr _sdf, const tinyxml2::XMLElement *_xml)
 
 /////////////////////////////////////////////////
 SimServer::SimServer()
-  : gz::launch::Plugin()
+  : launch::Plugin()
 {
 }
 
@@ -116,7 +116,7 @@ bool SimServer::Load(const tinyxml2::XMLElement *_elem)
 
     // Update compressed file path to name of recording directory path
     std::string cmpPath = std::string(recordPathMod);
-    if (!std::string(1, cmpPath.back()).compare(gz::common::separator("")))
+    if (!std::string(1, cmpPath.back()).compare(common::separator("")))
       // Remove the separator at end of path
       cmpPath = cmpPath.substr(0, cmpPath.length() - 1);
     cmpPath += ".zip";
@@ -132,30 +132,30 @@ bool SimServer::Load(const tinyxml2::XMLElement *_elem)
     {
       // Update compressed file path to name of recording directory path
       cmpPath = std::string(recordPathMod);
-      if (!std::string(1, cmpPath.back()).compare(gz::common::separator(
+      if (!std::string(1, cmpPath.back()).compare(common::separator(
         "")))
         // Remove the separator at end of path
         cmpPath = cmpPath.substr(0, cmpPath.length() - 1);
       cmpPath += ".zip";
 
       // Check if path or compressed file with same prefix exists
-      if (gz::common::exists(recordPathMod) ||
-        gz::common::exists(cmpPath))
+      if (common::exists(recordPathMod) ||
+        common::exists(cmpPath))
       {
         // Overwrite if flag specified
         if (overwrite)
         {
           bool recordMsg = false, cmpMsg = false;
           // Remove files before initializing console log files on top of them
-          if (gz::common::exists(recordPathMod))
+          if (common::exists(recordPathMod))
           {
             recordMsg = true;
-            gz::common::removeAll(recordPathMod);
+            common::removeAll(recordPathMod);
           }
-          if (gz::common::exists(cmpPath))
+          if (common::exists(cmpPath))
           {
             cmpMsg = true;
-            gz::common::removeFile(cmpPath);
+            common::removeFile(cmpPath);
           }
 
           // Create log file before printing any messages so they can be logged
@@ -180,21 +180,21 @@ bool SimServer::Load(const tinyxml2::XMLElement *_elem)
         {
           // Remove the separator at end of path
           if (!std::string(1, recordPathMod.back()).compare(
-            gz::common::separator("")))
+            common::separator("")))
             recordPathMod = recordPathMod.substr(0, recordPathMod.length() - 1);
-          recordPathMod = gz::common::uniqueDirectoryPath(recordPathMod);
+          recordPathMod = common::uniqueDirectoryPath(recordPathMod);
 
           cmpPath = std::string(recordPathMod);
           // Remove the separator at end of path
           if (!std::string(1, cmpPath.back()).compare(
-            gz::common::separator("")))
+            common::separator("")))
             cmpPath = cmpPath.substr(0, cmpPath.length() - 1);
           cmpPath += ".zip";
 
           // If compressed file exists, rename again
-          if (gz::common::exists(cmpPath))
+          if (common::exists(cmpPath))
           {
-            cmpPath = gz::common::uniqueFilePath(recordPathMod, "zip");
+            cmpPath = common::uniqueFilePath(recordPathMod, "zip");
 
             size_t extIdx = cmpPath.find_last_of(".");
             recordPathMod = cmpPath.substr(0, extIdx);
