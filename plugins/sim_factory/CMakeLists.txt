@@ -11,6 +11,7 @@ target_link_libraries(${plugin_lower}
   gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
   gz-transport${GZ_TRANSPORT_VER}::core
   gz-plugin${GZ_PLUGIN_VER}::core
+  gz_msgs_gen
 )
 
 install (TARGETS ${plugin} DESTINATION ${GZ_LAUNCH_PLUGIN_INSTALL_PATH})

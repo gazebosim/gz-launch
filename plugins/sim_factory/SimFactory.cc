@@ -17,6 +17,7 @@
 
 #include <gz/msgs/boolean.pb.h>
 #include <gz/msgs/entity_factory.pb.h>
+#include <gz/msgs/entity_factory_v.pb.h>
 #include <gz/msgs/stringmsg.pb.h>
 
 #include <gz/common/Util.hh>
