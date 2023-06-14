@@ -1,5 +1,28 @@
 ## Gazebo Launch 5.x
 
+### Gazebo Launch 5.3.0 (2023-06-14)
+
+1. Forward ports
+    * [Pull request #214](https://github.com/gazebosim/gz-launch/pull/214)
+
+1. Infrastructure
+    * [Pull request #213](https://github.com/gazebosim/gz-launch/pull/213)
+
+1. Rename COPYING to LICENSE
+    * [Pull request #212](https://github.com/gazebosim/gz-launch/pull/212)
+
+1. Small cleanup fixes
+    * [Pull request #211](https://github.com/gazebosim/gz-launch/pull/211)
+
+1. Add pause and stop to Websocket Server
+    * [Pull request #187](https://github.com/gazebosim/gz-launch/pull/187)
+
+1. Return a message on asset error
+    * [Pull request #197](https://github.com/gazebosim/gz-launch/pull/197)
+
+1. Remove redundant namespace references
+    * [Pull request #190](https://github.com/gazebosim/gz-launch/pull/190)
+
 ### Gazebo Launch 5.2.0 (2022-08-16)
 
 1. Add code coverage ignore file
