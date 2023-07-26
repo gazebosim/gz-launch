@@ -29,7 +29,7 @@ using namespace gz::launch;
 
 /////////////////////////////////////////////////
 SimFactory::SimFactory()
-  : gz::launch::Plugin()
+  : launch::Plugin()
 {
 }
 
@@ -125,7 +125,7 @@ void SimFactory::ProcessSpawn(const tinyxml2::XMLElement *_elem)
   elem = _elem->FirstChildElement("pose");
   if (elem)
   {
-    gz::math::Pose3d pose;
+    math::Pose3d pose;
     std::stringstream stream;
     stream << elem->GetText();
     stream >> pose;

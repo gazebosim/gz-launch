@@ -33,7 +33,7 @@ using namespace gz::launch;
 
 /////////////////////////////////////////////////
 Joystick::Joystick()
-  : gz::launch::Plugin()
+  : Plugin()
 {
 }
 

@@ -1010,6 +1010,61 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
   {
     this->OnAsset(_socketId, frameParts);
   }
+  else if (frameParts[0] == this->operations[REQUEST])
+  {
+    this->OnRequest(_socketId, frameParts);
+  }
+}
+
+//////////////////////////////////////////////////
+void WebsocketServer::OnRequest(int _socketId,
+    const std::vector<std::string> &_frameParts)
+{
+  std::string service = _frameParts[1];
+  std::string msgTypeName = _frameParts[2];
+  std::string msgData = _frameParts[3];
+
+  gzdbg << "Calling service [" << service << "]\n";
+  bool result;
+  unsigned int timeout = 2000;
+
+  std::vector<transport::ServicePublisher> publishers;
+  this->node.ServiceInfo(service, publishers);
+
+  if (publishers.empty())
+  {
+    std::cerr << "Node::RequestRaw(): Error getting response type for "
+      << "service [" << service << "]\n";
+
+    gz::msgs::StringMsg msg;
+    msg.set_data("service_not_found");
+    std::string data = BUILD_MSG(this->operations[REQUEST], service,
+        msg.GetTypeName(), msg.SerializeAsString());
+
+    // Queue the message for delivery.
+    this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
+
+    return;
+  }
+
+  std::string repTypeName = publishers.front().RepTypeName();
+
+  std::string repStr;
+  bool executed = this->node.RequestRaw(service, msgData, msgTypeName,
+                                        repTypeName, timeout, repStr, result);
+  if (!executed)
+  {
+    gzerr << "Unable to call service [" << service  << "]\n";
+  }
+
+  // Construct the response message
+  std::string data = BUILD_MSG(this->operations[REQUEST], service,
+      repTypeName, repStr);
+
+  // Queue the message for delivery.
+  this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
 }
 
 //////////////////////////////////////////////////
@@ -1019,6 +1074,16 @@ void WebsocketServer::OnAsset(int _socketId,
   if (_frameParts.size() <= 1)
   {
     gzerr << "Asset requested, but asset URI is missing\n";
+
+    gz::msgs::StringMsg msg;
+    msg.set_data("asset_uri_missing");
+    std::string data = BUILD_MSG(this->operations[ASSET], "",
+        msg.GetTypeName(), msg.SerializeAsString());
+
+    // Queue the message for delivery.
+    this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
+
     return;
   }
 
@@ -1059,7 +1124,18 @@ void WebsocketServer::OnAsset(int _socketId,
 
     // Construct the response message
     std::string data = BUILD_MSG(this->operations[ASSET], assetUri,
-        std::string("gz.msgs.Bytes"), bytes.SerializeAsString());
+        bytes.GetTypeName(), bytes.SerializeAsString());
+
+    // Queue the message for delivery.
+    this->QueueMessage(this->connections[_socketId].get(),
+        data.c_str(), data.length());
+  }
+  else
+  {
+    gz::msgs::StringMsg msg;
+    msg.set_data("asset_not_found");
+    std::string data = BUILD_MSG(this->operations[ASSET], assetUri,
+        msg.GetTypeName(), msg.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),

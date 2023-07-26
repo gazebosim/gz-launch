@@ -30,7 +30,7 @@ using namespace gz::launch;
 
 /////////////////////////////////////////////////
 SimGui::SimGui()
-  : gz::launch::Plugin()
+  : launch::Plugin()
 {
 }
 
@@ -47,18 +47,18 @@ bool SimGui::Load(const tinyxml2::XMLElement *_elem)
 
   // Set default config file for Launch
   std::string defaultConfigPath;
-  gz::common::env(GZ_HOMEDIR, defaultConfigPath);
-  defaultConfigPath = gz::common::joinPaths(defaultConfigPath,
+  common::env(GZ_HOMEDIR, defaultConfigPath);
+  defaultConfigPath = common::joinPaths(defaultConfigPath,
       ".gz", "launch");
 
-  auto defaultConfigFile = gz::common::joinPaths(defaultConfigPath,
+  auto defaultConfigFile = common::joinPaths(defaultConfigPath,
       "gui.config");
 
   // Check if there's a default config file under
   // ~/.gz/launch and use that. If there isn't, create it
-  if (!gz::common::exists(defaultConfigFile))
+  if (!common::exists(defaultConfigFile))
   {
-    gz::common::createDirectories(defaultConfigPath);
+    common::createDirectories(defaultConfigPath);
 
     std::ofstream configFile(defaultConfigFile);
     if (configFile.is_open())
@@ -98,7 +98,7 @@ bool SimGui::Load(const tinyxml2::XMLElement *_elem)
   auto app = sim::gui::createGui(argc, argv, defaultConfigFile.c_str(),
                                  defaultConfigFile.c_str(), false);
 
-  auto win = app->findChild<gz::gui::MainWindow *>()->QuickWindow();
+  auto win = app->findChild<gui::MainWindow *>()->QuickWindow();
 
   // Customize window
   std::string windowTitle{"Gazebo"};
