@@ -47,7 +47,7 @@ namespace gz
     ///          spawned -->
     ///     <sdf version='1.6'>
     ///       <include>
-    ///         <uri>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/X2 UGV/1</uri>
+    ///         <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/X2 UGV/1</uri>
     ///         <!-- Publish robot state information -->
     ///         <plugin filename="gz-sim-state-publisher-system"
     ///              name="gz::sim::systems::StatePublisher"></plugin>

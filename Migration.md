@@ -5,6 +5,12 @@ Deprecated code produces compile-time warnings. These warning serve as
 notification to users that their code should be upgraded. The next major
 release will remove the deprecated code.
 
+## Gazebo Launch 6.X to 7.X
+
+- Removed Ignition
+    - Removed the ignition include directory.
+    - Launch scripts must use the `<gz>` element.
+
 ## Gazebo Launch 5.X to 6.X
 
 - The `ignition` namespace is deprecated and will be removed in future versions.

@@ -84,7 +84,7 @@ TEST_F(ManagerTest, RunEmptyConfig)
 }
 
 /////////////////////////////////////////////////
-TEST_F(ManagerTest, MissingIgnition)
+TEST_F(ManagerTest, MissingGz)
 {
   std::string config =
     "<executable name='sim'>"
