@@ -84,7 +84,7 @@ install(
 #===============================================================================
 # Generate the ruby script for internal testing.
 # Note that the major version of the library is included in the name.
-# Ex: cmdlaunch6.rb
+# Ex: cmdlaunch7.rb
 
 set(cmd_script_generated_test "${CMAKE_BINARY_DIR}/test/lib/$<CONFIG>/ruby/gz/cmd${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb")
 set(cmd_script_configured_test "${CMAKE_CURRENT_BINARY_DIR}/test_cmd${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb.configured")
@@ -108,7 +108,7 @@ file(GENERATE
 # Used for the installed version.
 # Generate the ruby script that gets installed.
 # Note that the major version of the library is included in the name.
-# Ex: cmdlaunch6.rb
+# Ex: cmdlaunch7.rb
 set(cmd_script_generated "${CMAKE_CURRENT_BINARY_DIR}/cmd${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}.rb")
 set(cmd_script_configured "${cmd_script_generated}.configured")
 
@@ -129,7 +129,7 @@ set(gz_library_path "${CMAKE_BINARY_DIR}/test/lib/$<CONFIG>/ruby/gz/cmd${GZ_DESI
 
 # Generate a configuration file for internal testing.
 # Note that the major version of the library is included in the name.
-# Ex: launch6.yaml
+# Ex: launch7.yaml
 configure_file(
   "${GZ_DESIGNATION}.yaml.in"
   "${CMAKE_CURRENT_BINARY_DIR}/${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml.configured" @ONLY)
@@ -143,7 +143,7 @@ set(gz_library_path "${CMAKE_INSTALL_PREFIX}/lib/ruby/gz/cmd${GZ_DESIGNATION}${P
 
 # Generate the configuration file that is installed.
 # Note that the major version of the library is included in the name.
-# Ex: launch6.yaml
+# Ex: launch7.yaml
 configure_file(
   "${GZ_DESIGNATION}.yaml.in"
   "${CMAKE_CURRENT_BINARY_DIR}/${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml" @ONLY)
