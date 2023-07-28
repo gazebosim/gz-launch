@@ -60,7 +60,14 @@ endif()
 set(GZ_TOOLS_VER 2)
 
 #--------------------------------------
+# Find gz-fuel-tools
+gz_find_package(gz-fuel_tools9-msgs REQUIRED)
+gz_find_package(gz-fuel_tools9 REQUIRED)
+set(GZ_FUEL_TOOLS_VER ${gz-fuel_tools9_VERSION_MAJOR})
+
+#--------------------------------------
 # Find gz-transport
+gz_find_package(gz-transport13-msgs REQUIRED)
 gz_find_package(gz-transport13 REQUIRED)
 set(GZ_TRANSPORT_VER ${gz-transport13_VERSION_MAJOR})
 
@@ -76,6 +83,7 @@ set(GZ_MATH_VER ${gz-math7_VERSION_MAJOR})
 
 #--------------------------------------
 # Find gz-gui
+gz_find_package(gz-gui8-msgs)
 gz_find_package(gz-gui8 REQUIRED)
 set(GZ_GUI_VER ${gz-gui8_VERSION_MAJOR})
 gz_find_package (Qt5
@@ -88,6 +96,7 @@ gz_find_package (Qt5
 
 #--------------------------------------
 # Find gz-sim
+gz_find_package(gz-sim8-msgs)
 gz_find_package(gz-sim8 REQUIRED PRIVATE COMPONENTS gui)
 set(GZ_SIM_VER ${gz-sim8_VERSION_MAJOR})
 
