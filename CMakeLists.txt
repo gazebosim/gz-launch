@@ -8,8 +8,8 @@ project(gz-launch7 VERSION 7.0.0)
 #============================================================================
 # Find gz-cmake
 #============================================================================
-find_package(gz-cmake3 REQUIRED)
-set(GZ_CMAKE_VER ${gz-cmake3_VERSION_MAJOR})
+find_package(gz-cmake4 REQUIRED)
+set(GZ_CMAKE_VER ${gz-cmake4_VERSION_MAJOR})
 
 #============================================================================
 # Configure the project
@@ -36,18 +36,18 @@ gz_find_package(TINYXML2 REQUIRED PRIVATE PRETTY tinyxml2)
 
 #--------------------------------------
 # Find gz-common
-gz_find_package(gz-common5 REQUIRED PRIVATE)
-set(GZ_COMMON_VER ${gz-common5_VERSION_MAJOR})
+gz_find_package(gz-common6 REQUIRED PRIVATE)
+set(GZ_COMMON_VER ${gz-common6_VERSION_MAJOR})
 
 #--------------------------------------
 # Find gz-utils
-gz_find_package(gz-utils2 REQUIRED COMPONENTS cli)
-set(GZ_UTILS_VER ${gz-utils2_VERSION_MAJOR})
+gz_find_package(gz-utils3 REQUIRED COMPONENTS cli)
+set(GZ_UTILS_VER ${gz-utils3_VERSION_MAJOR})
 
 #--------------------------------------
 # Find gz-plugin
-gz_find_package(gz-plugin2 REQUIRED_BY launch COMPONENTS loader register)
-set(GZ_PLUGIN_VER ${gz-plugin2_VERSION_MAJOR})
+gz_find_package(gz-plugin3 REQUIRED_BY launch COMPONENTS loader register)
+set(GZ_PLUGIN_VER ${gz-plugin3_VERSION_MAJOR})
 
 #--------------------------------------
 # Find if gz command is available
@@ -71,8 +71,8 @@ set(GZ_MSGS_VER ${gz-msgs10_VERSION_MAJOR})
 
 #--------------------------------------
 # Find gz-math
-gz_find_package(gz-math7 REQUIRED)
-set(GZ_MATH_VER ${gz-math7_VERSION_MAJOR})
+gz_find_package(gz-math8 REQUIRED)
+set(GZ_MATH_VER ${gz-math8_VERSION_MAJOR})
 
 #--------------------------------------
 # Find gz-gui
