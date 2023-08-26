@@ -679,14 +679,8 @@ bool ManagerPrivate::ParseConfig(const std::string &_config)
   tinyxml2::XMLElement *root = xmlDoc.FirstChildElement("gz");
   if (!root)
   {
-    root = xmlDoc.FirstChildElement("ignition");
-    if (!root)
-    {
-      gzerr << "Invalid config file, missing `<gz>` element\n";
-      return false;
-    }
-    gzwarn << "The `<ignition>` element is deprecated and will be removed. "
-           << "Please use `<gz>` instead." << std::endl;
+    gzerr << "Invalid config file, missing `<gz>` element\n";
+    return false;
   }
   // Keep the environment variables in memory. See manpage for putenv.
   this->envs = this->ParseEnvs(root);
@@ -1110,26 +1104,6 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
     pathToLib = file;
   else
     pathToLib = systemPaths.FindSharedLibrary(file);
-
-  if (pathToLib.empty())
-  {
-    // TODO(CH3): Deprecated. Remove on ticktock.
-    // This tries to find one more time with IGN_LAUNCH_PLUGIN_PATH instead of
-    // GZ_LAUNCH_PLUGIN_PATH
-    systemPaths.SetPluginPathEnv("IGN_LAUNCH_PLUGIN_PATH");
-
-    systemPaths.AddPluginPaths(
-      gz::common::joinPaths(homePath, ".ignition", "gazebo", "plugins"));
-
-    pathToLib = systemPaths.FindSharedLibrary(file);
-
-    if (!pathToLib.empty())
-    {
-      gzwarn << "Found plugin [" << pathToLib
-      << "] using deprecated environment variable [IGN_LAUNCH_PLUGIN_PATH]."
-         " Please use [GZ_LAUNCH_PLUGIN_PATH] instead." << std::endl;
-    }
-  }
 
   if (pathToLib.empty())
   {

@@ -62,7 +62,7 @@ necessary prerequisites followed by building from source.
 
     ```
     sudo apt -y install \
-      $(sort -u $(find . -iname 'packages-'`lsb_release -cs`'.apt' -o -iname 'packages.apt' | grep -v '/\.git/') | sed '/ignition\|sdf/d' | tr '\n' ' ')
+      $(sort -u $(find . -iname 'packages-'`lsb_release -cs`'.apt' -o -iname 'packages.apt' | grep -v '/\.git/') | sed '/gz\|sdf/d' | tr '\n' ' ')
     ```
 
 1. Install required Gazebo libraries
@@ -105,7 +105,7 @@ necessary prerequisites followed by building from source.
 
 2. Install dependencies
   ```
-  brew install --only-dependencies ignition-launch<#>
+  brew install --only-dependencies gz-launch<#>
   ```
   Be sure to replace `<#>` with a number value, such as 5 or 6, depending on
   which version you need.
