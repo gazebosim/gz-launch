@@ -17,7 +17,10 @@
 #ifndef GZ_LAUNCH_GAZEBOFACTORY_HH_
 #define GZ_LAUNCH_GAZEBOFACTORY_HH_
 
+#include <gz/msgs/entity_factory_v.pb.h>
+
 #include <memory>
+
 #include <gz/plugin/Register.hh>
 #include <gz/transport/Node.hh>
 #include "gz/launch/Plugin.hh"
