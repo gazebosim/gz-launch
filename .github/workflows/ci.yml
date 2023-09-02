@@ -16,4 +16,3 @@ jobs:
           codecov-enabled: true
           cppcheck-enabled: true
           cpplint-enabled: true
-
