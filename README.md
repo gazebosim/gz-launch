@@ -54,7 +54,7 @@ directory.
 
 # Install
 
-See the [installation tutorial](https://gazebosim.org/api/launch/5.0/install.html).
+See the [installation tutorial](https://gazebosim.org/api/launch/7/install.html).
 
 # Usage
 
@@ -99,7 +99,7 @@ This issue is tracked [here](https://github.com/gazebosim/gz-tools/issues/8).
 
 # Documentation
 
-See the [installation tutorial](https://gazebosim.org/api/launch/5.0/install.html).
+See the [installation tutorial](https://gazebosim.org/api/launch/7/install.html).
 
 # Folder Structure
 
