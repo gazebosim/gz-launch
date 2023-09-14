@@ -3,7 +3,7 @@
 # Install
 
 These instructions are for installing only Gazebo Launch. If you're interested
-in using all the Gazebo libraries, not only Igniton Launch, check out this
+in using all the Gazebo libraries, not only Gazebo Launch, check out this
 [Gazebo installation](https://gazebosim.org/docs/latest/install).
 
 We recommend following the binary install instructions to get up and running as
@@ -27,7 +27,7 @@ On Ubuntu systems, `apt` can be used to install `gz-launch`:
 sudo apt install libgz-launch<#>
 ```
 
-Be sure to replace `<#>` with a number value, such as 1 or 2, depending on
+Be sure to replace `<#>` with a number value, such as 6 or 7, depending on
 which version you need.
 
 ## macOS
@@ -60,7 +60,7 @@ necessary prerequisites followed by building from source.
 
 1. Install third-party libraries:
 
-    ```
+    ```sh
     sudo apt -y install \
       $(sort -u $(find . -iname 'packages-'`lsb_release -cs`'.apt' -o -iname 'packages.apt' | grep -v '/\.git/') | sed '/gz\|sdf/d' | tr '\n' ' ')
     ```
@@ -97,21 +97,26 @@ necessary prerequisites followed by building from source.
 ## macOS
 
 1. Clone the repository
+
+  ```sh
+  git clone https://github.com/gazebosim/gz-launch -b gz-launch<#>
   ```
-  git clone https://github.com/gazebosim/gz-launch -b ign-launch<#>
-  ```
+
   Be sure to replace `<#>` with a number value, such as 4 or 5, depending on
   which version you need.
 
 2. Install dependencies
-  ```
+
+  ```sh
   brew install --only-dependencies gz-launch<#>
   ```
+
   Be sure to replace `<#>` with a number value, such as 5 or 6, depending on
   which version you need.
 
 3. Configure and build
-  ```
+
+  ```sh
   cd gz-launch
   mkdir build
   cd build
@@ -120,7 +125,8 @@ necessary prerequisites followed by building from source.
   ```
 
 4. Optionally, install
-  ```
+
+  ```sh
   sudo make install
   ```
 
@@ -132,25 +138,25 @@ You can also generate the documentation from a clone of this repository by follo
 
 1. You will need Doxygen. On Ubuntu Doxygen can be installed using
 
-    ```
+    ```sh
     sudo apt-get install doxygen
     ```
 
 2. Clone the repository
 
-    ```
+    ```sh
     git clone https://github.com/gazebosim/gz-launch
     ```
 
 3. Configure and build the documentation.
 
-    ```
+    ```sh
     cd gz-launch; mkdir build; cd build; cmake ../; make doc
     ```
 
 4. View the documentation by running the following command from the build directory.
 
-    ```
+    ```sh
     firefox doxygen/html/index.html
     ```
 
@@ -162,12 +168,12 @@ Follow these steps to run tests and static code analysis in your clone of this r
 
 2. Run tests.
 
-    ```
+    ```sh
     make test
     ```
 
 3. Static code checker.
 
-    ```
+    ```sh
     make codecheck
     ```
