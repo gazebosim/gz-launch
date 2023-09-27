@@ -2,6 +2,23 @@
 
 ### Gazebo Launch 7.X.X (202X-XX-XX)
 
+1. Documentation fixes
+    * [Pull request #230](https://github.com/gazebosim/gz-launch/pull/230)
+
+1. Infrastructure
+    * [Pull request #229](https://github.com/gazebosim/gz-launch/pull/229)
+
+1. ign -> gz
+    * [Pull request #223](https://github.com/gazebosim/gz-launch/pull/223)
+
+1. Bump Harmonic dependencies: fuel-tools, gui, physics, rendering, sdformat , sensors, sim, transport, and msgs
+    * [Pull request #210](https://github.com/gazebosim/gz-launch/pull/210)
+    * [Pull request #224](https://github.com/gazebosim/gz-launch/pull/224)
+    * [Pull request #207](https://github.com/gazebosim/gz-launch/pull/207)
+
+1. ⬆️  Bump main to 7.0.0~pre1
+    * [Pull request #189](https://github.com/gazebosim/gz-launch/pull/189)
+
 ## Gazebo Launch 6.x
 
 ### Gazebo Launch 6.1.0 (2023-09-26)
