@@ -1,6 +1,6 @@
 ## Gazebo Launch 7.x
 
-### Gazebo Launch 7.X.X (202X-XX-XX)
+### Gazebo Launch 7.0.0 (2023-09-29)
 
 1. Documentation fixes
     * [Pull request #230](https://github.com/gazebosim/gz-launch/pull/230)
