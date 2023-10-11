@@ -1,8 +1,51 @@
 ## Gazebo Launch 7.x
 
-### Gazebo Launch 7.X.X (202X-XX-XX)
+### Gazebo Launch 7.0.0 (2023-09-29)
+
+1. Documentation fixes
+    * [Pull request #230](https://github.com/gazebosim/gz-launch/pull/230)
+
+1. Infrastructure
+    * [Pull request #229](https://github.com/gazebosim/gz-launch/pull/229)
+
+1. ign -> gz
+    * [Pull request #223](https://github.com/gazebosim/gz-launch/pull/223)
+
+1. Bump Harmonic dependencies: fuel-tools, gui, physics, rendering, sdformat , sensors, sim, transport, and msgs
+    * [Pull request #210](https://github.com/gazebosim/gz-launch/pull/210)
+    * [Pull request #224](https://github.com/gazebosim/gz-launch/pull/224)
+    * [Pull request #207](https://github.com/gazebosim/gz-launch/pull/207)
+
+1. ⬆️  Bump main to 7.0.0~pre1
+    * [Pull request #189](https://github.com/gazebosim/gz-launch/pull/189)
 
 ## Gazebo Launch 6.x
+
+### Gazebo Launch 6.1.0 (2023-09-26)
+
+1. Infrastructure
+    * [Pull request #227](https://github.com/gazebosim/gz-launch/pull/227)
+    * [Pull request #226](https://github.com/gazebosim/gz-launch/pull/226)
+    * [Pull request #213](https://github.com/gazebosim/gz-launch/pull/213)
+
+1. Rename COPYING to LICENSE
+    * [Pull request #212](https://github.com/gazebosim/gz-launch/pull/212)
+
+1. Small cleanup fixes
+    * [Pull request #211](https://github.com/gazebosim/gz-launch/pull/211)
+
+1. Add pause and stop to Websocket Server
+    * [Pull request #187](https://github.com/gazebosim/gz-launch/pull/187)
+
+1. Fix gz_test when using a CMake generator different from make
+    * [Pull request #204](https://github.com/gazebosim/gz-launch/pull/204)
+    * [Pull request #205](https://github.com/gazebosim/gz-launch/pull/205)
+
+1. Return a message on asset error
+    * [Pull request #197](https://github.com/gazebosim/gz-launch/pull/197)
+
+1. Remove redundant namespace references
+    * [Pull request #190](https://github.com/gazebosim/gz-launch/pull/190)
 
 ### Gazebo Launch 6.0.0
 
