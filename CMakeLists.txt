@@ -46,8 +46,8 @@ set(GZ_UTILS_VER ${gz-utils3_VERSION_MAJOR})
 
 #--------------------------------------
 # Find gz-plugin
-gz_find_package(gz-plugin2 REQUIRED_BY launch COMPONENTS loader register)
-set(GZ_PLUGIN_VER ${gz-plugin2_VERSION_MAJOR})
+gz_find_package(gz-plugin3 REQUIRED_BY launch COMPONENTS loader register)
+set(GZ_PLUGIN_VER ${gz-plugin3_VERSION_MAJOR})
 
 #--------------------------------------
 # Find if gz command is available
