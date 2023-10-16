@@ -71,8 +71,8 @@ set(GZ_MSGS_VER ${gz-msgs11_VERSION_MAJOR})
 
 #--------------------------------------
 # Find gz-math
-gz_find_package(gz-math7 REQUIRED)
-set(GZ_MATH_VER ${gz-math7_VERSION_MAJOR})
+gz_find_package(gz-math8 REQUIRED)
+set(GZ_MATH_VER ${gz-math8_VERSION_MAJOR})
 
 #--------------------------------------
 # Find gz-gui
