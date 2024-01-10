@@ -19,9 +19,11 @@
 
 #include <string>
 #include <thread>
+
+#include <gz/msgs/joy.pb.h>
+
 #include <gz/launch/Plugin.hh>
 #include <gz/math/Vector3.hh>
-#include <gz/msgs.hh>
 #include <gz/plugin/Register.hh>
 #include <gz/transport/Node.hh>
 
@@ -29,7 +31,7 @@ namespace gz
 {
   namespace launch
   {
-    /// \brief Converts gz::msgs::Joystick messages to
+    /// \brief Converts gz::msgs::Joy messages to
     /// gz::msgs::Twist.
     ///
     /// # Example usage
@@ -38,7 +40,7 @@ namespace gz
     /// <plugin name="gz::launch::JoyToTwist"
     ///         filename=gz-launch-joytotwist0">
     ///   <!-- Incoming topic that publishes
-    ///         gz::msgs::Joystick messages -->
+    ///         gz::msgs::Joy messages -->
     ///   <input_topic>/joy</input_topic>
     ///
     ///   <!-- Outgoing topic that publishes gz::msgs::Twist messages -->

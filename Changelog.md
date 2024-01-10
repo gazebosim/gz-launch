@@ -1,10 +1,93 @@
 ## Gazebo Launch 6.x
 
-### Gazebo Launch 6.X.X (202X-XX-XX)
+### Gazebo Launch 6.1.0 (2023-09-26)
+
+1. Infrastructure
+    * [Pull request #227](https://github.com/gazebosim/gz-launch/pull/227)
+    * [Pull request #226](https://github.com/gazebosim/gz-launch/pull/226)
+    * [Pull request #213](https://github.com/gazebosim/gz-launch/pull/213)
+
+1. Rename COPYING to LICENSE
+    * [Pull request #212](https://github.com/gazebosim/gz-launch/pull/212)
+
+1. Small cleanup fixes
+    * [Pull request #211](https://github.com/gazebosim/gz-launch/pull/211)
+
+1. Add pause and stop to Websocket Server
+    * [Pull request #187](https://github.com/gazebosim/gz-launch/pull/187)
+
+1. Fix gz_test when using a CMake generator different from make
+    * [Pull request #204](https://github.com/gazebosim/gz-launch/pull/204)
+    * [Pull request #205](https://github.com/gazebosim/gz-launch/pull/205)
+
+1. Return a message on asset error
+    * [Pull request #197](https://github.com/gazebosim/gz-launch/pull/197)
+
+1. Remove redundant namespace references
+    * [Pull request #190](https://github.com/gazebosim/gz-launch/pull/190)
+
+### Gazebo Launch 6.0.0
+
+1. Fix macOs compiler error.
+    * [Pull request #161](https://github.com/gazebosim/gz-launch/pull/161)
+
+1. Update to latest gtest.
+    * [Pull request #174](https://github.com/gazebosim/gz-launch/pull/174)
+
+1. Ignition to Gazebo renaming
+    * [Pull request #162](https://github.com/gazebosim/gz-launch/pull/162)
+    * [Pull request #163](https://github.com/gazebosim/gz-launch/pull/163)
+    * [Pull request #165](https://github.com/gazebosim/gz-launch/pull/165)
+    * [Pull request #166](https://github.com/gazebosim/gz-launch/pull/166)
+    * [Pull request #168](https://github.com/gazebosim/gz-launch/pull/168)
+    * [Pull request #169](https://github.com/gazebosim/gz-launch/pull/169)
+    * [Pull request #170](https://github.com/gazebosim/gz-launch/pull/170)
+    * [Pull request #171](https://github.com/gazebosim/gz-launch/pull/171)
+    * [Pull request #172](https://github.com/gazebosim/gz-launch/pull/172)
+    * [Pull request #173](https://github.com/gazebosim/gz-launch/pull/173)
+    * [Pull request #176](https://github.com/gazebosim/gz-launch/pull/176)
+    * [Pull request #188](https://github.com/gazebosim/gz-launch/pull/188)
+
+1. Fix `msgs` header usage.
+    * [Pull request #196](https://github.com/gazebosim/gz-launch/pull/196)
+
+1. Version bumps and removal of deprecations
+    * [Pull request #144](https://github.com/gazebosim/gz-launch/pull/144)
+    * [Pull request #145](https://github.com/gazebosim/gz-launch/pull/145)
+    * [Pull request #150](https://github.com/gazebosim/gz-launch/pull/150)
+    * [Pull request #156](https://github.com/gazebosim/gz-launch/pull/156)
 
 ## Gazebo Launch 5.x
 
-### Gazebo Launch 5.X.X (20XX-XX-XX)
+### Gazebo Launch 5.2.0 (2022-08-16)
+
+1. Add code coverage ignore file
+    * [Pull request #179](https://github.com/gazebosim/gz-launch/pull/179)
+
+1. Change `IGN_DESIGNATION` to `GZ_DESIGNATION`
+    * [Pull request #181](https://github.com/gazebosim/gz-launch/pull/181)
+    * [Pull request #182](https://github.com/gazebosim/gz-launch/pull/182)
+
+1. fix `ign_TEST` for Fortress
+    * [Pull request #180](https://github.com/gazebosim/gz-launch/pull/180)
+
+1. Ignition -> Gazebo
+    * [Pull request #178](https://github.com/gazebosim/gz-launch/pull/178)
+
+1. Bash completion for flags
+    * [Pull request #167](https://github.com/gazebosim/gz-launch/pull/167)
+
+1. Adds ability to get a file from a running Gazebo instance
+    * [Pull request #164](https://github.com/gazebosim/gz-launch/pull/164)
+
+1. Add Ubuntu Jammy CI
+    * [Pull request #154](https://github.com/gazebosim/gz-launch/pull/154)
+
+1. Depend on `python3-yaml` instead of `python-yaml`
+    * [Pull request #153](https://github.com/gazebosim/gz-launch/pull/153)
+
+## Gazebo Launch 5.x
+
 
 ### Gazebo Launch 5.1.0 (2022-03-21)
 1. Use exec instead of popen to run gz-launch binary
@@ -127,6 +210,24 @@
 
 ## Gazebo Launch 2.x
 
+### Gazebo Launch 2.3.0 (2022-08-15)
+
+1. Remove redundant namespace references
+    * [Pull request #190](https://github.com/gazebosim/gz-launch/pull/190)
+
+1. Add code coverage ignore file
+    * [Pull request #179](https://github.com/gazebosim/gz-launch/pull/179)
+
+1. Change `IGN_DESIGNATION` to `GZ_DESIGNATION`
+    * [Pull request #181](https://github.com/gazebosim/gz-launch/pull/181)
+    * [Pull request #182](https://github.com/gazebosim/gz-launch/pull/182)
+
+1. Ignition -> Gazebo
+    * [Pull request #178](https://github.com/gazebosim/gz-launch/pull/178)
+
+1. Bash completion for flags
+    * [Pull request #167](https://github.com/gazebosim/gz-launch/pull/167)
+
 ### Gazebo Launch 2.2.2 (2021-10-11)
 
 1. Master branch updates.
@@ -191,7 +292,7 @@
 ### Gazebo Launch 1.10.0 (2020-09-25)
 
 * Modernize Github Actions CI.
-    * [Pull request 42](https://github.com/gazebosim/gz-launch/pull/42)
+   * [Pull request 42](https://github.com/gazebosim/gz-launch/pull/42)
 
 1. Add PKGCONFIG information to gz-tools gz_find_package
    * [Pull Request 44](https://github.com/gazebosim/gz-launch/pull/44)

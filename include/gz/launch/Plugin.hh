@@ -30,6 +30,9 @@ namespace gz
     /// \brief Base class for launch plugins.
     class Plugin
     {
+      // Default destructor
+      public: virtual ~Plugin() {}
+
       /// \brief Load function that each launch plugin must implement.
       /// \param[in] _elem Pointer to the XML for this plugin.
       /// \return True to keep the plugin alive. Return false to have the

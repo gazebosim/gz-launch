@@ -103,17 +103,27 @@ namespace gz
     ///     8. "asset": Get a file as a byte array from a running Gazebo
     ///                 server. Set the payload to the file URI that is
     ///                 being requested.
+    ///     9. "worlds": Get world info.
+    ///     10. "scene": Get scene info.
+    ///     11. "image": Subscribe to an image in the `topic_name` component.
+    ///     12. "throttle": Throttle a topic in the `topic_name` component by
+    ///                 the rate in the `payload` component.
+    ///     13. "req": Request a service, passing in the optional request
+    ///                message. The payload should be a serialized
+    ///                protobuf message. The response payload holds the
+    ///                serialized protobuf response, if any.
     ///
-    /// The `topic_name` component is mandatory for the "sub", "pub", and
-    /// "unsub" operations. If present, it must be the name of a Gazebo
+    /// The `topic_name` component is mandatory for the "sub", "pub", "unsub",
+    /// and "req" operations. If present, it must be the name of a Gazebo
     /// Transport topic.
     ///
-    /// The `message_type` component is mandatory for the "pub" operation. If
-    /// present it names the Gazebo Message type, such as
+    /// The `message_type` component is mandatory for the "pub" and "req"
+    /// operations. If present it names the Gazebo Message type, such as
     /// "gz.msgs.Clock".
     ///
-    /// The `payload` component is mandatory for the "pub" operation. If
-    /// present, it contains a serialized string of a Gazebo Message.
+    /// The `payload` component is mandatory for the "pub" and "req"
+    /// operations. If present, it contains a serialized string of a
+    /// Gazebo Message.
     ///
     /// ## Example frames
     ///
@@ -186,8 +196,6 @@ namespace gz
       /// \param[in] _msg The incoming message.
       public: void OnMessage(int _socketId, const std::string _msg);
 
-      public: void OnRequestMessage(int _socketId, const std::string &_msg);
-
       /// \brief Check and update subscription count for a message type. If
       /// a client has more subscriptions to a topic of a specified type than
       /// the subscription limit, this will block subscription. On the other
@@ -205,6 +213,12 @@ namespace gz
       /// \param[in] _socketId Id of the socket associated with the message.
       /// \param[in] _frameParts The request message in frame parts.
       private: void OnAsset(int _socketId,
+                   const std::vector<std::string> &_frameParts);
+
+      /// \brief Handles service requests.
+      /// \param[in] _socketId Id of the socket associated with the message.
+      /// \param[in] _frameParts The request message in frame parts.
+      private: void OnRequest(int _socketId,
                    const std::vector<std::string> &_frameParts);
 
       private: gz::transport::Node node;
@@ -304,13 +318,16 @@ namespace gz
 
                  /// \brief Get an asset as a byte array.
                  ASSET = 4,
+
+                 /// \brief Request a service
+                 REQUEST = 5,
                };
 
-      /// \brief The set of valid operations, in string  form. These values
+      /// \brief The set of valid operations, in string form. These values
       /// can be sent in websocket message frames.
-      /// These valus must align with the `Operation` enum.
+      /// These values must align with the `Operation` enum.
       private: std::vector<std::string> operations{
-                 "sub", "pub", "topics", "protos", "asset"};
+                 "sub", "pub", "topics", "protos", "asset", "req"};
 
       /// \brief Store publish headers for topics. This is here to improve
       /// performance. Keys are topic names and values are frame headers.
