@@ -108,7 +108,7 @@ add_subdirectory(plugins)
 #============================================================================
 # Configure the build
 #============================================================================
-gz_configure_build(QUIT_IF_BUILD_ERRORS)
+gz_configure_build(QUIT_IF_BUILD_ERRORS))
 
 #============================================================================
 # install example .gzlaunch files
