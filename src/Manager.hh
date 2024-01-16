@@ -14,12 +14,12 @@
  * limitations under the License.
  *
 */
-#ifndef IGNITION_LAUNCH_MANAGER_HH_
-#define IGNITION_LAUNCH_MANAGER_HH_
+#ifndef GZ_LAUNCH_MANAGER_HH_
+#define GZ_LAUNCH_MANAGER_HH_
 
 #include <memory>
 #include <string>
-#include <ignition/launch/Export.hh>
+#include <gz/launch/Export.hh>
 
 namespace ignition
 {

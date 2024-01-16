@@ -17,18 +17,18 @@
 
 #include <fstream>
 
-#include <ignition/common/Console.hh>
-#include <ignition/common/Filesystem.hh>
-#include <ignition/gazebo/config.hh>
-#include <ignition/gazebo/gui/GuiRunner.hh>
-#include <ignition/gui/MainWindow.hh>
-#include "ignition/gazebo/gui/Gui.hh"
-#include "ignition/gazebo/gui/TmpIface.hh"
+#include <gz/common/Console.hh>
+#include <gz/common/Filesystem.hh>
+#include <gz/sim/config.hh>
+#include <gz/sim/gui/GuiRunner.hh>
+#include <gz/gui/MainWindow.hh>
+#include "gz/sim/gui/Gui.hh"
+#include "gz/sim/gui/TmpIface.hh"
 
 #include "GazeboGui.hh"
 
-using namespace ignition;
-using namespace ignition::launch;
+using namespace gz;
+using namespace gz::launch;
 
 /////////////////////////////////////////////////
 GazeboGui::GazeboGui()
@@ -97,7 +97,7 @@ bool GazeboGui::Load(const tinyxml2::XMLElement *_elem)
     }
   }
 
-  auto app = gazebo::gui::createGui(argc, argv, defaultConfigFile.c_str(),
+  auto app = sim::gui::createGui(argc, argv, defaultConfigFile.c_str(),
                                     defaultConfigFile.c_str(), false);
 
   auto win = app->findChild<gui::MainWindow *>()->QuickWindow();

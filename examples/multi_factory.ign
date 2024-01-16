@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ignition version='1.0'>
-  <plugin name="ignition::launch::GazeboFactory"
+  <plugin name="gz::launch::GazeboFactory"
     filename="ignition-launch-gazebo-factory">
     <spawn>
       <name>x2</name>

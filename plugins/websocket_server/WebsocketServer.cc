@@ -16,14 +16,14 @@
 */
 
 #include <algorithm>
-#include <ignition/common/Console.hh>
-#include <ignition/common/Util.hh>
+#include <gz/common/Console.hh>
+#include <gz/common/Util.hh>
 #include <ignition/msgs.hh>
 
 #include "MessageDefinitions.hh"
 #include "WebsocketServer.hh"
 
-using namespace ignition::launch;
+using namespace gz::launch;
 
 /// \brief Construct a websocket frame header.
 /// \param[in] _op The operation string.
@@ -310,7 +310,7 @@ int rootCallback(struct lws *_wsi,
 
 /////////////////////////////////////////////////
 WebsocketServer::WebsocketServer()
-  : ignition::launch::Plugin()
+  : gz::launch::Plugin()
 {
 }
 
@@ -465,7 +465,7 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
   if (!sslCertFile.empty() && !sslPrivateKeyFile.empty())
   {
     // Fail if the certificate file cannot be opened.
-    if (!ignition::common::exists(sslCertFile))
+    if (!gz::common::exists(sslCertFile))
     {
       ignerr << "SSL certificate file[" << sslCertFile
         << "] does not exist. Quitting.\n";
@@ -473,7 +473,7 @@ bool WebsocketServer::Load(const tinyxml2::XMLElement *_elem)
     }
 
     // Fail if the private key file cannot be opened.
-    if (!ignition::common::exists(sslPrivateKeyFile))
+    if (!gz::common::exists(sslPrivateKeyFile))
     {
       ignerr << "SSL private key file[" << sslPrivateKeyFile
         << "] does not exist. Quitting.\n";
@@ -653,12 +653,12 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
     allProtos += "package ignition.msgs;\n";
 
     std::vector<std::string> types;
-    ignition::msgs::Factory::Types(types);
+    gz::msgs::Factory::Types(types);
 
     // Get all the messages, and build a single proto to send to the client.
     for (auto const &type : types)
     {
-      auto msg = ignition::msgs::Factory::New(type);
+      auto msg = gz::msgs::Factory::New(type);
       if (msg)
       {
         auto descriptor = msg->GetDescriptor();
@@ -682,7 +682,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   else if (frameParts[0] == "topics")
   {
     igndbg << "Topic list request recieved\n";
-    ignition::msgs::StringMsg_V msg;
+    gz::msgs::StringMsg_V msg;
 
     std::vector<std::string> topics;
 
@@ -703,10 +703,10 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   else if (frameParts[0] == "worlds")
   {
     igndbg << "World info request recieved\n";
-    ignition::msgs::Empty req;
+    gz::msgs::Empty req;
     req.set_unused(true);
 
-    ignition::msgs::StringMsg_V rep;
+    gz::msgs::StringMsg_V rep;
     bool result;
     unsigned int timeout = 2000;
 
@@ -724,10 +724,10 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
   {
     igndbg << "Scene info request recieved for world["
       << frameParts[1] << "]\n";
-    ignition::msgs::Empty req;
+    gz::msgs::Empty req;
     req.set_unused(true);
 
-    ignition::msgs::Scene rep;
+    gz::msgs::Scene rep;
     bool result;
     unsigned int timeout = 2000;
 
@@ -766,7 +766,7 @@ void WebsocketServer::OnMessage(int _socketId, const std::string &_msg)
 //////////////////////////////////////////////////
 void WebsocketServer::OnWebsocketSubscribedMessage(
     const char *_data, const size_t _size,
-    const ignition::transport::MessageInfo &_info)
+    const gz::transport::MessageInfo &_info)
 {
   std::map<std::string, std::set<int>>::const_iterator iter =
     this->topicConnections.find(_info.Topic());

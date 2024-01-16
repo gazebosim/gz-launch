@@ -18,6 +18,7 @@
 #include <gtest/gtest.h>
 #include <gtest/gtest-death-test.h>
 
+#include <gz/launch/config.hh>
 #include "Manager.hh"
 
 std::string getConfig(const std::string &_pluginName)
@@ -32,7 +33,7 @@ std::string getConfig(const std::string &_pluginName)
 
 bool runConfig(const std::string &_config)
 {
-  ignition::launch::Manager mgr;
+  gz::launch::Manager mgr;
   return mgr.RunConfig(_config);
 }
 

@@ -13,8 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- */
+*/
 
-#include <gz/launch/Plugin.hh>
-#include <ignition/launch/config.hh>
+#include <gtest/gtest.h>
+#include <ignition/launch/Plugin.hh>
 
+/////////////////////////////////////////////////
+// Make sure the ignition namespace still works
+TEST(Deprecated, IgnitionNamespace)
+{
+  ignition::launch::Plugin plugin;
+}

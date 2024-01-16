@@ -21,8 +21,8 @@
 
 #include <string>
 
-#include <ignition/common/Filesystem.hh>
-#include "ignition/launch/test_config.hh"  // NOLINT(build/include)
+#include <gz/common/Filesystem.hh>
+#include "gz/launch/test_config.hh"  // NOLINT(build/include)
 
 static const std::string kIgnCommand(
     std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH + " " +
@@ -84,7 +84,7 @@ TEST(CmdLine, HelpVsCompletionFlags)
   std::string helpOutput = customExecStr(kIgnCommand + "--help");
 
   // Call the output function in the bash completion script
-  std::string scriptPath = ignition::common::joinPaths(
+  std::string scriptPath = gz::common::joinPaths(
     std::string(PROJECT_SOURCE_PATH),
     "src", "launch.bash_completion.sh");
 

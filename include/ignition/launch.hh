@@ -15,6 +15,5 @@
  *
  */
 
-#include <gz/launch/Plugin.hh>
+#include <gz/launch.hh>
 #include <ignition/launch/config.hh>
-
