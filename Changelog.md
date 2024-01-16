@@ -1,5 +1,15 @@
 ## Gazebo Launch 2.x
 
+### Gazebo Launch 2.3.1 (2024-01-05)
+
+1. Small cleanup fixes
+    * [Pull request #211](https://github.com/gazebosim/gz-launch/pull/211)
+
+1. Infrastructure
+    * [Pull request #238](https://github.com/gazebosim/gz-launch/pull/238)
+    * [Pull request #213](https://github.com/gazebosim/gz-launch/pull/213)
+    * [Pull request #212](https://github.com/gazebosim/gz-launch/pull/212)
+
 ### Gazebo Launch 2.3.0 (2022-08-15)
 
 1. Remove redundant namespace references
