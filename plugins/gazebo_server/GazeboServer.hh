@@ -57,7 +57,7 @@ namespace ignition
                   const tinyxml2::XMLElement *_elem) override final;
 
       /// \brief Private data pointer
-      private: std::unique_ptr<sim::Server> server;
+      private: std::unique_ptr<gz::sim::Server> server;
     };
   }
 }

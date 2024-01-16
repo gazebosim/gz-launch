@@ -342,7 +342,7 @@ bool GazeboServer::Load(const tinyxml2::XMLElement *_elem)
   }
 
   // Create and run the simulation server
-  this->server.reset(new sim::Server(serverConfig));
+  this->server.reset(new gz::sim::Server(serverConfig));
   this->server->Run(false, 0, !run);
 
   igndbg << "Loaded GazeboServer plugin.\n";
