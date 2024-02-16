@@ -23,6 +23,7 @@
 // #include <gz/common/SuppressWarning.hh>
 
 #include <gz/launch/Export.hh>
+#include <gz/launch/config.hh>
 
 namespace gz
 {
