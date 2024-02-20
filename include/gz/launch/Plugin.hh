@@ -20,6 +20,7 @@
 #include <tinyxml2.h>
 #include <gz/plugin/SpecializedPluginPtr.hh>
 #include <gz/launch/Export.hh>
+#include <gz/launch/config.hh>
 
 namespace gz
 {

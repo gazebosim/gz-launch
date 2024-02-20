@@ -27,6 +27,7 @@
 
 #define GZ_LAUNCH_VERSION "${PROJECT_VERSION}"
 #define GZ_LAUNCH_VERSION_FULL "${PROJECT_VERSION_FULL}"
+#define GZ_LAUNCH_VERSION_NAMESPACE v${PROJECT_VERSION_MAJOR}
 
 #define GZ_LAUNCH_VERSION_HEADER "Gazebo Launch, version ${PROJECT_VERSION_FULL}\nCopyright (C) 2019 Open Source Robotics Foundation.\nReleased under the Apache 2.0 License.\n\n"
 
