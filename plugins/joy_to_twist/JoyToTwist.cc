@@ -21,6 +21,8 @@
   #include <unistd.h>
 #endif
 
+#include <string>
+
 #include <gz/msgs/joy.pb.h>
 #include <gz/msgs/twist.pb.h>
 
