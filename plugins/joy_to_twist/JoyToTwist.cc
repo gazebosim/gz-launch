@@ -19,9 +19,9 @@
 #include <sys/stat.h>
 #ifndef _WIN32
   #include <unistd.h>
-#else
-
 #endif
+
+#include <string>
 
 #include <ignition/common/Console.hh>
 #include <ignition/common/Util.hh>
@@ -45,6 +45,22 @@ void setVectorFromString(const std::string &_str,
     _v.X(std::stod(parts[0]));
     _v.Y(std::stod(parts[1]));
     _v.Z(std::stod(parts[2]));
+  }
+}
+
+//////////////////////////////////////////////////
+// String to vector helper function.
+void setVectorFromString(const std::string &_str,
+                         gz::math::Vector3i &_v)
+{
+  std::string str = gz::common::trimmed(_str);
+
+  std::vector<std::string> parts = gz::common::split(str, " ");
+  if (parts.size() == 3)
+  {
+    _v.X(std::stoi(parts[0]));
+    _v.Y(std::stoi(parts[1]));
+    _v.Z(std::stoi(parts[2]));
   }
 }
 
@@ -129,18 +145,21 @@ void JoyToTwist::OnJoy(const ignition::msgs::Joy &_msg)
   if (this->enableTurboButton >= 0 && _msg.buttons(this->enableTurboButton))
   {
     cmdVelMsg.mutable_linear()->set_x(
-        _msg.axes(this->axisLinear.X()) * this->scaleLinearTurbo.X());
+      _msg.axes(this->axisLinear.X()) * this->scaleLinearTurbo.X());
     cmdVelMsg.mutable_linear()->set_y(
-        _msg.axes(this->axisLinear.Y()) * this->scaleLinearTurbo.Y());
+      _msg.axes(this->axisLinear.Y()) * this->scaleLinearTurbo.Y());
     cmdVelMsg.mutable_linear()->set_z(
-        _msg.axes(this->axisLinear.Z()) * this->scaleLinearTurbo.Z());
+      _msg.axes(this->axisLinear.Z()) * this->scaleLinearTurbo.Z());
 
     cmdVelMsg.mutable_angular()->set_x(
-        _msg.axes(this->axisAngular.X()) * this->scaleAngularTurbo.X());
+      _msg.axes(static_cast<int>(this->axisAngular.X())) *
+      this->scaleAngularTurbo.X());
     cmdVelMsg.mutable_angular()->set_y(
-        _msg.axes(this->axisAngular.Y()) * this->scaleAngularTurbo.Y());
+      _msg.axes(static_cast<int>(this->axisAngular.Y())) *
+      this->scaleAngularTurbo.Y());
     cmdVelMsg.mutable_angular()->set_z(
-        _msg.axes(this->axisAngular.Z()) * this->scaleAngularTurbo.Z());
+      _msg.axes(static_cast<int>(this->axisAngular.Z())) *
+      this->scaleAngularTurbo.Z());
 
     this->cmdVelPub.Publish(cmdVelMsg);
     this->sentDisableMsg = false;
@@ -149,18 +168,21 @@ void JoyToTwist::OnJoy(const ignition::msgs::Joy &_msg)
   else if (_msg.buttons(this->enableButton))
   {
     cmdVelMsg.mutable_linear()->set_x(
-        _msg.axes(this->axisLinear.X()) * this->scaleLinear.X());
+      _msg.axes(this->axisLinear.X()) * this->scaleLinear.X());
     cmdVelMsg.mutable_linear()->set_y(
-        _msg.axes(this->axisLinear.Y()) * this->scaleLinear.Y());
+      _msg.axes(this->axisLinear.Y()) * this->scaleLinear.Y());
     cmdVelMsg.mutable_linear()->set_z(
-        _msg.axes(this->axisLinear.Z()) * this->scaleLinear.Z());
+      _msg.axes(this->axisLinear.Z()) * this->scaleLinear.Z());
 
     cmdVelMsg.mutable_angular()->set_x(
-        _msg.axes(this->axisAngular.X()) * this->scaleAngular.X());
+      _msg.axes(static_cast<int>(this->axisAngular.X())) *
+      this->scaleAngular.X());
     cmdVelMsg.mutable_angular()->set_y(
-        _msg.axes(this->axisAngular.Y()) * this->scaleAngular.Y());
+      _msg.axes(static_cast<int>(this->axisAngular.Y())) *
+      this->scaleAngular.Y());
     cmdVelMsg.mutable_angular()->set_z(
-        _msg.axes(this->axisAngular.Z()) * this->scaleAngular.Z());
+      _msg.axes(static_cast<int>(this->axisAngular.Z())) *
+      this->scaleAngular.Z());
 
     this->cmdVelPub.Publish(cmdVelMsg);
     this->sentDisableMsg = false;
