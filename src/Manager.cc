@@ -57,6 +57,7 @@
 #include <gz/plugin/Loader.hh>
 
 #include "gz/launch/config.hh"
+#include "gz/launch/InstallationDirectories.hh"
 #include "gz/launch/Plugin.hh"
 
 #include "vendor/backward.hpp"
@@ -1089,7 +1090,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
 
   gz::common::SystemPaths systemPaths;
   systemPaths.SetPluginPathEnv("GZ_LAUNCH_PLUGIN_PATH");
-  systemPaths.AddPluginPaths(GZ_LAUNCH_PLUGIN_INSTALL_PATH);
+  systemPaths.AddPluginPaths(gz::launch::getPluginInstallPath());
 
   // Add LD_LIBRARY_PATH
 #ifdef __linux__

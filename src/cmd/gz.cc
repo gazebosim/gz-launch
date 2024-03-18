@@ -15,9 +15,11 @@
  *
 */
 #include <cstring>
+#include <string>
 #include <gz/common/Console.hh>
 
 #include "gz/launch/config.hh"
+#include "gz/launch/InstallationDirectories.hh"
 #include "gz.hh"
 #include "../Manager.hh"
 
@@ -30,7 +32,8 @@ extern "C" char *gzVersion()
 //////////////////////////////////////////////////
 extern "C" const char *configPath()
 {
-  return GZ_LAUNCH_INITIAL_CONFIG_PATH;
+  std::string configPath = gz::launch::getPluginInstallPath();
+  return configPath.c_str();
 }
 
 //////////////////////////////////////////////////
