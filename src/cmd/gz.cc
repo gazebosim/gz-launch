@@ -33,7 +33,7 @@ extern "C" char *gzVersion()
 extern "C" const char *configPath()
 {
   std::string configPath = gz::launch::getPluginInstallPath();
-  return configPath.c_str();
+  return strdup(configPath.c_str());
 }
 
 //////////////////////////////////////////////////
