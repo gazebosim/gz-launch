@@ -25,5 +25,5 @@ if (websockets_FOUND)
       gz-transport${GZ_TRANSPORT_VER}::core
   )
 
-  install (TARGETS ${plugin} DESTINATION ${GZ_LAUNCH_PLUGIN_INSTALL_PATH})
+  install (TARGETS ${plugin} DESTINATION ${GZ_LAUNCH_PLUGIN_RELATIVE_INSTALL_PATH})
 endif()
