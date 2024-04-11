@@ -1,5 +1,26 @@
 ## Gazebo Launch 7.x
 
+### Gazebo Launch 7.1.0 (2024-04-11)
+
+1. Use relative install paths for plugin shared libraries and gz-tools data
+    * [Pull request #253](https://github.com/gazebosim/gz-launch/pull/253)
+
+1. Fix bug where address of local variable was returned
+    * [Pull request #252](https://github.com/gazebosim/gz-launch/pull/252)
+
+1. Add optional binary relocatability
+    * [Pull request #218](https://github.com/gazebosim/gz-launch/pull/218)
+
+1. Fix windows warnings
+    * [Pull request #199](https://github.com/gazebosim/gz-launch/pull/199)
+    * [Pull request #250](https://github.com/gazebosim/gz-launch/pull/250)
+
+1. Update CI badges in README
+    * [Pull request #239](https://github.com/gazebosim/gz-launch/pull/239)
+
+1. Infrastructure
+    * [Pull request #238](https://github.com/gazebosim/gz-launch/pull/238)
+
 ### Gazebo Launch 7.0.0 (2023-09-29)
 
 1. Documentation fixes
