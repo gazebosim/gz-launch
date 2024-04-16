@@ -19,7 +19,7 @@
 #include <ignition/common/Console.hh>
 #include <ignition/common/Filesystem.hh>
 
-#include <ignition/utilities/ExtraTestMacros.hh>
+#include <ignition/utils/ExtraTestMacros.hh>
 
 #include <sys/stat.h>
 
@@ -112,7 +112,7 @@ TEST_F(ManagerTest, RunBadXml)
 }
 
 /////////////////////////////////////////////////
-TEST_F(ManagerTest, RunLs)
+TEST_F(ManagerTest, IGN_UTILS_TEST_DISABLED_ON_WIN32(RunLs))
 {
   std::string cmd;
 
