@@ -31,6 +31,7 @@ ign_build_tests(TYPE UNIT SOURCES ${gtest_sources}
                 LIB_DEPS
                   ${PROJECT_LIBRARY_TARGET_NAME}
                   ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
+                  ignition-utils${IGN_UTILS_VER}::core
 )
 
 add_subdirectory(cmd)
