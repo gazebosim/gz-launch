@@ -175,7 +175,7 @@ TEST_F(ManagerTest, IGN_UTILS_TEST_DISABLED_ON_WIN32(RunEnvPre))
 }
 
 /////////////////////////////////////////////////
-TEST_F(ManagerTest, RunEnvPost)
+TEST_F(ManagerTest, IGN_UTILS_TEST_DISABLED_ON_WIN32(RunEnvPost))
 {
   // Test that environment is applied regardless of order
   #ifndef _WIN32
