@@ -19,29 +19,28 @@
 
 #include "ignition/launch/config.hh"
 #include "ign.hh"
-#include "Manager.hh"
+#include "../Manager.hh"
 
 //////////////////////////////////////////////////
-extern "C" IGNITION_LAUNCH_VISIBLE char *ignitionVersion()
+extern "C" char *ignitionVersion()
 {
   return strdup(IGNITION_LAUNCH_VERSION_FULL);
 }
 
 //////////////////////////////////////////////////
-extern "C" IGNITION_LAUNCH_VISIBLE const char *configPath()
+extern "C" const char *configPath()
 {
   return IGNITION_LAUNCH_INITIAL_CONFIG_PATH;
 }
 
 //////////////////////////////////////////////////
-extern "C" IGNITION_LAUNCH_VISIBLE void cmdVerbosity(
-    const char *_verbosity)
+extern "C" void cmdVerbosity(const int _verbosity)
 {
-  ignition::common::Console::SetVerbosity(std::atoi(_verbosity));
+  ignition::common::Console::SetVerbosity(_verbosity);
 }
 
 //////////////////////////////////////////////////
-extern "C" IGNITION_LAUNCH_VISIBLE int run(const char *_config)
+extern "C" int run(const char *_config)
 {
   ignition::launch::Manager mgr;
   return mgr.RunConfig(_config);
