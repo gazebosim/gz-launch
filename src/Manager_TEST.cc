@@ -112,7 +112,7 @@ TEST_F(ManagerTest, RunBadXml)
 }
 
 /////////////////////////////////////////////////
-TEST_F(ManagerTest, RunLs)
+TEST_F(ManagerTest, GZ_UTILS_TEST_DISABLED_ON_WIN32(RunLs))
 {
   std::string cmd;
 
