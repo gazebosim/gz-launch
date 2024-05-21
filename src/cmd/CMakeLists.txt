@@ -2,6 +2,11 @@
 # "gtest_sources" variable.
 ign_get_libsources_and_unittests(sources gtest_sources)
 
+# Disable tests that need CLI if ign-tools is not found
+if (MSVC OR NOT IGN_TOOLS_PROGRAM)
+  list(REMOVE_ITEM gtest_sources ign_TEST.cc)
+endif()
+
 add_library(ign STATIC ign.cc)
 target_include_directories(ign PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(ign PUBLIC
