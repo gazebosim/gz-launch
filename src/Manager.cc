@@ -57,6 +57,7 @@
 #include <gz/plugin/Loader.hh>
 
 #include "gz/launch/config.hh"
+#include "gz/launch/InstallationDirectories.hh"
 #include "gz/launch/Plugin.hh"
 
 #include "vendor/backward.hpp"
@@ -381,7 +382,7 @@ ManagerPrivate::ManagerPrivate()
     const auto pid_seed = std::hash<std::thread::id>()(
         std::this_thread::get_id());
     std::seed_seq seed_value{time_seed, pid_seed};
-    std::vector<size_t> seeds(1);
+    std::vector<std::uint32_t> seeds(1);
     seed_value.generate(seeds.begin(), seeds.end());
     math::Rand::Seed(seeds[0]);
   }
@@ -1083,7 +1084,7 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
 
   gz::common::SystemPaths systemPaths;
   systemPaths.SetPluginPathEnv("GZ_LAUNCH_PLUGIN_PATH");
-  systemPaths.AddPluginPaths(GZ_LAUNCH_PLUGIN_INSTALL_PATH);
+  systemPaths.AddPluginPaths(gz::launch::getPluginInstallPath());
 
   // Add LD_LIBRARY_PATH
 #ifdef __linux__

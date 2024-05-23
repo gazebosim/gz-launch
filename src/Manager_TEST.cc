@@ -112,7 +112,7 @@ TEST_F(ManagerTest, RunBadXml)
 }
 
 /////////////////////////////////////////////////
-TEST_F(ManagerTest, RunLs)
+TEST_F(ManagerTest, GZ_UTILS_TEST_DISABLED_ON_WIN32(RunLs))
 {
   std::string cmd;
 
@@ -137,7 +137,7 @@ TEST_F(ManagerTest, RunLs)
 }
 
 /////////////////////////////////////////////////
-TEST_F(ManagerTest, RunEnvPre)
+TEST_F(ManagerTest, GZ_UTILS_TEST_DISABLED_ON_WIN32(RunEnvPre))
 {
   // Test that environment is applied regardless of order
   #ifndef _WIN32
@@ -175,7 +175,7 @@ TEST_F(ManagerTest, RunEnvPre)
 }
 
 /////////////////////////////////////////////////
-TEST_F(ManagerTest, RunEnvPost)
+TEST_F(ManagerTest, GZ_UTILS_TEST_DISABLED_ON_WIN32(RunEnvPost))
 {
   // Test that environment is applied regardless of order
   #ifndef _WIN32

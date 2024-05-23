@@ -20,7 +20,7 @@
 #include <memory>
 #include <string>
 
-// #include <gz/common/SuppressWarning.hh>
+#include <gz/utils/SuppressWarning.hh>
 
 #include <gz/launch/Export.hh>
 #include <gz/launch/config.hh>
@@ -53,9 +53,9 @@ namespace gz
       public: bool Stop();
 
       /// \brief Private data pointer.
-      // GZ_COMMON_WARN_IGNORE__DLL_INTERFACE_MISSING
+      GZ_UTILS_WARN_IGNORE__DLL_INTERFACE_MISSING
       private: std::unique_ptr<ManagerPrivate> dataPtr;
-      // GZ_COMMON_WARN_RESUME__DLL_INTERFACE_MISSING
+      GZ_UTILS_WARN_IGNORE__DLL_INTERFACE_MISSING
     };
     }
   }

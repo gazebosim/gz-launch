@@ -23,7 +23,8 @@ gz_configure_project(VERSION_SUFFIX)
 # Set project-specific options
 #============================================================================
 
-set(GZ_LAUNCH_PLUGIN_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/${GZ_LIB_INSTALL_DIR}/gz-${GZ_DESIGNATION}-${PROJECT_VERSION_MAJOR}/plugins/")
+set(GZ_LAUNCH_PLUGIN_RELATIVE_INSTALL_PATH "${GZ_LIB_INSTALL_DIR}/gz-${GZ_DESIGNATION}-${PROJECT_VERSION_MAJOR}/plugins/")
+set(GZ_LAUNCH_PLUGIN_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/${GZ_LAUNCH_PLUGIN_RELATIVE_INSTALL_PATH}")
 
 #============================================================================
 # Search for project-specific dependencies

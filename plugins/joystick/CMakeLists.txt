@@ -11,4 +11,4 @@ target_link_libraries(${plugin}
     gz-plugin${GZ_PLUGIN_VER}::core
 )
 
-install (TARGETS ${plugin} DESTINATION ${GZ_LAUNCH_PLUGIN_INSTALL_PATH})
+install (TARGETS ${plugin} DESTINATION ${GZ_LAUNCH_PLUGIN_RELATIVE_INSTALL_PATH})

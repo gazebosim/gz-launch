@@ -31,8 +31,8 @@
 
 #define GZ_LAUNCH_VERSION_HEADER "Gazebo Launch, version ${PROJECT_VERSION_FULL}\nCopyright (C) 2019 Open Source Robotics Foundation.\nReleased under the Apache 2.0 License.\n\n"
 
-#define GZ_LAUNCH_INITIAL_CONFIG_PATH "${CMAKE_INSTALL_PREFIX}/${GZ_DATA_INSTALL_DIR}/configs"
+#define GZ_LAUNCH_INITIAL_CONFIG_PATH _Pragma ("GCC warning \"'GZ_LAUNCH_INITIAL_CONFIG_PATH' macro is deprecated, use gz::launch::getInitialConfigPath() function instead. \"") "${CMAKE_INSTALL_PREFIX}/${GZ_DATA_INSTALL_DIR}/configs"
 
-#define GZ_LAUNCH_PLUGIN_INSTALL_PATH "${GZ_LAUNCH_PLUGIN_INSTALL_PATH}"
+#define GZ_LAUNCH_PLUGIN_INSTALL_PATH _Pragma ("GCC warning \"'GZ_LAUNCH_PLUGIN_INSTALL_PATH' macro is deprecated, use gz::launch::getPluginInstallPath() function instead. \"") "${GZ_LAUNCH_PLUGIN_INSTALL_PATH}"
 
 #endif

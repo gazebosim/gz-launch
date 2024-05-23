@@ -32,7 +32,8 @@ install(
 # Build the unit tests.
 gz_build_tests(TYPE UNIT SOURCES ${gtest_sources}
   TEST_LIST test_list
-  LIB_DEPS ${EXTRA_TEST_LIB_DEPS})
+  LIB_DEPS ${EXTRA_TEST_LIB_DEPS}
+  ENVIRONMENT GZ_LAUNCH_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX})
 
 foreach(test ${test_list})
   target_link_libraries(${test} gz)
@@ -79,7 +80,7 @@ install(
   FILES
     ${CMAKE_CURRENT_BINARY_DIR}/launch${PROJECT_VERSION_MAJOR}.bash_completion.sh
   DESTINATION
-    ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/gz/gz${GZ_TOOLS_VER}.completion.d)
+    ${CMAKE_INSTALL_DATAROOTDIR}/gz/gz${GZ_TOOLS_VER}.completion.d)
 
 #===============================================================================
 # Generate the ruby script for internal testing.
@@ -150,7 +151,7 @@ configure_file(
 
 # Install the yaml configuration files in an unversioned location.
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${GZ_DESIGNATION}${PROJECT_VERSION_MAJOR}.yaml
-DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/gz/)
+DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/gz/)
 
 # Install the ruby command line library in an unversioned location.
 install(FILES ${cmd_script_generated} DESTINATION lib/ruby/gz)
