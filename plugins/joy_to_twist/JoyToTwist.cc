@@ -22,6 +22,7 @@
 #endif
 
 #include <string>
+#include <vector>
 
 #include <ignition/common/Console.hh>
 #include <ignition/common/Util.hh>
