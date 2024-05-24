@@ -92,9 +92,9 @@ namespace ignition
 
       private: int enableButton = 0;
       private: int enableTurboButton = -1;
-      private: ignition::math::Vector3d axisLinear{1.0, 0.0, 0.0};
-      private: ignition::math::Vector3d scaleLinear{0.5, 0.0, 0.0};
-      private: ignition::math::Vector3d scaleLinearTurbo{0.5, 0.0, 0.0};
+      private: gz::math::Vector3i axisLinear{1, 0, 0};
+      private: gz::math::Vector3d scaleLinear{0.5, 0.0, 0.0};
+      private: gz::math::Vector3d scaleLinearTurbo{0.5, 0.0, 0.0};
 
       private: ignition::math::Vector3d axisAngular{0.0, 0.0, 0.0};
       private: ignition::math::Vector3d scaleAngular{0.0, 0.0, 0.5};
