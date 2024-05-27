@@ -10,6 +10,11 @@ set (gtest_sources
   ign_TEST.cc
 )
 
+# Disable tests that need CLI on homebrew
+if (APPLE)
+  list(REMOVE_ITEM gtest_sources ign_TEST.cc)
+endif()
+
 # Create the library target.
 ign_create_core_library(SOURCES ${sources} CXX_STANDARD 17)
 

@@ -24,6 +24,8 @@
 #include <ignition/common/Filesystem.hh>
 #include "ignition/launch/test_config.hh"  // NOLINT(build/include)
 
+#include <ignition/utils/ExtraTestMacros.hh>
+
 static const std::string kIgnCommand(
     std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH + " " +
     std::string(BREW_RUBY) + std::string(IGN_PATH) + " launch ");
@@ -51,7 +53,7 @@ std::string customExecStr(std::string _cmd)
 }
 
 /////////////////////////////////////////////////
-TEST(CmdLine, Ls)
+TEST(CmdLine, IGN_UTILS_TEST_DISABLED_ON_MAC(Ls))
 {
   std::string cmd = kIgnCommand +
     std::string(PROJECT_SOURCE_PATH) + "/test/config/ls.ign";
@@ -65,7 +67,7 @@ TEST(CmdLine, Ls)
 }
 
 /////////////////////////////////////////////////
-TEST(CmdLine, EchoSelf)
+TEST(CmdLine, IGN_UTILS_TEST_DISABLED_ON_MAC(EchoSelf))
 {
   std::string filePath =
       std::string(PROJECT_SOURCE_PATH) + "/test/config/echo.ign";
