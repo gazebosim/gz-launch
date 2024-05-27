@@ -24,7 +24,7 @@
 #include <ignition/common/Filesystem.hh>
 #include "ignition/launch/test_config.hh"  // NOLINT(build/include)
 
-#include <ignition/utils/ExtraTestMacros.hh>
+#include <ignition/utilities/ExtraTestMacros.hh>
 
 static const std::string kIgnCommand(
     std::string("IGN_CONFIG_PATH=") + IGN_CONFIG_PATH + " " +
