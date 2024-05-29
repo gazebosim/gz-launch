@@ -4,6 +4,27 @@
 
 ## Gazebo Launch 7.x
 
+### Gazebo Launch 7.1.0 (2024-04-11)
+
+1. Use relative install paths for plugin shared libraries and gz-tools data
+    * [Pull request #253](https://github.com/gazebosim/gz-launch/pull/253)
+
+1. Fix bug where address of local variable was returned
+    * [Pull request #252](https://github.com/gazebosim/gz-launch/pull/252)
+
+1. Add optional binary relocatability
+    * [Pull request #218](https://github.com/gazebosim/gz-launch/pull/218)
+
+1. Fix windows warnings
+    * [Pull request #199](https://github.com/gazebosim/gz-launch/pull/199)
+    * [Pull request #250](https://github.com/gazebosim/gz-launch/pull/250)
+
+1. Update CI badges in README
+    * [Pull request #239](https://github.com/gazebosim/gz-launch/pull/239)
+
+1. Infrastructure
+    * [Pull request #238](https://github.com/gazebosim/gz-launch/pull/238)
+
 ### Gazebo Launch 7.0.0 (2023-09-29)
 
 1. Documentation fixes
@@ -83,6 +104,29 @@
     * [Pull request #156](https://github.com/gazebosim/gz-launch/pull/156)
 
 ## Gazebo Launch 5.x
+
+### Gazebo Launch 5.3.0 (2023-06-14)
+
+1. Forward ports
+    * [Pull request #214](https://github.com/gazebosim/gz-launch/pull/214)
+
+1. Infrastructure
+    * [Pull request #213](https://github.com/gazebosim/gz-launch/pull/213)
+
+1. Rename COPYING to LICENSE
+    * [Pull request #212](https://github.com/gazebosim/gz-launch/pull/212)
+
+1. Small cleanup fixes
+    * [Pull request #211](https://github.com/gazebosim/gz-launch/pull/211)
+
+1. Add pause and stop to Websocket Server
+    * [Pull request #187](https://github.com/gazebosim/gz-launch/pull/187)
+
+1. Return a message on asset error
+    * [Pull request #197](https://github.com/gazebosim/gz-launch/pull/197)
+
+1. Remove redundant namespace references
+    * [Pull request #190](https://github.com/gazebosim/gz-launch/pull/190)
 
 ### Gazebo Launch 5.2.0 (2022-08-16)
 
@@ -234,6 +278,16 @@
     * [BitBucket pull request 64](https://osrf-migration.github.io/ignition-gh-pages/#!/ignitionrobotics/ign-launch/pull-requests/64)
 
 ## Gazebo Launch 2.x
+
+### Gazebo Launch 2.3.1 (2024-01-05)
+
+1. Small cleanup fixes
+    * [Pull request #211](https://github.com/gazebosim/gz-launch/pull/211)
+
+1. Infrastructure
+    * [Pull request #238](https://github.com/gazebosim/gz-launch/pull/238)
+    * [Pull request #213](https://github.com/gazebosim/gz-launch/pull/213)
+    * [Pull request #212](https://github.com/gazebosim/gz-launch/pull/212)
 
 ### Gazebo Launch 2.3.0 (2022-08-15)
 
