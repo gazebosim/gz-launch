@@ -12,6 +12,7 @@ target_include_directories(ign PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(ign PUBLIC
   ${PROJECT_LIBRARY_TARGET_NAME}
   ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
+  ignition-utils${IGN_UTILS_VER}::core
 )
 
 set(launch_executable ign-launch)
