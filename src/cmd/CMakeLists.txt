@@ -37,7 +37,7 @@ ign_build_tests(TYPE UNIT SOURCES ${gtest_sources}
   LIB_DEPS ${EXTRA_TEST_LIB_DEPS})
 
 foreach(test ${test_list})
-  target_link_libraries(${test} ign)
+  target_link_libraries(${test} ign ignition-utils${IGN_UTILS_VER}::core)
 
   # Inform each test of its output directory so it knows where to call the
   # auxiliary files from. Using a generator expression here is useful for
