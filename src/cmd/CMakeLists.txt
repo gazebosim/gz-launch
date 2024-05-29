@@ -21,6 +21,7 @@ target_link_libraries(${launch_executable}
   ign
   ignition-utils${IGN_UTILS_VER}::cli
   ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
+  ignition-utils${IGN_UTILS_VER}::core
 )
 
 install(
