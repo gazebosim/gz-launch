@@ -12,6 +12,7 @@ if(NOT WIN32)
 
   ign_build_tests(TYPE INTEGRATION SOURCES ${tests} TEST_LIST test_targets)
   foreach(test ${test_targets})
+    target_link_libraries(${test} ignition-utils${IGN_UTILS_VER}::core)
     target_compile_definitions(${test} PRIVATE
         "bad_plugins_LIB=\"$<TARGET_FILE:bad_plugins>\"")
   endforeach()
