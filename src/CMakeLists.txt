@@ -20,6 +20,7 @@ target_link_libraries(${PROJECT_LIBRARY_TARGET_NAME}
   PRIVATE
     ignition-common${IGN_COMMON_MAJOR_VER}::ignition-common${IGN_COMMON_MAJOR_VER}
     ignition-math${IGN_MATH_MAJOR_VER}::ignition-math${IGN_MATH_MAJOR_VER}
+    ignition-utils${IGN_UTILS_VER}::core
     ${BACKWARD_LIBRARIES}
 )
 

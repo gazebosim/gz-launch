@@ -20,7 +20,7 @@
 #include <memory>
 #include <string>
 
-// #include <ignition/common/SuppressWarning.hh>
+#include <ignition/utils/SuppressWarning.hh>
 
 #include <ignition/launch/Export.hh>
 
@@ -52,9 +52,9 @@ namespace ignition
       public: bool Stop();
 
       /// \brief Private data pointer.
-      // IGN_COMMON_WARN_IGNORE__DLL_INTERFACE_MISSING
+      IGN_UTILS_WARN_IGNORE__DLL_INTERFACE_MISSING
       private: std::unique_ptr<ManagerPrivate> dataPtr;
-      // IGN_COMMON_WARN_IGNORE__DLL_INTERFACE_MISSING
+      IGN_UTILS_WARN_RESUME__DLL_INTERFACE_MISSING
     };
     }
   }
