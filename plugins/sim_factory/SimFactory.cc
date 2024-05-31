@@ -152,7 +152,7 @@ bool SimFactory::Load(const tinyxml2::XMLElement *_elem)
 
   for (const auto &msg : this->worldFactoryMsgs)
   {
-    unsigned int timeout = 2000;
+    uint32_t timeout = 2000;
     msgs::Boolean rep;
     bool result;
 
