@@ -613,9 +613,14 @@ void WebsocketServer::Run()
 
   while (this->run)
   {
-    // The second parameter is a timeout that is no longer used by
-    // libwebsockets.
-    lws_service(this->context, 0);
+    // The second parameter is used to control lws's event wait time.
+    // A -1 does not wait for an event, and 0 causes lws to wait
+    // for an event. When shutting down the websocket server, the
+    // wait time could be over 30 seconds if 0 is used.
+    //
+    // We are running lws in a separate thread with out our own
+    // condition variable. So, we will not use lws's event wait.
+    lws_service(this->context, -1);
 
     // Wait for (1/60) seconds or an event.
     std::unique_lock<std::mutex> lock(this->runMutex);
