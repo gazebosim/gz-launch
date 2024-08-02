@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require  'pathname'
 # Constants.
 LIBRARY_VERSION = '@PROJECT_VERSION_FULL@'
 COMMANDS = {
@@ -28,9 +29,8 @@ class Cmd
     command = args[0]
     exe_name = COMMANDS[command]
 
-    if exe_name[0] == '/'
-      # If the first character is a slash, we'll assume that we've been given an
-      # absolute path to the executable. This is only used during test mode.
+    if Pathname.new(exe_name).absolute?
+      # The exe_name can be absolute path during test. We'll leave it unchanged
     else
       # We're assuming that the library path is relative to the current
       # location of this script.
