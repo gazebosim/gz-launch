@@ -22,6 +22,7 @@
 #endif
 
 #include <string>
+#include <vector>
 
 #include <gz/msgs/joy.pb.h>
 #include <gz/msgs/twist.pb.h>
