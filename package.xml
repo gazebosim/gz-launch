@@ -13,14 +13,10 @@
   <depend>binutils</depend>
   <depend>gz-cmake4</depend>
   <depend>gz-common6</depend>
-  <depend>gz-fuel-tools9</depend>
   <depend>gz-gui9</depend>
   <depend>gz-math8</depend>
   <depend>gz-msgs11</depend>
-  <depend>gz-physics7</depend>
   <depend>gz-plugin3</depend>
-  <depend>gz-rendering8</depend>
-  <depend>gz-sensors8</depend>
   <depend>gz-sim9</depend>
   <depend>gz-tools2</depend>
   <depend>gz-transport14</depend>
@@ -29,7 +25,6 @@
   <depend>libxi-dev</depend>
   <depend>libxmu-dev</depend>
   <depend>libyaml-dev</depend>
-  <depend>sdformat14</depend>
   <depend>tinyxml2</depend>
   <depend>uuid</depend>
 
