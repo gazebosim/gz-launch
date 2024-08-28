@@ -2,7 +2,7 @@
 
 ### Gazebo Launch 8.0.0 (2024-09-XX)
 
-Changes since 7.1.0
+1. **Baseline:** this includes all changes from 7.1.0 and earlier.
 
 1. Enable ubuntu noble on github actions, require cmake 3.22.1
     * [Pull request #272](https://github.com/gazebosim/gz-launch/pull/272)
