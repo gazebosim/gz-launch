@@ -9,10 +9,10 @@
 
 Build | Status
 -- | --
-Test coverage | [![codecov](https://codecov.io/gh/gazebosim/gz-launch/branch/main/graph/badge.svg)](https://codecov.io/gh/gazebosim/gz-launch/branch/main)
-Ubuntu Noble  | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-main-noble-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-main-noble-amd64)
-Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-main-homebrew-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-main-homebrew-amd64)
-Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-main-win)](https://build.osrfoundation.org/job/gz_launch-main-win)
+Test coverage | [![codecov](https://codecov.io/gh/gazebosim/gz-launch/tree/gz-launch8/graph/badge.svg)](https://codecov.io/gh/gazebosim/gz-launch/branch/gz-launch8)
+Ubuntu Noble  | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-gz-launch8-noble-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-gz-launch8-noble-amd64)
+Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-gz-launch8-homebrew-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-gz-launch8-homebrew-amd64)
+Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-8-win)](https://build.osrfoundation.org/job/gz_launch-8-win)
 
 Gazebo Launch, a component of [Gazebo](https://gazebosim.org), provides a command line interface
 to run and manager application and plugins.
@@ -58,7 +58,7 @@ See the [installation tutorial](https://gazebosim.org/api/launch/7/install.html)
 
 # Usage
 
-Sample launch configuration files are in the [examples directory](https://github.com/gazebosim/gz-launch/blob/main/examples/).
+Sample launch configuration files are in the [examples directory](https://github.com/gazebosim/gz-launch/blob/gz-launch8/examples/).
 
 **Example**
 
@@ -99,7 +99,7 @@ This issue is tracked [here](https://github.com/gazebosim/gz-tools/issues/8).
 
 # Documentation
 
-See the [installation tutorial](https://gazebosim.org/api/launch/7/install.html).
+See the [installation tutorial](https://gazebosim.org/api/launch/8/install.html).
 
 # Folder Structure
 

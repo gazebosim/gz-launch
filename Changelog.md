@@ -1,6 +1,46 @@
 ## Gazebo Launch 8.x
 
-### Gazebo Launch 8.0.0 (2024-XX-XX)
+### Gazebo Launch 8.0.0 (2024-09-XX)
+
+1. **Baseline:** this includes all changes from 7.1.0 and earlier.
+
+1. Enable ubuntu noble on github actions, require cmake 3.22.1
+    * [Pull request #272](https://github.com/gazebosim/gz-launch/pull/272)
+
+1. Remove deprecations
+    * [Pull request #271](https://github.com/gazebosim/gz-launch/pull/271)
+
+1. Fix libwebsocket shutdown behavior
+    * [Pull request #267](https://github.com/gazebosim/gz-launch/pull/267)
+
+1. Fix msvc loss of data warning
+    * [Pull request #266](https://github.com/gazebosim/gz-launch/pull/266)
+
+1. Remove indirect dependencies
+    * [Pull request #265](https://github.com/gazebosim/gz-launch/pull/265)
+
+1. Supress msvc dll exported interface warning
+    * [Pull request #263](https://github.com/gazebosim/gz-launch/pull/263)
+
+1. Fix windows warnings
+    * [Pull request #199](https://github.com/gazebosim/gz-launch/pull/199)
+    * [Pull request #250](https://github.com/gazebosim/gz-launch/pull/250)
+
+1. Disable failing Manager_Test on windows
+    * [Pull request #264](https://github.com/gazebosim/gz-launch/pull/264)
+
+1. Disable failing windows tests
+    * [Pull request #255](https://github.com/gazebosim/gz-launch/pull/255)
+
+1. Add package.xml, remove dependency on python3-yaml, and disable failing windows tests
+    * [Pull request #249](https://github.com/gazebosim/gz-launch/pull/249)
+
+1. Define GZ_LAUNCH_VERSION_NAMESPACE in config.hh
+    * [Pull request #247](https://github.com/gazebosim/gz-launch/pull/247)
+
+1. Bumps in Ionic: gz-launch8
+    * [Pull request #236](https://github.com/gazebosim/gz-launch/pull/236)
+    * [Pull request #237](https://github.com/gazebosim/gz-launch/pull/237)
 
 ## Gazebo Launch 7.x
 
