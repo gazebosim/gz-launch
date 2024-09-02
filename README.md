@@ -60,7 +60,7 @@ Sample launch configuration files are in the [examples directory](https://github
 
 **Example**
 
-1. Run a configuration that launches [Gazebo](https://gazebosim.org/libs/gazebo).
+1. Run a configuration that launches [Gazebo](https://gazebosim.org/libs/sim/).
 
     ```
     gz launch sim.gzlaunch
