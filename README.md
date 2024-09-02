@@ -15,7 +15,7 @@ Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/ico
 Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-8-win)](https://build.osrfoundation.org/job/gz_launch-8-win)
 
 Gazebo Launch, a component of [Gazebo](https://gazebosim.org), provides a command line interface
-to run and manager application and plugins.
+to run and manage application and plugins.
 
 # Table of Contents
 
