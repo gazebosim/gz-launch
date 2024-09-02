@@ -15,7 +15,7 @@ Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/ico
 Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-8-win)](https://build.osrfoundation.org/job/gz_launch-8-win)
 
 Gazebo Launch, a component of [Gazebo](https://gazebosim.org), provides a command line interface
-to run and manager application and plugins.
+to run and manage application and plugins.
 
 # Table of Contents
 
@@ -26,8 +26,6 @@ to run and manager application and plugins.
 [Usage](#usage)
 
 [Documentation](#documentation)
-
-[Testing](#testing)
 
 [Folder Structure](#folder-structure)
 
@@ -54,7 +52,7 @@ directory.
 
 # Install
 
-See the [installation tutorial](https://gazebosim.org/api/launch/7/install.html).
+See the [installation tutorial](https://gazebosim.org/api/launch/8/install.html).
 
 # Usage
 
@@ -62,7 +60,7 @@ Sample launch configuration files are in the [examples directory](https://github
 
 **Example**
 
-1. Run a configuration that launches [Gazebo](https://gazebosim.org/libs/gazebo).
+1. Run a configuration that launches [Gazebo](https://gazebosim.org/libs/sim/).
 
     ```
     gz launch sim.gzlaunch
