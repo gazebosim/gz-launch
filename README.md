@@ -52,7 +52,7 @@ directory.
 
 # Install
 
-See the [installation tutorial](https://gazebosim.org/api/launch/7/install.html).
+See the [installation tutorial](https://gazebosim.org/api/launch/8/install.html).
 
 # Usage
 
