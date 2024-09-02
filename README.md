@@ -27,8 +27,6 @@ to run and manager application and plugins.
 
 [Documentation](#documentation)
 
-[Testing](#testing)
-
 [Folder Structure](#folder-structure)
 
 [Contributing](#contributing)
