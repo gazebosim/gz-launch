@@ -75,8 +75,10 @@ A workaround is to define the environment variable
 `GZ_CONFIG_PATH` to point to the different locations of the Gazebo libraries installations,
 where the YAML files for the packages are found, such as
 ```
-export GZ_CONFIG_PATH=/usr/local/share/gz:$HOME/.gz/tools/configs
+export GZ_CONFIG_PATH=/usr/local/share/gz:$HOME/ws/install/share/gz
 ```
+
+where `$HOME/ws` is an example colcon workspace used to build Gazebo
 
 # Documentation
 
