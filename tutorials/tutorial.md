@@ -26,7 +26,7 @@ Every script starts with these two tags, which specify the `xml` version and `gz
 
 We can run multiple commands from one file.
 
-Take a look at the [sim.gzlaunch](../examples/sim.gzlaunch) launch file. This script runs the Gazebo `server` and Gazebo `client`. We need to just write the command in the `command` tag.
+Take a look at the [sim.gzlaunch](https://github.com/gazebosim/gz-launch/blob/gz-launch8/examples/sim.gzlaunch) launch file. This script runs the Gazebo `server` and Gazebo `client`. We need to just write the command in the `command` tag.
 
 ```xml
 <executable name='sim-server'>
@@ -36,11 +36,11 @@ Take a look at the [sim.gzlaunch](../examples/sim.gzlaunch) launch file. This sc
 
 ## Spawn a robot into simulation with plugins
 
-Now take a look at the [factory.gzlaunch](../examples/factory.gzlaunch) launch file. We defined a `SimFactory` plugin under which we included an `X2 UGV` robot and added the `DiffDrive` plugin to control the robot. We also added the `StatePublisher` plugin which publishes the the robot state information.
+Now take a look at the [factory.gzlaunch](https://github.com/gazebosim/gz-launch/blob/gz-launch8/examples/factory.gzlaunch) launch file. We defined a `SimFactory` plugin under which we included an `X2 UGV` robot and added the `DiffDrive` plugin to control the robot. We also added the `StatePublisher` plugin which publishes the the robot state information.
 
 ## Launch simulation with plugins in separate processes
 
-The [sim_plugins.gzlaunch](../examples/sim_plugins.gzlaunch) launch file loads some plugins
+The [sim_plugins.gzlaunch](https://github.com/gazebosim/gz-launch/blob/gz-launch8/examples/sim_plugins.gzlaunch) launch file loads some plugins
 and also starts simulation. The `joystick` plugin will be launched in its own process
 and will read from a joystick device and output data onto a topic. The `JoyToTwist`
 plugin also launches into a separate process and transforms a `joystick` message to a
