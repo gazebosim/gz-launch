@@ -36,7 +36,7 @@ Take a look at the [sim.gzlaunch](https://github.com/gazebosim/gz-launch/blob/gz
 
 ## Spawn a robot into simulation with plugins
 
-Now take a look at the [factory.gzlaunch](https://github.com/gazebosim/gz-launch/blob/gz-launch8/examples/factory.gzlaunch) launch file. We defined a `SimFactory` plugin under which we included an `X2 UGV` robot and added the `DiffDrive` plugin to control the robot. We also added the `StatePublisher` plugin which publishes the the robot state information.
+Now take a look at the [factory.gzlaunch](https://github.com/gazebosim/gz-launch/blob/gz-launch8/examples/factory.gzlaunch) launch file. We defined a `SimFactory` plugin under which we included an `X2 UGV` robot and added the `DiffDrive` plugin to control the robot. We also added the `StatePublisher` plugin which publishes the robot state information.
 
 ## Launch simulation with plugins in separate processes
 
