@@ -1,8 +1,16 @@
 ## Gazebo Launch 8.x
 
-### Gazebo Launch 8.0.0 (2024-09-XX)
+### Gazebo Launch 8.0.0 (2024-09-25)
 
 1. **Baseline:** this includes all changes from 7.1.0 and earlier.
+
+1. Fix crash and update launch file
+    * [Pull request #277](https://github.com/gazebosim/gz-launch/pull/277)
+
+1. Miscellaneous documentation fixes
+    * [Pull request #276](https://github.com/gazebosim/gz-launch/pull/276)
+    * [Pull request #275](https://github.com/gazebosim/gz-launch/pull/275)
+    * [Pull request #274](https://github.com/gazebosim/gz-launch/pull/274)
 
 1. Enable ubuntu noble on github actions, require cmake 3.22.1
     * [Pull request #272](https://github.com/gazebosim/gz-launch/pull/272)
