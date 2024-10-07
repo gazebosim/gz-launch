@@ -1140,8 +1140,9 @@ void ManagerPrivate::LoadPlugin(const tinyxml2::XMLElement *_elem)
     << "] File[" << file << "]" << std::endl;
 
   PluginPtr plugin = loader.Instantiate(name);
-  if (plugin->QueryInterface<Plugin>()->Load(_elem))
-    this->plugins.insert(plugin);
+  if (!plugin->QueryInterface<Plugin>()->Load(_elem))
+    gzerr << "Unable to load " << name << std::endl;
+  this->plugins.insert(plugin);
 }
 
 //////////////////////////////////////////////////

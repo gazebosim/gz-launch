@@ -9,13 +9,13 @@
 
 Build | Status
 -- | --
-Test coverage | [![codecov](https://codecov.io/gh/gazebosim/gz-launch/branch/main/graph/badge.svg)](https://codecov.io/gh/gazebosim/gz-launch/branch/main)
+Test coverage | [![codecov](https://codecov.io/gh/gazebosim/gz-launch/tree/main/graph/badge.svg)](https://codecov.io/gh/gazebosim/gz-launch/branch/main)
 Ubuntu Noble  | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-main-noble-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-main-noble-amd64)
 Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-main-homebrew-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-main-homebrew-amd64)
 Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-main-win)](https://build.osrfoundation.org/job/gz_launch-main-win)
 
 Gazebo Launch, a component of [Gazebo](https://gazebosim.org), provides a command line interface
-to run and manager application and plugins.
+to run and manage application and plugins.
 
 # Table of Contents
 
@@ -26,8 +26,6 @@ to run and manager application and plugins.
 [Usage](#usage)
 
 [Documentation](#documentation)
-
-[Testing](#testing)
 
 [Folder Structure](#folder-structure)
 
@@ -54,7 +52,7 @@ directory.
 
 # Install
 
-See the [installation tutorial](https://gazebosim.org/api/launch/7/install.html).
+See the [installation tutorial](https://gazebosim.org/api/launch/8/install.html).
 
 # Usage
 
@@ -62,7 +60,7 @@ Sample launch configuration files are in the [examples directory](https://github
 
 **Example**
 
-1. Run a configuration that launches [Gazebo](https://gazebosim.org/libs/gazebo).
+1. Run a configuration that launches [Gazebo](https://gazebosim.org/libs/sim/).
 
     ```
     gz launch sim.gzlaunch
@@ -73,33 +71,18 @@ Sample launch configuration files are in the [examples directory](https://github
 In the event that the installation is a mix of Debian and from source, command
 line tools from `gz-tools` may not work correctly.
 
-A workaround for a single package is to define the environment variable
-`GZ_CONFIG_PATH` to point to the location of the Gazebo library installation,
-where the YAML file for the package is found, such as
+A workaround is to define the environment variable
+`GZ_CONFIG_PATH` to point to the different locations of the Gazebo libraries installations,
+where the YAML files for the packages are found, such as
 ```
-export GZ_CONFIG_PATH=/usr/local/share/gz
-```
-
-However, that environment variable only takes a single path, which means if the
-installations from source are in different locations, only one can be specified.
-
-Another workaround for working with multiple Gazebo libraries on the command
-line is using symbolic links to each library's YAML file.
-```
-mkdir ~/.gz/tools/configs -p
-cd ~/.gz/tools/configs/
-ln -s /usr/local/share/gz/fuel4.yaml .
-ln -s /usr/local/share/gz/transport7.yaml .
-ln -s /usr/local/share/gz/transportlog7.yaml .
-...
-export GZ_CONFIG_PATH=$HOME/.gz/tools/configs
+export GZ_CONFIG_PATH=/usr/local/share/gz:$HOME/ws/install/share/gz
 ```
 
-This issue is tracked [here](https://github.com/gazebosim/gz-tools/issues/8).
+where `$HOME/ws` is an example colcon workspace used to build Gazebo
 
 # Documentation
 
-See the [installation tutorial](https://gazebosim.org/api/launch/7/install.html).
+See the [installation tutorial](https://gazebosim.org/api/launch/8/install.html).
 
 # Folder Structure
 
