@@ -1,3 +1,7 @@
+## Gazebo Launch 9.x
+
+### Gazebo Launch 9.0.0 (20XX-XX-XX)
+
 ## Gazebo Launch 8.x
 
 ### Gazebo Launch 8.0.0 (2024-09-25)
