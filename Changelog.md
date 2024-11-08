@@ -1,5 +1,32 @@
 ## Gazebo Launch 6.x
 
+### Gazebo Launch 6.2.0 (2023-11-08)
+
+1. Fix libwebsocket shutdown behavior
+    * [Pull request #267](https://github.com/gazebosim/gz-launch/pull/267)
+
+1. Supress msvc dll exported interface warning
+    * [Pull request #263](https://github.com/gazebosim/gz-launch/pull/263)
+
+1. Disable failing windows tests
+    * [Pull request #264](https://github.com/gazebosim/gz-launch/pull/264)
+
+1. Fix windows warnings
+    * [Pull request #250](https://github.com/gazebosim/gz-launch/pull/250)
+    * [Pull request #199) (#258](https://github.com/gazebosim/gz-launch/pull/199) (#258)
+
+1. Disable failing windows tests
+    * [Pull request #255](https://github.com/gazebosim/gz-launch/pull/255)
+
+1. Fix bug where address of local variable was returned
+    * [Pull request #252](https://github.com/gazebosim/gz-launch/pull/252)
+
+1. Add optional binary relocatability
+    * [Pull request #218](https://github.com/gazebosim/gz-launch/pull/218)
+
+1. Update github action workflows
+    * [Pull request #238](https://github.com/gazebosim/gz-launch/pull/238)
+
 ### Gazebo Launch 6.1.0 (2023-09-26)
 
 1. Infrastructure
