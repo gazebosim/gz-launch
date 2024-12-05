@@ -5,6 +5,14 @@ Deprecated code produces compile-time warnings. These warning serve as
 notification to users that their code should be upgraded. The next major
 release will remove the deprecated code.
 
+## Gazebo Launch 8.X to 9.X
+
+* The environment variable `GZ_LAUNCH_INITIAL_CONFIG_PATH` is removed. Use
+`gz::launch::getInitialConfigPath()` instead.
+
+* The environment variable `GZ_LAUNCH_PLUGIN_INSTALL_PATH` is removed. Use
+`gz::launch::getPluginInstallPath()` instead.
+
 ## Gazebo Launch 6.X to 7.X
 
 - Removed Ignition
