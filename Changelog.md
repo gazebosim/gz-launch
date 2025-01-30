@@ -1,5 +1,29 @@
 ## Gazebo Launch 7.x
 
+### Gazebo Launch 7.1.1 (2025-01-30)
+
+1. Fix websocket proto request handling
+    * [Pull request #283](https://github.com/gazebosim/gz-launch/pull/283)
+
+1. Fix libwebsocket shutdown behavior
+    * [Pull request #267](https://github.com/gazebosim/gz-launch/pull/267)
+
+1. Remove indirect dependencies
+    * [Pull request #265](https://github.com/gazebosim/gz-launch/pull/265)
+
+1. Disable failing windows tests
+    * [Pull request #264](https://github.com/gazebosim/gz-launch/pull/264)
+    * [Pull request #255](https://github.com/gazebosim/gz-launch/pull/255)
+
+1. Fix windows warnings (#199)
+    * [Pull request #258](https://github.com/gazebosim/gz-launch/pull/258)
+    * [Pull request #250](https://github.com/gazebosim/gz-launch/pull/250)
+    * [Pull request #250](https://github.com/gazebosim/gz-launch/pull/250)
+    * [Pull request #263](https://github.com/gazebosim/gz-launch/pull/263)
+
+1. Add package.xml, remove dependency on python3-yaml, and disable failing windows tests
+    * [Pull request #249](https://github.com/gazebosim/gz-launch/pull/249)
+
 ### Gazebo Launch 7.1.0 (2024-04-11)
 
 1. Use relative install paths for plugin shared libraries and gz-tools data
