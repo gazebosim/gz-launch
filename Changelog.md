@@ -4,6 +4,11 @@
 
 ## Gazebo Launch 8.x
 
+### Gazebo Launch 8.0.1 (2025-02-12)
+
+1. Fix websocket proto request handling
+    * [Pull request #281](https://github.com/gazebosim/gz-launch/pull/281)
+
 ### Gazebo Launch 8.0.0 (2024-09-25)
 
 1. **Baseline:** this includes all changes from 7.1.0 and earlier.
