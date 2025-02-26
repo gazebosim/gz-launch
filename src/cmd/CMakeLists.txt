@@ -14,8 +14,13 @@ target_link_libraries(gz PUBLIC
   gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
 )
 
-set(launch_executable gz-launch)
+# Define the desired output name of the executable
+set(launch_executable_output_name gz-launch)
+# Append "-exe" to cmake target name to differ from the library target name
+set(launch_executable gz-launch-exe)
 add_executable(${launch_executable} launch_main.cc)
+set_target_properties(${launch_executable}
+  PROPERTIES OUTPUT_NAME ${launch_executable_output_name})
 target_link_libraries(${launch_executable}
   gz
   gz-utils${GZ_UTILS_VER}::cli
