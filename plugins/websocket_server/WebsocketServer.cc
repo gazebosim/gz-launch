@@ -593,8 +593,11 @@ void WebsocketServer::QueueMessage(Connection *_connection,
     memcpy(buf.get() + LWS_PRE, _data, _size);
 
     std::lock_guard<std::mutex> lock(_connection->mutex);
+    std::cerr << " QueueMessage " <<  _connection->buffer.size()  << " vs " <<  this->queueSizePerConnection << std::endl;
+
     if (_connection->buffer.size() < this->queueSizePerConnection)
     {
+    std::cerr << " QueueMessage push to buffer " <<  std::endl;
       _connection->buffer.push_back(std::move(buf));
       _connection->len.push_back(_size);
 
@@ -604,6 +607,7 @@ void WebsocketServer::QueueMessage(Connection *_connection,
     }
     else
     {
+    std::cerr << " QueueMessage wanring " <<  std::endl;
       static bool warned{false};
       if (!warned)
       {

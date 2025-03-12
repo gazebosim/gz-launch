@@ -7,6 +7,40 @@ release will remove the deprecated code.
 
 ## Gazebo Launch 8.X to 9.X
 
+The gz-launch package is deprecated. See below for replacement of core features
+and plugins.
+
+* Launch functionality for running Gazebo, i.e. `sim_server`, `sim_gui`,
+  `sim_factory` plugins
+  * [ros2/launch](https://github.com/ros2/launch) is now recommended for
+    launching Gazebo. The [ros_gz_sim](https://github.com/gazebosim/ros_gz/tree/ros2/ros_gz_sim)
+    package uses `ros2 launch` for launching Gazebo and spawning entities.
+    See examples in
+    [ros_gz_examples](https://github.com/gazebosim/ros_gz/tree/ros2/ros_gz_sim_demos).
+
+* Launch functionality for running executables
+  * Use Python or Ruby scripts (or the programming language or your choice) directly
+    for launching processes. Alternatively,
+    [ros2/launch](https://github.com/ros2/launch) also has the functionality
+    to execute a process.
+
+* `websocket_server` plugin
+  * The plugin has been ported to a gz-sim system, see the websocket server
+    [tutorial](https://github.com/gazebosim/gz-sim/blob/main/tutorials/websocket_server.md)
+    in gz-sim for more informaton.
+
+* `joystick` plugin
+  * See the standalone
+    [joystick](https://github.com/gazebosim/gz-sim/tree/main/examples/standalone/joystick)
+    example in gz-sim.
+
+* `joy_to_twist` plugin
+  * See the standalone
+    [joys_to_twist](https://github.com/gazebosim/gz-sim/tree/gz-sim9/examples/standalone/joy_to_twist)
+    example in gz-sim.
+
+### Other notes
+
 * The environment variable `GZ_LAUNCH_INITIAL_CONFIG_PATH` is removed. Use
 `gz::launch::getInitialConfigPath()` instead.
 

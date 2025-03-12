@@ -45,6 +45,11 @@ extern "C" void cmdVerbosity(const int _verbosity)
 //////////////////////////////////////////////////
 extern "C" int run(const char *_config)
 {
+  gzwarn << "Gazebo Launch is deprecated in Gazebo Jetty (gz-launch9) and "
+         << "will be removed in Gazebo K. Please see the migration guide "
+         << "(https://github.com/gazebosim/gz-launch/blob/main/Migration.md)."
+         << std::endl;
+
   gz::launch::Manager mgr;
   return mgr.RunConfig(_config);
 }
