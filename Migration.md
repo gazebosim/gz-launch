@@ -36,7 +36,7 @@ and plugins.
 
 * `joy_to_twist` plugin
   * See the standalone
-    [joys_to_twist](https://github.com/gazebosim/gz-sim/tree/gz-sim9/examples/standalone/joy_to_twist)
+    [joys_to_twist](https://github.com/gazebosim/gz-sim/tree/main/examples/standalone/joy_to_twist)
     example in gz-sim.
 
 ### Other notes
