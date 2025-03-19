@@ -12,7 +12,7 @@ Build | Status
 Test coverage | [![codecov](https://codecov.io/gh/gazebosim/gz-launch/tree/gz-launch7/graph/badge.svg)](https://codecov.io/gh/gazebosim/gz-launch/tree/gz-launch7)
 Ubuntu Jammy  | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-gz-launch7-jammy-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-gz-launch7-jammy-amd64)
 Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-gz-launch7-homebrew-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-gz-launch7-homebrew-amd64)
-Windows       | [![Build Status](https://build.osrfoundation.org/job/gz_launch-7-win/badge/icon)](https://build.osrfoundation.org/job/gz_launch-7-win/)
+Windows       | [![Build Status](https://build.osrfoundation.org/job/gz_launch-7-clowin/badge/icon)](https://build.osrfoundation.org/job/gz_launch-7-clowin/)
 
 Gazebo Launch, a component of [Gazebo](https://gazebosim.org), provides a command line interface
 to run and manager application and plugins.
