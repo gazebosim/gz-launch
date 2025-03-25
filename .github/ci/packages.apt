@@ -2,8 +2,8 @@ binutils-dev
 libgflags-dev
 libgz-cmake4-dev
 libgz-common6-dev
-libgz-sim9-dev
-libgz-gui9-dev
+libgz-sim10-dev
+libgz-gui10-dev
 libgz-math8-dev
 libgz-math8-eigen3-dev
 libgz-msgs11-dev
