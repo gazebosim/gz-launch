@@ -742,10 +742,21 @@ void WebsocketServer::OnMessage(int _socketId, const std::string _msg)
     // Get all the messages, and build a single proto to send to the client.
     for (auto const &type : types)
     {
+      // only include messages in the gz.msgs package
+      if (type.find("gz.msgs") != 0)
+        continue;
       auto msg = gz::msgs::Factory::New(type);
       if (msg)
       {
         auto descriptor = msg->GetDescriptor();
+
+        // Skip nested messages for now, e.g. gz.msgs.CameraInfo.Distortion
+        // conflicts with gz.msgs.Distortion - in both cases the DebugString
+        // will output the same message name:  "message Distortion {..}".
+        // todo(iche033): extend the logic to work with nested messages
+        if (descriptor->containing_type())
+          continue;
+
         if (descriptor)
           allProtos += descriptor->DebugString();
         else
