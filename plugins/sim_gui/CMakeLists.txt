@@ -7,9 +7,9 @@ add_library(${plugin_lower} SHARED ${sources})
 target_link_libraries(${plugin_lower}
   PRIVATE
   ${PROJECT_LIBRARY_TARGET_NAME}
-  gz-sim${GZ_SIM_VER}
-  gz-sim${GZ_SIM_VER}::gui
-  gz-sim${GZ_SIM_VER}::gz-sim${GZ_SIM_VER}
+  gz-sim
+  gz-sim::gui
+  gz-sim::gz-sim
   gz-gui${GZ_GUI_VER}::gz-gui${GZ_GUI_VER}
   gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
   gz-transport${GZ_TRANSPORT_VER}::core
