@@ -13,7 +13,7 @@
   <depend>binutils</depend>
   <depend>gz-cmake4</depend>
   <depend>gz-common6</depend>
-  <depend>gz-gui10</depend>
+  <depend>gz-gui</depend>
   <depend>gz-math8</depend>
   <depend>gz-msgs11</depend>
   <depend>gz-plugin3</depend>
