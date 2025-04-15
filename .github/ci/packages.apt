@@ -9,7 +9,7 @@ libgz-math8-eigen3-dev
 libgz-msgs11-dev
 libgz-plugin3-dev
 libgz-tools2-dev
-libgz-transport14-dev
+libgz-transport15-dev
 libtinyxml2-dev
 libwebsockets-dev
 libxi-dev
