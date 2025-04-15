@@ -12,7 +12,7 @@ target_link_libraries(${plugin_lower}
   gz-sim::gz-sim
   gz-gui::gz-gui
   gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
-  gz-transport${GZ_TRANSPORT_VER}::core
+  gz-transport::core
   gz-plugin${GZ_PLUGIN_VER}::core
 )
 
