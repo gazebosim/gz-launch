@@ -8,7 +8,7 @@ target_link_libraries(${plugin}
     gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
     gz-math${GZ_MATH_VER}::gz-math${GZ_MATH_VER}
     gz-plugin${GZ_PLUGIN_VER}::core
-    gz-transport${GZ_TRANSPORT_VER}::core
+    gz-transport::core
 )
 
 install (TARGETS ${plugin} DESTINATION ${GZ_LAUNCH_PLUGIN_RELATIVE_INSTALL_PATH})

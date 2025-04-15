@@ -61,8 +61,7 @@ set(GZ_TOOLS_VER 2)
 
 #--------------------------------------
 # Find gz-transport
-gz_find_package(gz-transport14 REQUIRED)
-set(GZ_TRANSPORT_VER ${gz-transport14_VERSION_MAJOR})
+gz_find_package(gz-transport REQUIRED)
 
 #--------------------------------------
 # Find gz-msgs

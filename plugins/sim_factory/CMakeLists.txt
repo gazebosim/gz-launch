@@ -9,7 +9,7 @@ target_link_libraries(${plugin_lower}
   ${PROJECT_LIBRARY_TARGET_NAME}
   gz-sim::gz-sim
   gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
-  gz-transport${GZ_TRANSPORT_VER}::core
+  gz-transport::core
   gz-plugin${GZ_PLUGIN_VER}::core
 )
 

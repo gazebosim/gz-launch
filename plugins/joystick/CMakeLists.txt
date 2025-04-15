@@ -7,7 +7,7 @@ target_link_libraries(${plugin}
     ${PROJECT_LIBRARY_TARGET_NAME}
     gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
     gz-math${GZ_MATH_VER}::gz-math${GZ_MATH_VER}
-    gz-transport${GZ_TRANSPORT_VER}::core
+    gz-transport::core
     gz-plugin${GZ_PLUGIN_VER}::core
 )
 

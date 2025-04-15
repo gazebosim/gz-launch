@@ -19,7 +19,7 @@
   <depend>gz-plugin3</depend>
   <depend>gz-sim</depend>
   <depend>gz-tools2</depend>
-  <depend>gz-transport14</depend>
+  <depend>gz-transport</depend>
   <depend>libgflags-dev</depend>
   <depend>libwebsockets-dev</depend>
   <depend>libxi-dev</depend>
