@@ -76,13 +76,6 @@ set(GZ_MATH_VER ${gz-math8_VERSION_MAJOR})
 #--------------------------------------
 # Find gz-gui
 gz_find_package(gz-gui REQUIRED)
-gz_find_package (Qt5
-  COMPONENTS
-    Core
-    Quick
-    QuickControls2
-  REQUIRED
-  PKGCONFIG "Qt5Core Qt5Quick Qt5QuickControls2")
 
 #--------------------------------------
 # Find gz-sim
