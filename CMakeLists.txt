@@ -77,17 +77,6 @@ set(GZ_MATH_VER ${gz-math8_VERSION_MAJOR})
 # Find gz-gui
 gz_find_package(gz-gui REQUIRED)
 
-set(QT_MAJOR_VERSION 6)
-set(QT_MINOR_VERSION 4)
-gz_find_package (Qt${QT_MAJOR_VERSION}
-  VERSION ${QT_MAJOR_VERSION}.${QT_MINOR_VERSION}
-  COMPONENTS
-    Core
-    Quick
-    QuickControls2
-  REQUIRED
-  PKGCONFIG "Qt${QT_MAJOR_VERSION}Core Qt${QT_MAJOR_VERSION}Quick Qt${QT_MAJOR_VERSION}QuickControls2")
-
 #--------------------------------------
 # Find gz-sim
 gz_find_package(gz-sim REQUIRED PRIVATE COMPONENTS gui)
