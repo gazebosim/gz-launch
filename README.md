@@ -17,6 +17,9 @@ Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/ico
 Gazebo Launch, a component of [Gazebo](https://gazebosim.org), provides a command line interface
 to run and manage application and plugins.
 
+> [!WARNING]
+> ### Gazebo Launch is deprecated in Gazebo Jetty (gz-launch9) and will be removed in Gazebo K. Please see the [migration guide](https://github.com/gazebosim/gz-launch/blob/main/Migration.md).
+
 # Table of Contents
 
 [Features](#features)
