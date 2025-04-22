@@ -43,7 +43,7 @@ using namespace gz::launch;
 /// \param[in] _topic The topic name string.
 /// \param[in] _type The message type string.
 /// \return A string that is the frame header.
-#define BUILD_HEADER(_op, _topic, _type) ((_op)+","+(_topic)+","+(_type)+",")
+#define BUILD_HEADER(_op, _topic, _type) ((_op)+","+(_topic)+","+(std::string(_type))+",")
 
 /// \brief Construction a complete websocket frame.
 /// \param[in] _op The operation string.
