@@ -5,9 +5,9 @@ add_library(${plugin} SHARED ${sources})
 target_link_libraries(${plugin}
   PRIVATE
     ${PROJECT_LIBRARY_TARGET_NAME}
-    gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
-    gz-math${GZ_MATH_VER}::gz-math${GZ_MATH_VER}
-    gz-plugin${GZ_PLUGIN_VER}::core
+    gz-common::gz-common
+    gz-math::gz-math
+    gz-plugin::core
     gz-transport::core
 )
 

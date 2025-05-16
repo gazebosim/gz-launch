@@ -11,7 +11,7 @@ add_library(gz STATIC gz.cc)
 target_include_directories(gz PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(gz PUBLIC
   ${PROJECT_LIBRARY_TARGET_NAME}
-  gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
+  gz-common::gz-common
 )
 
 # Define the desired output name of the executable
@@ -23,8 +23,8 @@ set_target_properties(${launch_executable}
   PROPERTIES OUTPUT_NAME ${launch_executable_output_name})
 target_link_libraries(${launch_executable}
   gz
-  gz-utils${GZ_UTILS_VER}::cli
-  gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
+  gz-utils::cli
+  gz-common::gz-common
 )
 
 install(

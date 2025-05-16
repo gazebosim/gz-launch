@@ -18,10 +18,10 @@ if (websockets_FOUND)
     PRIVATE
       ${websockets_LIBRARIES}
       ${PROJECT_LIBRARY_TARGET_NAME}
-      gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
-      gz-common${GZ_COMMON_VER}::graphics
-      gz-msgs${GZ_MSGS_VER}::core
-      gz-plugin${GZ_PLUGIN_VER}::core
+      gz-common::gz-common
+      gz-common::graphics
+      gz-msgs::core
+      gz-plugin::core
       gz-transport::core
   )
 
