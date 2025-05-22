@@ -25,12 +25,12 @@ set_property(
 # Link the libraries that we always need.
 target_link_libraries(${PROJECT_LIBRARY_TARGET_NAME}
   PUBLIC
-    gz-plugin${GZ_PLUGIN_VER}::loader
-    gz-plugin${GZ_PLUGIN_VER}::register
+    gz-plugin::loader
+    gz-plugin::register
     TINYXML2::TINYXML2
   PRIVATE
-    gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
-    gz-math${GZ_MATH_VER}::gz-math${GZ_MATH_VER}
+    gz-common::gz-common
+    gz-math::gz-math
     ${BACKWARD_LIBRARIES}
 )
 
@@ -41,7 +41,7 @@ gz_build_tests(TYPE UNIT SOURCES ${gtest_sources}
                 EXCLUDE_PROJECT_LIB
                 LIB_DEPS
                   ${PROJECT_LIBRARY_TARGET_NAME}
-                  gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
+                  gz-common::gz-common
                 ENVIRONMENT
                   GZ_LAUNCH_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
 )

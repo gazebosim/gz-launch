@@ -8,8 +8,7 @@ project(gz-launch VERSION 9.0.0)
 #============================================================================
 # Find gz-cmake
 #============================================================================
-find_package(gz-cmake4 REQUIRED)
-set(GZ_CMAKE_VER ${gz-cmake4_VERSION_MAJOR})
+find_package(gz-cmake REQUIRED)
 
 #============================================================================
 # Configure the project
@@ -36,18 +35,15 @@ gz_find_package(TINYXML2 REQUIRED PRIVATE PRETTY tinyxml2)
 
 #--------------------------------------
 # Find gz-common
-gz_find_package(gz-common6 REQUIRED PRIVATE)
-set(GZ_COMMON_VER ${gz-common6_VERSION_MAJOR})
+gz_find_package(gz-common REQUIRED PRIVATE)
 
 #--------------------------------------
 # Find gz-utils
-gz_find_package(gz-utils3 REQUIRED COMPONENTS cli)
-set(GZ_UTILS_VER ${gz-utils3_VERSION_MAJOR})
+gz_find_package(gz-utils REQUIRED COMPONENTS cli)
 
 #--------------------------------------
 # Find gz-plugin
-gz_find_package(gz-plugin3 REQUIRED_BY launch COMPONENTS loader register)
-set(GZ_PLUGIN_VER ${gz-plugin3_VERSION_MAJOR})
+gz_find_package(gz-plugin REQUIRED_BY launch COMPONENTS loader register)
 
 #--------------------------------------
 # Find if gz command is available
@@ -65,13 +61,11 @@ gz_find_package(gz-transport REQUIRED)
 
 #--------------------------------------
 # Find gz-msgs
-gz_find_package(gz-msgs11 REQUIRED)
-set(GZ_MSGS_VER ${gz-msgs11_VERSION_MAJOR})
+gz_find_package(gz-msgs REQUIRED)
 
 #--------------------------------------
 # Find gz-math
-gz_find_package(gz-math8 REQUIRED)
-set(GZ_MATH_VER ${gz-math8_VERSION_MAJOR})
+gz_find_package(gz-math REQUIRED)
 
 #--------------------------------------
 # Find gz-gui
