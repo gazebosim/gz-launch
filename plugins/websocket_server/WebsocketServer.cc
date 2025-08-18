@@ -1055,7 +1055,7 @@ void WebsocketServer::OnRequest(int _socketId,
     gz::msgs::StringMsg msg;
     msg.set_data("service_not_found");
     std::string data = BUILD_MSG(this->operations[REQUEST], service,
-        msg.GetTypeName(), msg.SerializeAsString());
+        std::string(msg.GetTypeName()), msg.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
@@ -1094,7 +1094,7 @@ void WebsocketServer::OnAsset(int _socketId,
     gz::msgs::StringMsg msg;
     msg.set_data("asset_uri_missing");
     std::string data = BUILD_MSG(this->operations[ASSET], "",
-        msg.GetTypeName(), msg.SerializeAsString());
+        std::string(msg.GetTypeName()), msg.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
@@ -1140,7 +1140,7 @@ void WebsocketServer::OnAsset(int _socketId,
 
     // Construct the response message
     std::string data = BUILD_MSG(this->operations[ASSET], assetUri,
-        bytes.GetTypeName(), bytes.SerializeAsString());
+        std::string(bytes.GetTypeName()), bytes.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
@@ -1151,7 +1151,7 @@ void WebsocketServer::OnAsset(int _socketId,
     gz::msgs::StringMsg msg;
     msg.set_data("asset_not_found");
     std::string data = BUILD_MSG(this->operations[ASSET], assetUri,
-        msg.GetTypeName(), msg.SerializeAsString());
+        std::string(msg.GetTypeName()), msg.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
