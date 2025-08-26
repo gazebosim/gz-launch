@@ -2,6 +2,40 @@
 
 ### Gazebo Launch 9.0.0 (20XX-XX-XX)
 
+### Gazebo Launch 9.0.0 (2025-09-XX)
+
+1. **Baseline:** this includes all changes from 8.0.1 and earlier.
+
+1. Fix compatibility with protobuf v30 (cpp 6.30.0)
+    * [Pull request #299](https://github.com/gazebosim/gz-launch/pull/299)
+
+1. Bump gz-cmake and others in jetty
+    * [Pull request #298](https://github.com/gazebosim/gz-launch/pull/298)
+
+1. Add deprecation notice and update migration guide
+    * [Pull request #291](https://github.com/gazebosim/gz-launch/pull/291)
+
+1. Remove find Qt in cmake
+    * [Pull request #297](https://github.com/gazebosim/gz-launch/pull/297)
+
+1. Bump gz-transport and others in jetty
+    * [Pull request #294](https://github.com/gazebosim/gz-launch/pull/294)
+
+1. Find gz-gui without major version
+    * [Pull request #293](https://github.com/gazebosim/gz-launch/pull/293)
+
+1. Find gz-sim without major version
+    * [Pull request #292](https://github.com/gazebosim/gz-launch/pull/292)
+
+1. Remove major version from package name
+    * [Pull request #286](https://github.com/gazebosim/gz-launch/pull/286)
+
+1. Bumps in jetty : ci_matching_branch/bump_jetty_gz-launch9
+    * [Pull request #285](https://github.com/gazebosim/gz-launch/pull/285)
+
+1. Remove deprecations: tock
+    * [Pull request #284](https://github.com/gazebosim/gz-launch/pull/284)
+
 ## Gazebo Launch 8.x
 
 ### Gazebo Launch 8.0.1 (2025-02-12)
