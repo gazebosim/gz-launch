@@ -9,7 +9,7 @@
 
 Build | Status
 -- | --
-Test coverage | [![codecov](https://codecov.io/gh/gazebosim/gz-launch/tree/main/graph/badge.svg)](https://codecov.io/gh/gazebosim/gz-launch/branch/main)
+Test coverage | [![codecov](https://codecov.io/gh/gazebosim/gz-launch/tree/gz-launch9/graph/badge.svg)](https://codecov.io/gh/gazebosim/gz-launch/branch/gz-launch9)
 Ubuntu Noble  | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-gz-launch9-noble-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-gz-launch9-noble-amd64)
 Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-gz-launch9-homebrew-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-gz-launch9-homebrew-amd64)
 Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-9-cnlwin)](https://build.osrfoundation.org/job/gz_launch-9-cnlwin)
