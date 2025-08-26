@@ -10,9 +10,9 @@
 Build | Status
 -- | --
 Test coverage | [![codecov](https://codecov.io/gh/gazebosim/gz-launch/tree/main/graph/badge.svg)](https://codecov.io/gh/gazebosim/gz-launch/branch/main)
-Ubuntu Noble  | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-main-noble-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-main-noble-amd64)
-Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-main-homebrew-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-main-homebrew-amd64)
-Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-main-clowin)](https://build.osrfoundation.org/job/gz_launch-main-clowin)
+Ubuntu Noble  | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-gz-launch9-noble-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-gz-launch9-noble-amd64)
+Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-gz-launch9-homebrew-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-gz-launch9-homebrew-amd64)
+Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-9-cnlwin)](https://build.osrfoundation.org/job/gz_launch-9-cnlwin)
 
 Gazebo Launch, a component of [Gazebo](https://gazebosim.org), provides a command line interface
 to run and manage application and plugins.
@@ -55,7 +55,7 @@ directory.
 
 # Install
 
-See the [installation tutorial](https://gazebosim.org/api/launch/8/install.html).
+See the [installation tutorial](https://gazebosim.org/api/launch/9/install.html).
 
 # Usage
 
@@ -85,7 +85,7 @@ where `$HOME/ws` is an example colcon workspace used to build Gazebo
 
 # Documentation
 
-See the [installation tutorial](https://gazebosim.org/api/launch/8/install.html).
+See the [installation tutorial](https://gazebosim.org/api/launch/9/install.html).
 
 # Folder Structure
 
