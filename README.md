@@ -9,16 +9,16 @@
 
 Build | Status
 -- | --
-Test coverage | [![codecov](https://codecov.io/gh/gazebosim/gz-launch/tree/main/graph/badge.svg)](https://codecov.io/gh/gazebosim/gz-launch/branch/main)
-Ubuntu Noble  | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-main-noble-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-main-noble-amd64)
-Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-main-homebrew-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-main-homebrew-amd64)
-Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-main-clowin)](https://build.osrfoundation.org/job/gz_launch-main-clowin)
+Test coverage | [![codecov](https://codecov.io/gh/gazebosim/gz-launch/tree/gz-launch9/graph/badge.svg)](https://codecov.io/gh/gazebosim/gz-launch/branch/gz-launch9)
+Ubuntu Noble  | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-gz-launch9-noble-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-gz-launch9-noble-amd64)
+Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-ci-gz-launch9-homebrew-amd64)](https://build.osrfoundation.org/job/gz_launch-ci-gz-launch9-homebrew-amd64)
+Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_launch-9-cnlwin)](https://build.osrfoundation.org/job/gz_launch-9-cnlwin)
 
 Gazebo Launch, a component of [Gazebo](https://gazebosim.org), provides a command line interface
 to run and manage application and plugins.
 
 > [!WARNING]
-> ### Gazebo Launch is deprecated in Gazebo Jetty (gz-launch9) and will be removed in Gazebo K. Please see the [migration guide](https://github.com/gazebosim/gz-launch/blob/main/Migration.md).
+> ### Gazebo Launch is deprecated in Gazebo Jetty (gz-launch9) and will be removed in Gazebo K. Please see the [migration guide](https://github.com/gazebosim/gz-launch/blob/gz-launch9/Migration.md).
 
 # Table of Contents
 
@@ -59,7 +59,7 @@ See the [installation tutorial](https://gazebosim.org/api/launch/8/install.html)
 
 # Usage
 
-Sample launch configuration files are in the [examples directory](https://github.com/gazebosim/gz-launch/blob/main/examples/).
+Sample launch configuration files are in the [examples directory](https://github.com/gazebosim/gz-launch/blob/gz-launch9/examples/).
 
 **Example**
 
@@ -114,7 +114,7 @@ Please see the [contribution guide](https://gazebosim.org/docs/all/contributing)
 # Code of Conduct
 
 Please see
-[CODE_OF_CONDUCT.md](https://github.com/gazebosim/gz-sim/blob/main/CODE_OF_CONDUCT.md).
+[CODE_OF_CONDUCT.md](https://github.com/gazebosim/gz-sim/blob/gz-launch9/CODE_OF_CONDUCT.md).
 
 # Versioning
 
@@ -122,4 +122,4 @@ This library uses [Semantic Versioning](https://semver.org/). Additionally, this
 
 # License
 
-This library is licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0). See also the [LICENSE](https://github.com/gazebosim/gz-launch/blob/main/LICENSE) file.
+This library is licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0). See also the [LICENSE](https://github.com/gazebosim/gz-launch/blob/gz-launch9/LICENSE) file.
