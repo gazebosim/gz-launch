@@ -19,7 +19,7 @@ We recommend following the [Binary Install](#binary-install) instructions to get
 
 The [Source Install](#source-install) instructions should be used if you need the very latest software improvements, you need to modify the code, or you plan to make a contribution.
 
-## Ubuntu 20.04 or above
+## Ubuntu 24.04 or above
 
 On Ubuntu systems, `apt` can be used to install `gz-launch`:
 
@@ -27,7 +27,7 @@ On Ubuntu systems, `apt` can be used to install `gz-launch`:
 sudo apt install libgz-launch<#>
 ```
 
-Be sure to replace `<#>` with a number value, such as 6 or 7, depending on
+Be sure to replace `<#>` with a number value, such as 9 (Jetty), depending on
 which version you need.
 
 ## macOS
@@ -43,20 +43,20 @@ Install Gazebo GUI:
   brew install gz-launch<#>
   ```
 
-Be sure to replace `<#>` with a number value, such as 4 or 5, depending on
+Be sure to replace `<#>` with a number value, such as 9 (Jetty), depending on
 which version you need.
 
 # Source Install
 
 
-## Ubuntu 20.04 or above
+## Ubuntu 24.04 or above
 
 Source installation can be performed in UNIX systems by first installing the
 necessary prerequisites followed by building from source.
 
 ### Prerequisites
 
-**[Ubuntu Focal](http://releases.ubuntu.com/20.04/)** or higher
+**[Ubuntu Noble](http://releases.ubuntu.com/24.04/)** or higher
 
 1. Install third-party libraries:
 
@@ -102,7 +102,7 @@ necessary prerequisites followed by building from source.
   git clone https://github.com/gazebosim/gz-launch -b gz-launch<#>
   ```
 
-  Be sure to replace `<#>` with a number value, such as 4 or 5, depending on
+  Be sure to replace `<#>` with a number value, such as 9 (Jetty), depending on
   which version you need.
 
 2. Install dependencies
@@ -111,7 +111,7 @@ necessary prerequisites followed by building from source.
   brew install --only-dependencies gz-launch<#>
   ```
 
-  Be sure to replace `<#>` with a number value, such as 5 or 6, depending on
+  Be sure to replace `<#>` with a number value, such as 9 (Jetty), depending on
   which version you need.
 
 3. Configure and build
