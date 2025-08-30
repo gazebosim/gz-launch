@@ -36,7 +36,19 @@ Take a look at the [sim.gzlaunch](https://github.com/gazebosim/gz-launch/blob/gz
 
 ## Spawn a robot into simulation with plugins
 
-Now take a look at the [factory.gzlaunch](https://github.com/gazebosim/gz-launch/blob/gz-launch9/examples/factory.gzlaunch) launch file. We defined a `SimFactory` plugin under which we included an `X2 UGV` robot and added the `DiffDrive` plugin to control the robot. We also added the `StatePublisher` plugin which publishes the robot state information.
+Now take a look at the [factory.gzlaunch](https://github.com/gazebosim/gz-launch/blob/gz-launch9/examples/factory.gzlaunch) launch file. We defined a `SimFactory` plugin under which we included an `X2 UGV` robot and added the `DiffDrive` plugin to control the robot. We also added the `JointStatePublisher` plugin which publishes the robot state information.
+
+First launch Gazebo in an empty world
+
+```
+gz sim -v 4 empty.sdf
+```
+
+In another terminal, spawn the robot into simulation using gz-launch
+
+```
+gz launch -v 4 factory.gzlaunch
+```
 
 ## Launch simulation with plugins in separate processes
 
@@ -48,13 +60,22 @@ plugin also launches into a separate process and transforms a `joystick` message
 
 The script can take a world as an argument. To run this script.
 
-`gz launch sim_plugins.gzlaunch [worldName:=<worldName>]`
+```
+gz launch sim_plugins.gzlaunch [worldName:=<worldName>]
+```
 
 The [worldName] command line argument is optional. If left blank, or not specified, then "diff_drive" is used for the world name.
 
 Example to load `the shapes.sdf`:
 
-`gz launch sim_plugins.gzlaunch worldName:=shapes`
+```
+gz launch sim_plugins.gzlaunch worldName:=shapes
+```
+
+> Note: This example requires that you have a joystick plugged in.
+   If you don't have one, you will see some error messages complaining that
+   it can not find any joystick / input devices and the plugin will fail
+   to load. This is expected.
 
 ## Launch file lookup
 

@@ -211,5 +211,5 @@ bool SimFactory::Load(const tinyxml2::XMLElement *_elem)
 
 
 
-  return false;
+  return true;
 }
