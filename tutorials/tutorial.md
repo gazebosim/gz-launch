@@ -73,9 +73,9 @@ gz launch sim_plugins.gzlaunch worldName:=shapes
 ```
 
 > Note: This example requires that you have a joystick plugged in.
-   If you don't have one, you will see some error messages complaining that
-   it can not find any joystick / input devices and the plugin will fail
-   to load. This is expected.
+> If you don't have one, you will see some error messages complaining that
+> it can not find any joystick / input devices and the plugin will fail
+> to load. This is expected.
 
 ## Launch file lookup
 
