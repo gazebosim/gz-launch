@@ -40,13 +40,13 @@ Now take a look at the [factory.gzlaunch](https://github.com/gazebosim/gz-launch
 
 First launch Gazebo in an empty world
 
-```
+```bash
 gz sim -v 4 empty.sdf
 ```
 
 In another terminal, spawn the robot into simulation using gz-launch
 
-```
+```bash
 gz launch -v 4 factory.gzlaunch
 ```
 
@@ -60,7 +60,7 @@ plugin also launches into a separate process and transforms a `joystick` message
 
 The script can take a world as an argument. To run this script.
 
-```
+```bash
 gz launch sim_plugins.gzlaunch [worldName:=<worldName>]
 ```
 
@@ -68,7 +68,7 @@ The [worldName] command line argument is optional. If left blank, or not specifi
 
 Example to load `the shapes.sdf`:
 
-```
+```bash
 gz launch sim_plugins.gzlaunch worldName:=shapes
 ```
 

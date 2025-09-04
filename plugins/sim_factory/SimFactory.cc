@@ -150,6 +150,7 @@ bool SimFactory::Load(const tinyxml2::XMLElement *_elem)
   // one "spawn" request is embedded in the plugin.
   this->ProcessSpawn(_elem);
 
+  bool loadResult = true;
   for (const auto &msg : this->worldFactoryMsgs)
   {
     uint32_t timeout = 2000;
@@ -206,10 +207,9 @@ bool SimFactory::Load(const tinyxml2::XMLElement *_elem)
       {
         gzerr << "Factory service call timed out.\n";
       }
+      loadResult = false;
     }
   }
 
-
-
-  return true;
+  return loadResult;
 }
