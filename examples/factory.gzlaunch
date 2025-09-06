@@ -21,7 +21,7 @@
           </plugin>
 
           <!-- Publish robot joint state information -->
-          <plugin filename="gz-sim-state-publisher-system"
+          <plugin filename="gz-sim-joint-state-publisher-system"
                   name="gz::sim::systems::JointStatePublisher"></plugin>
         </include>
       </sdf>
