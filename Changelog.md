@@ -1,8 +1,6 @@
 ## Gazebo Launch 9.x
 
-### Gazebo Launch 9.0.0 (20XX-XX-XX)
-
-### Gazebo Launch 9.0.0 (2025-09-XX)
+### Gazebo Launch 9.0.0 (2025-09-30)
 
 1. **Baseline:** this includes all changes from 8.0.1 and earlier.
 
