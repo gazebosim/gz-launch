@@ -4,6 +4,15 @@
 
 1. **Baseline:** this includes all changes from 8.0.1 and earlier.
 
+1. Update launch tutorial
+    * [Pull request #309](https://github.com/gazebosim/gz-launch/pull/309)
+
+1. Update install tutorial for jetty
+    * [Pull request #308](https://github.com/gazebosim/gz-launch/pull/308)
+
+1. Update gz-launch9 badge URLs
+    * [Pull request #306](https://github.com/gazebosim/gz-launch/pull/306)
+
 1. Fix compatibility with protobuf v30 (cpp 6.30.0)
     * [Pull request #299](https://github.com/gazebosim/gz-launch/pull/299)
 
