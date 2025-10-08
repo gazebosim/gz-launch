@@ -1,5 +1,12 @@
 ## Gazebo Launch 8.x
 
+### Gazebo Launch 8.0.2 (2025-10-08)
+
+1. **Baseline:** this includes all changes from 8.0.1 and earlier.
+
+1. Fix compatibility with protobuf v30 (cpp 6.30.0)
+    * [Pull request #299](https://github.com/gazebosim/gz-launch/pull/299)
+
 ### Gazebo Launch 8.0.1 (2025-02-12)
 
 1. Fix websocket proto request handling
