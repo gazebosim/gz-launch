@@ -8,7 +8,7 @@ project(gz-launch VERSION 9.0.0)
 #============================================================================
 # Find gz-cmake
 #============================================================================
-find_package(gz-cmake REQUIRED)
+find_package(gz-cmake 5 REQUIRED)
 
 #============================================================================
 # Configure the project
@@ -35,15 +35,15 @@ gz_find_package(TINYXML2 REQUIRED PRIVATE PRETTY tinyxml2)
 
 #--------------------------------------
 # Find gz-common
-gz_find_package(gz-common REQUIRED PRIVATE)
+gz_find_package(gz-common VERSION 7 REQUIRED PRIVATE)
 
 #--------------------------------------
 # Find gz-utils
-gz_find_package(gz-utils REQUIRED COMPONENTS cli)
+gz_find_package(gz-utils VERSION 4 REQUIRED COMPONENTS cli)
 
 #--------------------------------------
 # Find gz-plugin
-gz_find_package(gz-plugin REQUIRED_BY launch COMPONENTS loader register)
+gz_find_package(gz-plugin VERSION 4 REQUIRED_BY launch COMPONENTS loader register)
 
 #--------------------------------------
 # Find if gz command is available
@@ -57,23 +57,23 @@ set(GZ_TOOLS_VER 2)
 
 #--------------------------------------
 # Find gz-transport
-gz_find_package(gz-transport REQUIRED)
+gz_find_package(gz-transport VERSION 15 REQUIRED)
 
 #--------------------------------------
 # Find gz-msgs
-gz_find_package(gz-msgs REQUIRED)
+gz_find_package(gz-msgs VERSION 12 REQUIRED)
 
 #--------------------------------------
 # Find gz-math
-gz_find_package(gz-math REQUIRED)
+gz_find_package(gz-math VERSION 9 REQUIRED)
 
 #--------------------------------------
 # Find gz-gui
-gz_find_package(gz-gui REQUIRED)
+gz_find_package(gz-gui VERSION 10 REQUIRED)
 
 #--------------------------------------
 # Find gz-sim
-gz_find_package(gz-sim REQUIRED PRIVATE COMPONENTS gui)
+gz_find_package(gz-sim VERSION 10 REQUIRED PRIVATE COMPONENTS gui)
 
 gz_pkg_check_modules(websockets libwebsockets)
 if (NOT websockets_FOUND)
