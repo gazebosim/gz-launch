@@ -200,7 +200,11 @@ if (NOT TARGET Backward::Backward)
 	)
 	if(BACKWARD_HAS_EXTERNAL_LIBRARIES)
 		set_target_properties(Backward::Backward PROPERTIES
-			INTERFACE_LINK_LIBRARIES "${BACKWARD_LIBRARIES}" 
+			INTERFACE_LINK_LIBRARIES "${BACKWARD_LIBRARIES}"
 		)
+	endif()
+	if (MSVC)
+		set_property(TARGET Backward::Backward APPEND PROPERTY
+			INTERFACE_COMPILE_OPTIONS "/EHsc")
 	endif()
 endif()
