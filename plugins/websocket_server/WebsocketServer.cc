@@ -16,6 +16,7 @@
 */
 
 #include <algorithm>
+#include <vector>
 
 #include <gz/msgs/bytes.pb.h>
 #include <gz/msgs/empty.pb.h>
@@ -174,9 +175,9 @@ int httpCallback(struct lws *_wsi,
 
         // Prepare the output
         size_t buflen = strlen(format) + (conns.size() - 1);
-        unsigned char buf[buflen + LWS_PRE];
+        std::vector<unsigned char> buf(buflen + LWS_PRE);
         int n;
-        n = snprintf(reinterpret_cast<char *>(buf), buflen, format,
+        n = snprintf(reinterpret_cast<char *>(buf.data()), buflen, format,
             conns.c_str());
         // Check that no characters were discarded
         if (n - int(buflen) > 0)
@@ -192,8 +193,8 @@ int httpCallback(struct lws *_wsi,
 
         // Write response body
         lws_write_http(_wsi,
-                       reinterpret_cast<unsigned char *>(buf),
-                       strlen(reinterpret_cast<const char *>(buf)));
+                       buf.data(),
+                       strlen(reinterpret_cast<const char *>(buf.data())));
         break;
       }
       // Return a 404 if no route was matched
