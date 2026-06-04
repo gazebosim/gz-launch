@@ -1100,8 +1100,9 @@ void WebsocketServer::OnAsset(int _socketId,
 
     gz::msgs::StringMsg msg;
     msg.set_data("asset_uri_missing");
-    std::string data = BUILD_MSG(this->operations[ASSET], "",
-        msg.GetTypeName(), msg.SerializeAsString());
+    std::string data =
+        BUILD_MSG(this->operations[ASSET], "", std::string(msg.GetTypeName()),
+                  msg.SerializeAsString());
 
     // Queue the message for delivery.
     this->QueueMessage(this->connections[_socketId].get(),
