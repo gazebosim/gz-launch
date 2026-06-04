@@ -23,6 +23,8 @@ if (websockets_FOUND)
       gz-msgs${GZ_MSGS_VER}::core
       gz-plugin${GZ_PLUGIN_VER}::core
       gz-transport${GZ_TRANSPORT_VER}::core
+      gz-sim${GZ_SIM_VER}::gz-sim${GZ_SIM_VER}
+      gz-fuel_tools${GZ_FUEL_TOOLS_VER}::gz-fuel_tools${GZ_FUEL_TOOLS_VER}
   )
 
   install (TARGETS ${plugin} DESTINATION ${GZ_LAUNCH_PLUGIN_RELATIVE_INSTALL_PATH})
