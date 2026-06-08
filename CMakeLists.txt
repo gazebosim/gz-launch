@@ -75,6 +75,11 @@ gz_find_package(gz-gui REQUIRED)
 # Find gz-sim
 gz_find_package(gz-sim REQUIRED PRIVATE COMPONENTS gui)
 
+#--------------------------------------
+# Find gz-fuel_tools
+gz_find_package(gz-fuel_tools REQUIRED PRIVATE)
+set(GZ_FUEL_TOOLS_VER ${gz-fuel_tools_VERSION_MAJOR})
+
 gz_pkg_check_modules(websockets libwebsockets)
 if (NOT websockets_FOUND)
   gz_build_warning("Unable to find libwebsockets. The websocket_server plugin will not be built.")
