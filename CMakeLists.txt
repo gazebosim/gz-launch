@@ -88,7 +88,12 @@ ign_find_package (Qt5
 ign_find_package(ignition-gazebo6 REQUIRED PRIVATE COMPONENTS gui)
 set(IGN_GAZEBO_MAJOR_VER ${ignition-gazebo6_VERSION_MAJOR})
 
+#--------------------------------------
+# Find ignition-fuel_tools
+ign_find_package(ignition-fuel_tools7 REQUIRED PRIVATE)
+set(IGN_FUEL_TOOLS_VER ${ignition-fuel_tools7_VERSION_MAJOR})
 ign_pkg_check_modules(websockets libwebsockets)
+
 if (NOT websockets_FOUND)
   ign_build_warning("Unable to find libwebsockets. The websocket_server plugin will not be built.")
 endif()
