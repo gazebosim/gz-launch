@@ -92,6 +92,11 @@ gz_find_package (Qt5
 gz_find_package(gz-sim8 REQUIRED PRIVATE COMPONENTS gui)
 set(GZ_SIM_VER ${gz-sim8_VERSION_MAJOR})
 
+#--------------------------------------
+# Find gz-fuel_tools
+gz_find_package(gz-fuel_tools9 REQUIRED PRIVATE)
+set(GZ_FUEL_TOOLS_VER ${gz-fuel_tools9_VERSION_MAJOR})
+
 gz_pkg_check_modules(websockets libwebsockets)
 if (NOT websockets_FOUND)
   gz_build_warning("Unable to find libwebsockets. The websocket_server plugin will not be built.")

@@ -20,8 +20,10 @@ if (websockets_FOUND)
       ${PROJECT_LIBRARY_TARGET_NAME}
       gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
       gz-common${GZ_COMMON_VER}::graphics
+      gz-fuel_tools${GZ_FUEL_TOOLS_VER}::gz-fuel_tools${GZ_FUEL_TOOLS_VER}
       gz-msgs${GZ_MSGS_VER}::core
       gz-plugin${GZ_PLUGIN_VER}::core
+      gz-sim${GZ_SIM_VER}::gz-sim${GZ_SIM_VER}
       gz-transport${GZ_TRANSPORT_VER}::core
   )
 
