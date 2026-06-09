@@ -1,5 +1,32 @@
 ## Gazebo Launch 5.x
 
+### Gazebo Launch 5.3.1 (2026-06-09)
+
+1. Porting the security fix from gazebosim/gz-sim#3643
+    * [Pull request #320](https://github.com/gazebosim/gz-launch/pull/320)
+
+1. Fix compatibility with protobuf v30 (cpp 6.30.0)
+    * [Pull request #319](https://github.com/gazebosim/gz-launch/pull/319)
+    * [Pull request #299](https://github.com/gazebosim/gz-launch/pull/299)
+
+1. Fix compilation on mac m1
+    * [Pull request #161](https://github.com/gazebosim/gz-launch/pull/161)
+
+1. Fix libwebsocket shutdown behavior
+    * [Pull request #267](https://github.com/gazebosim/gz-launch/pull/267)
+
+1. Fix msvc warning
+    * [Pull request #250](https://github.com/gazebosim/gz-launch/pull/250)
+    * [Pull request #263](https://github.com/gazebosim/gz-launch/pull/263)
+    * [Pull request #258](https://github.com/gazebosim/gz-launch/pull/258)
+
+1. Disable failing windows tests
+    * [Pull request #255](https://github.com/gazebosim/gz-launch/pull/255)
+
+1. Infrastructure
+    * [Pull request #315](https://github.com/gazebosim/gz-launch/pull/315)
+    * [Pull request #238](https://github.com/gazebosim/gz-launch/pull/238)
+
 ### Gazebo Launch 5.3.0 (2023-06-14)
 
 1. Forward ports
