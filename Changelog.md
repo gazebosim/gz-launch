@@ -1,6 +1,6 @@
 ## Gazebo Launch 9.x
 
-### Gazebo Launch 9.1.1 (2026-06-10)
+### Gazebo Launch 9.0.1 (2026-06-10)
 
 1. Porting the security fix from gazebosim/gz-sim#3643
     * [Pull request #320](https://github.com/gazebosim/gz-launch/pull/320)
