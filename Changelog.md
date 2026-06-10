@@ -1,5 +1,10 @@
 ## Gazebo Launch 8.x
 
+### Gazebo Launch 8.0.3 (2026-6-10)
+
+1. Porting the security fix from gazebosim/gz-sim#3643
+    * [Pull request #3643 (#320](https://github.com/gazebosim/gz-launch/pull/3643 (#320)
+
 ### Gazebo Launch 8.0.2 (2025-10-08)
 
 1. Fix compatibility with protobuf v30 (cpp 6.30.0)
