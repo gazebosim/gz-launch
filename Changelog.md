@@ -3,7 +3,7 @@
 ### Gazebo Launch 7.1.2 (2026-06-10)
 
 1. Porting the security fix from gazebosim/gz-sim#3643
-    * [Pull request #3643 (#320](https://github.com/gazebosim/gz-launch/pull/3643 (#320)
+    * [Pull request #320](https://github.com/gazebosim/gz-launch/pull/320)
 
 1. Fix compatibility with protobuf v30 (cpp 6.30.0)
     * [Pull request #299](https://github.com/gazebosim/gz-launch/pull/299)
