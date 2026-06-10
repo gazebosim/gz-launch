@@ -3,7 +3,7 @@
 ### Gazebo Launch 9.1.1 (2026-06-10)
 
 1. Porting the security fix from gazebosim/gz-sim#3643
-    * [Pull request #3643 (#320](https://github.com/gazebosim/gz-launch/pull/3643 (#320)
+    * [Pull request #320](https://github.com/gazebosim/gz-launch/pull/320)
 
 1. replaces the C-style variable-length array (VLA) with std::vector
     * [Pull request #318](https://github.com/gazebosim/gz-launch/pull/318)
