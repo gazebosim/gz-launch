@@ -3,7 +3,7 @@
 ### Gazebo Launch 8.0.3 (2026-6-10)
 
 1. Porting the security fix from gazebosim/gz-sim#3643
-    * [Pull request #320](https://github.com/gazebosim/gz-launch/pull/320
+    * [Pull request #320](https://github.com/gazebosim/gz-launch/pull/320)
 
 ### Gazebo Launch 8.0.2 (2025-10-08)
 
