@@ -1,5 +1,17 @@
 ## Gazebo Launch 7.x
 
+### Gazebo Launch 7.1.2 (2026-06-10)
+
+1. Porting the security fix from gazebosim/gz-sim#3643
+    * [Pull request #320](https://github.com/gazebosim/gz-launch/pull/320)
+
+1. Fix compatibility with protobuf v30 (cpp 6.30.0)
+    * [Pull request #299](https://github.com/gazebosim/gz-launch/pull/299)
+
+1. Update Windows badges in README.md [skip ci]
+    * [Pull request #Update Windows badges in README.md [skip ci]](https://github.com/gazebosim/gz-launch/pull/Update Windows badges in README.md [skip ci])
+
+
 ### Gazebo Launch 7.1.1 (2025-01-30)
 
 1. Fix websocket proto request handling
