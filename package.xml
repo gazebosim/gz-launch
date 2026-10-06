@@ -5,7 +5,7 @@
   <version>9.0.1</version>
   <description>Gazebo Launch : Run and manage programs and plugins</description>
   <maintainer email="natekoenig@gmail.com">Nate Koenig</maintainer>
-  <license>Apache License 2.0</license>
+  <license>Apache-2.0</license>
   <url type="website">https://github.com/gazebosim/gz-launch</url>
 
   <buildtool_depend>cmake</buildtool_depend>
