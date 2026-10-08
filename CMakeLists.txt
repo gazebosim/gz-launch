@@ -80,9 +80,15 @@ gz_find_package(gz-sim VERSION 10 REQUIRED PRIVATE COMPONENTS gui)
 gz_find_package(gz-fuel_tools VERSION 11 REQUIRED PRIVATE)
 set(GZ_FUEL_TOOLS_VER ${gz-fuel_tools_VERSION_MAJOR})
 
-gz_pkg_check_modules(websockets libwebsockets)
-if (NOT websockets_FOUND)
-  gz_build_warning("Unable to find libwebsockets. The websocket_server plugin will not be built.")
+#--------------------------------------
+# Find libwebsockets
+# Disable on windows as there is an issue linking against websockets_shared,
+# see #2802
+if (NOT WIN32)
+  gz_find_package(libwebsockets)
+  if (NOT libwebsockets_FOUND)
+    gz_build_warning("Unable to find libwebsockets. The websocket_server system will not be built.")
+  endif()
 endif()
 
 #--------------------------------------
