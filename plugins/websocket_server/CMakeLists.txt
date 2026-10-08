@@ -16,7 +16,7 @@ if (websockets_FOUND)
 
   target_link_libraries(${plugin}
     PRIVATE
-      ${websockets_LIBRARIES}
+      websockets_shared
       ${PROJECT_LIBRARY_TARGET_NAME}
       gz-common::gz-common
       gz-common::graphics
