@@ -1,5 +1,13 @@
 ## Gazebo Launch 8.x
 
+### Gazebo Launch 8.0.4 (2026-11-18)
+
+1. Use the SPDX identifier Apache-2.0 in the license declaration
+    * [Pull request #334](https://github.com/gazebosim/gz-launch/pull/334)
+
+1. Fix compatibility with protobuf v30 (cpp 6.30.0)
+    * [Pull request #319](https://github.com/gazebosim/gz-launch/pull/319)
+
 ### Gazebo Launch 8.0.3 (2026-6-10)
 
 1. Porting the security fix from gazebosim/gz-sim#3643
